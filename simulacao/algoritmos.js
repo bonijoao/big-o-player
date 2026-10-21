@@ -28,9 +28,10 @@
 
   // ---------- ajudantes das ordenações ----------
 
-  function maior(v, i, j, c, linha, onde = "v") {
+  // `parte`: qual condição da linha, quando um "e" a divide em dois losangos
+  function maior(v, i, j, c, linha, onde = "v", parte) {
     c.op("comparacoes");
-    c.eventos.push({ t: "compara", i, j, onde, linha });
+    c.eventos.push(parte === undefined ? { t: "compara", i, j, onde, linha } : { t: "compara", i, j, onde, linha, parte });
     return v[i] > v[j];
   }
 
@@ -49,7 +50,7 @@
   // ---------- ordenações (mesmas variantes do Python) ----------
 
   // eventos de controle: não contam, só mostram por onde o algoritmo passa
-  const testa = (c, linha) => c.eventos.push({ t: "testa", linha });
+  const testa = (c, linha, parte) => c.eventos.push(parte === undefined ? { t: "testa", linha } : { t: "testa", linha, parte });
 
   function bolha(v, c) {
     for (let fim = v.length - 1; fim >= 1; fim--) {
@@ -65,7 +66,13 @@
   function insercao(v, c) {
     for (let i = 1; i < v.length; i++) {
       let j = i;
-      while (j > 0 && maior(v, j - 1, j, c, 4)) { troca(v, j - 1, j, c, 5); j--; }
+      // enquanto j > 1 e v[j−1] > v[j]: dois losangos, o segundo só se o primeiro deixar
+      for (;;) {
+        testa(c, 4, 0);
+        if (!(j > 0) || !maior(v, j - 1, j, c, 4, "v", 1)) break;
+        troca(v, j - 1, j, c, 5);
+        j--;
+      }
     }
   }
 

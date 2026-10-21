@@ -4,6 +4,12 @@
  "variante": "com trocas entre vizinhos",
  "familia": "ordenação",
  "resumo": "Pega o próximo número e o faz descer, trocando com o vizinho da esquerda, até encontrar alguém menor. A parte da esquerda fica sempre ordenada.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, ordenada no próprio vetor"
+  }
+ ],
  "tempo": {
   "notacao": "O(n²)",
   "porque": "Cada número desce até encontrar o seu lugar: em média passa por metade dos que já estão ordenados, o que soma cerca de n²/4 comparações; no pior caso (vetor invertido), n(n − 1)/2.",
@@ -26,6 +32,6 @@
  "pseudocodigo": "procedimento insertion_sort(v):\n    para i de 2 até n:\n        j ← i\n        enquanto j > 1 e v[j − 1] > v[j]:\n            troque v[j − 1] com v[j]\n            j ← j − 1\n",
  "placa": {
   "autor": "método tradicional",
-  "ano": "anterior aos computadores"
+  "ano": "anterior aos computadores; John Mauchly discute uma variante em 1946, nas aulas da Moore School"
  }
 }

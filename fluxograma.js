@@ -83,14 +83,15 @@
   }
 
   // losango (se/enquanto) ou hexágono (para); devolve a forma com os vértices
-  function decisao(texto, hexagono, nLinha) {
+  // `parte`: qual das condições da linha (0, 1, …), quando um "e" a divide em losangos
+  function decisao(texto, hexagono, nLinha, parte) {
     const linhas = quebra(texto, hexagono ? 24 : 16);
     const tw = Math.max(...linhas.map((l) => l.length)) * CW, th = linhas.length * LH;
     const w = hexagono ? tw + 40 : tw * 2 + 20, h = hexagono ? th + 16 : th * 2 + 18;
     return {
       L: w / 2, R: w / 2, h,
       desenha(g0, cx, y) {
-        const g = svg("g", { "data-linha": nLinha });
+        const g = svg("g", parte === undefined ? { "data-linha": nLinha } : { "data-linha": nLinha, "data-parte": parte });
         g0.append(g);
         const pts = hexagono
           ? [[cx - w / 2, y + h / 2], [cx - w / 2 + 12, y], [cx + w / 2 - 12, y], [cx + w / 2, y + h / 2], [cx + w / 2 - 12, y + h], [cx - w / 2 + 12, y + h]]
@@ -103,7 +104,8 @@
 
   // cadeia de condições: "sim" desce de uma para a próxima; "não" sai pela direita
   function cadeia(item) {
-    const formas = item.conds.map((c) => decisao(item.rotulo === "para" ? c : `${c}?`, item.rotulo === "para", item.linha));   // o "para" já vem no texto
+    const formas = item.conds.map((c, k) => decisao(item.rotulo === "para" ? c : `${c}?`, item.rotulo === "para", item.linha,
+      item.conds.length > 1 ? k : undefined));   // o "para" já vem no texto
     const L = Math.max(...formas.map((f) => f.L)), R = Math.max(...formas.map((f) => f.R));
     const h = formas.reduce((t, f) => t + f.h, 0) + G * (formas.length - 1);
     return {

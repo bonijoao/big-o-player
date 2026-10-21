@@ -4,6 +4,16 @@
  "variante": "de cima para baixo",
  "familia": "ordenação",
  "resumo": "Divide o vetor ao meio até sobrar um número por pedaço e depois intercala os pedaços dois a dois, comparando sempre a frente de cada um.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada e a lista auxiliar"
+  },
+  {
+   "id": "pilha",
+   "papel": "a pilha de recursão"
+  }
+ ],
  "tempo": {
   "notacao": "O(n log n)",
   "porque": "Dividir ao meio dá log₂ n níveis; em cada nível, intercalar todos os pedaços custa no máximo n comparações. Vale para qualquer entrada.",
