@@ -106,7 +106,8 @@
     const estreito = W < 480;   // no celular, a legenda vai para cima do gráfico
     const m = { l: 74, r: estreito ? 16 : 150, t: 18, b: 44 };
     const todos = dados.flatMap((d) => series.map((sr) => val(d, sr.caso)))
-      .concat(refs.flatMap((r) => dados.map((d) => r.f(d.n)))).filter((x) => x > 0);
+      .concat(refs.flatMap((r) => dados.map((d) => r.f(d.n))))
+      .concat(banda ? dados.flatMap((d) => [banda.min(d), banda.max(d)]) : []).filter((x) => x > 0);
     const lo = Math.floor(Math.log10(Math.min(...todos)) * 2) / 2, hi = Math.ceil(Math.log10(Math.max(...todos)) * 2) / 2;
     const X = (i) => m.l + (i + 0.5) * (W - m.l - m.r) / dados.length;
     const Y = (v) => m.t + (1 - (Math.log10(Math.max(v, 10 ** lo)) - lo) / (hi - lo)) * (H - m.t - m.b);

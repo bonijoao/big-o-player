@@ -74,7 +74,7 @@ if __name__ == "__main__":
             "eixo": "n (clientes; dobra a cada passo)",
             "refs": ["2n"],
             "crescimento_dados": f"média de {len(SEMENTES)} sorteios de clientes por tamanho",
-            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist, "medida": "pico"},
+            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist, "destaque": r["maior"]},
         },
         "memoria": {"pico": c.pico, "detalhe": c.pico_detalhe},
         "ciclomatica": ciclomatica(atendimento.MEDIDA),

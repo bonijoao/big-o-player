@@ -271,7 +271,8 @@ window.GALERIA = [
       22,
       23,
       24
-     ]
+     ],
+     "destaque": 15
     }
    },
    "memoria": {
@@ -730,7 +731,8 @@ window.GALERIA = [
       9,
       7,
       9
-     ]
+     ],
+     "destaque": 5
     }
    },
    "memoria": {
@@ -2338,11 +2340,7 @@ window.GALERIA = [
   },
   "memoria": {
    "notacao": "O(1)",
-   "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço.",
-   "nomes": {
-    "auxiliar": "lista auxiliar (uma posição por número)",
-    "pilha": "níveis da pilha de recursão"
-   }
+   "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço."
   },
   "video": {
    "ideia": [
@@ -5144,7 +5142,7 @@ window.GALERIA = [
       6,
       5
      ],
-     "medida": "pico"
+     "destaque": 5
     }
    },
    "memoria": {
@@ -5568,7 +5566,7 @@ window.GALERIA = [
   "graficos": {
    "titulo": "Tempo: como cresce, e o movimento do dia",
    "texto": "As mesmas contas para cada vez mais clientes e para três movimentos: calmo, no limite (chegam tantos quantos o caixa atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta.",
-   "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o máximo (todos esperam).",
+   "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o teto (se todos esperassem).",
    "distribuicao": "{vezes} sorteios de {nd} clientes no limite: a maior fila vai de {min} a {max} clientes. A barra preta é o sorteio do encarte.",
    "rotulo": "maior fila (n = {nd})",
    "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, a fila cresce com n; calmo, quase não sai do lugar."
@@ -6097,7 +6095,7 @@ window.GALERIA = [
       2,
       3
      ],
-     "medida": "pico"
+     "destaque": 3
     }
    },
    "memoria": {
@@ -6455,7 +6453,7 @@ window.GALERIA = [
     {
      "tipo": "devolva",
      "linha": 15,
-     "texto": "devolva soma ÷ n, maior"
+     "texto": "devolva soma, maior"
     }
    ],
    "linhas": [
@@ -6473,7 +6471,7 @@ window.GALERIA = [
     "        início ← máximo(livre, chegada[k])",
     "        soma ← soma + início − chegada[k]",
     "        livre ← início + duração[k]",
-    "    devolva soma ÷ n, maior"
+    "    devolva soma, maior"
    ],
    "M": 5,
    "nos": 16,

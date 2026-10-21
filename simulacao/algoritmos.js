@@ -419,6 +419,7 @@
 
   /** Texto de n símbolos (n par), como algoritmos/parenteses/parenteses.py:gerar. */
   function textoParenteses(n, caso, semente) {
+    if (n % 2) throw new Error("o texto precisa de um número par de símbolos");
     const r = sorteador(semente), FECHA = { "(": ")", "[": "]", "{": "}" }, escolhe = (s) => s[Math.floor(r() * s.length)];
     if (caso === "so_abre") return Array.from({ length: n }, () => escolhe(ABRE)).join("");
     const t = [], pilha = [];

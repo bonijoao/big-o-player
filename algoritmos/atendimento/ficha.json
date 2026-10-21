@@ -35,12 +35,12 @@
  "graficos": {
   "titulo": "Tempo: como cresce, e o movimento do dia",
   "texto": "As mesmas contas para cada vez mais clientes e para três movimentos: calmo, no limite (chegam tantos quantos o caixa atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta.",
-  "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o máximo (todos esperam).",
+  "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o teto (se todos esperassem).",
   "distribuicao": "{vezes} sorteios de {nd} clientes no limite: a maior fila vai de {min} a {max} clientes. A barra preta é o sorteio do encarte.",
   "rotulo": "maior fila (n = {nd})",
   "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, a fila cresce com n; calmo, quase não sai do lugar."
  },
- "pseudocodigo": "procedimento atender(chegada, duração):\n    fila ← vazia;  livre ← 0;  i ← 1\n    soma ← 0;  maior ← 0\n    para cada atendimento, de 1 até n:\n        enquanto i ≤ n e chegada[i] < livre:\n            enfileire i;  i ← i + 1\n            maior ← máximo(maior, tamanho da fila)\n        se a fila não está vazia:\n            k ← desenfileire\n        senão:\n            k ← i;  i ← i + 1\n        início ← máximo(livre, chegada[k])\n        soma ← soma + início − chegada[k]\n        livre ← início + duração[k]\n    devolva soma ÷ n, maior\n",
+ "pseudocodigo": "procedimento atender(chegada, duração):\n    fila ← vazia;  livre ← 0;  i ← 1\n    soma ← 0;  maior ← 0\n    para cada atendimento, de 1 até n:\n        enquanto i ≤ n e chegada[i] < livre:\n            enfileire i;  i ← i + 1\n            maior ← máximo(maior, tamanho da fila)\n        se a fila não está vazia:\n            k ← desenfileire\n        senão:\n            k ← i;  i ← i + 1\n        início ← máximo(livre, chegada[k])\n        soma ← soma + início − chegada[k]\n        livre ← início + duração[k]\n    devolva soma, maior\n",
  "placa": {
   "autor": "sem autoria única",
   "ano": "—"

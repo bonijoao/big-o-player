@@ -123,7 +123,7 @@ def medir(modulo, pasta):
             "eixo": "n (números; dobra a cada passo)",
             "refs": ["n", "log₂ n"],
             "crescimento_dados": "sorteado e ausente: média de todos os alvos possíveis (todos os números do vetor, todos os buracos entre eles)",
-            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist},
+            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist, "destaque": c.ops.get("comparacoes", 0)},
         },
         "memoria": {"pico": c.pico, "detalhe": c.pico_detalhe},
         "ciclomatica": ciclomatica(modulo.MEDIDA),

@@ -62,6 +62,8 @@ MEDIDA = balanceado
 def gerar(n, caso, r):
     """Texto de n símbolos (n par) de um caso: balanceada, um par errado,
     sobra aberto, só abre ou fecha sem abrir."""
+    if n % 2:
+        raise ValueError("o texto precisa de um número par de símbolos")
     if caso == "so_abre":
         return "".join(r.choice(ABRE) for _ in range(n))
     if caso == "fecha_sem_abrir":

@@ -17,11 +17,7 @@
  },
  "memoria": {
   "notacao": "O(1)",
-  "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço.",
-  "nomes": {
-   "auxiliar": "lista auxiliar (uma posição por número)",
-   "pilha": "níveis da pilha de recursão"
-  }
+  "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço."
  },
  "video": {
   "ideia": [

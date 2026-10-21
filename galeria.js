@@ -228,7 +228,7 @@
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
             `Comparações para n de ${m.tempo.crescimento[0].n} a ${mil(m.tempo.crescimento.at(-1).n)}. ${m.tempo.crescimento_dados}; a faixa cinza vai do menor ao maior dos aleatórios. Tracejadas: n²/2 e n log₂ n, de referência.` })]),
           el("figure", { class: "figura" }, [fig2, el("figcaption", { text:
-            `${dist.vetores} vetores embaralhados de ${dist.n} números: de ${Math.min(...dist.comparacoes)} a ${Math.max(...dist.comparacoes)} comparações. A entrada do encarte usa a semente ${ex.semente}.` })]),
+            `${dist.vetores} vetores embaralhados de ${dist.n} números: ${Math.min(...dist.comparacoes) === Math.max(...dist.comparacoes) ? `sempre ${Math.min(...dist.comparacoes)}` : `de ${Math.min(...dist.comparacoes)} a ${Math.max(...dist.comparacoes)}`} comparações. A entrada do encarte usa a semente ${ex.semente}.` })]),
         ]),
       ]) : el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: o que cresce, e o que não se controla" }),
@@ -265,7 +265,7 @@
       const Gr = window.Graficos;
       if (casos) {
         Gr.graficoCasos(fig1, f, "ops");
-        Gr.graficoHistograma(fig2, dist.valores, dist.medida === "pico" ? m.memoria.pico : ex.ops, preencher(gr.rotulo));
+        Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
         if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico");
       } else if (ordena) {
         Gr.graficoOrdenacao(fig1, f, "comparacoes");

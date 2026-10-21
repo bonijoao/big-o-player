@@ -69,7 +69,7 @@ if __name__ == "__main__":
             "eixo": "n (símbolos; dobra a cada passo)",
             "refs": ["n"],
             "crescimento_dados": f"média de {len(SEMENTES)} textos sorteados por tamanho (só abre: um texto)",
-            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist, "medida": "pico"},
+            "distribuicao": {"n": N_VIDEO, "vezes": len(dist), "valores": dist, "destaque": c.pico},
         },
         "memoria": {"pico": c.pico, "detalhe": c.pico_detalhe},
         "ciclomatica": ciclomatica(parenteses.MEDIDA),

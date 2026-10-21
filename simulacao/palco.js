@@ -406,6 +406,7 @@
     let lx = 70;
     for (const [cor, rot] of itens) {
       ctx.fillStyle = cor; ctx.fillRect(lx, y + 2, 10, 10);
+      if (cor === COR.claro) { ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(lx + 0.5, y + 2.5, 9, 9); }
       texto(ctx, rot, lx + 16, y, 11, COR.cinza);
       ctx.font = `400 11px ${MONO}`;
       lx += 16 + ctx.measureText(rot).width + 26;
@@ -519,7 +520,7 @@
     return {
       total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.busca, accelerando),
       resumo: { comparacoes: r.comparacoes, posicao: r.posicao, alvo, n: N, pico: 0 }, contagemEm,
-      medidor: () => `${r.comparacoes} comparações, n = ${N}<br>${r.posicao >= 0 ? `achou na casa ${r.posicao + 1}` : "alvo ausente"}`,
+      medidor: () => `${r.comparacoes} comparações, n = ${N}<br>sem memória extra`,
       aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.comparacoes} comparações, ${r.posicao >= 0 ? `o ${alvo} está na casa ${r.posicao + 1}` : `o ${alvo} não está no vetor`}, sem memória extra.`,
     };
   }
@@ -706,7 +707,7 @@
     return {
       total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.atendimento, accelerando),
       resumo: { ops: r.ops, soma: r.soma, maior: r.maior, pico: r.pico, n: N }, contagemEm,
-      medidor: () => `${r.ops} operações na fila, n = ${N}<br>espera média ${decimal(r.soma / N)} min`,
+      medidor: () => `${r.ops} operações na fila, n = ${N}<br>fila de até ${r.maior}`,
       aoVivo: (u, cfg) => `Tocando agora: ${N} clientes, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações na fila, espera média de ${decimal(r.soma / N)} min, maior fila de ${r.maior}.`,
     };
   }

@@ -163,6 +163,29 @@ for (const pasta of ["sequencial", "binaria"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: atendimento (${casos.length} sorteios)`);
 }
 
+// os geradores de entrada do palco (o menu "sortear"): cada caso tem de dar o que promete
+{
+  let ok = true;
+  const mov = ler("algoritmos/atendimento/dados.json").exemplo.movimentos;
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [8, 12, 16, 24, 32, 40, 48, 64]) {
+      for (const alg of ["sequencial", "binaria"]) {
+        const pos = (caso) => { const e = A.entradaBusca(n, alg === "binaria", caso, semente); return A.buscar(alg, e.vetor, e.alvo).posicao; };
+        ok = confere(`entrada ${alg} n=${n} s=${semente}`, [pos("comeco"), pos("fim"), pos("ausente"), pos("sorteado") >= 0], [0, n - 1, -1, true]) && ok;
+      }
+      const certo = (caso) => A.parenteses(A.textoParenteses(n, caso, semente)).certo;
+      ok = confere(`texto n=${n} s=${semente}`, ["balanceada", "par_errado", "sobra_aberto", "so_abre"].map(certo), [true, false, false, false]) && ok;
+      for (const [m, lim] of Object.entries(mov)) {
+        const { chegada, duracao } = A.clientes(n, lim, semente);
+        const dentro = (x, [a, b]) => x >= a && x <= b;
+        const intervalos = chegada.every((c, k) => dentro(c - (k ? chegada[k - 1] : 0), lim.chegada));
+        ok = confere(`clientes ${m} n=${n} s=${semente}`, [chegada.length, intervalos, duracao.every((d) => dentro(d, lim.atendimento))], [n, true, true]) && ok;
+      }
+    }
+  }
+  console.log(`${ok ? "ok" : "FALHOU"}: geradores de entrada do palco`);
+}
+
 // ---------- instrumentos ----------
 
 const INSTRUMENTOS = readdirSync(join(RAIZ, "instrumentos"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
