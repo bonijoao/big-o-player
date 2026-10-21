@@ -5,6 +5,1020 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "sequencial",
+  "id": "busca-sequencial",
+  "nome": "Busca sequencial",
+  "variante": "da primeira casa à última",
+  "familia": "busca",
+  "resumo": "Olha casa por casa, da primeira à última, até achar o alvo. Funciona em qualquer vetor, ordenado ou não; quando o alvo não está lá, só descobre isso depois de olhar todas as casas.",
+  "instrumentos": [
+   {
+    "id": "vetor",
+    "papel": "onde se procura, lido casa por casa"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Cada casa olhada é uma comparação com o alvo. Se o alvo está numa posição sorteada, em média olha metade do vetor, (n + 1)/2 casas; se não está, olha as n.",
+   "nota": "Melhor caso: o alvo é o primeiro, e basta uma comparação, O(1). O que manda é o pior caso: alvo no fim ou ausente."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Só guarda o índice da casa da vez e a posição achada, que não crescem com n.",
+   "vazio": "procura dentro do próprio vetor"
+  },
+  "video": {
+   "ideia": [
+    "olha casa por casa até achar o alvo",
+    "alvo ausente: só sabe depois de olhar todas"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e onde está o alvo",
+   "texto": "As mesmas buscas em vetores cada vez maiores, para quatro lugares do alvo. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+   "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do alvo mais barato ao mais caro. Tracejadas: n e log₂ n, de referência.",
+   "distribuicao": "Os {vezes} alvos possíveis num vetor de {nd} números: de {min} a {max} comparações. A barra preta é o alvo do encarte.",
+   "rotulo": "comparações (n = {nd})"
+  },
+  "placa": {
+   "autor": "método tradicional",
+   "ano": "—"
+  },
+  "poster": "algoritmos/sequencial/sequencial.png",
+  "exemplo": {
+   "dados": "24 números pares (de 0 a 46) embaralhados com a semente 11, procurando o 20",
+   "n": 24,
+   "semente": 11,
+   "vetor": [
+    26,
+    38,
+    40,
+    6,
+    44,
+    16,
+    0,
+    22,
+    8,
+    14,
+    2,
+    4,
+    24,
+    18,
+    20,
+    30,
+    10,
+    12,
+    36,
+    32,
+    42,
+    46,
+    34,
+    28
+   ],
+   "alvo": 20,
+   "posicao": 14,
+   "ops": 15
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "busca",
+    "series": [
+     {
+      "caso": "comeco",
+      "nome": "no começo"
+     },
+     {
+      "caso": "fim",
+      "nome": "no fim"
+     },
+     {
+      "caso": "ausente",
+      "nome": "ausente (média)"
+     },
+     {
+      "caso": "sorteado",
+      "nome": "sorteado (média)"
+     }
+    ],
+    "banda": "sorteado",
+    "crescimento": [
+     {
+      "n": 16,
+      "sorteado": {
+       "media": 8.5,
+       "min": 1,
+       "max": 16
+      },
+      "ausente": {
+       "media": 16,
+       "min": 16,
+       "max": 16
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 16
+      }
+     },
+     {
+      "n": 32,
+      "sorteado": {
+       "media": 16.5,
+       "min": 1,
+       "max": 32
+      },
+      "ausente": {
+       "media": 32,
+       "min": 32,
+       "max": 32
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 32
+      }
+     },
+     {
+      "n": 64,
+      "sorteado": {
+       "media": 32.5,
+       "min": 1,
+       "max": 64
+      },
+      "ausente": {
+       "media": 64,
+       "min": 64,
+       "max": 64
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 64
+      }
+     },
+     {
+      "n": 128,
+      "sorteado": {
+       "media": 64.5,
+       "min": 1,
+       "max": 128
+      },
+      "ausente": {
+       "media": 128,
+       "min": 128,
+       "max": 128
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 128
+      }
+     },
+     {
+      "n": 256,
+      "sorteado": {
+       "media": 128.5,
+       "min": 1,
+       "max": 256
+      },
+      "ausente": {
+       "media": 256,
+       "min": 256,
+       "max": 256
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 256
+      }
+     },
+     {
+      "n": 512,
+      "sorteado": {
+       "media": 256.5,
+       "min": 1,
+       "max": 512
+      },
+      "ausente": {
+       "media": 512,
+       "min": 512,
+       "max": 512
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 512
+      }
+     },
+     {
+      "n": 1024,
+      "sorteado": {
+       "media": 512.5,
+       "min": 1,
+       "max": 1024
+      },
+      "ausente": {
+       "media": 1024,
+       "min": 1024,
+       "max": 1024
+      },
+      "comeco": {
+       "ops": 1
+      },
+      "fim": {
+       "ops": 1024
+      }
+     }
+    ],
+    "eixo": "n (números; dobra a cada passo)",
+    "refs": [
+     "n",
+     "log₂ n"
+    ],
+    "crescimento_dados": "sorteado e ausente: média de todos os alvos possíveis (todos os números do vetor, todos os buracos entre eles)",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 24,
+     "valores": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+     ]
+    }
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 3,
+    "nos": 8,
+    "arestas": 9,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "for"
+     },
+     {
+      "linha": 4,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "for"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "if"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "break"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "return"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 2,
+       "tipo": "volta"
+      },
+      {
+       "de": 2,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def busca_sequencial(v, alvo, conta):\n    achou = -1\n    for i in range(len(v)):\n        if igual(v, i, alvo, conta):\n            achou = i\n            break\n    return achou\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "sequencial_r() (reimplementação em R) e match()",
+   "versao_r": "4.6.0",
+   "vetores": 20,
+   "tudo_ok": true,
+   "resumo": "Reescrito em R 4.6.0 e rodado em 20 buscas em vetores de 50 números (alvo no começo, no fim, ausente e sorteado): a posição achada bate com match() e as comparações batem uma a uma com o Python."
+  },
+  "pseudocodigo": {
+   "assinatura": "busca_sequencial(v, alvo)",
+   "nome": "busca_sequencial",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "achou ← 0",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "para i de 1 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "se",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "v[i] = alvo"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "achou ← i",
+         "chamada": false
+        },
+        {
+         "tipo": "pare",
+         "linha": 6
+        }
+       ],
+       "senao": null
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 7,
+     "texto": "devolva achou"
+    }
+   ],
+   "linhas": [
+    "procedimento busca_sequencial(v, alvo):",
+    "    achou ← 0",
+    "    para i de 1 até n:",
+    "        se v[i] = alvo:",
+    "            achou ← i",
+    "            pare",
+    "    devolva achou"
+   ],
+   "M": 3,
+   "nos": 8,
+   "arestas": 9,
+   "decisoes": [
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "binaria",
+  "id": "busca-binaria",
+  "nome": "Busca binária",
+  "variante": "corta o trecho pela metade",
+  "familia": "busca",
+  "resumo": "Num vetor ordenado, compara o alvo com o número do meio do trecho que ainda pode contê-lo. Se o alvo é maior, descarta a metade da esquerda; se é menor, a da direita. Cada comparação joga fora metade do que sobrou.",
+  "instrumentos": [
+   {
+    "id": "vetor",
+    "papel": "onde se procura, já em ordem; ler o meio custa o mesmo que ler a ponta"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(log n)",
+   "porque": "Cada volta corta o trecho pela metade: de n casas sobram n/2, depois n/4, e em cerca de log₂ n voltas não sobra nada. Cada volta compara o alvo com o meio até duas vezes (igual? menor?).",
+   "nota": "Dobrar o vetor custa uma volta a mais, não o dobro. O preço é a ordem: num vetor embaralhado, seria preciso ordenar antes, O(n log n)."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Só guarda as duas pontas do trecho, o meio e a posição achada, que não crescem com n.",
+   "vazio": "procura dentro do próprio vetor"
+  },
+  "video": {
+   "ideia": [
+    "compara com o meio e descarta a metade errada",
+    "cada comparação joga fora metade do que sobrou"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e onde está o alvo",
+   "texto": "As mesmas buscas em vetores cada vez maiores, para quatro lugares do alvo. Em escala logarítmica, a linha de n sobe reta; a da busca binária quase não sai do chão.",
+   "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do alvo mais barato ao mais caro. Tracejadas: n e log₂ n, de referência.",
+   "distribuicao": "Os {vezes} alvos possíveis num vetor de {nd} números: de {min} a {max} comparações. A barra preta é o alvo do encarte.",
+   "rotulo": "comparações (n = {nd})"
+  },
+  "placa": {
+   "autor": "John Mauchly, na primeira descrição publicada",
+   "ano": "1946, nas aulas da Moore School; a primeira versão que vale para qualquer n é de Derrick Lehmer, em 1960 (Knuth, The Art of Computer Programming, vol. 3)"
+  },
+  "poster": "algoritmos/binaria/binaria.png",
+  "exemplo": {
+   "dados": "24 números pares (de 0 a 46) em ordem, procurando o 28",
+   "n": 24,
+   "semente": 11,
+   "vetor": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    44,
+    46
+   ],
+   "alvo": 28,
+   "posicao": 14,
+   "ops": 5
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "busca",
+    "series": [
+     {
+      "caso": "comeco",
+      "nome": "no começo"
+     },
+     {
+      "caso": "fim",
+      "nome": "no fim"
+     },
+     {
+      "caso": "ausente",
+      "nome": "ausente (média)"
+     },
+     {
+      "caso": "sorteado",
+      "nome": "sorteado (média)"
+     }
+    ],
+    "banda": "sorteado",
+    "crescimento": [
+     {
+      "n": 16,
+      "sorteado": {
+       "media": 5.75,
+       "min": 1,
+       "max": 9
+      },
+      "ausente": {
+       "media": 8.235294117647058,
+       "min": 8,
+       "max": 10
+      },
+      "comeco": {
+       "ops": 7
+      },
+      "fim": {
+       "ops": 9
+      }
+     },
+     {
+      "n": 32,
+      "sorteado": {
+       "media": 7.4375,
+       "min": 1,
+       "max": 11
+      },
+      "ausente": {
+       "media": 10.121212121212121,
+       "min": 10,
+       "max": 12
+      },
+      "comeco": {
+       "ops": 9
+      },
+      "fim": {
+       "ops": 11
+      }
+     },
+     {
+      "n": 64,
+      "sorteado": {
+       "media": 9.25,
+       "min": 1,
+       "max": 13
+      },
+      "ausente": {
+       "media": 12.061538461538461,
+       "min": 12,
+       "max": 14
+      },
+      "comeco": {
+       "ops": 11
+      },
+      "fim": {
+       "ops": 13
+      }
+     },
+     {
+      "n": 128,
+      "sorteado": {
+       "media": 11.140625,
+       "min": 1,
+       "max": 15
+      },
+      "ausente": {
+       "media": 14.031007751937985,
+       "min": 14,
+       "max": 16
+      },
+      "comeco": {
+       "ops": 13
+      },
+      "fim": {
+       "ops": 15
+      }
+     },
+     {
+      "n": 256,
+      "sorteado": {
+       "media": 13.078125,
+       "min": 1,
+       "max": 17
+      },
+      "ausente": {
+       "media": 16.01556420233463,
+       "min": 16,
+       "max": 18
+      },
+      "comeco": {
+       "ops": 15
+      },
+      "fim": {
+       "ops": 17
+      }
+     },
+     {
+      "n": 512,
+      "sorteado": {
+       "media": 15.04296875,
+       "min": 1,
+       "max": 19
+      },
+      "ausente": {
+       "media": 18.007797270955166,
+       "min": 18,
+       "max": 20
+      },
+      "comeco": {
+       "ops": 17
+      },
+      "fim": {
+       "ops": 19
+      }
+     },
+     {
+      "n": 1024,
+      "sorteado": {
+       "media": 17.0234375,
+       "min": 1,
+       "max": 21
+      },
+      "ausente": {
+       "media": 20.00390243902439,
+       "min": 20,
+       "max": 22
+      },
+      "comeco": {
+       "ops": 19
+      },
+      "fim": {
+       "ops": 21
+      }
+     }
+    ],
+    "eixo": "n (números; dobra a cada passo)",
+    "refs": [
+     "n",
+     "log₂ n"
+    ],
+    "crescimento_dados": "sorteado e ausente: média de todos os alvos possíveis (todos os números do vetor, todos os buracos entre eles)",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 24,
+     "valores": [
+      7,
+      9,
+      5,
+      7,
+      9,
+      3,
+      7,
+      9,
+      5,
+      7,
+      9,
+      1,
+      7,
+      9,
+      5,
+      7,
+      9,
+      3,
+      7,
+      9,
+      5,
+      9,
+      7,
+      9
+     ]
+    }
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 4,
+    "nos": 13,
+    "arestas": 15,
+    "decisoes": [
+     {
+      "linha": 4,
+      "tipo": "while"
+     },
+     {
+      "linha": 6,
+      "tipo": "if"
+     },
+     {
+      "linha": 9,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "while"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "if"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "assign"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "break"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "if"
+      },
+      {
+       "id": 9,
+       "linha": 10,
+       "rotulo": "assign"
+      },
+      {
+       "id": 10,
+       "linha": 12,
+       "rotulo": "assign"
+      },
+      {
+       "id": 11,
+       "linha": 13,
+       "rotulo": "return"
+      },
+      {
+       "id": 12,
+       "linha": 14,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 10,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 3,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def busca_binaria(v, alvo, conta):\n    a, b = 0, len(v) - 1\n    achou = -1\n    while a <= b:\n        m = (a + b) // 2\n        if igual(v, m, alvo, conta):\n            achou = m\n            break\n        elif menor(v, m, alvo, conta):\n            a = m + 1\n        else:\n            b = m - 1\n    return achou\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "binaria_r() (reimplementação em R) e match()",
+   "versao_r": "4.6.0",
+   "vetores": 20,
+   "tudo_ok": true,
+   "resumo": "Reescrito em R 4.6.0 e rodado em 20 buscas em vetores de 50 números (alvo no começo, no fim, ausente e sorteado): a posição achada bate com match() e as comparações batem uma a uma com o Python."
+  },
+  "pseudocodigo": {
+   "assinatura": "busca_binaria(v, alvo)",
+   "nome": "busca_binaria",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "a ← 1;  b ← n;  achou ← 0",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "enquanto",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "a ≤ b"
+     ],
+     "corpo": [
+      {
+       "tipo": "acao",
+       "linha": 4,
+       "texto": "m ← ⌊(a + b) / 2⌋",
+       "chamada": false
+      },
+      {
+       "tipo": "se",
+       "linha": 5,
+       "op": "e",
+       "conds": [
+        "v[m] = alvo"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 6,
+         "texto": "achou ← m",
+         "chamada": false
+        },
+        {
+         "tipo": "pare",
+         "linha": 7
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "se",
+         "linha": 8,
+         "op": "e",
+         "conds": [
+          "v[m] < alvo"
+         ],
+         "entao": [
+          {
+           "tipo": "acao",
+           "linha": 9,
+           "texto": "a ← m + 1",
+           "chamada": false
+          }
+         ],
+         "senao": [
+          {
+           "tipo": "acao",
+           "linha": 11,
+           "texto": "b ← m − 1",
+           "chamada": false
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 12,
+     "texto": "devolva achou"
+    }
+   ],
+   "linhas": [
+    "procedimento busca_binaria(v, alvo):",
+    "    a ← 1;  b ← n;  achou ← 0",
+    "    enquanto a ≤ b:",
+    "        m ← ⌊(a + b) / 2⌋",
+    "        se v[m] = alvo:",
+    "            achou ← m",
+    "            pare",
+    "        senão se v[m] < alvo:",
+    "            a ← m + 1",
+    "        senão:",
+    "            b ← m − 1",
+    "    devolva achou"
+   ],
+   "M": 4,
+   "nos": 12,
+   "arestas": 14,
+   "decisoes": [
+    3,
+    5,
+    8
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "bolha",
   "id": "bubble-sort",
   "nome": "Bubble sort",
@@ -1297,6 +2311,648 @@ window.GALERIA = [
     2,
     4,
     4
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "selecao",
+  "id": "selection-sort",
+  "nome": "Selection sort",
+  "variante": "uma troca por passada",
+  "familia": "ordenação",
+  "resumo": "Procura o menor número do que ainda falta e o troca com o primeiro do que falta. A cada passada, a frente do vetor ganha um número no lugar final.",
+  "instrumentos": [
+   {
+    "id": "vetor",
+    "papel": "a entrada, ordenada no próprio vetor"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n²)",
+   "porque": "Para achar o menor, cada passada olha todos os que faltam: (n − 1) + (n − 2) + … + 1 = n(n − 1)/2 comparações. E olha sempre, porque só dá para saber qual é o menor depois de ver todos: a conta não muda com a entrada.",
+   "nota": "As trocas são poucas: exatamente n − 1, uma por passada, mesmo num vetor já ordenado (ali, cada número troca com ele mesmo). Por isso o selection serve quando mover um valor custa caro."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço.",
+   "nomes": {
+    "auxiliar": "lista auxiliar (uma posição por número)",
+    "pilha": "níveis da pilha de recursão"
+   }
+  },
+  "video": {
+   "ideia": [
+    "procura o menor do que falta e o traz para a frente",
+    "uma troca por passada, seja qual for a entrada"
+   ]
+  },
+  "placa": {
+   "autor": "sem autoria única",
+   "ano": "—"
+  },
+  "poster": "algoritmos/selecao/selecao.png",
+  "exemplo": {
+   "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
+   "n": 24,
+   "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
+   "ops": 276,
+   "movimentos": 23,
+   "movimento": "trocas"
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "ordenacao",
+    "crescimento": [
+     {
+      "n": 16,
+      "aleatorio": {
+       "media": 120,
+       "min": 120,
+       "max": 120,
+       "movimentos": 15,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 120,
+       "movimentos": 15,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 120,
+       "movimentos": 15,
+       "pico": 0
+      }
+     },
+     {
+      "n": 32,
+      "aleatorio": {
+       "media": 496,
+       "min": 496,
+       "max": 496,
+       "movimentos": 31,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 496,
+       "movimentos": 31,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 496,
+       "movimentos": 31,
+       "pico": 0
+      }
+     },
+     {
+      "n": 64,
+      "aleatorio": {
+       "media": 2016,
+       "min": 2016,
+       "max": 2016,
+       "movimentos": 63,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 2016,
+       "movimentos": 63,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 2016,
+       "movimentos": 63,
+       "pico": 0
+      }
+     },
+     {
+      "n": 128,
+      "aleatorio": {
+       "media": 8128,
+       "min": 8128,
+       "max": 8128,
+       "movimentos": 127,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 8128,
+       "movimentos": 127,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 8128,
+       "movimentos": 127,
+       "pico": 0
+      }
+     },
+     {
+      "n": 256,
+      "aleatorio": {
+       "media": 32640,
+       "min": 32640,
+       "max": 32640,
+       "movimentos": 255,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 32640,
+       "movimentos": 255,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 32640,
+       "movimentos": 255,
+       "pico": 0
+      }
+     },
+     {
+      "n": 512,
+      "aleatorio": {
+       "media": 130816,
+       "min": 130816,
+       "max": 130816,
+       "movimentos": 511,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 130816,
+       "movimentos": 511,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 130816,
+       "movimentos": 511,
+       "pico": 0
+      }
+     },
+     {
+      "n": 1024,
+      "aleatorio": {
+       "media": 523776,
+       "min": 523776,
+       "max": 523776,
+       "movimentos": 1023,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 523776,
+       "movimentos": 1023,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 523776,
+       "movimentos": 1023,
+       "pico": 0
+      }
+     }
+    ],
+    "crescimento_dados": "Aleatório: média de 10 vetores embaralhados por tamanho; ordenado e invertido: um vetor cada",
+    "distribuicao": {
+     "n": 24,
+     "vetores": 200,
+     "comparacoes": [
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276,
+      276
+     ]
+    }
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 4,
+    "nos": 9,
+    "arestas": 11,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "for"
+     },
+     {
+      "linha": 5,
+      "tipo": "for"
+     },
+     {
+      "linha": 6,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "for"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "for"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "if"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "assign"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "expr"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 4,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 4,
+       "tipo": "volta"
+      },
+      {
+       "de": 4,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 2,
+       "tipo": "volta"
+      },
+      {
+       "de": 2,
+       "para": 8,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def selecao(v, conta):\n    n = len(v)\n    for i in range(n - 1):\n        m = i\n        for j in range(i + 1, n):\n            if maior(v, m, j, conta):\n                m = j\n        troca(v, i, m, conta)\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "selecao_r() (reimplementação em R) e sort()",
+   "versao_r": "4.6.0",
+   "vetores": 7,
+   "tudo_ok": true,
+   "resumo": "Reescrito em R 4.6.0 e rodado em 7 vetores de 50 números (5 embaralhados, 1 ordenado, 1 invertido): a ordem final bate com sort() e as comparações e os movimentos batem um a um com o Python."
+  },
+  "pseudocodigo": {
+   "assinatura": "selection_sort(v)",
+   "nome": "selection_sort",
+   "arvore": [
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 2,
+     "op": "e",
+     "conds": [
+      "para i de 1 até n − 1"
+     ],
+     "corpo": [
+      {
+       "tipo": "acao",
+       "linha": 3,
+       "texto": "m ← i",
+       "chamada": false
+      },
+      {
+       "tipo": "laco",
+       "rotulo": "para",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "para j de i + 1 até n"
+       ],
+       "corpo": [
+        {
+         "tipo": "se",
+         "linha": 5,
+         "op": "e",
+         "conds": [
+          "v[m] > v[j]"
+         ],
+         "entao": [
+          {
+           "tipo": "acao",
+           "linha": 6,
+           "texto": "m ← j",
+           "chamada": false
+          }
+         ],
+         "senao": null
+        }
+       ]
+      },
+      {
+       "tipo": "acao",
+       "linha": 7,
+       "texto": "troque v[i] com v[m]",
+       "chamada": false
+      }
+     ]
+    }
+   ],
+   "linhas": [
+    "procedimento selection_sort(v):",
+    "    para i de 1 até n − 1:",
+    "        m ← i",
+    "        para j de i + 1 até n:",
+    "            se v[m] > v[j]:",
+    "                m ← j",
+    "        troque v[i] com v[m]"
+   ],
+   "M": 4,
+   "nos": 8,
+   "arestas": 10,
+   "decisoes": [
+    2,
+    4,
+    5
    ]
   }
  },
@@ -3006,6 +4662,1835 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "parenteses",
+  "id": "parenteses-balanceados",
+  "nome": "Parênteses balanceados",
+  "variante": "três tipos de símbolo: ( [ {",
+  "familia": "estruturas lineares",
+  "resumo": "Lê o texto da esquerda para a direita. Cada símbolo que abre vai para a pilha; cada um que fecha tira o do topo, que tem de ser o seu par. Se a pilha está vazia na hora de fechar, se o par não bate ou se sobra alguém na pilha no fim, o texto não está balanceado.",
+  "instrumentos": [
+   {
+    "id": "pilha",
+    "papel": "os símbolos que abriram e ainda não fecharam; o último a abrir é o primeiro a fechar"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Cada símbolo é lido uma vez e custa uma operação na pilha: empilhar se abre, desempilhar se fecha. Empilhar e desempilhar custam 1 cada (só de vez em quando o vetor da pilha dobra), então o total cresce como n.",
+   "nota": "Um par errado para a leitura ali mesmo: o custo depende de onde está o erro, mas nunca passa de n."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "A pilha guarda os símbolos que abriram e ainda não fecharam. Num texto sorteado, ela sobe e desce e fica bem abaixo de n; no pior caso, o texto só abre e a pilha fica do tamanho dele.",
+   "nomes": {
+    "simbolos": "símbolos na pilha"
+   },
+   "cresce_com_n": [
+    "simbolos"
+   ],
+   "vazio": "não guarda nada"
+  },
+  "video": {
+   "ideia": [
+    "quem abre vai para a pilha; quem fecha tira o do topo",
+    "o último a abrir é o primeiro a fechar"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e que texto entra",
+   "texto": "As mesmas contas para textos cada vez maiores e para quatro tipos de texto. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+   "crescimento": "Operações na pilha para n de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos textos balanceados. Tracejada: n, de referência.",
+   "distribuicao": "{vezes} textos balanceados de {nd} símbolos: a pilha mais alta vai de {min} a {max} símbolos. A barra preta é o texto do encarte.",
+   "rotulo": "pilha mais alta (n = {nd})",
+   "memoria": "Pilha mais alta para cada n, nos quatro tipos de texto (nos sorteados, a maior entre eles). Só abrir enche a pilha com o texto inteiro."
+  },
+  "placa": {
+   "autor": "sem autoria única",
+   "ano": "—"
+  },
+  "poster": "algoritmos/parenteses/parenteses.png",
+  "exemplo": {
+   "dados": "um texto balanceado de 24 símbolos, sorteado com a semente 11",
+   "n": 24,
+   "semente": 11,
+   "caso": "balanceada",
+   "texto": "[[](){()}]{{[{{}(){}}]}}",
+   "certo": true,
+   "ops": 24,
+   "comparacoes": 12,
+   "casas": 38
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "operações na pilha",
+    "tipo": "parenteses",
+    "series": [
+     {
+      "caso": "balanceada",
+      "nome": "balanceada (média)"
+     },
+     {
+      "caso": "par_errado",
+      "nome": "um par errado (média)"
+     },
+     {
+      "caso": "sobra_aberto",
+      "nome": "sobra aberto (média)"
+     },
+     {
+      "caso": "so_abre",
+      "nome": "só abre"
+     }
+    ],
+    "banda": "balanceada",
+    "crescimento": [
+     {
+      "n": 16,
+      "balanceada": {
+       "media": 16,
+       "min": 16,
+       "max": 16,
+       "pico": 6
+      },
+      "par_errado": {
+       "media": 11.2,
+       "min": 5,
+       "max": 16,
+       "pico": 6
+      },
+      "sobra_aberto": {
+       "media": 16,
+       "min": 16,
+       "max": 16,
+       "pico": 6
+      },
+      "so_abre": {
+       "media": 16,
+       "min": 16,
+       "max": 16,
+       "pico": 16
+      }
+     },
+     {
+      "n": 32,
+      "balanceada": {
+       "media": 32,
+       "min": 32,
+       "max": 32,
+       "pico": 9
+      },
+      "par_errado": {
+       "media": 16.3,
+       "min": 3,
+       "max": 29,
+       "pico": 9
+      },
+      "sobra_aberto": {
+       "media": 32,
+       "min": 32,
+       "max": 32,
+       "pico": 9
+      },
+      "so_abre": {
+       "media": 32,
+       "min": 32,
+       "max": 32,
+       "pico": 32
+      }
+     },
+     {
+      "n": 64,
+      "balanceada": {
+       "media": 64,
+       "min": 64,
+       "max": 64,
+       "pico": 19
+      },
+      "par_errado": {
+       "media": 28.5,
+       "min": 6,
+       "max": 61,
+       "pico": 19
+      },
+      "sobra_aberto": {
+       "media": 64,
+       "min": 64,
+       "max": 64,
+       "pico": 19
+      },
+      "so_abre": {
+       "media": 64,
+       "min": 64,
+       "max": 64,
+       "pico": 64
+      }
+     },
+     {
+      "n": 128,
+      "balanceada": {
+       "media": 128,
+       "min": 128,
+       "max": 128,
+       "pico": 25
+      },
+      "par_errado": {
+       "media": 85,
+       "min": 10,
+       "max": 127,
+       "pico": 25
+      },
+      "sobra_aberto": {
+       "media": 128,
+       "min": 128,
+       "max": 128,
+       "pico": 25
+      },
+      "so_abre": {
+       "media": 128,
+       "min": 128,
+       "max": 128,
+       "pico": 128
+      }
+     },
+     {
+      "n": 256,
+      "balanceada": {
+       "media": 256,
+       "min": 256,
+       "max": 256,
+       "pico": 36
+      },
+      "par_errado": {
+       "media": 129.5,
+       "min": 21,
+       "max": 256,
+       "pico": 25
+      },
+      "sobra_aberto": {
+       "media": 256,
+       "min": 256,
+       "max": 256,
+       "pico": 36
+      },
+      "so_abre": {
+       "media": 256,
+       "min": 256,
+       "max": 256,
+       "pico": 256
+      }
+     },
+     {
+      "n": 512,
+      "balanceada": {
+       "media": 512,
+       "min": 512,
+       "max": 512,
+       "pico": 46
+      },
+      "par_errado": {
+       "media": 265.4,
+       "min": 55,
+       "max": 482,
+       "pico": 30
+      },
+      "sobra_aberto": {
+       "media": 512,
+       "min": 512,
+       "max": 512,
+       "pico": 46
+      },
+      "so_abre": {
+       "media": 512,
+       "min": 512,
+       "max": 512,
+       "pico": 512
+      }
+     },
+     {
+      "n": 1024,
+      "balanceada": {
+       "media": 1024,
+       "min": 1024,
+       "max": 1024,
+       "pico": 74
+      },
+      "par_errado": {
+       "media": 328.1,
+       "min": 17,
+       "max": 948,
+       "pico": 29
+      },
+      "sobra_aberto": {
+       "media": 1024,
+       "min": 1024,
+       "max": 1024,
+       "pico": 74
+      },
+      "so_abre": {
+       "media": 1024,
+       "min": 1024,
+       "max": 1024,
+       "pico": 1024
+      }
+     }
+    ],
+    "eixo": "n (símbolos; dobra a cada passo)",
+    "refs": [
+     "n"
+    ],
+    "crescimento_dados": "média de 10 textos sorteados por tamanho (só abre: um texto)",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 200,
+     "valores": [
+      6,
+      5,
+      7,
+      5,
+      3,
+      4,
+      5,
+      2,
+      2,
+      2,
+      5,
+      5,
+      4,
+      3,
+      2,
+      4,
+      8,
+      4,
+      5,
+      4,
+      7,
+      10,
+      3,
+      7,
+      6,
+      5,
+      7,
+      4,
+      4,
+      5,
+      5,
+      5,
+      6,
+      4,
+      4,
+      5,
+      8,
+      3,
+      6,
+      6,
+      3,
+      4,
+      4,
+      4,
+      4,
+      5,
+      5,
+      5,
+      3,
+      6,
+      9,
+      4,
+      5,
+      3,
+      4,
+      4,
+      5,
+      4,
+      3,
+      4,
+      2,
+      4,
+      4,
+      6,
+      6,
+      2,
+      4,
+      5,
+      4,
+      5,
+      5,
+      9,
+      3,
+      3,
+      8,
+      3,
+      3,
+      7,
+      3,
+      3,
+      4,
+      3,
+      3,
+      3,
+      5,
+      7,
+      8,
+      4,
+      5,
+      5,
+      4,
+      7,
+      5,
+      6,
+      4,
+      4,
+      5,
+      7,
+      4,
+      4,
+      3,
+      7,
+      4,
+      8,
+      3,
+      3,
+      7,
+      5,
+      3,
+      5,
+      3,
+      4,
+      4,
+      5,
+      8,
+      5,
+      2,
+      6,
+      3,
+      3,
+      3,
+      6,
+      2,
+      3,
+      5,
+      2,
+      3,
+      7,
+      5,
+      8,
+      4,
+      5,
+      9,
+      8,
+      4,
+      3,
+      2,
+      7,
+      8,
+      3,
+      4,
+      2,
+      5,
+      2,
+      7,
+      2,
+      3,
+      5,
+      2,
+      4,
+      3,
+      5,
+      9,
+      5,
+      8,
+      3,
+      4,
+      8,
+      3,
+      5,
+      8,
+      4,
+      4,
+      4,
+      4,
+      6,
+      6,
+      7,
+      6,
+      2,
+      3,
+      6,
+      6,
+      5,
+      8,
+      6,
+      8,
+      5,
+      2,
+      3,
+      3,
+      5,
+      5,
+      5,
+      7,
+      3,
+      7,
+      3,
+      3,
+      6,
+      4,
+      4,
+      8,
+      4,
+      6,
+      7,
+      6,
+      6,
+      6,
+      5
+     ],
+     "medida": "pico"
+    }
+   },
+   "memoria": {
+    "pico": 5,
+    "detalhe": {
+     "simbolos": 5
+    }
+   },
+   "ciclomatica": {
+    "M": 6,
+    "nos": 17,
+    "arestas": 21,
+    "decisoes": [
+     {
+      "linha": 4,
+      "tipo": "for"
+     },
+     {
+      "linha": 5,
+      "tipo": "if"
+     },
+     {
+      "linha": 7,
+      "tipo": "if"
+     },
+     {
+      "linha": 12,
+      "tipo": "if"
+     },
+     {
+      "linha": 15,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "for"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "if"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "expr"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "if"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "assign"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "break"
+      },
+      {
+       "id": 9,
+       "linha": 11,
+       "rotulo": "assign"
+      },
+      {
+       "id": 10,
+       "linha": 12,
+       "rotulo": "if"
+      },
+      {
+       "id": 11,
+       "linha": 13,
+       "rotulo": "assign"
+      },
+      {
+       "id": 12,
+       "linha": 14,
+       "rotulo": "break"
+      },
+      {
+       "id": 13,
+       "linha": 15,
+       "rotulo": "if"
+      },
+      {
+       "id": 14,
+       "linha": 16,
+       "rotulo": "assign"
+      },
+      {
+       "id": 15,
+       "linha": 17,
+       "rotulo": "return"
+      },
+      {
+       "id": 16,
+       "linha": 18,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 10,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 3,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 14,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 15,
+       "para": 16,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def balanceado(texto, conta):\n    pilha = Pilha(conta)\n    certo = True\n    for s in texto:\n        if s in ABRE:\n            empilha(pilha, s, conta)\n        elif pilha.n == 0:\n            certo = False\n            break\n        else:\n            topo = desempilha(pilha, conta)\n            if par_errado(topo, s, conta):\n                certo = False\n                break\n    if pilha.n > 0:\n        certo = False\n    return certo\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "parenteses_r() (reimplementação em R) e a regra de apagar pares com gsub()",
+   "versao_r": "4.6.0",
+   "vetores": 25,
+   "tudo_ok": true,
+   "resumo": "Reescrito em R 4.6.0 e rodado em 25 textos de 50 símbolos (balanceados, com um par errado, sobrando aberto, só abrindo e fechando sem abrir): o veredito bate com o Python e com a regra de apagar pares até não sobrar nenhum, e as operações na pilha, as comparações e a pilha mais alta batem uma a uma."
+  },
+  "pseudocodigo": {
+   "assinatura": "balanceado(texto)",
+   "nome": "balanceado",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "pilha ← vazia;  certo ← verdadeiro",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "para cada símbolo s do texto"
+     ],
+     "corpo": [
+      {
+       "tipo": "se",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "s abre"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "empilhe s",
+         "chamada": false
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "se",
+         "linha": 6,
+         "op": "e",
+         "conds": [
+          "a pilha está vazia"
+         ],
+         "entao": [
+          {
+           "tipo": "acao",
+           "linha": 7,
+           "texto": "certo ← falso",
+           "chamada": false
+          },
+          {
+           "tipo": "pare",
+           "linha": 8
+          }
+         ],
+         "senao": [
+          {
+           "tipo": "acao",
+           "linha": 10,
+           "texto": "topo ← desempilhe",
+           "chamada": false
+          },
+          {
+           "tipo": "se",
+           "linha": 11,
+           "op": "e",
+           "conds": [
+            "topo não é o par de s"
+           ],
+           "entao": [
+            {
+             "tipo": "acao",
+             "linha": 12,
+             "texto": "certo ← falso",
+             "chamada": false
+            },
+            {
+             "tipo": "pare",
+             "linha": 13
+            }
+           ],
+           "senao": null
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tipo": "se",
+     "linha": 14,
+     "op": "e",
+     "conds": [
+      "a pilha não está vazia"
+     ],
+     "entao": [
+      {
+       "tipo": "acao",
+       "linha": 15,
+       "texto": "certo ← falso",
+       "chamada": false
+      }
+     ],
+     "senao": null
+    },
+    {
+     "tipo": "devolva",
+     "linha": 16,
+     "texto": "devolva certo"
+    }
+   ],
+   "linhas": [
+    "procedimento balanceado(texto):",
+    "    pilha ← vazia;  certo ← verdadeiro",
+    "    para cada símbolo s do texto:",
+    "        se s abre:",
+    "            empilhe s",
+    "        senão se a pilha está vazia:",
+    "            certo ← falso",
+    "            pare",
+    "        senão:",
+    "            topo ← desempilhe",
+    "            se topo não é o par de s:",
+    "                certo ← falso",
+    "                pare",
+    "    se a pilha não está vazia:",
+    "        certo ← falso",
+    "    devolva certo"
+   ],
+   "M": 6,
+   "nos": 16,
+   "arestas": 20,
+   "decisoes": [
+    3,
+    4,
+    6,
+    11,
+    14
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "atendimento",
+  "id": "fila-de-atendimento",
+  "nome": "Fila de atendimento",
+  "variante": "um caixa, minutos inteiros",
+  "familia": "estruturas lineares",
+  "resumo": "Clientes chegam a um caixa em minutos sorteados. Quem chega com o caixa ocupado entra no fim da fila; quando o caixa fica livre, chama o primeiro da fila. Ao fim, a conta dá a espera média e a maior fila que se formou.",
+  "instrumentos": [
+   {
+    "id": "fila",
+    "papel": "os clientes esperando, na versão circular: chamar o próximo custa 1"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Cada cliente que espera entra na fila uma vez e sai uma vez; quem chega com o caixa livre nem passa por ela. São no máximo 2n operações, e cada uma custa 1 na fila circular.",
+   "nota": "Na fila ingênua, chamar o próximo puxa todos os outros uma casa para a frente: num dia lotado, com a fila crescendo, o total vira O(n²)."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "A fila guarda quem está esperando. Num dia calmo, quase ninguém; num dia lotado, com mais gente chegando do que o caixa dá conta, a fila cresce sem parar e chega a uma fração de n.",
+   "nomes": {
+    "fila": "clientes esperando na fila"
+   },
+   "cresce_com_n": [
+    "fila"
+   ],
+   "vazio": "não guarda nada"
+  },
+  "video": {
+   "ideia": [
+    "quem chega com o caixa ocupado entra no fim da fila",
+    "o caixa livre chama o primeiro da fila"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e o movimento do dia",
+   "texto": "As mesmas contas para cada vez mais clientes e para três movimentos: calmo, no limite (chegam tantos quantos o caixa atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta.",
+   "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o máximo (todos esperam).",
+   "distribuicao": "{vezes} sorteios de {nd} clientes no limite: a maior fila vai de {min} a {max} clientes. A barra preta é o sorteio do encarte.",
+   "rotulo": "maior fila (n = {nd})",
+   "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, a fila cresce com n; calmo, quase não sai do lugar."
+  },
+  "placa": {
+   "autor": "sem autoria única",
+   "ano": "—"
+  },
+  "poster": "algoritmos/atendimento/atendimento.png",
+  "exemplo": {
+   "dados": "24 clientes sorteados com a semente 11: um chega a cada 1 a 5 minutos e é atendido em 1 a 5 minutos",
+   "n": 24,
+   "semente": 11,
+   "caso": "no_limite",
+   "chegada": [
+    4,
+    9,
+    13,
+    17,
+    22,
+    27,
+    29,
+    31,
+    36,
+    40,
+    45,
+    47,
+    48,
+    52,
+    55,
+    57,
+    58,
+    63,
+    64,
+    69,
+    73,
+    77,
+    82,
+    84
+   ],
+   "duracao": [
+    5,
+    1,
+    5,
+    1,
+    1,
+    1,
+    2,
+    2,
+    5,
+    1,
+    4,
+    3,
+    4,
+    5,
+    2,
+    5,
+    2,
+    3,
+    4,
+    1,
+    1,
+    4,
+    3,
+    4
+   ],
+   "movimentos": {
+    "calmo": {
+     "chegada": [
+      2,
+      6
+     ],
+     "atendimento": [
+      1,
+      5
+     ]
+    },
+    "no_limite": {
+     "chegada": [
+      1,
+      5
+     ],
+     "atendimento": [
+      1,
+      5
+     ]
+    },
+    "lotado": {
+     "chegada": [
+      1,
+      3
+     ],
+     "atendimento": [
+      2,
+      4
+     ]
+    }
+   },
+   "soma": 68,
+   "maior": 3,
+   "esperas": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    2,
+    4,
+    4,
+    6,
+    6,
+    10,
+    7,
+    9,
+    8,
+    5,
+    2,
+    1,
+    2
+   ],
+   "ops": 30,
+   "casas": 36
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "operações na fila",
+    "tipo": "atendimento",
+    "series": [
+     {
+      "caso": "calmo",
+      "nome": "calmo (média)"
+     },
+     {
+      "caso": "no_limite",
+      "nome": "no limite (média)"
+     },
+     {
+      "caso": "lotado",
+      "nome": "lotado (média)"
+     }
+    ],
+    "banda": "no_limite",
+    "crescimento": [
+     {
+      "n": 16,
+      "calmo": {
+       "media": 11,
+       "min": 6,
+       "max": 18,
+       "pico": 2,
+       "espera": 0.73125
+      },
+      "no_limite": {
+       "media": 24.2,
+       "min": 18,
+       "max": 30,
+       "pico": 4,
+       "espera": 3.425
+      },
+      "lotado": {
+       "media": 29.6,
+       "min": 28,
+       "max": 30,
+       "pico": 7,
+       "espera": 8.25625
+      }
+     },
+     {
+      "n": 32,
+      "calmo": {
+       "media": 25,
+       "min": 14,
+       "max": 34,
+       "pico": 3,
+       "espera": 1.015625
+      },
+      "no_limite": {
+       "media": 51.2,
+       "min": 36,
+       "max": 60,
+       "pico": 7,
+       "espera": 4.85
+      },
+      "lotado": {
+       "media": 61.2,
+       "min": 58,
+       "max": 62,
+       "pico": 13,
+       "espera": 15.39375
+      }
+     },
+     {
+      "n": 64,
+      "calmo": {
+       "media": 52.2,
+       "min": 34,
+       "max": 74,
+       "pico": 3,
+       "espera": 1.078125
+      },
+      "no_limite": {
+       "media": 113.2,
+       "min": 86,
+       "max": 124,
+       "pico": 12,
+       "espera": 8.3796875
+      },
+      "lotado": {
+       "media": 125.8,
+       "min": 124,
+       "max": 126,
+       "pico": 27,
+       "espera": 35.940625
+      }
+     },
+     {
+      "n": 128,
+      "calmo": {
+       "media": 99.8,
+       "min": 66,
+       "max": 132,
+       "pico": 4,
+       "espera": 1.03359375
+      },
+      "no_limite": {
+       "media": 221,
+       "min": 168,
+       "max": 254,
+       "pico": 16,
+       "espera": 9.6953125
+      },
+      "lotado": {
+       "media": 253,
+       "min": 250,
+       "max": 254,
+       "pico": 49,
+       "espera": 62.3546875
+      }
+     },
+     {
+      "n": 256,
+      "calmo": {
+       "media": 197.2,
+       "min": 156,
+       "max": 254,
+       "pico": 5,
+       "espera": 1.108984375
+      },
+      "no_limite": {
+       "media": 451,
+       "min": 408,
+       "max": 508,
+       "pico": 30,
+       "espera": 17.376171875
+      },
+      "lotado": {
+       "media": 509.2,
+       "min": 508,
+       "max": 510,
+       "pico": 93,
+       "espera": 127.384375
+      }
+     },
+     {
+      "n": 512,
+      "calmo": {
+       "media": 403.8,
+       "min": 336,
+       "max": 458,
+       "pico": 7,
+       "espera": 1.093359375
+      },
+      "no_limite": {
+       "media": 936.6,
+       "min": 840,
+       "max": 1014,
+       "pico": 36,
+       "espera": 21.10078125
+      },
+      "lotado": {
+       "media": 1020.8,
+       "min": 1018,
+       "max": 1022,
+       "pico": 189,
+       "espera": 259.4751953125
+      }
+     },
+     {
+      "n": 1024,
+      "calmo": {
+       "media": 819.8,
+       "min": 712,
+       "max": 968,
+       "pico": 5,
+       "espera": 1.08203125
+      },
+      "no_limite": {
+       "media": 1934.4,
+       "min": 1804,
+       "max": 2016,
+       "pico": 45,
+       "espera": 35.38671875
+      },
+      "lotado": {
+       "media": 2045.2,
+       "min": 2042,
+       "max": 2046,
+       "pico": 359,
+       "espera": 509.96328125
+      }
+     }
+    ],
+    "eixo": "n (clientes; dobra a cada passo)",
+    "refs": [
+     "2n"
+    ],
+    "crescimento_dados": "média de 10 sorteios de clientes por tamanho",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 200,
+     "valores": [
+      2,
+      4,
+      2,
+      4,
+      4,
+      2,
+      5,
+      4,
+      3,
+      3,
+      3,
+      3,
+      7,
+      3,
+      8,
+      5,
+      3,
+      6,
+      4,
+      2,
+      3,
+      5,
+      4,
+      3,
+      3,
+      4,
+      3,
+      5,
+      5,
+      5,
+      5,
+      2,
+      2,
+      4,
+      2,
+      4,
+      3,
+      3,
+      6,
+      4,
+      2,
+      4,
+      2,
+      2,
+      5,
+      4,
+      4,
+      2,
+      5,
+      4,
+      2,
+      5,
+      5,
+      1,
+      3,
+      2,
+      3,
+      2,
+      2,
+      5,
+      4,
+      6,
+      5,
+      6,
+      2,
+      2,
+      4,
+      5,
+      1,
+      2,
+      3,
+      5,
+      1,
+      4,
+      2,
+      2,
+      4,
+      3,
+      2,
+      2,
+      4,
+      4,
+      7,
+      2,
+      3,
+      4,
+      5,
+      4,
+      2,
+      2,
+      2,
+      3,
+      4,
+      2,
+      5,
+      4,
+      4,
+      6,
+      3,
+      3,
+      3,
+      1,
+      6,
+      7,
+      4,
+      3,
+      2,
+      4,
+      2,
+      3,
+      3,
+      2,
+      3,
+      3,
+      3,
+      4,
+      2,
+      2,
+      4,
+      6,
+      2,
+      4,
+      4,
+      5,
+      2,
+      2,
+      5,
+      3,
+      3,
+      4,
+      2,
+      4,
+      3,
+      4,
+      2,
+      4,
+      3,
+      6,
+      2,
+      4,
+      3,
+      3,
+      4,
+      5,
+      3,
+      7,
+      2,
+      3,
+      8,
+      7,
+      3,
+      4,
+      2,
+      1,
+      4,
+      2,
+      6,
+      6,
+      2,
+      3,
+      3,
+      3,
+      4,
+      3,
+      5,
+      5,
+      3,
+      2,
+      4,
+      3,
+      5,
+      2,
+      5,
+      3,
+      2,
+      3,
+      3,
+      4,
+      2,
+      8,
+      4,
+      7,
+      5,
+      4,
+      2,
+      3,
+      3,
+      5,
+      4,
+      4,
+      5,
+      3,
+      2,
+      3,
+      4,
+      2,
+      5,
+      3,
+      2,
+      3
+     ],
+     "medida": "pico"
+    }
+   },
+   "memoria": {
+    "pico": 3,
+    "detalhe": {
+     "fila": 3
+    }
+   },
+   "ciclomatica": {
+    "M": 5,
+    "nos": 20,
+    "arestas": 23,
+    "decisoes": [
+     {
+      "linha": 5,
+      "tipo": "for"
+     },
+     {
+      "linha": 6,
+      "tipo": "and/or"
+     },
+     {
+      "linha": 6,
+      "tipo": "while"
+     },
+     {
+      "linha": 10,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "for"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "while"
+      },
+      {
+       "id": 6,
+       "linha": 6,
+       "rotulo": "e"
+      },
+      {
+       "id": 7,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 8,
+       "linha": 8,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 9,
+       "linha": 9,
+       "rotulo": "assign"
+      },
+      {
+       "id": 10,
+       "linha": 10,
+       "rotulo": "if"
+      },
+      {
+       "id": 11,
+       "linha": 11,
+       "rotulo": "assign"
+      },
+      {
+       "id": 12,
+       "linha": 13,
+       "rotulo": "assign"
+      },
+      {
+       "id": 13,
+       "linha": 14,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 14,
+       "linha": 15,
+       "rotulo": "assign"
+      },
+      {
+       "id": 15,
+       "linha": 16,
+       "rotulo": "expr"
+      },
+      {
+       "id": 16,
+       "linha": 17,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 17,
+       "linha": 18,
+       "rotulo": "assign"
+      },
+      {
+       "id": 18,
+       "linha": 19,
+       "rotulo": "return"
+      },
+      {
+       "id": 19,
+       "linha": 20,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 14,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 15,
+       "para": 16,
+       "tipo": "segue"
+      },
+      {
+       "de": 16,
+       "para": 17,
+       "tipo": "segue"
+      },
+      {
+       "de": 17,
+       "para": 4,
+       "tipo": "volta"
+      },
+      {
+       "de": 4,
+       "para": 18,
+       "tipo": "segue"
+      },
+      {
+       "de": 18,
+       "para": 19,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def atender(chegada, duracao, conta):\n    n = len(chegada)\n    fila = FilaCircular(conta)\n    livre, soma, maior, i = 0, 0, 0, 0\n    for _ in range(n):\n        while i < n and chegada[i] < livre:\n            enfileira(fila, i, conta)\n            i += 1\n            maior = max(maior, fila.n)\n        if fila.n > 0:\n            k = desenfileira(fila, conta)\n        else:\n            k = i\n            i += 1\n        inicio = max(livre, chegada[k])\n        conta.evento(\"atende\", k, inicio)\n        soma += inicio - chegada[k]\n        livre = inicio + duracao[k]\n    return soma, maior\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "recursão de Lindley em R, sem fila",
+   "versao_r": "4.6.0",
+   "vetores": 15,
+   "tudo_ok": true,
+   "resumo": "Refeito em R 4.6.0 pela recursão de Lindley, que calcula a espera de cada cliente sem montar fila nenhuma, em 15 sorteios de 50 clientes (calmo, no limite e lotado): a espera de cada cliente, a maior fila e as operações na fila batem uma a uma com o Python."
+  },
+  "pseudocodigo": {
+   "assinatura": "atender(chegada, duração)",
+   "nome": "atender",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "fila ← vazia;  livre ← 0;  i ← 1",
+     "chamada": false
+    },
+    {
+     "tipo": "acao",
+     "linha": 3,
+     "texto": "soma ← 0;  maior ← 0",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 4,
+     "op": "e",
+     "conds": [
+      "para cada atendimento, de 1 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "laco",
+       "rotulo": "enquanto",
+       "linha": 5,
+       "op": "e",
+       "conds": [
+        "i ≤ n",
+        "chegada[i] < livre"
+       ],
+       "corpo": [
+        {
+         "tipo": "acao",
+         "linha": 6,
+         "texto": "enfileire i;  i ← i + 1",
+         "chamada": false
+        },
+        {
+         "tipo": "acao",
+         "linha": 7,
+         "texto": "maior ← máximo(maior, tamanho da fila)",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "se",
+       "linha": 8,
+       "op": "e",
+       "conds": [
+        "a fila não está vazia"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 9,
+         "texto": "k ← desenfileire",
+         "chamada": false
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "acao",
+         "linha": 11,
+         "texto": "k ← i;  i ← i + 1",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "acao",
+       "linha": 12,
+       "texto": "início ← máximo(livre, chegada[k])",
+       "chamada": false
+      },
+      {
+       "tipo": "acao",
+       "linha": 13,
+       "texto": "soma ← soma + início − chegada[k]",
+       "chamada": false
+      },
+      {
+       "tipo": "acao",
+       "linha": 14,
+       "texto": "livre ← início + duração[k]",
+       "chamada": false
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 15,
+     "texto": "devolva soma ÷ n, maior"
+    }
+   ],
+   "linhas": [
+    "procedimento atender(chegada, duração):",
+    "    fila ← vazia;  livre ← 0;  i ← 1",
+    "    soma ← 0;  maior ← 0",
+    "    para cada atendimento, de 1 até n:",
+    "        enquanto i ≤ n e chegada[i] < livre:",
+    "            enfileire i;  i ← i + 1",
+    "            maior ← máximo(maior, tamanho da fila)",
+    "        se a fila não está vazia:",
+    "            k ← desenfileire",
+    "        senão:",
+    "            k ← i;  i ← i + 1",
+    "        início ← máximo(livre, chegada[k])",
+    "        soma ← soma + início − chegada[k]",
+    "        livre ← início + duração[k]",
+    "    devolva soma ÷ n, maior"
+   ],
+   "M": 5,
+   "nos": 16,
+   "arestas": 19,
+   "decisoes": [
+    4,
+    5,
+    5,
+    8
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "kmeans",
   "id": "k-means",
   "nome": "K-means",
@@ -4556,18 +8041,113 @@ window.GALERIA = [
 ];
 window.ALBUNS = [
  {
-  "id": "ordenacao",
-  "titulo": "Ordenação",
-  "familia": "ordenação",
-  "frase": "Quatro jeitos de pôr números em ordem. Tocado na sequência, o álbum vai do O(n²) ao O(n log n).",
+  "id": "primeiros-passos",
+  "titulo": "Primeiros passos",
+  "familia": "primeiros passos",
+  "frase": "Laços, decisões e recursão: o básico, com as contas à mostra.",
+  "em_producao": [
+   {
+    "nome": "Máximo de um vetor",
+    "tempo": "O(n)",
+    "memoria": "O(1)"
+   },
+   {
+    "nome": "Multiplicação de matrizes",
+    "tempo": "O(n³)",
+    "memoria": "O(n²)"
+   },
+   {
+    "nome": "Fatorial recursivo",
+    "tempo": "O(n)",
+    "memoria": "O(n)"
+   },
+   {
+    "nome": "Fibonacci recursivo",
+    "tempo": "O(φⁿ)",
+    "memoria": "O(n)"
+   },
+   {
+    "nome": "Fibonacci com memória",
+    "tempo": "O(n)",
+    "memoria": "O(n)"
+   },
+   {
+    "nome": "Fibonacci iterativo",
+    "tempo": "O(n)",
+    "memoria": "O(1)"
+   },
+   {
+    "nome": "Busca de padrão ingênua",
+    "tempo": "O(n·m)",
+    "memoria": "O(1)"
+   }
+  ]
+ },
+ {
+  "id": "busca",
+  "titulo": "Busca",
+  "familia": "busca",
+  "frase": "Achar um valor num vetor: olhando casa por casa, ou cortando pela metade.",
   "em_producao": []
  },
  {
-  "id": "estatistica",
-  "titulo": "Estatística",
-  "familia": "estatística",
-  "frase": "Algoritmos que rodam por trás de uma análise.",
-  "em_producao": []
+  "id": "ordenacao",
+  "titulo": "Ordenação",
+  "familia": "ordenação",
+  "frase": "Jeitos de pôr números em ordem. Tocado na sequência, o álbum vai do O(n²) ao O(n log n).",
+  "em_producao": [
+   {
+    "nome": "Heapsort",
+    "tempo": "O(n log n)",
+    "memoria": "O(1)"
+   }
+  ]
+ },
+ {
+  "id": "estruturas-lineares",
+  "titulo": "Estruturas lineares",
+  "familia": "estruturas lineares",
+  "frase": "Pilhas, filas e listas trabalhando: quem entra, quem sai e quanto custa.",
+  "em_producao": [
+   {
+    "nome": "Inverter lista encadeada",
+    "tempo": "O(n)",
+    "memoria": "O(1)"
+   },
+   {
+    "nome": "Máximo em janela deslizante",
+    "tempo": "O(n) (ingênuo O(n·k))",
+    "memoria": "O(k)"
+   }
+  ]
+ },
+ {
+  "id": "arvores-e-heaps",
+  "titulo": "Árvores e heaps",
+  "familia": "árvores e heaps",
+  "frase": "Guardar em galhos para achar descendo poucos níveis.",
+  "em_producao": [
+   {
+    "nome": "Percursos de árvore (pré, em, pós-ordem e em largura)",
+    "tempo": "O(n)",
+    "memoria": "O(h)"
+   },
+   {
+    "nome": "Busca em árvore (em ordem × embaralhado)",
+    "tempo": "O(h), h de log n a n",
+    "memoria": "O(n)"
+   },
+   {
+    "nome": "Árvore equilibrada (AVL)",
+    "tempo": "O(log n) por operação",
+    "memoria": "O(n)"
+   },
+   {
+    "nome": "Fila de prioridade",
+    "tempo": "O(log n) por operação",
+    "memoria": "O(n)"
+   }
+  ]
  },
  {
   "id": "grafos",
@@ -4581,9 +8161,65 @@ window.ALBUNS = [
     "memoria": "O(V)"
    },
    {
+    "nome": "Busca em profundidade",
+    "tempo": "O(V + E)",
+    "memoria": "O(V)"
+   },
+   {
     "nome": "Dijkstra",
     "tempo": "O((V + E) log V)",
     "memoria": "O(V)"
+   }
+  ]
+ },
+ {
+  "id": "dispersao",
+  "titulo": "Dispersão",
+  "familia": "dispersão",
+  "frase": "Tabelas de dispersão: achar pela chave sem procurar, até as chaves colidirem.",
+  "em_producao": [
+   {
+    "nome": "Contar palavras",
+    "tempo": "O(n) médio",
+    "memoria": "O(d)"
+   },
+   {
+    "nome": "Achar repetidos (vetor × dicionário)",
+    "tempo": "O(n²) × O(n) médio",
+    "memoria": "O(1) × O(n)"
+   },
+   {
+    "nome": "Colisão por encadeamento",
+    "tempo": "O(1 + α) médio",
+    "memoria": "O(m + n)"
+   },
+   {
+    "nome": "Colisão por sondagem linear",
+    "tempo": "O(1/(1 − α)) médio",
+    "memoria": "O(m)"
+   }
+  ]
+ },
+ {
+  "id": "estatistica",
+  "titulo": "Estatística",
+  "familia": "estatística",
+  "frase": "Algoritmos que rodam por trás de uma análise.",
+  "em_producao": [
+   {
+    "nome": "Mediana por quickselect",
+    "tempo": "O(n) médio",
+    "memoria": "O(1)"
+   },
+   {
+    "nome": "Média e variância em uma passada (Welford)",
+    "tempo": "O(n)",
+    "memoria": "O(1)"
+   },
+   {
+    "nome": "Histograma",
+    "tempo": "O(n)",
+    "memoria": "O(c)"
    }
   ]
  }

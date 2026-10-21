@@ -1,0 +1,37 @@
+{
+ "id": "selection-sort",
+ "nome": "Selection sort",
+ "variante": "uma troca por passada",
+ "familia": "ordenação",
+ "resumo": "Procura o menor número do que ainda falta e o troca com o primeiro do que falta. A cada passada, a frente do vetor ganha um número no lugar final.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, ordenada no próprio vetor"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n²)",
+  "porque": "Para achar o menor, cada passada olha todos os que faltam: (n − 1) + (n − 2) + … + 1 = n(n − 1)/2 comparações. E olha sempre, porque só dá para saber qual é o menor depois de ver todos: a conta não muda com a entrada.",
+  "nota": "As trocas são poucas: exatamente n − 1, uma por passada, mesmo num vetor já ordenado (ali, cada número troca com ele mesmo). Por isso o selection serve quando mover um valor custa caro."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Troca dentro do próprio vetor; só guarda a posição do menor até agora e os índices do laço.",
+  "nomes": {
+   "auxiliar": "lista auxiliar (uma posição por número)",
+   "pilha": "níveis da pilha de recursão"
+  }
+ },
+ "video": {
+  "ideia": [
+   "procura o menor do que falta e o traz para a frente",
+   "uma troca por passada, seja qual for a entrada"
+  ]
+ },
+ "pseudocodigo": "procedimento selection_sort(v):\n    para i de 1 até n − 1:\n        m ← i\n        para j de i + 1 até n:\n            se v[m] > v[j]:\n                m ← j\n        troque v[i] com v[m]\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

@@ -1,0 +1,41 @@
+{
+ "id": "busca-binaria",
+ "nome": "Busca binária",
+ "variante": "corta o trecho pela metade",
+ "familia": "busca",
+ "resumo": "Num vetor ordenado, compara o alvo com o número do meio do trecho que ainda pode contê-lo. Se o alvo é maior, descarta a metade da esquerda; se é menor, a da direita. Cada comparação joga fora metade do que sobrou.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "onde se procura, já em ordem; ler o meio custa o mesmo que ler a ponta"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(log n)",
+  "porque": "Cada volta corta o trecho pela metade: de n casas sobram n/2, depois n/4, e em cerca de log₂ n voltas não sobra nada. Cada volta compara o alvo com o meio até duas vezes (igual? menor?).",
+  "nota": "Dobrar o vetor custa uma volta a mais, não o dobro. O preço é a ordem: num vetor embaralhado, seria preciso ordenar antes, O(n log n)."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Só guarda as duas pontas do trecho, o meio e a posição achada, que não crescem com n.",
+  "vazio": "procura dentro do próprio vetor"
+ },
+ "video": {
+  "ideia": [
+   "compara com o meio e descarta a metade errada",
+   "cada comparação joga fora metade do que sobrou"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e onde está o alvo",
+  "texto": "As mesmas buscas em vetores cada vez maiores, para quatro lugares do alvo. Em escala logarítmica, a linha de n sobe reta; a da busca binária quase não sai do chão.",
+  "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do alvo mais barato ao mais caro. Tracejadas: n e log₂ n, de referência.",
+  "distribuicao": "Os {vezes} alvos possíveis num vetor de {nd} números: de {min} a {max} comparações. A barra preta é o alvo do encarte.",
+  "rotulo": "comparações (n = {nd})"
+ },
+ "pseudocodigo": "procedimento busca_binaria(v, alvo):\n    a ← 1;  b ← n;  achou ← 0\n    enquanto a ≤ b:\n        m ← ⌊(a + b) / 2⌋\n        se v[m] = alvo:\n            achou ← m\n            pare\n        senão se v[m] < alvo:\n            a ← m + 1\n        senão:\n            b ← m − 1\n    devolva achou\n",
+ "placa": {
+  "autor": "John Mauchly, na primeira descrição publicada",
+  "ano": "1946, nas aulas da Moore School; a primeira versão que vale para qualquer n é de Derrick Lehmer, em 1960 (Knuth, The Art of Computer Programming, vol. 3)"
+ }
+}

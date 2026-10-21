@@ -1,0 +1,41 @@
+{
+ "id": "busca-sequencial",
+ "nome": "Busca sequencial",
+ "variante": "da primeira casa à última",
+ "familia": "busca",
+ "resumo": "Olha casa por casa, da primeira à última, até achar o alvo. Funciona em qualquer vetor, ordenado ou não; quando o alvo não está lá, só descobre isso depois de olhar todas as casas.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "onde se procura, lido casa por casa"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada casa olhada é uma comparação com o alvo. Se o alvo está numa posição sorteada, em média olha metade do vetor, (n + 1)/2 casas; se não está, olha as n.",
+  "nota": "Melhor caso: o alvo é o primeiro, e basta uma comparação, O(1). O que manda é o pior caso: alvo no fim ou ausente."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Só guarda o índice da casa da vez e a posição achada, que não crescem com n.",
+  "vazio": "procura dentro do próprio vetor"
+ },
+ "video": {
+  "ideia": [
+   "olha casa por casa até achar o alvo",
+   "alvo ausente: só sabe depois de olhar todas"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e onde está o alvo",
+  "texto": "As mesmas buscas em vetores cada vez maiores, para quatro lugares do alvo. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do alvo mais barato ao mais caro. Tracejadas: n e log₂ n, de referência.",
+  "distribuicao": "Os {vezes} alvos possíveis num vetor de {nd} números: de {min} a {max} comparações. A barra preta é o alvo do encarte.",
+  "rotulo": "comparações (n = {nd})"
+ },
+ "pseudocodigo": "procedimento busca_sequencial(v, alvo):\n    achou ← 0\n    para i de 1 até n:\n        se v[i] = alvo:\n            achou ← i\n            pare\n    devolva achou\n",
+ "placa": {
+  "autor": "método tradicional",
+  "ano": "—"
+ }
+}

@@ -1,0 +1,48 @@
+{
+ "id": "parenteses-balanceados",
+ "nome": "Parênteses balanceados",
+ "variante": "três tipos de símbolo: ( [ {",
+ "familia": "estruturas lineares",
+ "resumo": "Lê o texto da esquerda para a direita. Cada símbolo que abre vai para a pilha; cada um que fecha tira o do topo, que tem de ser o seu par. Se a pilha está vazia na hora de fechar, se o par não bate ou se sobra alguém na pilha no fim, o texto não está balanceado.",
+ "instrumentos": [
+  {
+   "id": "pilha",
+   "papel": "os símbolos que abriram e ainda não fecharam; o último a abrir é o primeiro a fechar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada símbolo é lido uma vez e custa uma operação na pilha: empilhar se abre, desempilhar se fecha. Empilhar e desempilhar custam 1 cada (só de vez em quando o vetor da pilha dobra), então o total cresce como n.",
+  "nota": "Um par errado para a leitura ali mesmo: o custo depende de onde está o erro, mas nunca passa de n."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "A pilha guarda os símbolos que abriram e ainda não fecharam. Num texto sorteado, ela sobe e desce e fica bem abaixo de n; no pior caso, o texto só abre e a pilha fica do tamanho dele.",
+  "nomes": {
+   "simbolos": "símbolos na pilha"
+  },
+  "cresce_com_n": [
+   "simbolos"
+  ],
+  "vazio": "não guarda nada"
+ },
+ "video": {
+  "ideia": [
+   "quem abre vai para a pilha; quem fecha tira o do topo",
+   "o último a abrir é o primeiro a fechar"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e que texto entra",
+  "texto": "As mesmas contas para textos cada vez maiores e para quatro tipos de texto. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Operações na pilha para n de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos textos balanceados. Tracejada: n, de referência.",
+  "distribuicao": "{vezes} textos balanceados de {nd} símbolos: a pilha mais alta vai de {min} a {max} símbolos. A barra preta é o texto do encarte.",
+  "rotulo": "pilha mais alta (n = {nd})",
+  "memoria": "Pilha mais alta para cada n, nos quatro tipos de texto (nos sorteados, a maior entre eles). Só abrir enche a pilha com o texto inteiro."
+ },
+ "pseudocodigo": "procedimento balanceado(texto):\n    pilha ← vazia;  certo ← verdadeiro\n    para cada símbolo s do texto:\n        se s abre:\n            empilhe s\n        senão se a pilha está vazia:\n            certo ← falso\n            pare\n        senão:\n            topo ← desempilhe\n            se topo não é o par de s:\n                certo ← falso\n                pare\n    se a pilha não está vazia:\n        certo ← falso\n    devolva certo\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

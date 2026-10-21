@@ -76,6 +76,18 @@
     }
   }
 
+  function selecao(v, c) {
+    const n = v.length;
+    for (let i = 0; i < n - 1; i++) {
+      let m = i;
+      c.eventos.push({ t: "menor", m, linha: 3 });
+      for (let j = i + 1; j < n; j++) {
+        if (maior(v, m, j, c, 5)) { m = j; c.eventos.push({ t: "menor", m, linha: 6 }); }
+      }
+      troca(v, i, m, c, 7);
+    }
+  }
+
   function intercalacao(v, a, b, aux, c, linha) {
     c.entra(a, b, linha);
     testa(c, 2);
@@ -116,6 +128,7 @@
   const ORDENACOES = {
     bolha: { movimento: "trocas", ordenar: (v, c) => bolha(v, c) },
     insercao: { movimento: "trocas", ordenar: (v, c) => insercao(v, c) },
+    selecao: { movimento: "trocas", ordenar: (v, c) => selecao(v, c) },
     intercalacao: {
       movimento: "escritas",
       ordenar(v, c) {
@@ -190,6 +203,106 @@
     };
   }
 
+  // ---------- buscas (motor/busca.py) ----------
+  // o vetor guarda pares; cada comparação de uma casa com o alvo conta 1
+
+  function buscar(nome, vetor, alvo) {
+    const c = contador(), v = vetor;
+    const igual = (i, linha) => { c.op("comparacoes"); c.eventos.push({ t: "compara", i, op: "=", linha }); return v[i] === alvo; };
+    const menor = (i, linha) => { c.op("comparacoes"); c.eventos.push({ t: "compara", i, op: "<", linha }); return v[i] < alvo; };
+    let achou = -1;
+    if (nome === "sequencial") {
+      for (let i = 0; i < v.length; i++) {
+        if (igual(i, 4)) { achou = i; c.eventos.push({ t: "achou", i, linha: 5 }, { t: "pare", linha: 6 }); break; }
+      }
+      c.eventos.push({ t: "devolva", linha: 7 });
+    } else {
+      let a = 0, b = v.length - 1;
+      c.eventos.push({ t: "corta", a, b, linha: 2 });
+      for (;;) {
+        c.eventos.push({ t: "testa", linha: 3 });
+        if (!(a <= b)) break;
+        const m = Math.floor((a + b) / 2);
+        c.eventos.push({ t: "meio", m, linha: 4 });
+        if (igual(m, 5)) { achou = m; c.eventos.push({ t: "achou", i: m, linha: 6 }, { t: "pare", linha: 7 }); break; }
+        else if (menor(m, 8)) { a = m + 1; c.eventos.push({ t: "corta", a, b, linha: 9 }); }
+        else { b = m - 1; c.eventos.push({ t: "corta", a, b, linha: 11 }); }
+      }
+      c.eventos.push({ t: "devolva", linha: 12 });
+    }
+    const certo = v.indexOf(alvo);
+    if (achou !== certo) throw new Error(`${nome} achou ${achou}, devia ${certo}`);
+    return { vetor: v, alvo, posicao: achou, eventos: c.eventos, comparacoes: c.ops.comparacoes || 0, pico: c.pico };
+  }
+
+  // ---------- estruturas lineares: as classes do instrumento (simulacao/instrumentos.js) ----------
+
+  const instrumentos = () => (typeof module !== "undefined" && module.exports ? require("./instrumentos.js") : raiz.Instrumentos);
+  const ABRE = "([{", PAR = { ")": "(", "]": "[", "}": "{" };
+
+  /** Parênteses balanceados (algoritmos/parenteses/parenteses.py), com a Pilha do instrumento. */
+  function parenteses(texto) {
+    const c = contador(), pilha = instrumentos().Pilha(), ev = c.eventos;
+    const casas = () => pilha.reg.leituras + pilha.reg.escritas;
+    let certo = true;
+    for (let k = 0; k < texto.length; k++) {
+      const s = texto[k];
+      ev.push({ t: "le", k, s, linha: 3 });
+      if (ABRE.includes(s)) {
+        c.op("empilhar"); pilha.empilhar(s); c.aloca("simbolos", pilha.n);
+        ev.push({ t: "empilha", k, s, linha: 5 });
+        continue;
+      }
+      ev.push({ t: "testa", linha: 6 });
+      if (pilha.n === 0) { certo = false; ev.push({ t: "erro", k, motivo: "vazia", linha: 7 }, { t: "pare", linha: 8 }); break; }
+      c.op("desempilhar"); const topo = pilha.desempilhar(); c.aloca("simbolos", pilha.n);
+      ev.push({ t: "desempilha", k, s: topo, linha: 10 });
+      c.op("comparacoes");
+      ev.push({ t: "compara", k, topo, s, linha: 11 });
+      if (topo !== PAR[s]) { certo = false; ev.push({ t: "erro", k, motivo: "par", linha: 12 }, { t: "pare", linha: 13 }); break; }
+    }
+    ev.push({ t: "testa", linha: 14 });
+    if (pilha.n > 0) { certo = false; ev.push({ t: "erro", k: texto.length, motivo: "sobra", linha: 15 }); }
+    ev.push({ t: "devolva", certo, linha: 16 });
+    return { texto, certo, eventos: ev, ops: (c.ops.empilhar || 0) + (c.ops.desempilhar || 0),
+      comparacoes: c.ops.comparacoes || 0, pico: c.pico, casas: casas(), sobra: pilha.n };
+  }
+
+  /** Fila de atendimento (algoritmos/atendimento/atendimento.py), com a Fila circular do instrumento. */
+  function atendimento(chegada, duracao) {
+    const c = contador(), fila = instrumentos().FilaCircular(), ev = c.eventos, n = chegada.length;
+    const esperas = new Array(n).fill(null);
+    let livre = 0, soma = 0, maior = 0, i = 0;
+    for (let volta = 0; volta < n; volta++) {
+      for (;;) {
+        ev.push({ t: "testa", linha: 5 });
+        if (!(i < n && chegada[i] < livre)) break;
+        c.op("enfileirar"); fila.enfileirar(i); c.aloca("fila", fila.n);
+        ev.push({ t: "enfileira", i, tempo: chegada[i], casas: fila.casas(), inicio: fila.inicio, linha: 6 });
+        i++;
+        maior = Math.max(maior, fila.n);
+        ev.push({ t: "maior", maior, linha: 7 });
+      }
+      ev.push({ t: "testa", linha: 8 });
+      let k;
+      if (fila.n > 0) {
+        c.op("desenfileirar"); k = fila.desenfileirar(); c.aloca("fila", fila.n);
+        ev.push({ t: "chama", k, tempo: livre, casas: fila.casas(), inicio: fila.inicio, linha: 9 });
+      } else {
+        k = i; i++;
+        ev.push({ t: "direto", k, tempo: chegada[k], linha: 11 });
+      }
+      const inicio = Math.max(livre, chegada[k]);
+      esperas[k] = inicio - chegada[k];
+      soma += esperas[k];
+      livre = inicio + duracao[k];
+      ev.push({ t: "atende", k, inicio, fim: livre, espera: esperas[k], linha: 12 });
+    }
+    ev.push({ t: "devolva", linha: 15 });
+    return { chegada, duracao, eventos: ev, soma, maior, esperas, pico: c.pico,
+      ops: (c.ops.enfileirar || 0) + (c.ops.desenfileirar || 0), casas: fila.reg.leituras + fila.reg.escritas };
+  }
+
   // ---------- entradas ----------
 
   // gerador com semente (mulberry32): o mesmo número de sorteio dá o mesmo vetor
@@ -223,7 +336,44 @@
     }
   }
 
-  const api = { ordenar, kmeans, entrada, centrosIniciais, ORDENACOES };
+  /** Busca: os pares 0, 2, …, 2(n − 1) (embaralhados se a busca não precisa
+   *  de ordem) e o alvo do caso: o primeiro, o último, um ímpar ausente ou um sorteado. */
+  function entradaBusca(n, ordenado, caso, semente) {
+    const v = Array.from({ length: n }, (_, k) => 2 * k);
+    const r = sorteador(semente);
+    if (!ordenado) for (let i = n - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = v[i]; v[i] = v[j]; v[j] = x; }
+    const alvo = caso === "comeco" ? v[0] : caso === "fim" ? v[n - 1]
+      : caso === "ausente" ? 2 * Math.floor(r() * (n + 1)) - 1 : v[Math.floor(r() * n)];
+    return { vetor: v, alvo };
+  }
+
+  /** Texto de n símbolos (n par), como algoritmos/parenteses/parenteses.py:gerar. */
+  function textoParenteses(n, caso, semente) {
+    const r = sorteador(semente), FECHA = { "(": ")", "[": "]", "{": "}" }, escolhe = (s) => s[Math.floor(r() * s.length)];
+    if (caso === "so_abre") return Array.from({ length: n }, () => escolhe(ABRE)).join("");
+    const t = [], pilha = [];
+    for (let k = 0; k < n; k++) {
+      if (pilha.length && (pilha.length === n - k || r() < 0.5)) t.push(FECHA[pilha.pop()]);
+      else { const a = escolhe(ABRE); pilha.push(a); t.push(a); }
+    }
+    if (caso === "par_errado") {
+      const fechas = t.map((s, k) => (s in PAR ? k : -1)).filter((k) => k >= 0), j = escolhe(fechas);
+      t[j] = escolhe(Object.keys(PAR).filter((f) => f !== t[j]));
+    } else if (caso === "sobra_aberto") t[n - 1] = escolhe(ABRE);
+    return t.join("");
+  }
+
+  /** n clientes: o minuto em que cada um chega e quanto demora, com os intervalos do movimento. */
+  function clientes(n, movimento, semente) {
+    const r = sorteador(semente), entre = ([a, b]) => a + Math.floor(r() * (b - a + 1));
+    const chegada = [], duracao = [];
+    let t = 0;
+    for (let k = 0; k < n; k++) { t += entre(movimento.chegada); chegada.push(t); }
+    for (let k = 0; k < n; k++) duracao.push(entre(movimento.atendimento));
+    return { chegada, duracao };
+  }
+
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, entrada, entradaBusca, textoParenteses, clientes, centrosIniciais, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -39,7 +39,9 @@ function tipos(pasta) {
 function confereLinhas(pasta, eventos) {
   const tl = tipos(pasta);
   const esperado = { compara: "decisao", troca: "passo", escreve: "passo", pivo: "passo", entra: "chamada",
-    dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo" };   // rótulo: o teste "≠" ou a troca
+    menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
+    achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
+    erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo" };   // rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -52,7 +54,7 @@ function confereLinhas(pasta, eventos) {
   return erros === 0;
 }
 
-for (const pasta of ["bolha", "insercao", "intercalacao", "rapida"]) {
+for (const pasta of ["bolha", "insercao", "selecao", "intercalacao", "rapida"]) {
   const d = ler(`algoritmos/${pasta}/dados.json`);
   const casos = [{ nome: "vídeo", vetor: d.exemplo.vetor, comparacoes: d.exemplo.ops, movimentos: d.exemplo.movimentos, pico: d.memoria.pico },
     ...d.conferir.map((c, i) => ({ nome: `conferir ${i + 1}`, ...c }))];
@@ -79,6 +81,41 @@ for (const pasta of ["bolha", "insercao", "intercalacao", "rapida"]) {
   ok = confere("kmeans pico", r.pico, d.memoria.pico) && ok;
   ok = confereLinhas("kmeans", r.eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: kmeans`);
+}
+
+// ---------- buscas, parênteses e fila de atendimento ----------
+
+for (const pasta of ["sequencial", "binaria"]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
+  const casos = [{ caso: "encarte", vetor: ex.vetor, alvo: ex.alvo, posicao: ex.posicao, comparacoes: ex.ops }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) {
+    const r = A.buscar(pasta, c.vetor, c.alvo);
+    ok = confere(`${pasta} ${c.caso} alvo ${c.alvo}`, { posicao: r.posicao, comparacoes: r.comparacoes }, { posicao: c.posicao, comparacoes: c.comparacoes }) && ok;
+  }
+  ok = confere(`${pasta} pico`, A.buscar(pasta, ex.vetor, ex.alvo).pico, d.memoria.pico) && ok;
+  for (const c of casos) ok = confereLinhas(pasta, A.buscar(pasta, c.vetor, c.alvo).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} buscas)`);
+}
+
+{
+  const d = ler("algoritmos/parenteses/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ certo: r.certo, ops: r.ops, comparacoes: r.comparacoes, pico: r.pico, casas: r.casas });
+  const casos = [{ caso: "encarte", texto: ex.texto, certo: ex.certo, ops: ex.ops, comparacoes: ex.comparacoes, pico: d.memoria.pico, casas: ex.casas }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`parenteses ${c.caso} ${c.texto}`, medidas(A.parenteses(c.texto)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("parenteses", A.parenteses(c.texto).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: parenteses (${casos.length} textos)`);
+}
+
+{
+  const d = ler("algoritmos/atendimento/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ soma: r.soma, maior: r.maior, esperas: r.esperas, ops: r.ops, pico: r.pico, casas: r.casas });
+  const casos = [{ movimento: "encarte", ...ex, pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`atendimento ${c.movimento}`, medidas(A.atendimento(c.chegada, c.duracao)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("atendimento", A.atendimento(c.chegada, c.duracao).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: atendimento (${casos.length} sorteios)`);
 }
 
 // ---------- instrumentos ----------

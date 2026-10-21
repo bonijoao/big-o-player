@@ -15,7 +15,7 @@
   };
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
-  const RITMO = { ordenacao: 15, kmeans: 30 };          // unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6 };          // unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -80,7 +80,7 @@
 
     // reprodução: um estado depois de cada evento
     const v = vetor.slice(), aux = new Array(N).fill(null), pilha = [], chamadas = [], abertas = [];
-    let part = null, comps = 0, movs = 0, pico = temAux ? N : 0, fimPart1 = -1;
+    let part = null, comps = 0, movs = 0, pico = temAux ? N : 0, fimPart1 = -1, menor = null;
     const est = [];
     ev.forEach((e, k) => {
       let foco = null, mexeu = [];
@@ -107,12 +107,15 @@
       } else if (e.t === "sai") {
         pilha.pop();
         chamadas[abertas.pop()].fim = k;
+      } else if (e.t === "menor") {
+        menor = e.m;
       } else if (e.t === "pivo") {
         const [a, b] = pilha[pilha.length - 1];
         part = { a, b, p: e.p, i: a, j: null, jMenor: false };
       }
       pico = Math.max(pico, (temAux ? N : 0) + pilha.length);
-      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, t: e.t, linha: e.linha, parte: e.parte });
+      if (e.t === "troca" && alg === "selecao") menor = null;   // o menor foi para a frente
+      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, menor, t: e.t, linha: e.linha, parte: e.parte });
     });
     if (comps !== r.comparacoes || movs !== r.movimentos || pico !== r.pico) throw new Error("reprodução não bate com a execução");
 
@@ -123,7 +126,7 @@
     // pesos: comparação 1, troca 2, escrita 1; câmera lenta no começo (no quick, a primeira partição) e pausa depois dela
     const visivel = (t) => t === "compara" || t === "troca" || t === "escreve";
     // controle (testes, pivô, chamadas, parada): um tempinho para o fluxograma acender ali
-    const CONTROLE = { testa: 0.6, pivo: 1.5, pare: 2, entra: 1 };
+    const CONTROLE = { testa: 0.6, pivo: 1.5, pare: 2, entra: 1, menor: 0.6 };
     let nvis = 0;
     const lentos = quick && fimPart1 >= 0 ? est.slice(0, fimPart1 + 1).filter((s) => visivel(s.t)).length : 8;
     const LENTO = quick ? 4.5 : 6.5, PAUSA = quick ? 39 : 0;
@@ -187,6 +190,7 @@
       const foco = !fim && k >= 0 && est[k].t === "compara" ? s.foco : null;
       if (foco && foco[2] === "v") { seta(ctx, bx(foco[0]) + bw / 2, BBASE + 5); seta(ctx, bx(foco[1]) + bw / 2, BBASE + 5); }
       if (quick && s.part) texto(ctx, "pivô", bx(s.part.p) + bw / 2, BBASE + 14, 11, COR.tinta, 600, "center");
+      if (!fim && s.menor != null) texto(ctx, "menor", bx(s.menor) + bw / 2, BBASE + 16, 11, COR.tinta, 600, "center");
 
       if (temPilha) {
         texto(ctx, `pilha: ${s.nPilha} ${s.nPilha === 1 ? "nível" : "níveis"}   (árvore de chamadas: escuro = aberta, claro = resolvida)`, BX0, PILHA_Y, 11, COR.cinza);
@@ -355,10 +359,329 @@
     };
   }
 
+  // ---------- comuns às faixas novas ----------
+
+  // número com vírgula decimal e uma casa, como no resto da página
+  const decimal = (x) => (Math.round(x * 10) / 10).toFixed(1).replace(".", ",");
+
+  function legendaCores(ctx, itens, y) {
+    let lx = 70;
+    for (const [cor, rot] of itens) {
+      ctx.fillStyle = cor; ctx.fillRect(lx, y + 2, 10, 10);
+      texto(ctx, rot, lx + 16, y, 11, COR.cinza);
+      ctx.font = `400 11px ${MONO}`;
+      lx += 16 + ctx.measureText(rot).width + 26;
+    }
+  }
+
+  // pesos com câmera lenta nos primeiros `lentos` eventos que contam
+  function pesosLentos(est, peso, conta, lentos, fator) {
+    let n = 0;
+    return est.map((s) => {
+      const p = peso[s.t] || 0;
+      const lento = n < lentos;
+      if (conta(s.t)) n++;
+      return p * (lento ? fator : 1);
+    });
+  }
+
+  function comum(tl, est, pesos) {
+    return {
+      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].linha; return null; },
+      passos: est.map((s, k) => (pesos[k] > 0 ? tl.inicio[k + 1] : null)).filter((x) => x !== null),
+    };
+  }
+
+  // ---------- buscas ----------
+
+  function simBusca(faixa, vetor, alvo) {
+    const alg = faixa.alg, bin = alg === "binaria";
+    const r = Algoritmos.buscar(alg, vetor, alvo);
+    const N = vetor.length, ideia = faixa.video.ideia;
+    const olhadas = new Set();
+    let a = 0, b = N - 1, meio = null, achou = -1, comps = 0;
+    const est = r.eventos.map((e) => {
+      let foco = null;
+      if (e.t === "compara") { comps++; foco = e.i; if (!bin) olhadas.add(e.i); }
+      else if (e.t === "corta") { a = e.a; b = e.b; meio = null; }
+      else if (e.t === "meio") meio = e.m;
+      else if (e.t === "achou") achou = e.i;
+      return { t: e.t, linha: e.linha, foco, olhadas: olhadas.size, a, b, meio, achou, comps, op: e.op };
+    });
+    if (comps !== r.comparacoes) throw new Error("reprodução da busca não bate");
+    const conta = (t) => t === "compara";
+    const pesos = pesosLentos(est, bin ? { compara: 3, meio: 1.5, corta: 2.5, testa: 0.6, achou: 3, pare: 1, devolva: 3 }
+      : { compara: 1.5, achou: 3, pare: 1, devolva: 3 }, conta, bin ? 0 : 4, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const BX0 = 70, BX1 = 600, BTOPO = 96, BBASE = bin ? 380 : 410;
+    const bw = (BX1 - BX0) / N, bx = (i) => BX0 + i * bw;
+    const altura = (x) => (x / 2 + 1) / N * (BBASE - BTOPO);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { foco: null, olhadas: 0, a: 0, b: N - 1, meio: null, achou: -1, comps: 0 };
+      const agora = !fim && k >= 0 && est[k].t === "compara" ? s.foco : null;
+      linha(ctx, BX0, BBASE + 1, BX1, BBASE + 1, COR.palido);
+      vetor.forEach((x, i) => {
+        let cor = COR.tinta;
+        if (i === s.achou) cor = COR.verde;
+        else if (i === agora || (bin && i === s.meio)) cor = COR.mexeu;
+        else if (bin ? i < s.a || i > s.b : i < s.olhadas) cor = COR.apagado;   // a sequencial olha na ordem
+        const h = altura(x);
+        ctx.fillStyle = cor;
+        ctx.fillRect(bx(i) + bw * 0.12, BBASE - h, bw * 0.76, h);
+      });
+      // o alvo: uma linha na altura dele (um ímpar cai entre dois números)
+      const ya = Math.max(BTOPO - 6, BBASE - altura(alvo));
+      ctx.setLineDash([5, 4]); linha(ctx, BX0, ya, BX1, ya, COR.cinza, 1.2); ctx.setLineDash([]);
+      texto(ctx, "alvo", BX0 - 6, ya - 7, 11, COR.cinza, 400, "right");
+      const foco = agora !== null ? agora : bin && !fim ? s.meio : null;
+      if (foco !== null) seta(ctx, bx(foco) + bw / 2, BBASE + 5);
+      if (bin && s.a <= s.b && !(fim && s.achou >= 0)) {
+        const y = BBASE + 24;
+        linha(ctx, bx(s.a) + 2, y, bx(s.b + 1) - 2, y, COR.tinta, 2);
+        linha(ctx, bx(s.a) + 2, y - 4, bx(s.a) + 2, y + 4, COR.tinta, 2);
+        linha(ctx, bx(s.b + 1) - 2, y - 4, bx(s.b + 1) - 2, y + 4, COR.tinta, 2);
+        const resta = s.b - s.a + 1;
+        const meioX = Math.min(BX1 - 120, Math.max(BX0 + 120, (bx(s.a) + bx(s.b + 1)) / 2));
+        texto(ctx, `ainda pode estar aqui: ${resta} ${resta === 1 ? "casa" : "casas"}`, meioX, y + 10, 11, COR.cinza, 400, "center");
+      } else if (bin && s.a > s.b) texto(ctx, "não sobrou casa nenhuma", BX0, BBASE + 36, 11, COR.cinza);
+
+      const x = 650;
+      texto(ctx, "comparações", x, BTOPO - 6, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, BTOPO + 10, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "alvo", x, BTOPO + 84, 13, COR.cinza);
+      texto(ctx, String(alvo), x, BTOPO + 100, 26, COR.tinta, 700);
+      if (bin) {
+        const resta = Math.max(0, s.b - s.a + 1);
+        texto(ctx, "trecho que sobra", x, BTOPO + 154, 13, COR.cinza);
+        texto(ctx, `${resta} ${resta === 1 ? "casa" : "casas"}`, x, BTOPO + 170, 20, COR.tinta, 700);
+      } else {
+        texto(ctx, "casas olhadas", x, BTOPO + 154, 13, COR.cinza);
+        texto(ctx, `${s.olhadas} de ${N}`, x, BTOPO + 170, 20, COR.tinta, 700);
+      }
+      texto(ctx, "memória extra: 0 valores", x, BTOPO + 210, 13, COR.cinza);
+      texto(ctx, `n = ${N} números`, x, BBASE - 14, 13, COR.cinza);
+
+      legendaCores(ctx, bin
+        ? [[COR.mexeu, "o meio"], [COR.tinta, "ainda pode ter o alvo"], [COR.apagado, "descartada"], [COR.verde, "achou"]]
+        : [[COR.mexeu, "comparando agora"], [COR.apagado, "já olhada"], [COR.tinta, "falta olhar"], [COR.verde, "achou"]], 470);
+
+      if (fim && r.posicao >= 0) legenda(ctx, [["achou o ", ""], [String(alvo), "b"], [` na casa ${r.posicao + 1}: `, ""], [`${r.comparacoes} ${r.comparacoes === 1 ? "comparação" : "comparações"}`, "g"]]);
+      else if (fim) legenda(ctx, [["o ", ""], [String(alvo), "b"], [" não está no vetor: ", ""], [`${r.comparacoes} comparações`, "g"]]);
+      // a segunda frase da sequencial é sobre o alvo ausente: só aparece quando ele não está lá
+      else if (s.comps < (bin ? 2 : 4) || (!bin && r.posicao >= 0)) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
+    return {
+      total: tl.total, ritmo: RITMO.busca, desenhar, ...comum(tl, est, pesos),
+      resumo: { comparacoes: r.comparacoes, posicao: r.posicao, alvo, n: N, pico: 0 }, contagemEm,
+      medidor: () => `${r.comparacoes} comparações, n = ${N}<br>${r.posicao >= 0 ? `achou na casa ${r.posicao + 1}` : "alvo ausente"}`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.comparacoes} comparações, ${r.posicao >= 0 ? `o ${alvo} está na casa ${r.posicao + 1}` : `o ${alvo} não está no vetor`}, sem memória extra.`,
+    };
+  }
+
+  // ---------- parênteses balanceados ----------
+
+  function simParenteses(faixa, texto_) {
+    const r = Algoritmos.parenteses(texto_);
+    const N = texto_.length, ideia = faixa.video.ideia;
+    const pilha = [], pares = [];       // pilha: posições no texto; pares: [abre, fecha] já resolvidos
+    let lendo = -1, ops = 0, comps = 0, pico = 0, erro = null;
+    const est = r.eventos.map((e) => {
+      if (e.t === "le") lendo = e.k;
+      else if (e.t === "empilha") { pilha.push(e.k); ops++; }
+      else if (e.t === "desempilha") { pares.push([pilha.pop(), e.k]); ops++; }
+      else if (e.t === "compara") comps++;
+      else if (e.t === "erro" && !erro) erro = { k: e.k, motivo: e.motivo };   // vale o primeiro: depois de um par errado, a pilha também sobra
+      pico = Math.max(pico, pilha.length);
+      return { t: e.t, linha: e.linha, lendo, pilha: pilha.slice(), nPares: pares.length, ops, comps, pico, erro, ok: e.t === "compara" ? e.topo === { ")": "(", "]": "[", "}": "{" }[e.s] : null };
+    });
+    if (ops !== r.ops || pico !== r.pico) throw new Error("reprodução dos parênteses não bate");
+    const pesos = pesosLentos(est, { le: 0.5, empilha: 1.5, desempilha: 1.5, compara: 1, testa: 0.4, erro: 4, pare: 1, devolva: 3 },
+      (t) => t === "le", 4, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const TX0 = 70, TX1 = 500, TY = 120, cw = Math.min(30, (TX1 - TX0) / N), tx = (k) => TX0 + k * cw;
+    const PX = 530, PW = 60, PBASE = 460, ch = Math.min(30, 330 / Math.max(1, r.pico)), PTOPO = PBASE - Math.max(3, r.pico) * ch;
+    const MOTIVO = { vazia: "fecha sem ninguém aberto", par: "par errado", sobra: "sobrou aberto na pilha" };
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { lendo: -1, pilha: [], nPares: 0, ops: 0, comps: 0, pico: 0, erro: null };
+      const naPilha = new Set(s.pilha), resolvidos = new Set(pares.slice(0, s.nPares).flat());
+      // o texto: um símbolo por casa
+      const tam = Math.max(10, Math.min(24, cw * 0.95));
+      for (let i = 0; i < N; i++) {
+        let cor = COR.palido, peso = 600;
+        if (s.erro && i === s.erro.k) cor = COR.mexeu;
+        else if (i === s.lendo && !fim) cor = COR.mexeu;
+        else if (naPilha.has(i)) cor = COR.tinta;
+        else if (resolvidos.has(i)) cor = COR.cinza;
+        else if (i <= s.lendo) cor = COR.cinza;
+        else peso = 400;
+        texto(ctx, texto_[i], tx(i) + cw / 2, TY, tam, cor, peso, "center");
+      }
+      if (s.lendo >= 0 && !fim) seta(ctx, tx(s.lendo) + cw / 2, TY + tam + 6);
+      // os pares que já fecharam: um arco de quem abriu até quem fechou
+      for (const [a, b] of pares.slice(0, s.nPares)) {
+        const xa = tx(a) + cw / 2, xb = tx(b) + cw / 2, prof = Math.min(90, 8 + (xb - xa) * 0.35);
+        ctx.strokeStyle = COR.palido; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(xa, TY + tam + 18); ctx.quadraticCurveTo((xa + xb) / 2, TY + tam + 18 + prof, xb, TY + tam + 18); ctx.stroke();
+      }
+      if (s.nPares) texto(ctx, "arcos: os pares que já fecharam", TX0, TY + tam + 116, 11, COR.cinza);
+      // a pilha, em pé: o fundo embaixo, o topo em cima
+      texto(ctx, "pilha", PX + PW / 2, PTOPO - 36, 13, COR.cinza, 400, "center");
+      linha(ctx, PX, PBASE, PX + PW, PBASE, COR.tinta, 2);
+      linha(ctx, PX, PTOPO - 14, PX, PBASE, COR.palido); linha(ctx, PX + PW, PTOPO - 14, PX + PW, PBASE, COR.palido);
+      s.pilha.forEach((pos, j) => {
+        const y = PBASE - (j + 1) * ch, topo = j === s.pilha.length - 1;
+        ctx.fillStyle = topo && k >= 0 && est[k].t === "empilha" ? COR.mexeu : COR.claro;
+        ctx.fillRect(PX + 4, y + 1, PW - 8, ch - 2);
+        if (ch >= 12) texto(ctx, texto_[pos], PX + PW / 2, y + ch / 2 - Math.min(9, ch * 0.4), Math.min(16, ch * 0.75), COR.tinta, 600, "center");
+        if (topo) texto(ctx, "topo", PX + PW + 6, y + ch / 2 - 7, 11, COR.cinza);
+      });
+
+      const x = 650;
+      texto(ctx, "operações na pilha", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.ops), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "pares conferidos", x, 174, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, 190, 26, COR.tinta, 700);
+      texto(ctx, "memória extra agora", x, 244, 13, COR.cinza);
+      texto(ctx, `${s.pilha.length} ${s.pilha.length === 1 ? "símbolo" : "símbolos"}`, x, 260, 20, COR.tinta, 700);
+      texto(ctx, `pico até aqui: ${s.pico}`, x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N} símbolos`, x, 330, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "lendo agora"], [COR.tinta, "abriu e espera o par"], [COR.cinza, "já resolvido"], [COR.palido, "falta ler"]], 500);
+
+      if (fim && r.certo) legenda(ctx, [["balanceado: ", ""], [`${r.ops} operações na pilha`, "g"]]);
+      else if (fim) legenda(ctx, [["não balanceado (", ""], [MOTIVO[s.erro.motivo], "b"], ["): ", ""], [`${r.ops} operações`, "g"]]);
+      else if (s.ops < 6) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
+    return {
+      total: tl.total, ritmo: RITMO.parenteses, desenhar, ...comum(tl, est, pesos),
+      resumo: { ops: r.ops, certo: r.certo, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} operações na pilha, n = ${N}<br>pilha de até ${r.pico}`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações na pilha, ${r.certo ? "balanceado" : "não balanceado"}, pilha de até ${r.pico} ${r.pico === 1 ? "símbolo" : "símbolos"}.`,
+    };
+  }
+
+  // ---------- fila de atendimento ----------
+
+  function simAtendimento(faixa, chegada, duracao) {
+    const r = Algoritmos.atendimento(chegada, duracao);
+    const N = chegada.length, ideia = faixa.video.ideia;
+    // o minuto de cada evento: quando chega, quando o caixa chama, quando começa
+    let t = 0, casas = [null], inicio = 0, atendendo = null, ops = 0, soma = 0, atendidos = 0, maior = 0, naFila = 0;
+    const serie = [[0, 0]];             // [minuto, tamanho da fila]
+    const est = r.eventos.map((e) => {
+      if (e.t === "enfileira") { t = e.tempo; casas = e.casas; inicio = e.inicio; ops++; naFila++; }
+      else if (e.t === "chama") { t = e.tempo; casas = e.casas; inicio = e.inicio; ops++; naFila--; }
+      else if (e.t === "direto") t = e.tempo;
+      else if (e.t === "atende") { atendendo = e; soma += e.espera; atendidos++; }
+      else if (e.t === "maior") maior = e.maior;
+      if (e.t === "enfileira" || e.t === "chama") {   // no mesmo minuto, vale o tamanho depois do último evento
+        if (serie.at(-1)[0] === t) serie.at(-1)[1] = naFila; else serie.push([t, naFila]);
+      }
+      return { t: e.t, linha: e.linha, tempo: t, casas, inicio, naFila, atendendo, ops, soma, atendidos, maior, e };
+    });
+    if (ops !== r.ops || soma !== r.soma) throw new Error("reprodução do atendimento não bate");
+    const fimDia = Math.max(...r.eventos.filter((e) => e.t === "atende").map((e) => e.fim));
+    // peso de um evento: um tempinho para o fluxograma, mais os minutos até o próximo
+    const MIN = 0.5, HOLD = { enfileira: 1.2, chama: 1.2, direto: 1.2, atende: 0.6, testa: 0.15, maior: 0.3, devolva: 2 };
+    const pesos = est.map((s, k) => (HOLD[s.t] || 0) + MIN * ((k + 1 < est.length ? est[k + 1].tempo : fimDia) - s.tempo));
+    const tl = linhaDoTempo(pesos);
+    const relogio = (u, k) => {
+      if (k < 0) return 0;
+      const s = est[k], h = HOLD[s.t] || 0, prox = k + 1 < est.length ? est[k + 1].tempo : fimDia;
+      return s.tempo + Math.max(0, Math.min(1, (u - tl.inicio[k] - h) / Math.max(1e-9, pesos[k] - h))) * (prox - s.tempo);
+    };
+    const GX0 = 70, GX1 = 600, GY0 = 250, GY1 = 420, ymax = Math.max(1, r.maior);
+    const gx = (m) => GX0 + m / fimDia * (GX1 - GX0), gy = (q) => GY1 - q / ymax * (GY1 - GY0 - 10);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total, agora = fim ? fimDia : relogio(u, k);
+      const s = k >= 0 ? est[k] : { casas: [null], inicio: 0, naFila: 0, atendendo: null, ops: 0, soma: 0, atendidos: 0, maior: 0 };
+      // o caixa
+      const at = s.atendendo && agora < s.atendendo.fim ? s.atendendo : null;
+      ctx.strokeStyle = COR.tinta; ctx.lineWidth = 2; ctx.strokeRect(GX0, 92, 110, 74);
+      texto(ctx, "caixa", GX0 + 55, 74, 11, COR.cinza, 400, "center");
+      if (at) {
+        texto(ctx, `cliente ${at.k + 1}`, GX0 + 55, 108, 14, COR.tinta, 600, "center");
+        const f = Math.min(1, (agora - at.inicio) / (at.fim - at.inicio));
+        ctx.fillStyle = COR.claro; ctx.fillRect(GX0 + 12, 138, 86, 8);
+        ctx.fillStyle = COR.tinta; ctx.fillRect(GX0 + 12, 138, 86 * f, 8);
+      } else texto(ctx, "livre", GX0 + 55, 116, 14, COR.cinza, 400, "center");
+      // a fila circular, casa por casa, com o início e o fim marcados
+      const C = s.casas.length, FX0 = 220, cwid = Math.min(40, (GX1 - FX0) / C);
+      texto(ctx, `fila circular: ${C} ${C === 1 ? "casa" : "casas"} (dobra quando enche)`, FX0, 74, 11, COR.cinza);
+      s.casas.forEach((c, i) => {
+        const xx = FX0 + i * cwid, mexeu = k >= 0 && (s.t === "enfileira" || s.t === "chama") && est[k].e.i === c && c !== null;
+        ctx.fillStyle = c === null ? "#fff" : mexeu ? COR.mexeu : COR.claro;
+        ctx.fillRect(xx + 1, 92, cwid - 2, 40);
+        ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(xx + 1, 92, cwid - 2, 40);
+        if (c !== null) texto(ctx, String(c + 1), xx + cwid / 2, 104, Math.min(14, cwid * 0.45), mexeu ? "#fff" : COR.tinta, 600, "center");
+      });
+      if (s.naFila > 0) {
+        texto(ctx, "▲ início", FX0 + s.inicio * cwid + 2, 138, 11, COR.tinta);
+        const ult = (s.inicio + s.naFila - 1) % C;
+        if (ult !== s.inicio) texto(ctx, "▲ fim", FX0 + ult * cwid + 2, 154, 11, COR.tinta);
+      }
+      // o tamanho da fila ao longo do dia, até o minuto de agora
+      texto(ctx, "clientes na fila ao longo do tempo", GX0, GY0 - 22, 11, COR.cinza);
+      linha(ctx, GX0, GY1, GX1, GY1, COR.palido);
+      for (let q = 0; q <= ymax; q += Math.max(1, Math.ceil(ymax / 4))) texto(ctx, String(q), GX0 - 8, gy(q) - 7, 11, COR.cinza, 400, "right");
+      for (const c of chegada) if (c <= agora) linha(ctx, gx(c), GY1 + 3, gx(c), GY1 + 9, COR.cinza);
+      texto(ctx, "chegadas", GX0, GY1 + 14, 11, COR.cinza);
+      ctx.strokeStyle = COR.tinta; ctx.lineWidth = 2; ctx.beginPath();
+      let q = 0;
+      ctx.moveTo(gx(0), gy(0));
+      for (const [m, tam] of serie) { if (m > agora) break; ctx.lineTo(gx(m), gy(q)); ctx.lineTo(gx(m), gy(tam)); q = tam; }
+      ctx.lineTo(gx(agora), gy(q)); ctx.stroke();
+
+      const x = 650;
+      texto(ctx, "operações na fila", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.ops), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "espera média até aqui", x, 174, 13, COR.cinza);
+      texto(ctx, s.atendidos ? `${decimal(s.soma / s.atendidos)} min` : "—", x, 190, 26, COR.tinta, 700);
+      texto(ctx, "memória extra agora", x, 244, 13, COR.cinza);
+      texto(ctx, `${s.naFila} ${s.naFila === 1 ? "cliente" : "clientes"}`, x, 260, 20, COR.tinta, 700);
+      texto(ctx, `maior fila até aqui: ${s.maior}`, x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N} clientes`, x, 330, 13, COR.cinza);
+      texto(ctx, `minuto ${Math.floor(agora)}`, x, 350, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "acabou de entrar ou sair"], [COR.claro, "esperando"]], 480);
+
+      if (fim) legenda(ctx, [["espera média ", ""], [`${decimal(r.soma / N)} min`, "g"], [`, maior fila: ${r.maior}`, ""]]);
+      else if (s.ops < 4) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
+    return {
+      total: tl.total, ritmo: RITMO.atendimento, desenhar, ...comum(tl, est, pesos),
+      resumo: { ops: r.ops, soma: r.soma, maior: r.maior, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} operações na fila, n = ${N}<br>espera média ${decimal(r.soma / N)} min`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} clientes, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações na fila, espera média de ${decimal(r.soma / N)} min, maior fila de ${r.maior}.`,
+    };
+  }
+
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada. */
   function criar(faixa, cfg) {
+    const tipo = faixa.medido.tempo.tipo, ex = faixa.exemplo, padrao = cfg.tipo === "padrao";
+    if (tipo === "busca") {
+      const e = padrao ? { vetor: ex.vetor, alvo: ex.alvo } : Algoritmos.entradaBusca(cfg.n, faixa.alg === "binaria", cfg.tipo, cfg.semente);
+      return simBusca(faixa, e.vetor, e.alvo);
+    }
+    if (tipo === "parenteses") return simParenteses(faixa, padrao ? ex.texto : Algoritmos.textoParenteses(cfg.n, cfg.tipo, cfg.semente));
+    if (tipo === "atendimento") {
+      const e = padrao ? ex : Algoritmos.clientes(cfg.n, ex.movimentos[cfg.tipo], cfg.semente);
+      return simAtendimento(faixa, e.chegada, e.duracao);
+    }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;
       const iniciais = cfg.semente === null ? faixa.exemplo.iniciais : Algoritmos.centrosIniciais(pontos, cfg.k, cfg.semente);

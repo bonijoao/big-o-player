@@ -1,0 +1,7 @@
+{
+  "referencia": "recursão de Lindley em R, sem fila",
+  "versao_r": "4.6.0",
+  "vetores": 15,
+  "tudo_ok": true,
+  "resumo": "Refeito em R 4.6.0 pela recursão de Lindley, que calcula a espera de cada cliente sem montar fila nenhuma, em 15 sorteios de 50 clientes (calmo, no limite e lotado): a espera de cada cliente, a maior fila e as operações na fila batem uma a uma com o Python."
+}

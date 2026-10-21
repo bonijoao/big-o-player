@@ -94,23 +94,13 @@
     caixa.replaceChildren(s);
   }
 
-  const ROTULOS_LOG = [[10, "10"], [1e2, "100"], [1e3, "1 mil"], [1e4, "10 mil"], [1e5, "100 mil"], [1e6, "1 milhão"], [1e7, "10 milhões"]];
+  const ROTULOS_LOG = [[1, "1"], [10, "10"], [1e2, "100"], [1e3, "1 mil"], [1e4, "10 mil"], [1e5, "100 mil"], [1e6, "1 milhão"], [1e7, "10 milhões"]];
 
-  // Ordenações: uma medida por n em escala log, para três entradas (aleatória,
-  // já ordenada, invertida) e, no tempo, as curvas de referência n²/2 e n log₂ n.
-  function graficoOrdenacao(caixa, a, medida) {
-    const dados = a.medido.tempo.crescimento;
-    const tempo = medida === "comparacoes";
-    const val = (d, caso) => caso === "aleatorio" ? (tempo ? d.aleatorio.media : d.aleatorio.pico) : d[caso][medida];
-    const series = [
-      { caso: "ordenado", nome: "já ordenado", cor: "#2869c3" },
-      { caso: "invertido", nome: "invertido", cor: "#e05a3f" },
-      { caso: "aleatorio", nome: tempo ? "aleatório (média)" : "aleatório (maior pico)", cor: "#1e1e1e" },
-    ];
-    const refs = tempo ? [
-      { nome: "n²/2", f: (n) => n * n / 2 },
-      { nome: "n log₂ n", f: (n) => n * Math.log2(n) },
-    ] : [];
+  // Uma medida por n em escala log, uma linha por caso de entrada, com curvas
+  // de referência tracejadas e, opcionalmente, a faixa entre o menor e o maior
+  // de um caso sorteado.
+  function desenharCasos(caixa, cfg) {
+    const { dados, series, refs, val, banda, aria, eixo } = cfg;
     caixa.replaceChildren();
     const W = Math.max(300, caixa.clientWidth), H = 300;
     const estreito = W < 480;   // no celular, a legenda vai para cima do gráfico
@@ -120,9 +110,10 @@
     const lo = Math.floor(Math.log10(Math.min(...todos)) * 2) / 2, hi = Math.ceil(Math.log10(Math.max(...todos)) * 2) / 2;
     const X = (i) => m.l + (i + 0.5) * (W - m.l - m.r) / dados.length;
     const Y = (v) => m.t + (1 - (Math.log10(Math.max(v, 10 ** lo)) - lo) / (hi - lo)) * (H - m.t - m.b);
-    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
-      "aria-label": `${tempo ? "Comparações" : "Memória extra no pico"} por tamanho n, para entrada aleatória, já ordenada e invertida` });
-    for (const [v, r] of ROTULOS_LOG.filter(([v]) => Math.log10(v) >= lo && Math.log10(v) <= hi)) {
+    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": aria });
+    // poucas décadas (a busca binária mal sai do chão): grade também em 2 e 5
+    const grade = hi - lo <= 1.5 ? ROTULOS_LOG.concat([2, 5, 20, 50, 200, 500].map((v) => [v, String(v)])) : ROTULOS_LOG;
+    for (const [v, r] of grade.filter(([v]) => Math.log10(v) >= lo && Math.log10(v) <= hi)) {
       s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: "#eceef1" }));
       s.append(svg("text", { x: m.l - 10, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: "#686c73" }, r));
     }
@@ -130,8 +121,8 @@
     for (const r of refs) {
       s.append(svg("polyline", { points: dados.map((d, i) => `${X(i)},${Y(r.f(d.n))}`).join(" "), fill: "none", stroke: "#b4b7bd", "stroke-width": 1.2, "stroke-dasharray": "4 4" }));
     }
-    if (tempo) {   // faixa entre o menor e o maior dos vetores aleatórios
-      const cima = dados.map((d, i) => `${X(i)},${Y(d.aleatorio.max)}`), baixo = dados.map((d, i) => `${X(i)},${Y(d.aleatorio.min)}`).reverse();
+    if (banda) {   // faixa entre o menor e o maior das entradas sorteadas
+      const cima = dados.map((d, i) => `${X(i)},${Y(banda.max(d))}`), baixo = dados.map((d, i) => `${X(i)},${Y(banda.min(d))}`).reverse();
       s.append(svg("polygon", { points: cima.concat(baixo).join(" "), fill: "#1e1e1e", "fill-opacity": 0.08 }));
     }
     // entradas diferentes podem dar exatamente o mesmo número (no quick, ordenado
@@ -143,7 +134,6 @@
       const g = grupos.find((x) => x.vals.every((v, i) => v === vals[i]));
       if (g) g.membros.push(sr); else grupos.push({ vals, membros: [sr] });
     }
-    const CURTO = { aleatorio: "aleatório", ordenado: "ordenado", invertido: "invertido" };
     const rotulos = [];
     for (const g of grupos) {
       const pts = g.vals.map((v, i) => [X(i), Y(v)]);
@@ -153,7 +143,7 @@
         pts.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 3.2 + larg / 3, fill: sr.cor })));
       });
       const texto = g.membros.length === 1 ? g.membros[0].nome
-        : g.membros.length === 3 ? "as três entradas" : g.membros.map((sr) => CURTO[sr.caso]).join(" = ");
+        : g.membros.length === series.length && series.length > 2 ? cfg.todas : g.membros.map((sr) => sr.curto).join(" = ");
       rotulos.push({ y: pts.at(-1)[1], texto, cor: g.membros[0].cor });
     }
     for (const r of refs) rotulos.push({ y: Y(r.f(dados.at(-1).n)), texto: r.nome, cor: "#8a8e95" });
@@ -178,8 +168,57 @@
       leg.setAttribute("transform", `translate(4, ${-alt + 2})`);
       s.append(leg);
     }
-    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, "n (números; dobra a cada passo)"));
+    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, eixo));
     caixa.replaceChildren(s);
+  }
+
+  // Ordenações: comparações (ou memória) por n, para três entradas (aleatória,
+  // já ordenada, invertida) e, no tempo, as curvas de referência n²/2 e n log₂ n.
+  function graficoOrdenacao(caixa, a, medida) {
+    const tempo = medida === "comparacoes";
+    desenharCasos(caixa, {
+      dados: a.medido.tempo.crescimento,
+      val: (d, caso) => caso === "aleatorio" ? (tempo ? d.aleatorio.media : d.aleatorio.pico) : d[caso][medida],
+      series: [
+        { caso: "ordenado", nome: "já ordenado", curto: "ordenado", cor: "#2869c3" },
+        { caso: "invertido", nome: "invertido", curto: "invertido", cor: "#e05a3f" },
+        { caso: "aleatorio", nome: tempo ? "aleatório (média)" : "aleatório (maior pico)", curto: "aleatório", cor: "#1e1e1e" },
+      ],
+      refs: tempo ? [REFS["n²/2"], REFS["n log₂ n"]] : [],
+      banda: tempo ? { min: (d) => d.aleatorio.min, max: (d) => d.aleatorio.max } : null,
+      todas: "as três entradas",
+      aria: `${tempo ? "Comparações" : "Memória extra no pico"} por tamanho n, para entrada aleatória, já ordenada e invertida`,
+      eixo: "n (números; dobra a cada passo)",
+    });
+  }
+
+  const REFS = {
+    "n²/2": { nome: "n²/2", f: (n) => n * n / 2 },
+    "n log₂ n": { nome: "n log₂ n", f: (n) => n * Math.log2(n) },
+    n: { nome: "n", f: (n) => n },
+    "2n": { nome: "2n", f: (n) => 2 * n },
+    "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
+  };
+  const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9"];
+
+  // As faixas que descrevem os próprios casos no dados.json (tempo.series):
+  // a medida "ops" (a unidade da faixa, média nos sorteados) ou "pico".
+  function graficoCasos(caixa, a, medida) {
+    const t = a.medido.tempo, tempo = medida === "ops";
+    let k = 0;
+    const series = t.series.map((sr) => ({ ...sr, curto: sr.nome.replace(/ \(.*\)$/, ""),
+      cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }));
+    if (!tempo) series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
+    desenharCasos(caixa, {
+      dados: t.crescimento,
+      val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : d[caso].pico),
+      series,
+      refs: tempo ? (t.refs || []).map((r) => REFS[r]) : [],
+      banda: tempo && t.banda ? { min: (d) => d[t.banda].min, max: (d) => d[t.banda].max } : null,
+      todas: "todos os casos",
+      aria: `${tempo ? t.unidade : "memória extra no pico"} por tamanho n, um traço por caso de entrada`,
+      eixo: t.eixo,
+    });
   }
 
   function blocoMemoria(a) {
@@ -188,7 +227,7 @@
     const frag = document.createDocumentFragment();
     const itens = Object.entries(det).filter(([, tam]) => tam > 0).sort((p, q) => q[1] - p[1]);
     if (!itens.length) {
-      frag.append(el("p", { class: "memoria-total", html: "<b>Nenhum valor extra.</b> Ordena dentro do próprio vetor; só guarda índices soltos." }));
+      frag.append(el("p", { class: "memoria-total", html: `<b>Nenhum valor extra.</b> ${esc(a.memoria.vazio ? a.memoria.vazio[0].toUpperCase() + a.memoria.vazio.slice(1) : "Ordena dentro do próprio vetor")}; só guarda índices soltos.` }));
       return frag;
     }
     for (const [chave, tam] of itens) {
@@ -264,5 +303,5 @@
   }
 
 
-  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, blocoMemoria, blocoCodigo, el, svg, mil, esc };
+  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, graficoCasos, blocoMemoria, blocoCodigo, el, svg, mil, esc };
 })();

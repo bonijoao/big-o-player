@@ -1,0 +1,7 @@
+{
+  "referencia": "parenteses_r() (reimplementação em R) e a regra de apagar pares com gsub()",
+  "versao_r": "4.6.0",
+  "vetores": 25,
+  "tudo_ok": true,
+  "resumo": "Reescrito em R 4.6.0 e rodado em 25 textos de 50 símbolos (balanceados, com um par errado, sobrando aberto, só abrindo e fechando sem abrir): o veredito bate com o Python e com a regra de apagar pares até não sobrar nenhum, e as operações na pilha, as comparações e a pilha mais alta batem uma a uma."
+}

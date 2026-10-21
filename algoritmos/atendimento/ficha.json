@@ -1,0 +1,48 @@
+{
+ "id": "fila-de-atendimento",
+ "nome": "Fila de atendimento",
+ "variante": "um caixa, minutos inteiros",
+ "familia": "estruturas lineares",
+ "resumo": "Clientes chegam a um caixa em minutos sorteados. Quem chega com o caixa ocupado entra no fim da fila; quando o caixa fica livre, chama o primeiro da fila. Ao fim, a conta dá a espera média e a maior fila que se formou.",
+ "instrumentos": [
+  {
+   "id": "fila",
+   "papel": "os clientes esperando, na versão circular: chamar o próximo custa 1"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada cliente que espera entra na fila uma vez e sai uma vez; quem chega com o caixa livre nem passa por ela. São no máximo 2n operações, e cada uma custa 1 na fila circular.",
+  "nota": "Na fila ingênua, chamar o próximo puxa todos os outros uma casa para a frente: num dia lotado, com a fila crescendo, o total vira O(n²)."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "A fila guarda quem está esperando. Num dia calmo, quase ninguém; num dia lotado, com mais gente chegando do que o caixa dá conta, a fila cresce sem parar e chega a uma fração de n.",
+  "nomes": {
+   "fila": "clientes esperando na fila"
+  },
+  "cresce_com_n": [
+   "fila"
+  ],
+  "vazio": "não guarda nada"
+ },
+ "video": {
+  "ideia": [
+   "quem chega com o caixa ocupado entra no fim da fila",
+   "o caixa livre chama o primeiro da fila"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e o movimento do dia",
+  "texto": "As mesmas contas para cada vez mais clientes e para três movimentos: calmo, no limite (chegam tantos quantos o caixa atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta.",
+  "crescimento": "Operações na fila para n de {n0} a {n1} clientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: 2n, o máximo (todos esperam).",
+  "distribuicao": "{vezes} sorteios de {nd} clientes no limite: a maior fila vai de {min} a {max} clientes. A barra preta é o sorteio do encarte.",
+  "rotulo": "maior fila (n = {nd})",
+  "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, a fila cresce com n; calmo, quase não sai do lugar."
+ },
+ "pseudocodigo": "procedimento atender(chegada, duração):\n    fila ← vazia;  livre ← 0;  i ← 1\n    soma ← 0;  maior ← 0\n    para cada atendimento, de 1 até n:\n        enquanto i ≤ n e chegada[i] < livre:\n            enfileire i;  i ← i + 1\n            maior ← máximo(maior, tamanho da fila)\n        se a fila não está vazia:\n            k ← desenfileire\n        senão:\n            k ← i;  i ← i + 1\n        início ← máximo(livre, chegada[k])\n        soma ← soma + início − chegada[k]\n        livre ← início + duração[k]\n    devolva soma ÷ n, maior\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

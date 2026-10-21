@@ -114,6 +114,14 @@
 
   // ---------- encarte ----------
 
+  // o que cada tipo de faixa nova diz da entrada do encarte (os números vêm do dados.json)
+  const decimal = (x) => (Math.round(x * 10) / 10).toFixed(1).replace(".", ",");
+  const ENCARTE = {
+    busca: { entrada: "números", conta: (ex) => `${ex.n} números, ${ex.posicao >= 0 ? `o ${ex.alvo} está na casa ${ex.posicao + 1}` : `o ${ex.alvo} não está no vetor`}, na entrada do encarte` },
+    parenteses: { entrada: "símbolos", conta: (ex) => `${ex.n} símbolos, ${ex.comparacoes} pares conferidos, na entrada do encarte` },
+    atendimento: { entrada: "clientes", conta: (ex) => `${ex.n} clientes, espera média de ${decimal(ex.soma / ex.n)} min, na entrada do encarte` },
+  };
+
   const PALAVRAS = /^(\s*)(procedimento|para|enquanto|senão se|senão|se|pare|devolva)\b/;
 
   function blocoPseudo(f) {
@@ -132,8 +140,15 @@
 
   function encarte(f) {
     const a = albumDe(f), ex = f.exemplo, m = f.medido, c = m.ciclomatica, cf = f.conferencia, p = f.pseudocodigo;
-    const ordena = m.tempo.tipo === "ordenacao";
-    const entrada = ordena ? "números" : "pontos";
+    const ordena = m.tempo.tipo === "ordenacao", casos = !!m.tempo.series;
+    const entrada = ENCARTE[m.tempo.tipo] ? ENCARTE[m.tempo.tipo].entrada : ordena ? "números" : "pontos";
+    const gr = f.graficos || {};
+    // as legendas dos gráficos das faixas novas: texto da ficha, números do dados.json
+    const preencher = (t) => (t || "").replace(/\{(\w+)\}/g, (_, c) => ({
+      n0: mil(m.tempo.crescimento[0].n), n1: mil(m.tempo.crescimento.at(-1).n), dados: m.tempo.crescimento_dados[0].toUpperCase() + m.tempo.crescimento_dados.slice(1),
+      vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])),
+    })[c] ?? `{${c}}`);
+    const temPicoCasos = casos && m.tempo.crescimento.some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
     const dist = m.tempo.distribuicao;
     const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div"), fluxo = el("div", { class: "fluxo", "data-faixa": f.id });
@@ -169,7 +184,7 @@
         el("section", {}, [
           el("h2", { text: "Tempo" }),
           el("p", { class: "ordem", text: f.tempo.notacao }),
-          el("p", { class: "conta", html: `<b>${mil(ex.ops)}</b> ${esc(m.tempo.unidade)}<span>${ordena ? `${ex.n} números, ${ex.movimentos} ${esc(ex.movimento)} na entrada do encarte` : `${ex.n} × ${ex.k} × ${ex.i} na entrada do encarte`}</span>` }),
+          el("p", { class: "conta", html: `<b>${mil(ex.ops)}</b> ${esc(m.tempo.unidade)}<span>${ENCARTE[m.tempo.tipo] ? ENCARTE[m.tempo.tipo].conta(ex) : ordena ? `${ex.n} números, ${ex.movimentos} ${esc(ex.movimento)} na entrada do encarte` : `${ex.n} × ${ex.k} × ${ex.i} na entrada do encarte`}</span>` }),
           el("p", { class: "porque", text: f.tempo.porque }),
           f.tempo.nota && el("p", { class: "nota", text: f.tempo.nota }),
         ]),
@@ -178,7 +193,7 @@
           el("p", { class: "ordem", text: f.memoria.notacao }),
           el("p", { class: "conta", html: m.memoria.pico
             ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>além dos ${ex.n} ${entrada} de entrada</span>`
-            : "<b>nenhum</b> valor extra<span>ordena dentro do próprio vetor</span>" }),
+            : `<b>nenhum</b> valor extra<span>${esc(f.memoria.vazio || "ordena dentro do próprio vetor")}</span>` }),
           el("p", { class: "porque", text: f.memoria.porque }),
           f.memoria.nota && el("p", { class: "nota", text: f.memoria.nota }),
         ]),
@@ -199,7 +214,14 @@
         el("div", { class: "algoritmo" }, [blocoPseudo(f), fluxo]),
       ]),
 
-      ordena ? el("section", { class: "secao" }, [
+      casos ? el("section", { class: "secao" }, [
+        el("h2", { text: gr.titulo }),
+        el("p", { text: gr.texto }),
+        el("div", { class: "dois" }, [
+          el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(gr.crescimento) })]),
+          el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(gr.distribuicao) })]),
+        ]),
+      ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
         el("p", { text: "As mesmas contas para vetores cada vez maiores e para três tipos de entrada. Em escala logarítmica, a inclinação da linha é o expoente: quem cresce como n² sobe duas vezes mais íngreme que quem cresce como n." }),
         el("div", { class: "dois" }, [
@@ -223,6 +245,7 @@
         el("h2", { text: "Memória: o que fica guardado" }),
         el("p", { text: "Cada quadradinho é um valor guardado no momento de maior uso. A entrada não conta; variáveis soltas, como o índice do laço, também não." }),
         el("div", { class: "figura" }, window.Graficos.blocoMemoria(f)),
+        temPicoCasos && el("figure", { class: "figura" }, [fig3, el("figcaption", { text: preencher(gr.memoria) })]),
         temPilhaOuAux && el("figure", { class: "figura" }, [fig3, el("figcaption", { text:
           "Memória extra no pico para cada n (lista auxiliar e níveis da pilha de recursão), nas três entradas. Aleatório: o maior pico entre os vetores embaralhados." })]),
       ]),
@@ -240,7 +263,11 @@
     if (p) fluxo.append(window.Fluxograma(p));
     redesenhar = () => {
       const Gr = window.Graficos;
-      if (ordena) {
+      if (casos) {
+        Gr.graficoCasos(fig1, f, "ops");
+        Gr.graficoHistograma(fig2, dist.valores, dist.medida === "pico" ? m.memoria.pico : ex.ops, preencher(gr.rotulo));
+        if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico");
+      } else if (ordena) {
         Gr.graficoOrdenacao(fig1, f, "comparacoes");
         Gr.graficoHistograma(fig2, dist.comparacoes, ex.ops, `comparações (n = ${dist.n})`);
         if (temPilhaOuAux) Gr.graficoOrdenacao(fig3, f, "pico");
@@ -300,6 +327,20 @@
   let pos = null, arrasto = null, esperaProxima = null;
   const cfgs = {};                      // a entrada escolhida em cada faixa
   const padroes = {};                   // simulação padrão (para a duração das listas)
+
+  // o menu de entrada de cada tipo de faixa: rótulo, opções, tamanhos e o botão de sorteio
+  const ENTRADAS = {
+    ordenacao: { rotulo: "entrada", ns: [8, 16, 24, 32, 48, 64], sortear: "embaralhar", sorteado: "aleatorio",
+      opcoes: [["padrao", "a do encarte", "a entrada do encarte"], ["aleatorio", "aleatória", "entrada aleatória"], ["ordenado", "já ordenada", "entrada já ordenada"], ["invertido", "invertida", "entrada invertida"]] },
+    busca: { rotulo: "alvo", ns: [8, 16, 24, 32, 48, 64], sortear: "sortear", sorteado: "sorteado",
+      opcoes: [["padrao", "o do encarte", "o alvo do encarte"], ["sorteado", "sorteado", "alvo sorteado"], ["comeco", "no começo", "alvo no começo"], ["fim", "no fim", "alvo no fim"], ["ausente", "ausente", "alvo ausente"]] },
+    parenteses: { rotulo: "texto", ns: [8, 12, 16, 24, 32, 40], sortear: "sortear texto", sorteado: "balanceada",
+      opcoes: [["padrao", "o do encarte", "o texto do encarte"], ["balanceada", "balanceado", "texto balanceado"], ["par_errado", "um par errado", "um par errado"], ["sobra_aberto", "sobra aberto", "sobrando aberto"], ["so_abre", "só abre", "só abrindo"]] },
+    atendimento: { rotulo: "movimento", ns: [8, 12, 16, 24, 32, 48], sortear: "sortear clientes", sorteado: "no_limite",
+      opcoes: [["padrao", "o do encarte", "os clientes do encarte"], ["calmo", "calmo", "movimento calmo"], ["no_limite", "no limite", "movimento no limite"], ["lotado", "lotado", "movimento lotado"]] },
+  };
+  const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
+  const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];
 
   const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null } : { tipo: "padrao", n: f.exemplo.n, semente: 1 });
   function duracao(f) {
@@ -395,6 +436,7 @@
 
   function textoAoVivo() {
     const r = sim.resumo, c = cfgs[faixa.id];
+    if (sim.aoVivo) return sim.aoVivo(u, { rotulo: rotuloCfg(faixa, c) });
     if (faixa.alg === "kmeans") {
       return `Tocando agora: k = ${r.k}, ${c.semente === null ? "os centros do encarte" : "centros sorteados"}; ${mil(sim.contagemEm(u))} de ${mil(r.distancias)} distâncias, ${r.voltas} voltas.`;
     }
@@ -426,7 +468,10 @@
     $("#agora").href = rotaFaixa(faixa);
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     const r = sim.resumo;
-    $("#medidor").innerHTML = faixa.alg === "kmeans"
+    const med = sim.medidor && sim.medidor().split("<br>");
+    $("#medidor").innerHTML = med
+      ? `<b>${esc(faixa.tempo.notacao)}</b> ${med[0]}<br><b>${esc(faixa.memoria.notacao)}</b> ${med[1]}, <b>M = ${faixa.medido.ciclomatica.M}</b>`
+      : faixa.alg === "kmeans"
       ? `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.distancias)} distâncias, ${r.voltas} voltas<br><b>${esc(faixa.memoria.notacao)}</b> ${mil(r.pico)} valores, <b>M = ${faixa.medido.ciclomatica.M}</b>`
       : `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.comparacoes)} comparações, n = ${r.n}<br><b>${esc(faixa.memoria.notacao)}</b> ${r.pico ? `${mil(r.pico)} valores` : "sem memória extra"}, <b>M = ${faixa.medido.ciclomatica.M}</b>`;
     habilitar();
@@ -454,8 +499,15 @@
     const c = cfgs[faixa.id], km = faixa.alg === "kmeans";
     palco.classList.toggle("e-kmeans", km);
     if (km) $("#cfg-k").value = String(c.k);
-    else { $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao"; }
-    $("#cfg-sortear").textContent = km ? "sortear centros" : "embaralhar";
+    else {
+      const E = ENTRADAS[tipoDe(faixa)];
+      $("#cfg-tipo-rotulo").textContent = E.rotulo;
+      $("#cfg-tipo").replaceChildren(...E.opcoes.map(([v, t]) => el("option", { value: v, text: t })));
+      const ns = E.ns.includes(c.n) ? E.ns : [...E.ns, c.n].sort((p, q) => p - q);   // o n do encarte sempre aparece
+      $("#cfg-n").replaceChildren(...ns.map((n) => el("option", { text: String(n) })));
+      $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao";
+    }
+    $("#cfg-sortear").textContent = km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear;
   }
 
   function mudarCfg(muda) {
@@ -476,7 +528,12 @@
   $("#cfg-k").addEventListener("change", (e) => mudarCfg({ k: Number(e.target.value), semente: novaSemente() }));
   $("#cfg-sortear").addEventListener("click", () => {
     if (faixa.alg === "kmeans") mudarCfg({ semente: novaSemente() });
-    else mudarCfg({ tipo: "aleatorio", n: Number($("#cfg-n").value), semente: novaSemente() });
+    else {
+      const E = ENTRADAS[tipoDe(faixa)], atual = cfgs[faixa.id].tipo;
+      // ordenações: embaralhar é sempre "aleatória"; nas outras, sorteia de novo o caso escolhido
+      const tipo = tipoDe(faixa) === "ordenacao" || atual === "padrao" ? E.sorteado : atual;
+      mudarCfg({ tipo, n: Number($("#cfg-n").value), semente: novaSemente() });
+    }
   });
   $("#cfg-vel").addEventListener("change", (e) => { vel = Number(e.target.value); atualizarTempo(); });
   const novaSemente = () => Math.floor(Math.random() * 2 ** 31);

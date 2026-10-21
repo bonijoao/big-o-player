@@ -14,7 +14,8 @@ import sys
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(RAIZ, "motor"))
 import pseudocodigo  # noqa: E402
-ALGORITMOS = ["bolha", "insercao", "intercalacao", "rapida", "kmeans"]   # ordem da galeria
+ALGORITMOS = ["sequencial", "binaria", "bolha", "insercao", "selecao", "intercalacao", "rapida",
+              "parenteses", "atendimento", "kmeans"]   # ordem da galeria (dentro de cada álbum)
 INSTRUMENTOS = ["vetor", "pilha", "fila"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)
 CICLOMATICA = {

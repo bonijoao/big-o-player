@@ -33,6 +33,20 @@ insercao_r <- function(v) {
   list(v = v, comparacoes = comp, movimentos = mov)
 }
 
+selecao_r <- function(v) {
+  n <- length(v); comp <- 0; mov <- 0
+  if (n < 2) return(list(v = v, comparacoes = 0, movimentos = 0))
+  for (i in 1:(n - 1)) {
+    m <- i
+    for (j in (i + 1):n) {
+      comp <- comp + 1
+      if (v[j] < v[m]) m <- j
+    }
+    v[c(i, m)] <- v[c(m, i)]; mov <- mov + 1   # troca sempre, mesmo com m == i
+  }
+  list(v = v, comparacoes = comp, movimentos = mov)
+}
+
 intercalacao_r <- function(v) {
   e <- new.env()
   e$v <- v; e$aux <- v; e$comp <- 0; e$mov <- 0   # aux com o mesmo tipo do vetor

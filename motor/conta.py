@@ -2,7 +2,8 @@
 
 Tempo: cada operação contada passa por `op()`.
 Memória: cada lista auxiliar passa por `aloca()`; o tamanho é o número de
-valores guardados (listas aninhadas somam os elementos). Variáveis escalares
+valores guardados (listas aninhadas somam os elementos). Uma estrutura que
+cresce e encolhe (pilha, fila) avisa quantos valores guarda com `ocupa()`. Variáveis escalares
 (índices, a menor distância da vez) não contam: são O(1).
 Recursão: `entra()`/`sai()` contam cada nível ativo da pilha como 1 valor.
 Fotos e eventos: `foto()` e `evento()` guardam o estado para o vídeo, sem
@@ -35,6 +36,11 @@ class Contador:
         self.vivos[nome] = tamanho(valor)
         self._confere_pico()
         return valor
+
+    def ocupa(self, nome, n):
+        """Registra que a estrutura `nome` guarda n valores agora."""
+        self.vivos[nome] = n
+        self._confere_pico()
 
     def _confere_pico(self):
         total = sum(self.vivos.values())
