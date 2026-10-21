@@ -1,9 +1,11 @@
 // A simulação ao vivo de uma faixa: roda o algoritmo (simulacao/algoritmos.js),
 // guarda o estado depois de cada evento e desenha qualquer instante num
 // canvas, no visual dos vídeos (motor/video_ordenacao.py, algoritmos/kmeans/video.py).
-// O tempo é medido em "unidades": uma comparação = 1, uma troca = 2 (duas
-// escritas), uma escrita = 1; o começo vai em câmera lenta. A velocidade só
-// escala as unidades por segundo, então o seletor de tempo anda por elas.
+// O tempo é medido em "unidades". No ritmo constante (o padrão), cada passo
+// vale 1: comparação, troca, escrita, teste, chamada; no K-means, uma flor.
+// No "accelerando", uma troca vale 2, o começo vai em câmera lenta e o resto
+// corre. A velocidade só escala as unidades por segundo, então o seletor de
+// tempo anda por elas.
 (function () {
   "use strict";
 
@@ -15,7 +17,8 @@
   };
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6 };          // unidades por segundo a 1×
+  const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6 };          // accelerando: unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -69,9 +72,26 @@
     };
   }
 
+  // o painel de variáveis no instante `u`: a linha do pseudocódigo, as
+  // variáveis do evento da vez e as que mudaram desde o passo anterior
+  function painel(est, tl, pesos) {
+    return function varsEm(u) {
+      const k = tl.eventoEm(u);
+      if (k < 0) return null;
+      let linha = null;
+      for (let j = k; j >= 0; j--) if (est[j].linha) { linha = est[j].linha; break; }
+      // compara com o passo anterior da mesma chamada; numa chamada que acabou de abrir, nada mudou
+      let antes = null;
+      if (est[k].t !== "entra") for (let j = k - 1; j >= 0; j--) if (pesos[j] > 0 && est[j].chamada === est[k].chamada) { antes = est[j]; break; }
+      const vars = est[k].vars || {};
+      const mudou = Object.keys(vars).filter((n) => antes && antes.vars && vars[n] !== null && antes.vars[n] !== vars[n]);
+      return { linha, vars, mudou, nivel: est[k].nivel, k };
+    };
+  }
+
   // ---------- ordenações ----------
 
-  function simOrdenacao(faixa, vetor) {
+  function simOrdenacao(faixa, vetor, accelerando) {
     const alg = faixa.alg;
     const r = Algoritmos.ordenar(alg, vetor);
     const N = vetor.length, ev = r.eventos;
@@ -115,7 +135,7 @@
       }
       pico = Math.max(pico, (temAux ? N : 0) + pilha.length);
       if (e.t === "troca" && alg === "selecao") menor = null;   // o menor foi para a frente
-      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, menor, t: e.t, linha: e.linha, parte: e.parte });
+      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, menor, t: e.t, linha: e.linha, parte: e.parte, vars: e.vars, nivel: e.nivel, chamada: e.chamada });
     });
     if (comps !== r.comparacoes || movs !== r.movimentos || pico !== r.pico) throw new Error("reprodução não bate com a execução");
 
@@ -125,12 +145,12 @@
 
     // pesos: comparação 1, troca 2, escrita 1; câmera lenta no começo (no quick, a primeira partição) e pausa depois dela
     const visivel = (t) => t === "compara" || t === "troca" || t === "escreve";
-    // controle (testes, pivô, chamadas, parada): um tempinho para o fluxograma acender ali
+    // accelerando: controle (testes, pivô, chamadas, parada) com um tempinho; câmera lenta no começo
     const CONTROLE = { testa: 0.6, pivo: 1.5, pare: 2, entra: 1, menor: 0.6 };
     let nvis = 0;
     const lentos = quick && fimPart1 >= 0 ? est.slice(0, fimPart1 + 1).filter((s) => visivel(s.t)).length : 8;
     const LENTO = quick ? 4.5 : 6.5, PAUSA = quick ? 39 : 0;
-    const pesos = est.map((s, k) => {
+    const pesos = !accelerando ? est.map(() => 1) : est.map((s, k) => {
       let p = 0;
       if (visivel(s.t)) { p = (s.t === "troca" ? 2 : 1) * (nvis < lentos ? LENTO : 1); nvis++; }
       else if (CONTROLE[s.t]) p = CONTROLE[s.t] * (nvis < lentos ? 2 : 1);
@@ -141,6 +161,13 @@
     const uLentoFim = (() => { let n = 0; for (let k = 0; k < est.length; k++) { if (visivel(est[k].t) && ++n === lentos) return tl.inicio[k + 1]; } return 0; })();
     const uPausa = fimPart1 >= 0 ? tl.inicio[fimPart1 + 1] - PAUSA : Infinity;
     const vis = (() => { let n = 0; return est.map((s) => (n += visivel(s.t) ? 1 : 0)); })();
+    const kLento = (() => { let n = 0; for (let k = 0; k < est.length; k++) if (visivel(est[k].t) && ++n === lentos) return k; return -1; })();
+    // qual legenda do topo: 0 = a primeira ideia, 1 = a do quick depois da 1ª partição, 2 = a última
+    function fase(u, k) {
+      if (accelerando) return quick && u >= uPausa && u < uPausa + PAUSA ? 1 : u < (quick ? uPausa : uLentoFim) ? 0 : 2;
+      if (quick && fimPart1 >= 0 && k >= fimPart1 && k < fimPart1 + 14) return 1;
+      return k < (quick ? fimPart1 : kLento) ? 0 : 2;
+    }
     const nivelMax = Math.max(0, ...chamadas.map((c) => c.nivel));
 
     // geometria (a mesma dos vídeos)
@@ -235,15 +262,13 @@
 
       // legenda do topo
       if (fim) legenda(ctx, [["ordenado: ", ""], [`${r.comparacoes} comparações`, "g"], [`, ${r.movimentos} ${r.movimento}`, ""]]);
-      else if (quick && u >= uPausa && u < uPausa + PAUSA) legenda(ctx, [[ideia[1], ""]]);
-      else if (u < (quick ? uPausa : uLentoFim)) legenda(ctx, [[ideia[0], ""]]);
-      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+      else legenda(ctx, [[ideia[[0, 1, ideia.length - 1][fase(u, k)]], ""]]);
     }
 
     return {
-      total: tl.total, ritmo: RITMO.ordenacao, desenhar,
-      // a linha da vez, ou "linha:parte" quando um "e" divide a linha em losangos
-      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].parte === undefined ? est[k].linha : `${est[k].linha}:${est[k].parte}`; return null; },
+      total: tl.total, ritmo: accelerando ? RITMO.ordenacao : PASSOS_POR_SEGUNDO, desenhar,
+      varsEm: painel(est, tl, pesos),
+      eventoEm: (u) => tl.eventoEm(u), uDoEvento: (k) => (k < 0 ? 0 : tl.inicio[k + 1]),
       passos: est.map((s, k) => (pesos[k] > 0 ? tl.inicio[k + 1] : null)).filter((x) => x !== null),
       resumo: { comparacoes: r.comparacoes, movimentos: r.movimentos, movimento: r.movimento, pico: r.pico, n: N },
       contagemEm(u) { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; },
@@ -252,7 +277,7 @@
 
   // ---------- K-means ----------
 
-  function simKmeans(faixa, pontos, iniciais) {
+  function simKmeans(faixa, pontos, iniciais, accelerando) {
     const r = Algoritmos.kmeans(pontos, iniciais.map((i) => pontos[i]));
     const N = pontos.length, K = iniciais.length, ev = r.eventos;
     const PX0 = 78, PX1 = 540, PY0 = 100, PY1 = 412;
@@ -269,16 +294,28 @@
     for (const e of ev) {
       let foco = null;
       if (e.t === "dist") { dists++; foco = [e.i, e.j]; }
+      else if (e.t === "testa" || e.t === "atribui") foco = [e.i, e.j];   // as linhas da flor continuam à vista
       else if (e.t === "rotulo") { rot[e.i] = e.g; if (e.mudou) mudaram++; foco = [e.i, K - 1]; }   // parado na flor: as k medidas dela
       else if (e.t === "volta") { tabela.push({ volta: volta + 1, dists, mudaram }); volta++; mudaram = 0; }
       else if (e.t === "centros") { centrosAntes = centros; centros = e.centros; }
-      est.push({ t: e.t, rot: rot.slice(), centros, centrosAntes, dists, nVoltas: tabela.length, foco, linha: e.linha });
+      est.push({ t: e.t, rot: rot.slice(), centros, centrosAntes, dists, nVoltas: tabela.length, foco, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0 });
     }
     if (dists !== r.distancias || tabela.length !== r.voltas) throw new Error("reprodução do k-means não bate");
 
     // pesos: as 4 primeiras flores devagar; cada centro desliza em 12 unidades; pausa no fim de cada volta
     let flor = 0;
-    const pesos = est.map((s, k) => {
+    // ritmo constante: um passo por flor (as contas dela dividem o passo, e ele acaba na escolha do grupo),
+    // um por deslize dos centros e um por fim de volta
+    const constante = () => {
+      const p = new Array(est.length).fill(0);
+      let ini = 0;
+      est.forEach((s, k) => {
+        if (s.t === "rotulo") { for (let j = ini; j <= k; j++) p[j] = 1 / (k - ini + 1); ini = k + 1; }
+        else if (s.t === "centros" || s.t === "volta") { p[k] = 1; ini = k + 1; }
+      });
+      return p;
+    };
+    const pesos = !accelerando ? constante() : est.map((s, k) => {
       if (s.t === "dist") return flor < 4 ? 6 : 0.2;
       if (s.t === "testa") return flor < 4 ? 3 : 0.1;
       if (s.t === "rotulo") { flor++; return flor <= 4 ? 4 : 0.4; }
@@ -351,8 +388,9 @@
     }
 
     return {
-      total: tl.total, ritmo: RITMO.kmeans, desenhar,
-      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].linha; return null; },
+      total: tl.total, ritmo: accelerando ? RITMO.kmeans : PASSOS_POR_SEGUNDO, desenhar,
+      varsEm: painel(est, tl, pesos),
+      eventoEm: (u) => tl.eventoEm(u), uDoEvento: (k) => (k < 0 ? 0 : tl.inicio[k + 1]),
       passos: est.map((s, k) => (s.t === "rotulo" || s.t === "centros" || s.t === "volta" ? tl.inicio[k + 1] : null)).filter((x) => x !== null),
       resumo: { distancias: r.distancias, voltas: r.voltas, pico: r.pico, n: N, k: K },
       contagemEm(u) { const k = tl.eventoEm(u); return k >= 0 ? est[k].dists : 0; },
@@ -385,16 +423,19 @@
     });
   }
 
-  function comum(tl, est, pesos) {
+  // o que toda simulação expõe ao player: painel de variáveis, troca de ritmo sem perder o lugar e os passos
+  function comum(tl, est, pesos, ritmoAccelerando, accelerando) {
     return {
-      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].linha; return null; },
+      ritmo: accelerando ? ritmoAccelerando : PASSOS_POR_SEGUNDO,
+      varsEm: painel(est, tl, pesos),
+      eventoEm: (u) => tl.eventoEm(u), uDoEvento: (k) => (k < 0 ? 0 : tl.inicio[k + 1]),
       passos: est.map((s, k) => (pesos[k] > 0 ? tl.inicio[k + 1] : null)).filter((x) => x !== null),
     };
   }
 
   // ---------- buscas ----------
 
-  function simBusca(faixa, vetor, alvo) {
+  function simBusca(faixa, vetor, alvo, accelerando) {
     const alg = faixa.alg, bin = alg === "binaria";
     const r = Algoritmos.buscar(alg, vetor, alvo);
     const N = vetor.length, ideia = faixa.video.ideia;
@@ -406,11 +447,11 @@
       else if (e.t === "corta") { a = e.a; b = e.b; meio = null; }
       else if (e.t === "meio") meio = e.m;
       else if (e.t === "achou") achou = e.i;
-      return { t: e.t, linha: e.linha, foco, olhadas: olhadas.size, a, b, meio, achou, comps, op: e.op };
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, foco, olhadas: olhadas.size, a, b, meio, achou, comps, op: e.op };
     });
     if (comps !== r.comparacoes) throw new Error("reprodução da busca não bate");
     const conta = (t) => t === "compara";
-    const pesos = pesosLentos(est, bin ? { compara: 3, meio: 1.5, corta: 2.5, testa: 0.6, achou: 3, pare: 1, devolva: 3 }
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, bin ? { compara: 3, meio: 1.5, corta: 2.5, testa: 0.6, achou: 3, pare: 1, devolva: 3 }
       : { compara: 1.5, achou: 3, pare: 1, devolva: 3 }, conta, bin ? 0 : 4, 2.5);
     const tl = linhaDoTempo(pesos);
     const BX0 = 70, BX1 = 600, BTOPO = 96, BBASE = bin ? 380 : 410;
@@ -476,7 +517,7 @@
 
     const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
     return {
-      total: tl.total, ritmo: RITMO.busca, desenhar, ...comum(tl, est, pesos),
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.busca, accelerando),
       resumo: { comparacoes: r.comparacoes, posicao: r.posicao, alvo, n: N, pico: 0 }, contagemEm,
       medidor: () => `${r.comparacoes} comparações, n = ${N}<br>${r.posicao >= 0 ? `achou na casa ${r.posicao + 1}` : "alvo ausente"}`,
       aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.comparacoes} comparações, ${r.posicao >= 0 ? `o ${alvo} está na casa ${r.posicao + 1}` : `o ${alvo} não está no vetor`}, sem memória extra.`,
@@ -485,7 +526,7 @@
 
   // ---------- parênteses balanceados ----------
 
-  function simParenteses(faixa, texto_) {
+  function simParenteses(faixa, texto_, accelerando) {
     const r = Algoritmos.parenteses(texto_);
     const N = texto_.length, ideia = faixa.video.ideia;
     const pilha = [], pares = [];       // pilha: posições no texto; pares: [abre, fecha] já resolvidos
@@ -497,10 +538,10 @@
       else if (e.t === "compara") comps++;
       else if (e.t === "erro" && !erro) erro = { k: e.k, motivo: e.motivo };   // vale o primeiro: depois de um par errado, a pilha também sobra
       pico = Math.max(pico, pilha.length);
-      return { t: e.t, linha: e.linha, lendo, pilha: pilha.slice(), nPares: pares.length, ops, comps, pico, erro, ok: e.t === "compara" ? e.topo === { ")": "(", "]": "[", "}": "{" }[e.s] : null };
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, lendo, pilha: pilha.slice(), nPares: pares.length, ops, comps, pico, erro, ok: e.t === "compara" ? e.topo === { ")": "(", "]": "[", "}": "{" }[e.s] : null };
     });
     if (ops !== r.ops || pico !== r.pico) throw new Error("reprodução dos parênteses não bate");
-    const pesos = pesosLentos(est, { le: 0.5, empilha: 1.5, desempilha: 1.5, compara: 1, testa: 0.4, erro: 4, pare: 1, devolva: 3 },
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { le: 0.5, empilha: 1.5, desempilha: 1.5, compara: 1, testa: 0.4, erro: 4, pare: 1, devolva: 3 },
       (t) => t === "le", 4, 2.5);
     const tl = linhaDoTempo(pesos);
     const TX0 = 70, TX1 = 500, TY = 120, cw = Math.min(30, (TX1 - TX0) / N), tx = (k) => TX0 + k * cw;
@@ -562,7 +603,7 @@
 
     const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
     return {
-      total: tl.total, ritmo: RITMO.parenteses, desenhar, ...comum(tl, est, pesos),
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.parenteses, accelerando),
       resumo: { ops: r.ops, certo: r.certo, pico: r.pico, n: N }, contagemEm,
       medidor: () => `${r.ops} operações na pilha, n = ${N}<br>pilha de até ${r.pico}`,
       aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações na pilha, ${r.certo ? "balanceado" : "não balanceado"}, pilha de até ${r.pico} ${r.pico === 1 ? "símbolo" : "símbolos"}.`,
@@ -571,7 +612,7 @@
 
   // ---------- fila de atendimento ----------
 
-  function simAtendimento(faixa, chegada, duracao) {
+  function simAtendimento(faixa, chegada, duracao, accelerando) {
     const r = Algoritmos.atendimento(chegada, duracao);
     const N = chegada.length, ideia = faixa.video.ideia;
     // o minuto de cada evento: quando chega, quando o caixa chama, quando começa
@@ -586,13 +627,15 @@
       if (e.t === "enfileira" || e.t === "chama") {   // no mesmo minuto, vale o tamanho depois do último evento
         if (serie.at(-1)[0] === t) serie.at(-1)[1] = naFila; else serie.push([t, naFila]);
       }
-      return { t: e.t, linha: e.linha, tempo: t, casas, inicio, naFila, atendendo, ops, soma, atendidos, maior, e };
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, tempo: t, casas, inicio, naFila, atendendo, ops, soma, atendidos, maior, e };
     });
     if (ops !== r.ops || soma !== r.soma) throw new Error("reprodução do atendimento não bate");
     const fimDia = Math.max(...r.eventos.filter((e) => e.t === "atende").map((e) => e.fim));
-    // peso de um evento: um tempinho para o fluxograma, mais os minutos até o próximo
-    const MIN = 0.5, HOLD = { enfileira: 1.2, chama: 1.2, direto: 1.2, atende: 0.6, testa: 0.15, maior: 0.3, devolva: 2 };
-    const pesos = est.map((s, k) => (HOLD[s.t] || 0) + MIN * ((k + 1 < est.length ? est[k + 1].tempo : fimDia) - s.tempo));
+    // ritmo constante: cada evento é um passo, e o relógio anda dentro dele até o minuto do próximo.
+    // accelerando: um tempinho em cada evento, mais os minutos até o próximo (o dia corre como um relógio)
+    const MIN = 0.5, HOLD = accelerando ? { enfileira: 1.2, chama: 1.2, direto: 1.2, atende: 0.6, testa: 0.15, maior: 0.3, devolva: 2 } : {};
+    const pesos = !accelerando ? est.map(() => 1)
+      : est.map((s, k) => (HOLD[s.t] || 0) + MIN * ((k + 1 < est.length ? est[k + 1].tempo : fimDia) - s.tempo));
     const tl = linhaDoTempo(pesos);
     const relogio = (u, k) => {
       if (k < 0) return 0;
@@ -661,7 +704,7 @@
 
     const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
     return {
-      total: tl.total, ritmo: RITMO.atendimento, desenhar, ...comum(tl, est, pesos),
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.atendimento, accelerando),
       resumo: { ops: r.ops, soma: r.soma, maior: r.maior, pico: r.pico, n: N }, contagemEm,
       medidor: () => `${r.ops} operações na fila, n = ${N}<br>espera média ${decimal(r.soma / N)} min`,
       aoVivo: (u, cfg) => `Tocando agora: ${N} clientes, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações na fila, espera média de ${decimal(r.soma / N)} min, maior fila de ${r.maior}.`,
@@ -670,25 +713,25 @@
 
   // ---------- fachada ----------
 
-  /** Cria a simulação de uma faixa para uma configuração de entrada. */
-  function criar(faixa, cfg) {
+  /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
+  function criar(faixa, cfg, accelerando = false) {
     const tipo = faixa.medido.tempo.tipo, ex = faixa.exemplo, padrao = cfg.tipo === "padrao";
     if (tipo === "busca") {
       const e = padrao ? { vetor: ex.vetor, alvo: ex.alvo } : Algoritmos.entradaBusca(cfg.n, faixa.alg === "binaria", cfg.tipo, cfg.semente);
-      return simBusca(faixa, e.vetor, e.alvo);
+      return simBusca(faixa, e.vetor, e.alvo, accelerando);
     }
-    if (tipo === "parenteses") return simParenteses(faixa, padrao ? ex.texto : Algoritmos.textoParenteses(cfg.n, cfg.tipo, cfg.semente));
+    if (tipo === "parenteses") return simParenteses(faixa, padrao ? ex.texto : Algoritmos.textoParenteses(cfg.n, cfg.tipo, cfg.semente), accelerando);
     if (tipo === "atendimento") {
       const e = padrao ? ex : Algoritmos.clientes(cfg.n, ex.movimentos[cfg.tipo], cfg.semente);
-      return simAtendimento(faixa, e.chegada, e.duracao);
+      return simAtendimento(faixa, e.chegada, e.duracao, accelerando);
     }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;
       const iniciais = cfg.semente === null ? faixa.exemplo.iniciais : Algoritmos.centrosIniciais(pontos, cfg.k, cfg.semente);
-      return simKmeans(faixa, pontos, iniciais);
+      return simKmeans(faixa, pontos, iniciais, accelerando);
     }
     const vetor = cfg.tipo === "padrao" ? faixa.exemplo.vetor : Algoritmos.entrada(cfg.n, cfg.tipo, cfg.semente);
-    return simOrdenacao(faixa, vetor);
+    return simOrdenacao(faixa, vetor, accelerando);
   }
 
   /** Desenha a simulação na posição `u` num canvas de qualquer tamanho. */

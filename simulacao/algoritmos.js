@@ -1,8 +1,10 @@
 // Os algoritmos rodando no navegador, instrumentados como em Python
 // (motor/conta.py, motor/ordenacao.py): mesma variante, mesmas contagens.
 // Cada evento traz `linha`, a linha do pseudocódigo da ficha em que o
-// algoritmo está, para o fluxograma acender. testes/conferir_js.mjs exige
-// contagens iguais às do Python nos vetores do dados.json.
+// algoritmo está, para o painel de variáveis mostrar. testes/conferir_js.mjs exige
+// contagens iguais às do Python nos vetores do dados.json. Cada evento leva
+// também `vars`, as variáveis escalares da vez com o nome e a convenção do
+// pseudocódigo (índices a partir de 1), para o painel de variáveis do palco.
 (function (raiz) {
   "use strict";
 
@@ -11,14 +13,27 @@
   function contador() {
     return {
       ops: {}, vivos: {}, pico: 0, detalhe: {}, eventos: [],
+      vars: {}, quadros: [], chamada: 0, seq: 0,   // a chamada aberta (variáveis e id); as de fora, na pilha
       op(nome) { this.ops[nome] = (this.ops[nome] || 0) + 1; },
+      push(e) { this.eventos.push({ ...e, vars: { ...this.vars }, nivel: this.quadros.length, chamada: this.chamada }); },
       aloca(nome, tamanho) { this.vivos[nome] = tamanho; this._pico(); },
-      entra(a, b, linha) {
+      // uma chamada recursiva: as variáveis dela começam com o trecho (a, b) do pseudocódigo
+      entra(a, b, linha, vars) {
         this.vivos.pilha = (this.vivos.pilha || 0) + 1;
         this._pico();
-        this.eventos.push({ t: "entra", a, b, linha });
+        this.quadros.push({ vars: this.vars, chamada: this.chamada, linha });
+        this.vars = vars;
+        this.chamada = ++this.seq;
+        this.push({ t: "entra", a, b, linha });
       },
-      sai() { this.vivos.pilha -= 1; this.eventos.push({ t: "sai" }); },
+      // o retorno já mostra quem chamou, na linha de onde a chamada partiu
+      sai() {
+        this.vivos.pilha -= 1;
+        const q = this.quadros.pop();
+        this.vars = q.vars;
+        this.chamada = q.chamada;
+        this.push({ t: "sai", linha: q.linha });
+      },
       _pico() {
         const total = Object.values(this.vivos).reduce((s, x) => s + x, 0);
         if (total > this.pico) { this.pico = total; this.detalhe = { ...this.vivos }; }
@@ -31,93 +46,121 @@
   // `parte`: qual condição da linha, quando um "e" a divide em dois losangos
   function maior(v, i, j, c, linha, onde = "v", parte) {
     c.op("comparacoes");
-    c.eventos.push(parte === undefined ? { t: "compara", i, j, onde, linha } : { t: "compara", i, j, onde, linha, parte });
+    c.push(parte === undefined ? { t: "compara", i, j, onde, linha } : { t: "compara", i, j, onde, linha, parte });
     return v[i] > v[j];
   }
 
   function troca(v, i, j, c, linha) {
     c.op("trocas");
     const x = v[i]; v[i] = v[j]; v[j] = x;
-    c.eventos.push({ t: "troca", i, j, linha });
+    c.push({ t: "troca", i, j, linha });
   }
 
   function escreve(v, k, x, c, onde, linha) {
     c.op("escritas");
     v[k] = x;
-    c.eventos.push({ t: "escreve", k, x, onde, linha });
+    c.push({ t: "escreve", k, x, onde, linha });
   }
 
   // ---------- ordenações (mesmas variantes do Python) ----------
 
   // eventos de controle: não contam, só mostram por onde o algoritmo passa
-  const testa = (c, linha, parte) => c.eventos.push(parte === undefined ? { t: "testa", linha } : { t: "testa", linha, parte });
+  const testa = (c, linha, parte) => c.push(parte === undefined ? { t: "testa", linha } : { t: "testa", linha, parte });
 
   function bolha(v, c) {
+    const V = c.vars = { fim: null, i: null, trocou: null, "v[i]": null, "v[i + 1]": null };
     for (let fim = v.length - 1; fim >= 1; fim--) {
       let trocou = false;
+      Object.assign(V, { fim, i: null, trocou, "v[i]": null, "v[i + 1]": null });
       for (let i = 0; i < fim; i++) {
-        if (maior(v, i, i + 1, c, 5)) { troca(v, i, i + 1, c, 6); trocou = true; }
+        Object.assign(V, { i: i + 1, "v[i]": v[i], "v[i + 1]": v[i + 1] });
+        if (maior(v, i, i + 1, c, 5)) {
+          // o evento da troca já mostra os valores trocados, como as barras
+          Object.assign(V, { trocou: (trocou = true), "v[i]": v[i + 1], "v[i + 1]": v[i] });
+          troca(v, i, i + 1, c, 6);
+        }
       }
       testa(c, 8);
-      if (!trocou) { c.eventos.push({ t: "pare", linha: 9 }); break; }
+      if (!trocou) { c.push({ t: "pare", linha: 9 }); break; }
     }
   }
 
   function insercao(v, c) {
+    const V = c.vars = { i: null, j: null, "v[j − 1]": null, "v[j]": null };
     for (let i = 1; i < v.length; i++) {
       let j = i;
+      Object.assign(V, { i: i + 1, j: j + 1, "v[j − 1]": v[j - 1], "v[j]": v[j] });
       // enquanto j > 1 e v[j−1] > v[j]: dois losangos, o segundo só se o primeiro deixar
       for (;;) {
         testa(c, 4, 0);
         if (!(j > 0) || !maior(v, j - 1, j, c, 4, "v", 1)) break;
+        Object.assign(V, { "v[j − 1]": v[j], "v[j]": v[j - 1] });   // a troca já mostra os valores trocados
         troca(v, j - 1, j, c, 5);
         j--;
+        Object.assign(V, { j: j + 1, "v[j − 1]": j > 0 ? v[j - 1] : null, "v[j]": v[j] });
       }
     }
   }
 
   function selecao(v, c) {
     const n = v.length;
+    const V = c.vars = { i: null, m: null, j: null, "v[m]": null, "v[j]": null };
     for (let i = 0; i < n - 1; i++) {
       let m = i;
-      c.eventos.push({ t: "menor", m, linha: 3 });
+      Object.assign(V, { i: i + 1, m: m + 1, j: null, "v[m]": v[m], "v[j]": null });
+      c.push({ t: "menor", m, linha: 3 });
       for (let j = i + 1; j < n; j++) {
-        if (maior(v, m, j, c, 5)) { m = j; c.eventos.push({ t: "menor", m, linha: 6 }); }
+        Object.assign(V, { j: j + 1, "v[j]": v[j] });
+        if (maior(v, m, j, c, 5)) { m = j; Object.assign(V, { m: m + 1, "v[m]": v[m] }); c.push({ t: "menor", m, linha: 6 }); }
       }
+      // o evento da troca já mostra o vetor trocado
+      Object.assign(V, { j: null, "v[j]": null, "v[m]": v[i] });
       troca(v, i, m, c, 7);
     }
   }
 
+  // trecho [a, b) do JS = de a + 1 até b no pseudocódigo; m é o mesmo nos dois
   function intercalacao(v, a, b, aux, c, linha) {
-    c.entra(a, b, linha);
+    const V = { a: a + 1, b, m: null, i: null, j: null, k: null };
+    c.entra(a, b, linha, V);
     testa(c, 2);
     if (b - a > 1) {
       const m = Math.floor((a + b) / 2);
+      V.m = m;
+      c.push({ t: "atribui", linha: 3 });
       intercalacao(v, a, m, aux, c, 4);
       intercalacao(v, m, b, aux, c, 5);
-      for (let k = a; k < b; k++) escreve(aux, k, v[k], c, "aux", 7);
+      for (let k = a; k < b; k++) { V.k = k + 1; escreve(aux, k, v[k], c, "aux", 7); }
       let i = a, j = m, k = a;
+      const anda = () => Object.assign(V, { i: i + 1, j: j + 1, k: k + 1 });
+      anda();
       while (i < m && j < b) {
         if (maior(aux, i, j, c, 10, "aux")) { escreve(v, k, aux[j], c, "v", 11); j++; }
         else { escreve(v, k, aux[i], c, "v", 13); i++; }
         k++;
+        anda();
       }
-      while (i < m) { escreve(v, k, aux[i], c, "v", 16); i++; k++; }
-      while (j < b) { escreve(v, k, aux[j], c, "v", 18); j++; k++; }
+      while (i < m) { escreve(v, k, aux[i], c, "v", 16); i++; k++; anda(); }
+      while (j < b) { escreve(v, k, aux[j], c, "v", 18); j++; k++; anda(); }
     }
     c.sai();
   }
 
   function rapida(v, a, b, c, linha) {
-    c.entra(a, b, linha);
+    const V = { a: a + 1, b, "pivô": null, i: null, j: null };
+    c.entra(a, b, linha, V);
     testa(c, 2);
     if (b - a > 1) {
       const p = b - 1;
-      c.eventos.push({ t: "pivo", p, linha: 3 });
+      V["pivô"] = v[p];
+      c.push({ t: "pivo", p, linha: 3 });
       let i = a;
+      V.i = i + 1;
       for (let j = a; j < b - 1; j++) {
-        if (maior(v, p, j, c, 6)) { troca(v, i, j, c, 7); i++; }
+        V.j = j + 1;
+        if (maior(v, p, j, c, 6)) { troca(v, i, j, c, 7); i++; V.i = i + 1; }
       }
+      V.j = null;
       troca(v, i, p, c, 9);
       rapida(v, a, i, c, 10);
       rapida(v, i + 1, b, c, 11);
@@ -158,35 +201,46 @@
 
   function kmeans(pontos, iniciais, maxVoltas = 100) {
     const c = contador();
+    const V = c.vars = { volta: null, i: null, j: null, d: null, menor: null, melhor: null, mudou: null };
     const k = iniciais.length;
-    const dist = (p, q, i, j, linha) => {
+    // a conta já aparece no painel no passo dela: `guarda` põe o valor em d ou em menor antes do evento
+    const dist = (p, q, i, j, linha, guarda) => {
       c.op("distancias");
-      c.eventos.push({ t: "dist", i, j, linha });
-      return (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2;
+      const x = (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2;
+      guarda(x);
+      c.push({ t: "dist", i, j, linha, x });
+      return x;
     };
     const centros = iniciais.map((q) => q.slice());
     c.aloca("centros", 2 * k);
     const rotulos = new Array(pontos.length).fill(-1);
     c.aloca("rotulos", pontos.length);
-    c.eventos.push({ t: "centros", centros: centros.map((q) => q.slice()), linha: 2 });
+    c.push({ t: "centros", centros: centros.map((q) => q.slice()), linha: 2 });
     let voltas = 0;
     for (let volta = 0; volta < maxVoltas; volta++) {
       voltas++;
       let mudou = false;
+      Object.assign(V, { volta: volta + 1, i: null, j: null, d: null, menor: null, melhor: null, mudou });
       for (let i = 0; i < pontos.length; i++) {
         const p = pontos[i];
         let melhor = 0;
-        let menor = dist(p, centros[0], i, 0, 7);
+        Object.assign(V, { i: i + 1, j: 1, d: null, melhor: 1, menor: null });
+        let menor = dist(p, centros[0], i, 0, 7, (x) => { V.menor = x; });
         for (let j = 1; j < k; j++) {
-          const d = dist(p, centros[j], i, j, 9);
-          c.eventos.push({ t: "testa", linha: 10, i, j });
-          if (d < menor) { melhor = j; menor = d; }
+          V.j = j + 1;
+          const d = dist(p, centros[j], i, j, 9, (x) => { V.d = x; });
+          c.push({ t: "testa", linha: 10, i, j });
+          if (d < menor) {
+            melhor = j; menor = d;
+            Object.assign(V, { melhor: j + 1, menor });
+            c.push({ t: "atribui", linha: 11, i, j });
+          }
         }
         const trocou = rotulos[i] !== melhor;
-        if (trocou) { rotulos[i] = melhor; mudou = true; }
-        c.eventos.push({ t: "rotulo", i, g: melhor, mudou: trocou, linha: trocou ? 13 : 12 });
+        if (trocou) { rotulos[i] = melhor; mudou = true; V.mudou = true; }
+        c.push({ t: "rotulo", i, g: melhor, mudou: trocou, linha: trocou ? 13 : 12 });
       }
-      c.eventos.push({ t: "volta", volta, mudou, linha: 14 });
+      c.push({ t: "volta", volta, mudou, linha: 14 });
       if (!mudou) break;
       const sx = new Array(k).fill(0), sy = new Array(k).fill(0), cont = new Array(k).fill(0);
       c.aloca("soma_x", k); c.aloca("soma_y", k); c.aloca("contagens", k);
@@ -195,7 +249,7 @@
         sx[j] += pontos[i][0]; sy[j] += pontos[i][1]; cont[j] += 1;
       }
       for (let j = 0; j < k; j++) if (cont[j] > 0) centros[j] = [sx[j] / cont[j], sy[j] / cont[j]];
-      c.eventos.push({ t: "centros", centros: centros.map((q) => q.slice()), linha: 21 });
+      c.push({ t: "centros", centros: centros.map((q) => q.slice()), linha: 21 });
     }
     return {
       eventos: c.eventos, rotulos, centros, voltas, distancias: c.ops.distancias || 0,
@@ -208,27 +262,31 @@
 
   function buscar(nome, vetor, alvo) {
     const c = contador(), v = vetor;
-    const igual = (i, linha) => { c.op("comparacoes"); c.eventos.push({ t: "compara", i, op: "=", linha }); return v[i] === alvo; };
-    const menor = (i, linha) => { c.op("comparacoes"); c.eventos.push({ t: "compara", i, op: "<", linha }); return v[i] < alvo; };
+    const igual = (i, linha) => { c.op("comparacoes"); c.push({ t: "compara", i, op: "=", linha }); return v[i] === alvo; };
+    const menor = (i, linha) => { c.op("comparacoes"); c.push({ t: "compara", i, op: "<", linha }); return v[i] < alvo; };
     let achou = -1;
     if (nome === "sequencial") {
+      const V = c.vars = { alvo, i: null, "v[i]": null, achou: 0 };
       for (let i = 0; i < v.length; i++) {
-        if (igual(i, 4)) { achou = i; c.eventos.push({ t: "achou", i, linha: 5 }, { t: "pare", linha: 6 }); break; }
+        Object.assign(V, { i: i + 1, "v[i]": v[i] });
+        if (igual(i, 4)) { achou = i; V.achou = i + 1; c.push({ t: "achou", i, linha: 5 }); c.push({ t: "pare", linha: 6 }); break; }
       }
-      c.eventos.push({ t: "devolva", linha: 7 });
+      c.push({ t: "devolva", linha: 7 });
     } else {
       let a = 0, b = v.length - 1;
-      c.eventos.push({ t: "corta", a, b, linha: 2 });
+      const V = c.vars = { alvo, a: a + 1, b: b + 1, m: null, "v[m]": null, achou: 0 };
+      c.push({ t: "corta", a, b, linha: 2 });
       for (;;) {
-        c.eventos.push({ t: "testa", linha: 3 });
+        c.push({ t: "testa", linha: 3 });
         if (!(a <= b)) break;
         const m = Math.floor((a + b) / 2);
-        c.eventos.push({ t: "meio", m, linha: 4 });
-        if (igual(m, 5)) { achou = m; c.eventos.push({ t: "achou", i: m, linha: 6 }, { t: "pare", linha: 7 }); break; }
-        else if (menor(m, 8)) { a = m + 1; c.eventos.push({ t: "corta", a, b, linha: 9 }); }
-        else { b = m - 1; c.eventos.push({ t: "corta", a, b, linha: 11 }); }
+        Object.assign(V, { m: m + 1, "v[m]": v[m] });
+        c.push({ t: "meio", m, linha: 4 });
+        if (igual(m, 5)) { achou = m; V.achou = m + 1; c.push({ t: "achou", i: m, linha: 6 }); c.push({ t: "pare", linha: 7 }); break; }
+        else if (menor(m, 8)) { a = m + 1; V.a = a + 1; c.push({ t: "corta", a, b, linha: 9 }); }
+        else { b = m - 1; V.b = b + 1; c.push({ t: "corta", a, b, linha: 11 }); }
       }
-      c.eventos.push({ t: "devolva", linha: 12 });
+      c.push({ t: "devolva", linha: 12 });
     }
     const certo = v.indexOf(alvo);
     if (achou !== certo) throw new Error(`${nome} achou ${achou}, devia ${certo}`);
@@ -242,64 +300,76 @@
 
   /** Parênteses balanceados (algoritmos/parenteses/parenteses.py), com a Pilha do instrumento. */
   function parenteses(texto) {
-    const c = contador(), pilha = instrumentos().Pilha(), ev = c.eventos;
-    const casas = () => pilha.reg.leituras + pilha.reg.escritas;
+    const c = contador(), pilha = instrumentos().Pilha();
+    // s e topo são símbolos (texto de um caractere); da pilha, só o tamanho (os símbolos aparecem na animação)
+    const V = c.vars = { s: null, topo: null, certo: true, "tamanho da pilha": 0 };
     let certo = true;
     for (let k = 0; k < texto.length; k++) {
       const s = texto[k];
-      ev.push({ t: "le", k, s, linha: 3 });
+      Object.assign(V, { s, topo: null });
+      c.push({ t: "le", k, s, linha: 3 });
       if (ABRE.includes(s)) {
-        c.op("empilhar"); pilha.empilhar(s); c.aloca("simbolos", pilha.n);
-        ev.push({ t: "empilha", k, s, linha: 5 });
+        c.op("empilhar"); pilha.empilhar(s); c.aloca("simbolos", pilha.n); V["tamanho da pilha"] = pilha.n;
+        c.push({ t: "empilha", k, s, linha: 5 });
         continue;
       }
-      ev.push({ t: "testa", linha: 6 });
-      if (pilha.n === 0) { certo = false; ev.push({ t: "erro", k, motivo: "vazia", linha: 7 }, { t: "pare", linha: 8 }); break; }
+      c.push({ t: "testa", linha: 6 });
+      if (pilha.n === 0) { certo = false; V.certo = false; c.push({ t: "erro", k, motivo: "vazia", linha: 7 }); c.push({ t: "pare", linha: 8 }); break; }
       c.op("desempilhar"); const topo = pilha.desempilhar(); c.aloca("simbolos", pilha.n);
-      ev.push({ t: "desempilha", k, s: topo, linha: 10 });
+      Object.assign(V, { topo, "tamanho da pilha": pilha.n });
+      c.push({ t: "desempilha", k, s: topo, linha: 10 });
       c.op("comparacoes");
-      ev.push({ t: "compara", k, topo, s, linha: 11 });
-      if (topo !== PAR[s]) { certo = false; ev.push({ t: "erro", k, motivo: "par", linha: 12 }, { t: "pare", linha: 13 }); break; }
+      c.push({ t: "compara", k, topo, s, linha: 11 });
+      if (topo !== PAR[s]) { certo = false; V.certo = false; c.push({ t: "erro", k, motivo: "par", linha: 12 }); c.push({ t: "pare", linha: 13 }); break; }
     }
-    ev.push({ t: "testa", linha: 14 });
-    if (pilha.n > 0) { certo = false; ev.push({ t: "erro", k: texto.length, motivo: "sobra", linha: 15 }); }
-    ev.push({ t: "devolva", certo, linha: 16 });
-    return { texto, certo, eventos: ev, ops: (c.ops.empilhar || 0) + (c.ops.desempilhar || 0),
-      comparacoes: c.ops.comparacoes || 0, pico: c.pico, casas: casas(), sobra: pilha.n };
+    c.push({ t: "testa", linha: 14 });
+    if (pilha.n > 0) { certo = false; V.certo = false; c.push({ t: "erro", k: texto.length, motivo: "sobra", linha: 15 }); }
+    c.push({ t: "devolva", certo, linha: 16 });
+    return { texto, certo, eventos: c.eventos, ops: (c.ops.empilhar || 0) + (c.ops.desempilhar || 0),
+      comparacoes: c.ops.comparacoes || 0, pico: c.pico, casas: pilha.reg.leituras + pilha.reg.escritas, sobra: pilha.n };
   }
 
   /** Fila de atendimento (algoritmos/atendimento/atendimento.py), com a Fila circular do instrumento. */
   function atendimento(chegada, duracao) {
-    const c = contador(), fila = instrumentos().FilaCircular(), ev = c.eventos, n = chegada.length;
+    const c = contador(), fila = instrumentos().FilaCircular(), n = chegada.length;
     const esperas = new Array(n).fill(null);
     let livre = 0, soma = 0, maior = 0, i = 0;
+    // índices de cliente a partir de 1, como no pseudocódigo; da fila, só o tamanho (quem espera aparece na animação)
+    const V = c.vars = { atendimento: null, i: 1, k: null, livre: 0, "início": null, soma: 0, maior: 0, "tamanho da fila": 0 };
     for (let volta = 0; volta < n; volta++) {
+      Object.assign(V, { atendimento: volta + 1, k: null, "início": null });
       for (;;) {
-        ev.push({ t: "testa", linha: 5 });
+        c.push({ t: "testa", linha: 5 });
         if (!(i < n && chegada[i] < livre)) break;
         c.op("enfileirar"); fila.enfileirar(i); c.aloca("fila", fila.n);
-        ev.push({ t: "enfileira", i, tempo: chegada[i], casas: fila.casas(), inicio: fila.inicio, linha: 6 });
+        V["tamanho da fila"] = fila.n;
+        c.push({ t: "enfileira", i, tempo: chegada[i], casas: fila.casas(), inicio: fila.inicio, linha: 6 });
         i++;
+        V.i = i + 1;
         maior = Math.max(maior, fila.n);
-        ev.push({ t: "maior", maior, linha: 7 });
+        V.maior = maior;
+        c.push({ t: "maior", maior, linha: 7 });
       }
-      ev.push({ t: "testa", linha: 8 });
+      c.push({ t: "testa", linha: 8 });
       let k;
       if (fila.n > 0) {
         c.op("desenfileirar"); k = fila.desenfileirar(); c.aloca("fila", fila.n);
-        ev.push({ t: "chama", k, tempo: livre, casas: fila.casas(), inicio: fila.inicio, linha: 9 });
+        Object.assign(V, { k: k + 1, "tamanho da fila": fila.n });
+        c.push({ t: "chama", k, tempo: livre, casas: fila.casas(), inicio: fila.inicio, linha: 9 });
       } else {
         k = i; i++;
-        ev.push({ t: "direto", k, tempo: chegada[k], linha: 11 });
+        Object.assign(V, { k: k + 1, i: i + 1 });
+        c.push({ t: "direto", k, tempo: chegada[k], linha: 11 });
       }
       const inicio = Math.max(livre, chegada[k]);
       esperas[k] = inicio - chegada[k];
       soma += esperas[k];
       livre = inicio + duracao[k];
-      ev.push({ t: "atende", k, inicio, fim: livre, espera: esperas[k], linha: 12 });
+      Object.assign(V, { "início": inicio, soma, livre });
+      c.push({ t: "atende", k, inicio, fim: livre, espera: esperas[k], linha: 12 });
     }
-    ev.push({ t: "devolva", linha: 15 });
-    return { chegada, duracao, eventos: ev, soma, maior, esperas, pico: c.pico,
+    c.push({ t: "devolva", linha: 15 });
+    return { chegada, duracao, eventos: c.eventos, soma, maior, esperas, pico: c.pico,
       ops: (c.ops.enfileirar || 0) + (c.ops.desenfileirar || 0), casas: fila.reg.leituras + fila.reg.escritas };
   }
 

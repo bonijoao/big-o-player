@@ -41,7 +41,8 @@ function confereLinhas(pasta, eventos) {
   const esperado = { compara: "decisao", troca: "passo", escreve: "passo", pivo: "passo", entra: "chamada",
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
-    erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo" };   // rótulo: o teste "≠" ou a troca
+    erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
+    atribui: "passo", sai: "chamada" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -49,6 +50,45 @@ function confereLinhas(pasta, eventos) {
     if (![].concat(esperado[e.t]).includes(t)) {
       if (erros++ < 3) console.log(`  ✗ ${pasta}: evento ${e.t} na linha ${e.linha} (${t})`);
     }
+  }
+  if (erros) falhas++;
+  return erros === 0;
+}
+
+// o painel de variáveis do palco: cada evento leva os escalares da vez, na
+// convenção do pseudocódigo (índices a partir de 1); eles têm de bater com
+// os índices do próprio evento e com o vetor naquele instante
+function confereVars(pasta, vetor, eventos) {
+  const v = vetor ? vetor.slice() : null;
+  const regra = {
+    bolha: (e) => e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i] && e.vars["v[i + 1]"] === v[e.j]),
+    insercao: (e) => e.t !== "compara" || (e.vars.j === e.j + 1 && e.vars["v[j − 1]"] === v[e.i] && e.vars["v[j]"] === v[e.j]),
+    intercalacao: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)) && (e.t !== "entra" || (e.vars.a === e.a + 1 && e.vars.b === e.b))
+      && (e.t !== "escreve" || e.vars.k === e.k + 1),
+    rapida: (e) => (e.t !== "compara" || (e.vars.j === e.j + 1 && e.vars["pivô"] === v[e.i])) && (e.t !== "entra" || (e.vars.a === e.a + 1 && e.vars.b === e.b))
+      && (e.t !== "troca" || e.linha !== 7 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
+    selecao: (e) => (e.t !== "compara" || (e.vars.m === e.i + 1 && e.vars.j === e.j + 1 && e.vars["v[m]"] === v[e.i] && e.vars["v[j]"] === v[e.j]))
+      && (e.t !== "menor" || e.vars.m === e.m + 1),
+    sequencial: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i])) && (e.t !== "achou" || e.vars.achou === e.i + 1),
+    binaria: (e) => (e.t !== "compara" || (e.vars.m === e.i + 1 && e.vars["v[m]"] === v[e.i])) && (e.t !== "meio" || e.vars.m === e.m + 1)
+      && (e.t !== "corta" || (e.vars.a === e.a + 1 && e.vars.b === e.b + 1)) && (e.t !== "achou" || e.vars.achou === e.i + 1),
+    parenteses: (e) => (e.t !== "le" || e.vars.s === e.s) && (e.t !== "desempilha" || e.vars.topo === e.s)
+      && (e.t !== "compara" || (e.vars.topo === e.topo && e.vars.s === e.s)) && (e.t !== "erro" || e.vars.certo === false),
+    atendimento: (e) => (e.t !== "enfileira" || (e.vars.i === e.i + 1 && e.vars["tamanho da fila"] === e.casas.filter((x) => x !== null).length))
+      && (e.t !== "chama" && e.t !== "direto" || e.vars.k === e.k + 1)
+      && (e.t !== "atende" || (e.vars.k === e.k + 1 && e.vars["início"] === e.inicio && e.vars.livre === e.fim)),
+    kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
+  }[pasta];
+  let erros = 0;
+  const abertas = [];
+  for (const e of eventos) {
+    if (e.t === "entra") abertas.push(e.chamada);
+    if (e.t === "sai") { abertas.pop(); if (e.nivel !== abertas.length || e.chamada !== (abertas.at(-1) ?? 0)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: retorno no nível ${e.nivel}, chamada ${e.chamada}`); } }
+    // escalares: número, booleano, null ou um símbolo (os parênteses mostram o caractere lido)
+    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean" || (typeof x === "string" && x.length === 1));
+    if (!escalares || !regra(e)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: variáveis do evento ${e.t} ${JSON.stringify(e.vars)}`); }
+    if (v && e.t === "troca") { const x = v[e.i]; v[e.i] = v[e.j]; v[e.j] = x; }
+    if (v && e.t === "escreve" && e.onde === "v") v[e.k] = e.x;
   }
   if (erros) falhas++;
   return erros === 0;
@@ -66,6 +106,7 @@ for (const pasta of ["bolha", "insercao", "selecao", "intercalacao", "rapida"]) 
     if (c.pico !== undefined) ok = confere(`${pasta} ${c.nome} pico`, r.pico, c.pico) && ok;
   }
   ok = confereLinhas(pasta, A.ordenar(pasta, d.exemplo.vetor).eventos) && ok;
+  for (const c of casos) ok = confereVars(pasta, c.vetor, A.ordenar(pasta, c.vetor).eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} vetores)`);
 }
 
@@ -80,6 +121,7 @@ for (const pasta of ["bolha", "insercao", "selecao", "intercalacao", "rapida"]) 
   ok = confere("kmeans centros (diferença < 1e-12)", dif < 1e-12, true) && ok;
   ok = confere("kmeans pico", r.pico, d.memoria.pico) && ok;
   ok = confereLinhas("kmeans", r.eventos) && ok;
+  ok = confereVars("kmeans", null, r.eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: kmeans`);
 }
 
@@ -95,6 +137,7 @@ for (const pasta of ["sequencial", "binaria"]) {
   }
   ok = confere(`${pasta} pico`, A.buscar(pasta, ex.vetor, ex.alvo).pico, d.memoria.pico) && ok;
   for (const c of casos) ok = confereLinhas(pasta, A.buscar(pasta, c.vetor, c.alvo).eventos) && ok;
+  for (const c of casos) ok = confereVars(pasta, c.vetor, A.buscar(pasta, c.vetor, c.alvo).eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} buscas)`);
 }
 
@@ -105,6 +148,7 @@ for (const pasta of ["sequencial", "binaria"]) {
   let ok = true;
   for (const c of casos) ok = confere(`parenteses ${c.caso} ${c.texto}`, medidas(A.parenteses(c.texto)), medidas(c)) && ok;
   for (const c of casos) ok = confereLinhas("parenteses", A.parenteses(c.texto).eventos) && ok;
+  for (const c of casos) ok = confereVars("parenteses", null, A.parenteses(c.texto).eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: parenteses (${casos.length} textos)`);
 }
 
@@ -115,6 +159,7 @@ for (const pasta of ["sequencial", "binaria"]) {
   let ok = true;
   for (const c of casos) ok = confere(`atendimento ${c.movimento}`, medidas(A.atendimento(c.chegada, c.duracao)), medidas(c)) && ok;
   for (const c of casos) ok = confereLinhas("atendimento", A.atendimento(c.chegada, c.duracao).eventos) && ok;
+  for (const c of casos) ok = confereVars("atendimento", null, A.atendimento(c.chegada, c.duracao).eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: atendimento (${casos.length} sorteios)`);
 }
 
