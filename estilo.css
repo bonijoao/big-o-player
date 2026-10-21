@@ -285,8 +285,18 @@ svg text { font-family: var(--mono); }
 .palco { position: fixed; z-index: 40; background: var(--papel); border: 1px solid var(--tinta); border-radius: 6px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(30, 30, 30, 0.5); }
 .palco-corpo { display: grid; grid-template-columns: minmax(0, 1fr); background: var(--papel); }
 .tela { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--papel); cursor: pointer; }
-.palco-fluxo { display: none; overflow: auto; border-left: 1px solid var(--linha); scroll-behavior: smooth; }
-.palco-fluxo svg { display: block; margin: 0 auto; }
+/* painel de variáveis: na tela larga à direita da animação; na estreita, embaixo; no mini, some */
+.palco-vars { border-top: 1px solid var(--linha); padding: 10px 14px; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.vars-linha { margin: 0; display: flex; gap: 10px; align-items: baseline; min-width: 0; }
+.vars-linha span { color: var(--cinza); flex: none; }
+.vars-linha code { background: none; padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.vars { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 8px 0 0; }
+.vars dt { color: var(--cinza); }
+.vars dd { margin: 0 0 0 -12px; font-weight: 600; min-width: 2ch; }
+.vars .mudou { color: #c8462e; }
+.vars-nivel, .vars-vazio { margin: 8px 0 0; color: var(--cinza); }
+.palco[data-modo="mini"] .palco-vars { display: none; }
+.alterna[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
 .palco-controles { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 14px; border-top: 1px solid var(--linha); font-size: 0.8rem; color: var(--cinza); }
 .palco-controles .grupo { display: inline-flex; gap: 6px; align-items: center; }
 .passo-conta { margin-left: 6px; font-variant-numeric: tabular-nums; }
@@ -299,17 +309,18 @@ svg text { font-family: var(--mono); }
 .palco .so-kmeans, .palco.e-kmeans .so-ordenacao { display: none; }
 .palco.e-kmeans .so-kmeans { display: inline-flex; }
 
-/* o passo da vez aceso: no fluxograma (palco e encarte) e no pseudocódigo */
-[data-linha].acesa polygon, [data-linha].acesa rect { fill: #fdeac0; stroke: #de9614; stroke-width: 2.6; }
-.pseudo li.acesa { background: #fdeac0; box-shadow: inset 3px 0 0 #de9614; }
 .palco-barra { display: flex; align-items: center; gap: 6px; padding: 6px 8px 6px 14px; border-bottom: 1px solid var(--linha); font-size: 0.82rem; }
 .palco-titulo { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
-.palco[data-modo="grande"] { left: 50%; top: calc((100vh - var(--barra)) / 2); transform: translate(-50%, -50%); width: min(960px, 94vw, calc((100vh - var(--barra) - 140px) * 16 / 9)); }
+.palco[data-modo="grande"] { left: 50%; top: calc((100vh - var(--barra)) / 2); transform: translate(-50%, -50%); width: min(960px, 94vw, calc((100vh - var(--barra) - 240px) * 16 / 9)); }   /* 240: barra, controles e o painel embaixo */
 @media (min-width: 1100px) {
-  /* tela larga: animação à esquerda, fluxograma acendendo à direita */
-  .palco[data-modo="grande"] { width: min(1320px, 96vw, calc((100vh - var(--barra) - 140px) * 16 / 9 + 400px)); }
-  .palco[data-modo="grande"] .palco-corpo { grid-template-columns: minmax(0, 1fr) 400px; }
-  .palco[data-modo="grande"] .palco-fluxo { display: block; height: 0; min-height: 100%; }
+  /* tela larga: animação à esquerda, painel de variáveis à direita */
+  .palco[data-modo="grande"] { width: min(1320px, 96vw, calc((100vh - var(--barra) - 140px) * 16 / 9 + 340px)); }
+  .palco[data-modo="grande"] .palco-corpo { grid-template-columns: minmax(0, 1fr) 340px; }
+  .palco[data-modo="grande"] .palco-vars { border-top: 0; border-left: 1px solid var(--linha); padding: 18px 20px; font-size: 0.88rem; height: 0; min-height: 100%; overflow: auto; }
+  .palco[data-modo="grande"] .vars-linha { flex-direction: column; gap: 4px; }
+  .palco[data-modo="grande"] .vars-linha code { white-space: pre-wrap; }
+  .palco[data-modo="grande"] .vars { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin-top: 18px; }
+  .palco[data-modo="grande"] .vars dd { margin: 0; }
 }
 .palco[data-modo="mini"] .palco-controles { display: none; }
 .palco[data-modo="mini"] { width: 340px; cursor: grab; touch-action: none; user-select: none; }

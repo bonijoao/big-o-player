@@ -1,6 +1,6 @@
 # É complexo, baby?
 
-Galeria de algoritmos com as contas à mostra, em forma de player de música: cada tema é um álbum, cada algoritmo uma faixa. A faixa é uma simulação ao vivo, em JavaScript, no visual da skill `explainer-videos`: dá para embaralhar, mudar o tamanho e o tipo da entrada, a velocidade, andar passo a passo e ver o fluxograma acendendo enquanto o algoritmo roda. Cada faixa traz três medidas:
+Galeria de algoritmos com as contas à mostra, em forma de player de música: cada tema é um álbum, cada algoritmo uma faixa. A faixa é uma simulação ao vivo, em JavaScript, no visual da skill `explainer-videos`: dá para embaralhar, mudar o tamanho e o tipo da entrada, a velocidade, andar passo a passo e ver, ao lado da animação, a linha do pseudocódigo que está rodando e as variáveis mudando a cada passo. O ritmo é constante (6 passos por segundo a 1×); o botão "accelerando" liga o ritmo que começa devagar e acelera. O pseudocódigo e o fluxograma ficam no encarte, como material de apoio. Cada faixa traz três medidas:
 
 - **tempo**: operações contadas rodando a implementação (não estimadas);
 - **memória**: pico de valores guardados além da entrada;

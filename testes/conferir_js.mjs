@@ -39,7 +39,8 @@ function tipos(pasta) {
 function confereLinhas(pasta, eventos) {
   const tl = tipos(pasta);
   const esperado = { compara: "decisao", troca: "passo", escreve: "passo", pivo: "passo", entra: "chamada",
-    dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo" };   // rótulo: o teste "≠" ou a troca
+    dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
+    atribui: "passo", sai: "chamada" };   // o retorno volta à linha da chamada   // rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -47,6 +48,34 @@ function confereLinhas(pasta, eventos) {
     if (![].concat(esperado[e.t]).includes(t)) {
       if (erros++ < 3) console.log(`  ✗ ${pasta}: evento ${e.t} na linha ${e.linha} (${t})`);
     }
+  }
+  if (erros) falhas++;
+  return erros === 0;
+}
+
+// o painel de variáveis do palco: cada evento leva os escalares da vez, na
+// convenção do pseudocódigo (índices a partir de 1); eles têm de bater com
+// os índices do próprio evento e com o vetor naquele instante
+function confereVars(pasta, vetor, eventos) {
+  const v = vetor ? vetor.slice() : null;
+  const regra = {
+    bolha: (e) => e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i] && e.vars["v[i + 1]"] === v[e.j]),
+    insercao: (e) => e.t !== "compara" || (e.vars.j === e.j + 1 && e.vars["v[j − 1]"] === v[e.i] && e.vars["v[j]"] === v[e.j]),
+    intercalacao: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)) && (e.t !== "entra" || (e.vars.a === e.a + 1 && e.vars.b === e.b))
+      && (e.t !== "escreve" || e.vars.k === e.k + 1),
+    rapida: (e) => (e.t !== "compara" || (e.vars.j === e.j + 1 && e.vars["pivô"] === v[e.i])) && (e.t !== "entra" || (e.vars.a === e.a + 1 && e.vars.b === e.b))
+      && (e.t !== "troca" || e.linha !== 7 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
+    kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
+  }[pasta];
+  let erros = 0;
+  const abertas = [];
+  for (const e of eventos) {
+    if (e.t === "entra") abertas.push(e.chamada);
+    if (e.t === "sai") { abertas.pop(); if (e.nivel !== abertas.length || e.chamada !== (abertas.at(-1) ?? 0)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: retorno no nível ${e.nivel}, chamada ${e.chamada}`); } }
+    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean");
+    if (!escalares || !regra(e)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: variáveis do evento ${e.t} ${JSON.stringify(e.vars)}`); }
+    if (v && e.t === "troca") { const x = v[e.i]; v[e.i] = v[e.j]; v[e.j] = x; }
+    if (v && e.t === "escreve" && e.onde === "v") v[e.k] = e.x;
   }
   if (erros) falhas++;
   return erros === 0;
@@ -64,6 +93,7 @@ for (const pasta of ["bolha", "insercao", "intercalacao", "rapida"]) {
     if (c.pico !== undefined) ok = confere(`${pasta} ${c.nome} pico`, r.pico, c.pico) && ok;
   }
   ok = confereLinhas(pasta, A.ordenar(pasta, d.exemplo.vetor).eventos) && ok;
+  for (const c of casos) ok = confereVars(pasta, c.vetor, A.ordenar(pasta, c.vetor).eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} vetores)`);
 }
 
@@ -78,6 +108,7 @@ for (const pasta of ["bolha", "insercao", "intercalacao", "rapida"]) {
   ok = confere("kmeans centros (diferença < 1e-12)", dif < 1e-12, true) && ok;
   ok = confere("kmeans pico", r.pico, d.memoria.pico) && ok;
   ok = confereLinhas("kmeans", r.eventos) && ok;
+  ok = confereVars("kmeans", null, r.eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: kmeans`);
 }
 

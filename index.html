@@ -33,7 +33,7 @@
   </div>
   <div class="palco-corpo">
     <canvas id="tela" class="tela" role="img" aria-label="Animação do algoritmo"></canvas>
-    <div id="palco-fluxo" class="palco-fluxo" aria-label="Fluxograma, com o passo atual aceso"></div>
+    <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
   </div>
   <div class="palco-controles">
     <span class="grupo">
@@ -59,6 +59,7 @@
     <label>velocidade
       <select id="cfg-vel"><option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>
     </label>
+    <button type="button" id="cfg-acelera" class="botao-passo alterna" aria-pressed="false" title="Começa devagar e acelera">accelerando</button>
   </div>
 </section>
 

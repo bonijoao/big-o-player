@@ -284,8 +284,6 @@
     desenharLateral(a ? a.id : null, inst ? inst.id : null);
     if (redesenhar) redesenhar();
     marcarTocando();
-    linhaAcesa = null;
-    if (sim) acender(sim.linhaEm(u));
     window.scrollTo(0, 0);
     main.focus({ preventScroll: true });
   }
@@ -296,15 +294,17 @@
 
   const palco = $("#palco"), fundo = $("#fundo"), tela = $("#tela");
   const botaoTocar = $("#tocar"), trilho = $("#trilho");
-  let faixa = null, fila = [], sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, linhaAcesa = null;
+  let faixa = null, fila = [], sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
+  let accelerando = false;              // o ritmo que acelera; vale para todas as faixas, só nesta visita
   let pos = null, arrasto = null, esperaProxima = null;
   const cfgs = {};                      // a entrada escolhida em cada faixa
-  const padroes = {};                   // simulação padrão (para a duração das listas)
+  const padroes = {};                   // simulação padrão (para a duração das listas), por ritmo
 
   const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null } : { tipo: "padrao", n: f.exemplo.n, semente: 1 });
   function duracao(f) {
-    if (!padroes[f.id]) padroes[f.id] = window.Palco.criar(f, cfgPadrao(f));
-    return padroes[f.id].total / padroes[f.id].ritmo;   // segundos a 1×
+    const chave = `${f.id}:${accelerando}`;
+    if (!padroes[chave]) padroes[chave] = window.Palco.criar(f, cfgPadrao(f), accelerando);
+    return padroes[chave].total / padroes[chave].ritmo;   // segundos a 1×
   }
 
   function modo(m) {
@@ -320,9 +320,9 @@
   }
 
   function montarSim() {
-    sim = window.Palco.criar(faixa, cfgs[faixa.id]);
+    sim = window.Palco.criar(faixa, cfgs[faixa.id], accelerando);
     u = 0;
-    linhaAcesa = null;
+    painelEm = null;
     atualizarBarra();
     pintar();
   }
@@ -333,8 +333,6 @@
     if (!faixa || faixa.id !== f.id) {
       faixa = f;
       if (!cfgs[f.id]) cfgs[f.id] = cfgPadrao(f);
-      $("#palco-fluxo").replaceChildren(f.pseudocodigo ? window.Fluxograma(f.pseudocodigo) : "");
-      $("#palco-fluxo").dataset.faixa = f.id;
       sincronizarControles();
       montarSim();
     } else if (u >= sim.total) u = 0;
@@ -379,7 +377,32 @@
     if (!sim || palco.hidden) return atualizarTempo();
     window.Palco.pintar(tela, sim, u);
     atualizarTempo();
-    acender(sim.linhaEm(u));
+    pintarVariaveis();
+  }
+
+  // ---------- painel de variáveis: a linha que roda e os escalares da vez ----------
+
+  const valor = (x) => (x === null || x === undefined ? "—" : x === true ? "verdadeiro" : x === false ? "falso"
+    : Number.isInteger(x) ? mil(x) : x.toLocaleString("pt-BR", { maximumFractionDigits: 3 }));
+
+  function pintarVariaveis() {
+    const caixa = $("#palco-vars");
+    if (palco.dataset.modo !== "grande") return;
+    const p = sim.varsEm(u);
+    const chave = p ? p.k : -1;
+    if (chave === painelEm) return;
+    painelEm = chave;
+    if (!p) { caixa.replaceChildren(el("p", { class: "vars-vazio", text: "As variáveis aparecem no primeiro passo." })); return; }
+    const texto = p.linha && faixa.pseudocodigo ? faixa.pseudocodigo.linhas[p.linha - 1].trim() : "";
+    const recursiva = Object.prototype.hasOwnProperty.call(p.vars, "a") && Object.prototype.hasOwnProperty.call(p.vars, "b");
+    caixa.replaceChildren(
+      el("p", { class: "vars-linha" }, [el("span", { text: p.linha ? `linha ${p.linha}` : "" }), el("code", { text: texto })]),
+      el("dl", { class: "vars" }, Object.entries(p.vars).flatMap(([n, x]) => {
+        const mudou = p.mudou.includes(n);
+        return [el("dt", { text: n, class: mudou ? "mudou" : "" }), el("dd", { text: valor(x), class: mudou ? "mudou" : "" })];
+      })),
+      ...(recursiva && p.nivel ? [el("p", { class: "vars-nivel", text: `chamada aberta no nível ${p.nivel} da pilha de recursão` })] : []),
+    );
   }
 
   function atualizarTempo() {
@@ -400,22 +423,6 @@
     }
     const entrada = { padrao: "a entrada do encarte", aleatorio: "entrada aleatória", ordenado: "entrada já ordenada", invertido: "entrada invertida" }[c.tipo];
     return `Tocando agora: n = ${r.n}, ${entrada}; ${mil(sim.contagemEm(u))} de ${mil(r.comparacoes)} comparações, ${mil(r.movimentos)} ${r.movimento}, ${r.pico ? `pico de ${r.pico} valores extras` : "sem memória extra"}.`;
-  }
-
-  // acende a linha do pseudocódigo da vez em todo lugar que mostra esta faixa
-  function acender(linha) {
-    if (linha === linhaAcesa) return;
-    linhaAcesa = linha;
-    document.querySelectorAll("[data-faixa] .acesa").forEach((e) => e.classList.remove("acesa"));
-    if (!faixa || linha == null) return;
-    // "4:1": a linha 4 inteira no pseudocódigo, mas no fluxograma só o segundo losango
-    const [l, parte] = String(linha).split(":"), base = `[data-faixa="${faixa.id}"] [data-linha="${l}"]`;
-    document.querySelectorAll(parte === undefined ? base : `${base}:not([data-parte]), ${base}[data-parte="${parte}"]`).forEach((e) => e.classList.add("acesa"));
-    const caixa = $("#palco-fluxo"), alvo = caixa.querySelector(".acesa");
-    if (alvo && palco.dataset.modo === "grande") {   // mantém a caixa acesa à vista
-      const r = alvo.getBoundingClientRect(), c = caixa.getBoundingClientRect();
-      if (r.top < c.top + 20 || r.bottom > c.bottom - 20) caixa.scrollTop += r.top - c.top - c.height / 2 + r.height / 2;
-    }
   }
 
   function atualizarBarra() {
@@ -479,6 +486,20 @@
     else mudarCfg({ tipo: "aleatorio", n: Number($("#cfg-n").value), semente: novaSemente() });
   });
   $("#cfg-vel").addEventListener("change", (e) => { vel = Number(e.target.value); atualizarTempo(); });
+  // accelerando: troca o ritmo sem perder o lugar (o mesmo evento, na linha do tempo nova)
+  $("#cfg-acelera").addEventListener("click", (e) => {
+    const botao = e.currentTarget;
+    accelerando = !accelerando;
+    botao.setAttribute("aria-pressed", String(accelerando));
+    if (!faixa) return;
+    const k = sim.eventoEm(u), estava = tocando;
+    sim = window.Palco.criar(faixa, cfgs[faixa.id], accelerando);
+    u = sim.uDoEvento(k);
+    painelEm = null;
+    play(estava);
+    pintar();
+    if (!paginaInst) { const y = window.scrollY; rota(); window.scrollTo(0, y); botao.focus(); }   // as durações mostradas mudam com o ritmo
+  });
   const novaSemente = () => Math.floor(Math.random() * 2 ** 31);
 
   // passo a passo: pausa e vai ao fim do passo anterior/seguinte
