@@ -112,7 +112,7 @@
         part = { a, b, p: e.p, i: a, j: null, jMenor: false };
       }
       pico = Math.max(pico, (temAux ? N : 0) + pilha.length);
-      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, t: e.t, linha: e.linha });
+      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, t: e.t, linha: e.linha, parte: e.parte });
     });
     if (comps !== r.comparacoes || movs !== r.movimentos || pico !== r.pico) throw new Error("reprodução não bate com a execução");
 
@@ -238,7 +238,8 @@
 
     return {
       total: tl.total, ritmo: RITMO.ordenacao, desenhar,
-      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].linha; return null; },
+      // a linha da vez, ou "linha:parte" quando um "e" divide a linha em losangos
+      linhaEm(u) { for (let k = tl.eventoEm(u); k >= 0; k--) if (est[k].linha) return est[k].parte === undefined ? est[k].linha : `${est[k].linha}:${est[k].parte}`; return null; },
       passos: est.map((s, k) => (pesos[k] > 0 ? tl.inicio[k + 1] : null)).filter((x) => x !== null),
       resumo: { comparacoes: r.comparacoes, movimentos: r.movimentos, movimento: r.movimento, pico: r.pico, n: N },
       contagemEm(u) { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; },
@@ -264,7 +265,7 @@
     for (const e of ev) {
       let foco = null;
       if (e.t === "dist") { dists++; foco = [e.i, e.j]; }
-      else if (e.t === "rotulo") { rot[e.i] = e.g; if (e.mudou) mudaram++; }
+      else if (e.t === "rotulo") { rot[e.i] = e.g; if (e.mudou) mudaram++; foco = [e.i, K - 1]; }   // parado na flor: as k medidas dela
       else if (e.t === "volta") { tabela.push({ volta: volta + 1, dists, mudaram }); volta++; mudaram = 0; }
       else if (e.t === "centros") { centrosAntes = centros; centros = e.centros; }
       est.push({ t: e.t, rot: rot.slice(), centros, centrosAntes, dists, nVoltas: tabela.length, foco, linha: e.linha });

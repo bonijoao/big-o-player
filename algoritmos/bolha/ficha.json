@@ -4,6 +4,12 @@
  "variante": "com parada antecipada",
  "familia": "ordenação",
  "resumo": "Compara vizinhos e troca os que estão fora de ordem. Cada passada leva o maior número que sobrou para o fim; se uma passada não troca nada, o vetor está pronto.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, ordenada no próprio vetor"
+  }
+ ],
  "tempo": {
   "notacao": "O(n²)",
   "porque": "Cada passada compara os vizinhos da parte que ainda não está no fim, e são até n − 1 passadas: somadas, dão n(n − 1)/2 comparações no pior caso.",
@@ -26,6 +32,6 @@
  "pseudocodigo": "procedimento bubble_sort(v):\n    para fim de n − 1 descendo até 1:\n        trocou ← falso\n        para i de 1 até fim:\n            se v[i] > v[i + 1]:\n                troque v[i] com v[i + 1]\n                trocou ← verdadeiro\n        se não trocou:\n            pare\n",
  "placa": {
   "autor": "autoria incerta",
-  "ano": "anos 1950; o nome bubble sort aparece em 1962, com Kenneth Iverson"
+  "ano": "1956, na primeira descrição conhecida (Edward H. Friend, \"sorting by exchange\"); o nome bubble sort aparece em 1962, com Kenneth Iverson"
  }
 }

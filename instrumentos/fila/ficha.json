@@ -1,0 +1,87 @@
+{
+ "id": "fila",
+ "nome": "Fila",
+ "variante": "duas versões: ingênua e circular",
+ "frase": "O primeiro que entra é o primeiro que sai.",
+ "resumo": "Entra-se pelo fim e sai-se pelo começo. Na fila ingênua, o primeiro mora na casa 0 do vetor, e cada saída puxa todos os outros uma casa para a frente. Na fila circular, ninguém anda: quem anda é o marcador do início, que dá a volta quando chega ao fim do vetor.",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Nas duas, uma casa por valor na fila mais a folga do vetor, que dobra quando enche; desenfileirar não devolve casas. A circular guarda também onde a fila começa."
+ },
+ "variantes": {
+  "ingenua": "ingênua",
+  "circular": "circular"
+ },
+ "operacoes": [
+  {
+   "id": "enfileirar-ingenua",
+   "nome": "enfileirar, com folga",
+   "notacao": "O(1)",
+   "porque": "Escreve na casa logo depois do último."
+  },
+  {
+   "id": "enfileirar-circular",
+   "nome": "enfileirar, com folga",
+   "notacao": "O(1)",
+   "porque": "Escreve na casa logo depois do último, dando a volta se passar do fim do vetor."
+  },
+  {
+   "id": "enfileirar-pior-circular",
+   "nome": "enfileirar, o mais caro de n seguidos",
+   "notacao": "O(n)",
+   "porque": "Quando enche, dobra e copia a fila na ordem, a partir da casa 0. Na ingênua, o mesmo."
+  },
+  {
+   "id": "enfileirar-media-circular",
+   "nome": "enfileirar, média de n seguidos",
+   "notacao": "O(1) amortizado",
+   "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n. Na ingênua, o mesmo."
+  },
+  {
+   "id": "desenfileirar-ingenua",
+   "nome": "desenfileirar",
+   "notacao": "O(n)",
+   "porque": "Tira o valor da casa 0 e puxa cada um dos outros uma casa para a frente."
+  },
+  {
+   "id": "desenfileirar-circular",
+   "nome": "desenfileirar",
+   "notacao": "O(1)",
+   "porque": "Lê a casa do início e anda o marcador do início uma casa. Ninguém se desloca."
+  },
+  {
+   "id": "primeiro-ingenua",
+   "nome": "ver o primeiro",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da casa 0."
+  },
+  {
+   "id": "primeiro-circular",
+   "nome": "ver o primeiro",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da casa do início."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "desenfileirar-ingenua",
+   "rotulo": "desenfileirar, ingênua"
+  },
+  {
+   "id": "desenfileirar-circular",
+   "rotulo": "desenfileirar, circular"
+  },
+  {
+   "id": "enfileirar-circular",
+   "rotulo": "enfileirar"
+  },
+  {
+   "id": "enfileirar-media-circular",
+   "rotulo": "enfileirar, média"
+  }
+ ]
+}

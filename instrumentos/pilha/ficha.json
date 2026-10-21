@@ -1,0 +1,61 @@
+{
+ "id": "pilha",
+ "nome": "Pilha",
+ "variante": "sobre um vetor dinâmico; o topo é o fim do vetor",
+ "frase": "O último que entra é o primeiro que sai.",
+ "resumo": "Só se mexe no topo: empilhar põe um valor em cima, desempilhar tira o de cima. Montada sobre o vetor, com o topo no fim dele, nenhum valor precisa andar. É a mesma ideia da pilha de chamadas: cada chamada recursiva empilha um nível, e cada retorno desempilha.",
+ "placa": {
+  "autor": "Alan Turing; Friedrich L. Bauer e Klaus Samelson",
+  "ano": "1946 (Turing, \"bury\" e \"unbury\"); 1955, com pedido de patente em 1957 (Bauer e Samelson)"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "As casas do vetor por baixo: uma por valor empilhado, mais a folga do vetor, que dobra quando enche. Desempilhar não devolve casas."
+ },
+ "operacoes": [
+  {
+   "id": "empilhar",
+   "nome": "empilhar, com folga",
+   "notacao": "O(1)",
+   "porque": "Anexa no fim do vetor: uma escrita."
+  },
+  {
+   "id": "empilhar-pior",
+   "nome": "empilhar, o mais caro de n seguidos",
+   "notacao": "O(n)",
+   "porque": "Quando o vetor de baixo enche, ele dobra e copia todos os valores."
+  },
+  {
+   "id": "empilhar-media",
+   "nome": "empilhar, média de n seguidos",
+   "notacao": "O(1) amortizado",
+   "porque": "As cópias ficam cada vez mais raras, como no vetor: o custo médio não cresce com n."
+  },
+  {
+   "id": "desempilhar",
+   "nome": "desempilhar",
+   "notacao": "O(1)",
+   "porque": "Lê a última casa e diminui o tamanho; ninguém anda."
+  },
+  {
+   "id": "topo",
+   "nome": "ver o topo",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da última casa."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "empilhar",
+   "rotulo": "empilhar"
+  },
+  {
+   "id": "empilhar-media",
+   "rotulo": "empilhar, média"
+  },
+  {
+   "id": "desempilhar",
+   "rotulo": "desempilhar"
+  }
+ ]
+}

@@ -5,6 +5,7 @@
 
   const { el, mil, esc } = window.Graficos;
   const G = window.GALERIA || [];
+  const INSTS = window.INSTRUMENTOS || [];
   const ALBUNS = (window.ALBUNS || []).map((a) => ({ ...a, faixas: G.filter((f) => f.familia === a.familia) }));
   const $ = (s, raiz = document) => raiz.querySelector(s);
   const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -12,6 +13,17 @@
   const rotaFaixa = (f) => `#${albumDe(f).id}/${f.id}`;
   const relogio = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const nFaixas = (n) => `${n} ${n === 1 ? "faixa" : "faixas"}`;
+
+  // ---------- feat.: os instrumentos que a faixa toca ----------
+
+  const creditos = (f) => (f.instrumentos || []).map((c) => ({ ...c, inst: INSTS.find((i) => i.id === c.id) })).filter((c) => c.inst);
+  const featTexto = (f) => { const cs = creditos(f); return cs.length ? `feat. ${cs.map((c) => c.inst.nome).join(", ")}` : ""; };
+
+  function feat(f) {
+    const cs = creditos(f);
+    if (!cs.length) return null;
+    return el("span", { class: "feat" }, [" feat. ", ...cs.flatMap((c, k) => [k ? ", " : "", el("a", { href: `#instrumentos/${c.id}`, text: c.inst.nome })])]);
+  }
 
   // ---------- capas ----------
 
@@ -29,7 +41,11 @@
 
   // ---------- barra lateral ----------
 
-  function desenharLateral(atual) {
+  function desenharLateral(atual, instAtual) {
+    $("#instrumentos-nav").replaceChildren(...INSTS.map((i) => el("a", { class: "album-mini", href: `#instrumentos/${i.id}`, "aria-current": String(i.id === instAtual) }, [
+      window.PaginaInstrumento.glifo(i.id, "mini-48"),
+      el("span", {}, [el("b", { text: i.nome }), el("small", { text: i.frase })]),
+    ])));
     $("#albuns").replaceChildren(...ALBUNS.map((a) => el("a", { class: "album-mini", href: `#${a.id}`, "aria-current": String(a.id === atual) }, [
       capaAlbum(a, "mini-48"),
       el("span", {}, [el("b", { text: a.titulo }),
@@ -48,6 +64,8 @@
         el("b", { text: a.titulo }),
         el("small", { text: a.faixas.length ? `${nFaixas(a.faixas.length)}, ${relogio(a.faixas.reduce((t, f) => t + duracao(f), 0))}` : "em produção" }),
       ]))),
+      INSTS.length && el("h2", { class: "estante-titulo", html: '<a href="#instrumentos">Instrumentos</a>' }),
+      INSTS.length && el("div", { class: "estante" }, INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
     ]);
   }
 
@@ -57,7 +75,7 @@
       const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
         el("td", { class: "n", text: String(i + 1) }),
         el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
-          el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), el("small", { text: f.variante })])])),
+          el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), feat(f), el("small", { text: f.variante })])])),
         el("td", { class: "o", text: f.tempo.notacao }),
         el("td", { class: "o esconde-estreito", text: f.memoria.notacao }),
         el("td", { class: "o esconde-estreito", text: `M = ${f.medido.ciclomatica.M}` }),
@@ -130,11 +148,13 @@
       el("div", { class: "encarte-topo" }, [capa, el("div", {}, [
         el("div", { class: "placa" }, [
           el("h1", { text: f.nome }),
+          creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
           el("p", { class: "variante", text: f.variante }),
           el("dl", { html: `
             <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
             <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
             <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
+            ${creditos(f).length ? `<dt>instrumentos</dt><dd>${creditos(f).map((c) => `<a href="#instrumentos/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
             <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
             <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
             <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
@@ -235,7 +255,8 @@
 
   // ---------- rotas ----------
 
-  let redesenhar = null;
+  let redesenhar = null, paginaInst = null;
+  const ctxInstrumento = { faixas: G, rotaFaixa, feat, tocar: (f) => tocar(f) };
 
   function rota() {
     let h = "";
@@ -247,10 +268,20 @@
     const f = a && idFaixa ? a.faixas.find((x) => x.id === idFaixa) : null;
     const main = $("#conteudo");
     redesenhar = null;
+    if (paginaInst) { paginaInst.parar(); paginaInst = null; }   // a demo para; a faixa tocando, não
+    const inst = idAlbum === "instrumentos" && idFaixa ? INSTS.find((x) => x.id === idFaixa) : null;
     if (f) { main.replaceChildren(encarte(f)); document.title = `${f.nome} · É complexo, baby?`; }
     else if (a) { main.replaceChildren(album(a)); document.title = `${a.titulo} · É complexo, baby?`; }
-    else { main.replaceChildren(inicio()); document.title = "É complexo, baby?"; }
-    desenharLateral(a ? a.id : null);
+    else if (inst) {
+      paginaInst = window.PaginaInstrumento.pagina(inst, ctxInstrumento);
+      main.replaceChildren(paginaInst.el);
+      redesenhar = paginaInst.redesenhar;
+      document.title = `${inst.nome} · instrumentos · É complexo, baby?`;
+    } else if (idAlbum === "instrumentos") {
+      main.replaceChildren(window.PaginaInstrumento.indice(INSTS, ctxInstrumento));
+      document.title = "Instrumentos · É complexo, baby?";
+    } else { main.replaceChildren(inicio()); document.title = "É complexo, baby?"; }
+    desenharLateral(a ? a.id : null, inst ? inst.id : null);
     if (redesenhar) redesenhar();
     marcarTocando();
     linhaAcesa = null;
@@ -377,7 +408,9 @@
     linhaAcesa = linha;
     document.querySelectorAll("[data-faixa] .acesa").forEach((e) => e.classList.remove("acesa"));
     if (!faixa || linha == null) return;
-    document.querySelectorAll(`[data-faixa="${faixa.id}"] [data-linha="${linha}"]`).forEach((e) => e.classList.add("acesa"));
+    // "4:1": a linha 4 inteira no pseudocódigo, mas no fluxograma só o segundo losango
+    const [l, parte] = String(linha).split(":"), base = `[data-faixa="${faixa.id}"] [data-linha="${l}"]`;
+    document.querySelectorAll(parte === undefined ? base : `${base}:not([data-parte]), ${base}[data-parte="${parte}"]`).forEach((e) => e.classList.add("acesa"));
     const caixa = $("#palco-fluxo"), alvo = caixa.querySelector(".acesa");
     if (alvo && palco.dataset.modo === "grande") {   // mantém a caixa acesa à vista
       const r = alvo.getBoundingClientRect(), c = caixa.getBoundingClientRect();
@@ -388,10 +421,10 @@
   function atualizarBarra() {
     const a = albumDe(faixa);
     $("#agora-capa").replaceChildren(el("img", { src: faixa.poster, alt: "" }));
-    $("#agora-nome").textContent = faixa.nome;
+    $("#agora-nome").replaceChildren(faixa.nome, featTexto(faixa) ? el("span", { class: "feat", text: ` ${featTexto(faixa)}` }) : "");
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
     $("#agora").href = rotaFaixa(faixa);
-    $("#palco-titulo").textContent = `${faixa.nome} · ${a.titulo}`;
+    $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     const r = sim.resumo;
     $("#medidor").innerHTML = faixa.alg === "kmeans"
       ? `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.distancias)} distâncias, ${r.voltas} voltas<br><b>${esc(faixa.memoria.notacao)}</b> ${mil(r.pico)} valores, <b>M = ${faixa.medido.ciclomatica.M}</b>`
@@ -514,7 +547,7 @@
   }
 
   palco.addEventListener("pointerdown", (e) => {
-    if (palco.dataset.modo !== "mini" || e.target.closest("button")) return;
+    if (palco.dataset.modo !== "mini" || e.target.closest("button, a")) return;
     e.preventDefault();
     arrasto = { x: e.clientX, y: e.clientY, px: pos.x, py: pos.y, moveu: false };
     palco.setPointerCapture(e.pointerId);

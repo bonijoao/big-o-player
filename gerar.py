@@ -1,10 +1,10 @@
 """Junta ficha.json (texto) + dados.json (medido) + conferencia.json de cada
-algoritmo em dados.js, que a página carrega (funciona abrindo o arquivo direto,
+algoritmo, e ficha.json + dados.json de cada instrumento, em dados.js, que a página carrega (funciona abrindo o arquivo direto,
 sem servidor).
 
-  python3 gerar.py            só junta
-  python3 gerar.py --tudo     antes mede, confere no R e gera os pôsteres
-Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
+  python3 gerar.py            mede os instrumentos e junta
+  python3 gerar.py --tudo     antes mede os algoritmos, confere no R e gera os pôsteres
+Recusa ficha de faixa que credita um instrumento que não existe. Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
 """
 import json
 import os
@@ -15,6 +15,7 @@ RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(RAIZ, "motor"))
 import pseudocodigo  # noqa: E402
 ALGORITMOS = ["bolha", "insercao", "intercalacao", "rapida", "kmeans"]   # ordem da galeria
+INSTRUMENTOS = ["vetor", "pilha", "fila"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)
 CICLOMATICA = {
  "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
@@ -59,6 +60,29 @@ def entrada(nome):
     }
 
 
+def instrumento(nome):
+    pasta = os.path.join(RAIZ, "instrumentos", nome)
+    ficha, dados = ler(pasta, "ficha.json"), ler(pasta, "dados.json")
+    ops = dados["operacoes"]
+    for o in ficha["operacoes"] + ficha["grafico"]:
+        if o["id"] not in ops:
+            raise SystemExit(f"{nome}: a ficha cita a operação {o['id']}, que o medir.py não mede")
+    # a página não precisa dos argumentos de cada chamada (o teste os lê do dados.json)
+    for o in ops.values():
+        for t in o["tabela"] + o["serie"]:
+            t.pop("args", None)
+    return {**ficha, "medido": {c: x for c, x in dados.items() if c != "conferir"}}
+
+
+def conferir_creditos(galeria, instrumentos):
+    ids = {i["id"] for i in instrumentos}
+    for f in galeria:
+        for c in f.get("instrumentos", []):
+            if c["id"] not in ids:
+                raise SystemExit(f"{f['alg']}: a ficha credita o instrumento {c['id']!r}, que não existe "
+                                 f"(existem: {', '.join(sorted(ids))})")
+
+
 def main():
     if "--tudo" in sys.argv:
         for nome in ALGORITMOS:
@@ -66,12 +90,18 @@ def main():
             subprocess.run([sys.executable, os.path.join(pasta, "medir.py")], cwd=RAIZ, check=True)
             subprocess.run(["Rscript", os.path.join(pasta, "conferir.R")], cwd=RAIZ, check=True)
             subprocess.run([sys.executable, "video.py", "poster"], cwd=os.path.join(RAIZ, pasta), check=True)
+    for nome in INSTRUMENTOS:   # sempre: é rápido, e o teste JS × Python não compara com medida velha
+        subprocess.run([sys.executable, os.path.join("instrumentos", nome, "medir.py")], cwd=RAIZ, check=True,
+                       stdout=subprocess.DEVNULL)
     galeria = [entrada(n) for n in ALGORITMOS]
+    instrumentos = [instrumento(n) for n in INSTRUMENTOS]
+    conferir_creditos(galeria, instrumentos)
     with open(os.path.join(RAIZ, "dados.js"), "w") as f:
         f.write("// gerado por gerar.py; não editar à mão\n")
         f.write("window.GALERIA = " + json.dumps(galeria, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.ALBUNS = " + json.dumps(ler(RAIZ, "albuns.json"), ensure_ascii=False, indent=1) + ";\n")
-    print("dados.js:", ", ".join(g["nome"] for g in galeria))
+        f.write("window.INSTRUMENTOS = " + json.dumps(instrumentos, ensure_ascii=False) + ";\n")
+    print("dados.js:", ", ".join(g["nome"] for g in galeria), "| instrumentos:", ", ".join(i["nome"] for i in instrumentos))
     subprocess.run(["node", os.path.join(RAIZ, "testes", "conferir_js.mjs")], check=True)
 
 

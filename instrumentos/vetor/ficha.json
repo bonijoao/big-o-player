@@ -1,0 +1,93 @@
+{
+ "id": "vetor",
+ "nome": "Vetor",
+ "variante": "dinâmico, com capacidade que dobra quando enche",
+ "frase": "Casas numeradas, uma ao lado da outra.",
+ "resumo": "Guarda os valores em casas contíguas, numeradas a partir de 0. Qualquer casa se alcança direto pelo número dela. O preço aparece quando o meio muda: abrir ou fechar uma casa no começo obriga todos os vizinhos a andar uma casa. E, quando as casas reservadas acabam, o vetor reserva o dobro e copia tudo.",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Uma casa por valor, mais a folga: logo depois de dobrar, até metade das casas reservadas está vazia. Depois de n anexações a partir de uma casa, a capacidade fica entre n e 2n. Remover não devolve casas."
+ },
+ "operacoes": [
+  {
+   "id": "ler",
+   "nome": "ler v[i]",
+   "notacao": "O(1)",
+   "porque": "O endereço da casa i se calcula direto (onde o vetor começa + i): uma leitura, sem passar pelas outras casas."
+  },
+  {
+   "id": "escrever",
+   "nome": "escrever em v[i]",
+   "notacao": "O(1)",
+   "porque": "Pelo mesmo endereço calculado: uma escrita."
+  },
+  {
+   "id": "anexar",
+   "nome": "anexar no fim, com folga",
+   "notacao": "O(1)",
+   "porque": "Se ainda sobra casa reservada, é só escrever na primeira livre."
+  },
+  {
+   "id": "anexar-pior",
+   "nome": "anexar no fim, a mais cara de n seguidas",
+   "notacao": "O(n)",
+   "porque": "Quando o vetor enche, reserva o dobro de casas e copia cada valor (uma leitura e uma escrita por valor) antes de escrever o novo."
+  },
+  {
+   "id": "anexar-media",
+   "nome": "anexar no fim, média de n seguidas",
+   "notacao": "O(1) amortizado",
+   "porque": "Como a capacidade dobra, as cópias ficam cada vez mais raras: somadas, dão menos de 2n valores copiados ao longo de n anexações. Dividido por n, o custo médio não cresce com n."
+  },
+  {
+   "id": "inserir-inicio",
+   "nome": "inserir na posição 0",
+   "notacao": "O(n)",
+   "porque": "Cada valor anda uma casa para a direita (uma leitura e uma escrita) antes de a casa 0 ficar livre."
+  },
+  {
+   "id": "remover-inicio",
+   "nome": "remover da posição 0",
+   "notacao": "O(n)",
+   "porque": "Lê o valor da casa 0 e puxa cada vizinho uma casa para a esquerda."
+  },
+  {
+   "id": "remover-fim",
+   "nome": "remover do fim",
+   "notacao": "O(1)",
+   "porque": "Lê a última casa; ninguém precisa andar."
+  },
+  {
+   "id": "buscar",
+   "nome": "buscar um valor que não está lá",
+   "notacao": "O(n)",
+   "porque": "Sem ordem, a busca sequencial lê casa por casa; um valor ausente obriga a ler todas."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "anexar",
+   "rotulo": "anexar"
+  },
+  {
+   "id": "anexar-media",
+   "rotulo": "anexar, média"
+  },
+  {
+   "id": "inserir-inicio",
+   "rotulo": "inserir em 0"
+  },
+  {
+   "id": "buscar",
+   "rotulo": "buscar ausente"
+  },
+  {
+   "id": "ler",
+   "rotulo": "ler v[i]"
+  }
+ ]
+}

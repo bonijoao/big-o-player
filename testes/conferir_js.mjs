@@ -1,15 +1,19 @@
 // O JavaScript do site tem de contar igual ao Python.
 // Roda os algoritmos de simulacao/algoritmos.js nos vetores guardados em
 // algoritmos/*/dados.json e compara contagens e resultado; confere também
-// se cada evento cai numa linha do pseudocódigo do tipo certo.
+// se cada evento cai numa linha do pseudocódigo do tipo certo. Para os
+// instrumentos (instrumentos/*/dados.json), refaz cada chamada medida e as
+// sequências sorteadas e exige o mesmo custo, operação por operação.
 //   node testes/conferir_js.mjs
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
-const A = createRequire(import.meta.url)(join(RAIZ, "simulacao", "algoritmos.js"));
+const exigir = createRequire(import.meta.url);
+const A = exigir(join(RAIZ, "simulacao", "algoritmos.js"));
+const I = exigir(join(RAIZ, "simulacao", "instrumentos.js"));
 const ler = (p) => JSON.parse(readFileSync(join(RAIZ, p), "utf8"));
 let falhas = 0;
 
@@ -75,6 +79,62 @@ for (const pasta of ["bolha", "insercao", "intercalacao", "rapida"]) {
   ok = confere("kmeans pico", r.pico, d.memoria.pico) && ok;
   ok = confereLinhas("kmeans", r.eventos) && ok;
   console.log(`${ok ? "ok" : "FALHOU"}: kmeans`);
+}
+
+// ---------- instrumentos ----------
+
+const INSTRUMENTOS = readdirSync(join(RAIZ, "instrumentos"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+if (!INSTRUMENTOS.length) { console.log("nenhum instrumento em instrumentos/"); process.exit(1); }
+for (const pasta of INSTRUMENTOS) {
+  const d = ler(`instrumentos/${pasta}/dados.json`);
+  const custo = (r) => ({ leituras: r.leituras, escritas: r.escritas });
+  let ok = true, casos = 0;
+  for (const [id, o] of Object.entries(d.operacoes)) {
+    for (const t of [...o.tabela, ...o.serie]) {
+      casos++;
+      let obtido;
+      if (o.seguidas) {
+        const e = I.montar(o.estrutura, d.encher, 0);
+        let soma = { leituras: 0, escritas: 0 }, pior = null;
+        for (let i = 0; i < t.n; i++) {
+          const r = I.operar(e, o.chamada, [i]);
+          soma = { leituras: soma.leituras + r.leituras, escritas: soma.escritas + r.escritas };
+          if (!pior || r.leituras + r.escritas > pior.leituras + pior.escritas) pior = { k: i + 1, ...custo(r) };
+        }
+        obtido = o.seguidas === "pior" ? { n: t.n, ...pior } : { n: t.n, vezes: t.n, ...soma };
+      } else {
+        const e = I.montar(o.estrutura, d.encher, t.n);
+        obtido = { n: t.n, args: t.args, ...custo(I.operar(e, o.chamada, t.args)) };
+      }
+      ok = confere(`${pasta} ${id} n=${t.n}`, obtido, t) && ok;
+    }
+  }
+  for (const [v, serie] of Object.entries(d.capacidade)) {
+    for (const t of serie) { casos++; ok = confere(`${pasta} ${v} capacidade n=${t.n}`, I.montar(v, d.encher, t.n).capacidade, t.casas) && ok; }
+  }
+  for (const c of d.conferir) {
+    casos++;
+    const e = I.montar(c.estrutura, d.encher, 0);
+    const passos = c.passos.map((p) => ({ chamada: p.chamada, args: p.args, ...((r) => ({ volta: r.volta, ...custo(r) }))(I.operar(e, p.chamada, p.args)) }));
+    ok = confere(`${pasta} ${c.estrutura} sequência ${c.semente}`, { passos, valores: e.valores(), casas: e.capacidade },
+      { passos: c.passos, valores: c.valores, casas: c.casas }) && ok;
+  }
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos} medidas)`);
+}
+
+// a pilha de recursão que a página do instrumento repassa: o pico é o da faixa
+for (const pasta of ["intercalacao", "rapida"]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`);
+  const r = A.ordenar(pasta, d.exemplo.vetor);
+  const p = I.Pilha();
+  let pico = 0;
+  for (const e of r.eventos) {
+    if (e.t === "entra") I.operar(p, "empilhar", [[e.a, e.b]]);
+    else if (e.t === "sai") I.operar(p, "desempilhar");
+    pico = Math.max(pico, p.n);
+  }
+  const ok = confere(`${pasta} pico da pilha de chamadas`, pico, d.memoria.detalhe.pilha) && confere(`${pasta} pilha vazia no fim`, p.n, 0);
+  console.log(`${ok ? "ok" : "FALHOU"}: pilha de chamadas de ${pasta}`);
 }
 
 if (falhas) { console.log(`${falhas} divergência(s) entre JS e Python`); process.exit(1); }

@@ -20,7 +20,7 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Sem `--tudo`, só junta. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nos vetores guardados (o da entrada do encarte e os 7 de conferência).
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nos vetores guardados (o da entrada do encarte e os 7 de conferência) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
 Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório).
 
@@ -36,6 +36,10 @@ motor/ordenacao.py     molde das ordenações: ajudantes que contam (maior, troc
 motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens e ordem
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
+motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
+instrumentos/<nome>/   estrutura instrumentada (cada leitura e escrita de casa conta 1), medir.py, ficha.json
+simulacao/instrumentos.js  as mesmas estruturas em JS, com os eventos que a demo anima
+instrumentos.js        a página do instrumento: placa, demo ao vivo, tabela de operações, gráficos, "toca em"
 simulacao/algoritmos.js  os algoritmos em JS, contando como o Python, com a linha do pseudocódigo de cada evento
 simulacao/palco.js     a simulação: estado de cada instante, linha do tempo e desenho em canvas
 testes/conferir_js.mjs JS × Python nos mesmos vetores
@@ -43,6 +47,12 @@ gerar.py               junta tudo em dados.js e roda o teste
 index.html, estilo.css, galeria.js
 docs/plans/            desenhos aprovados
 ```
+
+## Instrumentos e o "feat."
+
+Cada estrutura de dados é um instrumento, com página própria (`#instrumentos/<nome>`). Uma faixa credita os instrumentos que toca na ficha: `"instrumentos": [{"id": "pilha", "papel": "a pilha de recursão"}]`; o crédito aparece como "feat." na lista, no encarte, na barra e no palco.
+
+Para acrescentar um instrumento: a estrutura em `instrumentos/<nome>/<nome>.py` (leituras e escritas por `conta.op()`), o `medir.py` com `ESTRUTURAS`, `ENCHER`, `OPERACOES` e `sortear` (veja `motor/instrumento.py`), a `ficha.json` (texto das operações e quais vão para o gráfico), a mesma estrutura em `simulacao/instrumentos.js`, e o nome em `INSTRUMENTOS` no `gerar.py` e no `testes/conferir_js.mjs`. A demo de um tipo novo de estrutura é desenhada em `instrumentos.js`.
 
 ## Acrescentar uma ordenação
 
