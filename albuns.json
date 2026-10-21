@@ -1,0 +1,34 @@
+[
+ {
+  "id": "ordenacao",
+  "titulo": "Ordenação",
+  "familia": "ordenação",
+  "frase": "Quatro jeitos de pôr números em ordem. Tocado na sequência, o álbum vai do O(n²) ao O(n log n).",
+  "em_producao": []
+ },
+ {
+  "id": "estatistica",
+  "titulo": "Estatística",
+  "familia": "estatística",
+  "frase": "Algoritmos que rodam por trás de uma análise.",
+  "em_producao": []
+ },
+ {
+  "id": "grafos",
+  "titulo": "Grafos",
+  "familia": "grafos",
+  "frase": "Caminhos, vizinhos e distâncias.",
+  "em_producao": [
+   {
+    "nome": "Busca em largura",
+    "tempo": "O(V + E)",
+    "memoria": "O(V)"
+   },
+   {
+    "nome": "Dijkstra",
+    "tempo": "O((V + E) log V)",
+    "memoria": "O(V)"
+   }
+  ]
+ }
+]

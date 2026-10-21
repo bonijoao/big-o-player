@@ -1,0 +1,35 @@
+{
+ "id": "merge-sort",
+ "nome": "Merge sort",
+ "variante": "de cima para baixo",
+ "familia": "ordenação",
+ "resumo": "Divide o vetor ao meio até sobrar um número por pedaço e depois intercala os pedaços dois a dois, comparando sempre a frente de cada um.",
+ "tempo": {
+  "notacao": "O(n log n)",
+  "porque": "Dividir ao meio dá log₂ n níveis; em cada nível, intercalar todos os pedaços custa no máximo n comparações. Vale para qualquer entrada.",
+  "nota": "Vetor ordenado ou invertido custa menos que o aleatório (uma metade acaba antes), mas continua na ordem de n log n."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Precisa de uma lista auxiliar do tamanho do vetor para intercalar, mais a pilha de recursão, que desce cerca de log₂ n + 1 níveis (a última chamada, de um número só, também conta).",
+  "nomes": {
+   "auxiliar": "lista auxiliar (uma posição por número)",
+   "pilha": "níveis da pilha de recursão"
+  },
+  "cresce_com_n": [
+   "auxiliar"
+  ],
+  "vazados": "são níveis da pilha, que crescem com log n"
+ },
+ "video": {
+  "ideia": [
+   "divide ao meio até sobrar um número por pedaço",
+   "intercala os pedaços comparando a frente de cada um"
+  ]
+ },
+ "pseudocodigo": "procedimento merge_sort(v, a, b):\n    se a < b:\n        m ← ⌊(a + b − 1) ÷ 2⌋\n        merge_sort(v, a, m)\n        merge_sort(v, m + 1, b)\n        para k de a até b:\n            aux[k] ← v[k]\n        i ← a;  j ← m + 1;  k ← a\n        enquanto i ≤ m e j ≤ b:\n            se aux[i] > aux[j]:\n                v[k] ← aux[j];  j ← j + 1\n            senão:\n                v[k] ← aux[i];  i ← i + 1\n            k ← k + 1\n        enquanto i ≤ m:\n            v[k] ← aux[i];  i ← i + 1;  k ← k + 1\n        enquanto j ≤ b:\n            v[k] ← aux[j];  j ← j + 1;  k ← k + 1\n",
+ "placa": {
+  "autor": "John von Neumann",
+  "ano": "1945"
+ }
+}

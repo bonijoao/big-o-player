@@ -1,0 +1,31 @@
+{
+ "id": "insertion-sort",
+ "nome": "Insertion sort",
+ "variante": "com trocas entre vizinhos",
+ "familia": "ordenação",
+ "resumo": "Pega o próximo número e o faz descer, trocando com o vizinho da esquerda, até encontrar alguém menor. A parte da esquerda fica sempre ordenada.",
+ "tempo": {
+  "notacao": "O(n²)",
+  "porque": "Cada número desce até encontrar o seu lugar: em média passa por metade dos que já estão ordenados, o que soma cerca de n²/4 comparações; no pior caso (vetor invertido), n(n − 1)/2.",
+  "nota": "Melhor caso: vetor já ordenado. Cada número compara uma vez com o vizinho e fica onde está: n − 1 comparações, O(n)."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Também troca dentro do próprio vetor; só guarda índices soltos.",
+  "nomes": {
+   "auxiliar": "lista auxiliar (uma posição por número)",
+   "pilha": "níveis da pilha de recursão"
+  }
+ },
+ "video": {
+  "ideia": [
+   "o próximo número desce até achar alguém menor",
+   "a esquerda fica sempre ordenada"
+  ]
+ },
+ "pseudocodigo": "procedimento insertion_sort(v):\n    para i de 2 até n:\n        j ← i\n        enquanto j > 1 e v[j − 1] > v[j]:\n            troque v[j − 1] com v[j]\n            j ← j − 1\n",
+ "placa": {
+  "autor": "método tradicional",
+  "ano": "anterior aos computadores"
+ }
+}

@@ -1,0 +1,10 @@
+{
+  "referencia": "kmeans(algorithm = \"Lloyd\")",
+  "versao_r": "4.6.0",
+  "particao_igual": true,
+  "maior_diferenca_centros": 0,
+  "voltas_r": 7,
+  "voltas_python": 7,
+  "tudo_ok": true,
+  "resumo": "Com os mesmos centros iniciais, o kmeans(algorithm = \"Lloyd\") do R 4.6.0 chega à mesma partição, com diferença máxima de 0 nos centros, em 7 voltas (aqui: 7)."
+}

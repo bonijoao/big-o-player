@@ -1,0 +1,33 @@
+{
+ "id": "k-means",
+ "nome": "K-means",
+ "variante": "algoritmo de Lloyd",
+ "familia": "estatística",
+ "resumo": "Separa pontos em k grupos. Cada ponto vai para o centro mais próximo, cada centro vai para a média do seu grupo, e o algoritmo repete até nenhum ponto mudar de grupo.",
+ "tempo": {
+  "notacao": "O(n·k·i)",
+  "porque": "Em cada volta, cada um dos n pontos mede a distância até cada um dos k centros: são n·k contas por volta. O número de voltas, i, depende dos dados e de onde os centros começam; só se sabe rodando.",
+  "nota": "Em d dimensões, cada distância custa d contas, e o total vira O(n·k·i·d). Aqui d = 2."
+ },
+ "memoria": {
+  "notacao": "O(n + k)",
+  "porque": "Um rótulo por ponto, que diz a que grupo ele pertence, e, para cada centro, a posição, as somas e a contagem do grupo. Os pontos em si são a entrada e não entram na conta.",
+  "nomes": {
+   "rotulos": "rótulos (um por ponto)",
+   "centros": "centros (k × 2)",
+   "soma_x": "soma de x por grupo",
+   "soma_y": "soma de y por grupo",
+   "contagens": "pontos por grupo"
+  },
+  "nota": "Em d dimensões, os centros e as somas ocupam k·d valores, e a memória vira O(n + k·d). Aqui d = 2.",
+  "cresce_com_n": [
+   "rotulos"
+  ],
+  "vazados": "crescem com k"
+ },
+ "pseudocodigo": "procedimento k_means(pontos, iniciais):\n    centros ← cópia dos centros iniciais\n    rótulos ← uma posição vazia por ponto\n    para volta de 1 até 100:\n        mudou ← falso\n        para cada ponto p, na posição i:\n            melhor ← 1;  menor ← distância(p, centro 1)\n            para j de 2 até k:\n                d ← distância(p, centro j)\n                se d < menor:\n                    melhor ← j;  menor ← d\n            se rótulo[i] ≠ melhor:\n                rótulo[i] ← melhor;  mudou ← verdadeiro\n        se não mudou:\n            pare\n        zere a soma e a contagem de cada grupo\n        para cada ponto p, na posição i:\n            some p ao grupo rótulo[i] e conte mais um nele\n        para j de 1 até k:\n            se o grupo j tem pontos:\n                centro j ← soma do grupo j ÷ contagem do grupo j\n    devolva rótulos, centros\n",
+ "placa": {
+  "autor": "Stuart Lloyd",
+  "ano": "1957, publicado em 1982"
+ }
+}

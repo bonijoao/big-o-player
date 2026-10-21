@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>É complexo, baby?</title>
+<meta name="description" content="Algoritmos como discos: cada tema é um álbum, cada algoritmo uma faixa, com as contas de tempo, memória e caminhos medidas rodando o código.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<div class="app">
+  <aside class="lateral">
+    <a class="marca" href="#">É complexo, baby?<span class="cursor" aria-hidden="true"></span></a>
+    <p class="lateral-titulo" id="titulo-albuns">Álbuns</p>
+    <nav id="albuns" aria-labelledby="titulo-albuns"></nav>
+  </aside>
+  <main id="conteudo" tabindex="-1"></main>
+</div>
+
+<!-- o vídeo mora fora das rotas: trocar de página não interrompe a faixa -->
+<div id="fundo" class="fundo" hidden></div>
+<section id="palco" class="palco" data-modo="oculto" aria-label="Vídeo da faixa" hidden>
+  <div class="palco-barra">
+    <span id="palco-titulo" class="palco-titulo"></span>
+    <button type="button" id="palco-modo" class="icone" aria-label="Minimizar"></button>
+    <button type="button" id="palco-fechar" class="icone" aria-label="Fechar o vídeo">×</button>
+  </div>
+  <video id="video" playsinline preload="auto"></video>   <!-- vídeos pequenos: baixa inteiro, o seletor funciona até sem Range -->
+</section>
+
+<footer class="tocador" id="tocador" aria-label="Player">
+  <a class="agora" id="agora" href="#">
+    <span class="agora-capa" id="agora-capa"></span>
+    <span class="agora-texto"><b id="agora-nome">Nada tocando</b><small id="agora-album">escolha uma faixa</small></span>
+  </a>
+  <div class="controles">
+    <div class="botoes">
+      <button type="button" id="anterior" class="icone" aria-label="Faixa anterior">⏮</button>
+      <button type="button" id="tocar" class="tocar" aria-label="Tocar">▶</button>
+      <button type="button" id="proxima" class="icone" aria-label="Próxima faixa">⏭</button>
+    </div>
+    <div class="linha-tempo">
+      <span id="tempo-agora">0:00</span>
+      <input type="range" id="trilho" min="0" max="1000" value="0" aria-label="Posição na faixa">
+      <span id="tempo-total">0:00</span>
+    </div>
+  </div>
+  <div class="medidor" id="medidor"></div>
+</footer>
+
+<script src="dados.js"></script>
+<script src="graficos.js"></script>
+<script src="fluxograma.js"></script>
+<script src="galeria.js"></script>
+</body>
+</html>

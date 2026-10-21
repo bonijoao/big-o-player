@@ -1,0 +1,35 @@
+{
+ "id": "quick-sort",
+ "nome": "Quick sort",
+ "variante": "partição de Lomuto, pivô = último",
+ "familia": "ordenação",
+ "resumo": "Escolhe um pivô, passa os menores para a esquerda e os maiores para a direita, põe o pivô entre os dois lados e repete em cada lado.",
+ "tempo": {
+  "notacao": "O(n log n)",
+  "porque": "Em média, o pivô divide o trecho em pedaços razoavelmente equilibrados: a recursão desce na ordem de log n níveis, e cada nível compara no máximo n números.",
+  "nota": "Pior caso: vetor já ordenado (ou invertido) com o pivô no último. Cada partição só tira o pivô do trecho, e o custo vira n(n − 1)/2, O(n²). Esta variante troca até quando i = j (um número com ele mesmo); essas trocas contam."
+ },
+ "memoria": {
+  "notacao": "O(log n)",
+  "porque": "Ordena no próprio vetor, mas cada chamada recursiva ocupa um nível da pilha. Em média, a pilha desce na ordem de log n níveis; nos vetores embaralhados medidos, cerca de duas vezes log₂ n.",
+  "nota": "No pior caso (vetor já ordenado), a pilha desce n níveis: O(n).",
+  "nomes": {
+   "auxiliar": "lista auxiliar (uma posição por número)",
+   "pilha": "níveis da pilha de recursão"
+  },
+  "cresce_com_n": [],
+  "vazados": "são níveis da pilha"
+ },
+ "video": {
+  "ideia": [
+   "pivô = o último do trecho; quem é menor que ele vai para a esquerda",
+   "o pivô vai para o meio: já está no lugar final",
+   "e repete em cada lado, cada vez num trecho menor"
+  ]
+ },
+ "pseudocodigo": "procedimento quick_sort(v, a, b):\n    se a < b:\n        pivô ← v[b]\n        i ← a\n        para j de a até b − 1:\n            se v[j] < pivô:\n                troque v[i] com v[j]\n                i ← i + 1\n        troque v[i] com v[b]\n        quick_sort(v, a, i − 1)\n        quick_sort(v, i + 1, b)\n",
+ "placa": {
+  "autor": "Tony Hoare",
+  "ano": "1959, publicado em 1961"
+ }
+}
