@@ -106,7 +106,12 @@ def render_mp4(arq, scenes):
 
 def principal(base, scenes, t_poster):
     """python3 video.py                     -> <base>.mp4 + <base>.png (pôster)
+       python3 video.py poster              -> só o pôster (a capa provisória da faixa)
        python3 video.py folha t1,t2 a.png   -> folha de contato para conferir"""
+    if len(sys.argv) > 1 and sys.argv[1] == "poster":
+        quadro(scenes, t_poster).save(base + ".png", optimize=True)
+        print(os.path.basename(base) + ".png")
+        return
     if len(sys.argv) > 1 and sys.argv[1] == "folha":
         folha(scenes, [float(x) for x in sys.argv[2].split(",")], sys.argv[3])
         print(round(duracao(scenes), 1), "s (folha)")

@@ -3,7 +3,8 @@ algoritmo em dados.js, que a página carrega (funciona abrindo o arquivo direto,
 sem servidor).
 
   python3 gerar.py            só junta
-  python3 gerar.py --tudo     antes mede, confere no R e renderiza os vídeos
+  python3 gerar.py --tudo     antes mede, confere no R e gera os pôsteres
+Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
 """
 import json
 import os
@@ -19,7 +20,7 @@ CICLOMATICA = {
  "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
  "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
 }
-PESADOS = {"pontos", "especies", "fotos", "final", "eventos", "vetor"}   # só o vídeo usa
+PESADOS = {"especies", "fotos", "final", "eventos"}   # só o vídeo usa; vetor e pontos alimentam a simulação
 
 
 def ler(pasta, nome):
@@ -42,14 +43,10 @@ def entrada(nome):
             raise SystemExit(f"{nome}: o fluxograma do pseudocódigo dá M = {m['M']}, "
                              f"o código dá M = {dados['ciclomatica']['M']}; os dois precisam ter os mesmos ramos")
         pseudo = {**lido, **m}
-    video = os.path.join(pasta, f"{nome}.mp4")
-    duracao = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", video],
-                                   capture_output=True, text=True, check=True).stdout)
     return {
         "ciclomatica": CICLOMATICA,
-        "duracao": round(duracao, 1),
+        "alg": nome,
         **{c: x for c, x in ficha.items() if c != "pseudocodigo"},
-        "video": f"algoritmos/{nome}/{nome}.mp4",
         "poster": f"algoritmos/{nome}/{nome}.png",
         "exemplo": {c: x for c, x in ex.items() if c not in PESADOS},
         "medido": {
@@ -68,13 +65,14 @@ def main():
             pasta = os.path.join("algoritmos", nome)
             subprocess.run([sys.executable, os.path.join(pasta, "medir.py")], cwd=RAIZ, check=True)
             subprocess.run(["Rscript", os.path.join(pasta, "conferir.R")], cwd=RAIZ, check=True)
-            subprocess.run([sys.executable, "video.py"], cwd=os.path.join(RAIZ, pasta), check=True)
+            subprocess.run([sys.executable, "video.py", "poster"], cwd=os.path.join(RAIZ, pasta), check=True)
     galeria = [entrada(n) for n in ALGORITMOS]
     with open(os.path.join(RAIZ, "dados.js"), "w") as f:
         f.write("// gerado por gerar.py; não editar à mão\n")
         f.write("window.GALERIA = " + json.dumps(galeria, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.ALBUNS = " + json.dumps(ler(RAIZ, "albuns.json"), ensure_ascii=False, indent=1) + ";\n")
     print("dados.js:", ", ".join(g["nome"] for g in galeria))
+    subprocess.run(["node", os.path.join(RAIZ, "testes", "conferir_js.mjs")], check=True)
 
 
 if __name__ == "__main__":

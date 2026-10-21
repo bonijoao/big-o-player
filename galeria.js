@@ -42,17 +42,17 @@
   function inicio() {
     return el("div", { class: "inicio" }, [
       el("h1", { text: "É complexo, baby?" }),
-      el("p", { class: "lede", text: "Algoritmos como discos. Cada tema é um álbum, cada algoritmo uma faixa: o vídeo mostra o algoritmo trabalhando, e o encarte traz quantas operações ele faz, quanta memória guarda e quantos caminhos tem, tudo contado rodando o código." }),
+      el("p", { class: "lede", text: "Algoritmos como discos. Cada tema é um álbum, cada algoritmo uma faixa: a simulação mostra o algoritmo trabalhando, ao vivo, e o encarte traz quantas operações ele faz, quanta memória guarda e quantos caminhos tem, tudo contado rodando o código." }),
       el("div", { class: "estante" }, ALBUNS.map((a) => el("a", { class: "disco", href: `#${a.id}` }, [
         capaAlbum(a),
         el("b", { text: a.titulo }),
-        el("small", { text: a.faixas.length ? `${nFaixas(a.faixas.length)}, ${relogio(a.faixas.reduce((t, f) => t + f.duracao, 0))}` : "em produção" }),
+        el("small", { text: a.faixas.length ? `${nFaixas(a.faixas.length)}, ${relogio(a.faixas.reduce((t, f) => t + duracao(f), 0))}` : "em produção" }),
       ]))),
     ]);
   }
 
   function album(a) {
-    const total = a.faixas.reduce((t, f) => t + f.duracao, 0);
+    const total = a.faixas.reduce((t, f) => t + duracao(f), 0);
     const linhas = a.faixas.map((f, i) => {
       const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
         el("td", { class: "n", text: String(i + 1) }),
@@ -61,7 +61,7 @@
         el("td", { class: "o", text: f.tempo.notacao }),
         el("td", { class: "o esconde-estreito", text: f.memoria.notacao }),
         el("td", { class: "o esconde-estreito", text: `M = ${f.medido.ciclomatica.M}` }),
-        el("td", { class: "dur", text: relogio(f.duracao) }),
+        el("td", { class: "dur", text: relogio(duracao(f)) }),
       ]);
       tr.addEventListener("click", (e) => { if (!e.target.closest("a")) tocar(f, a); });
       return tr;
@@ -107,9 +107,9 @@
       let h = esc(l).replace(PALAVRAS, '$1<span class="kw">$2</span>');
       if (/^\s*(se|senão se|enquanto)\b/.test(l)) h = h.replace(/ (e|ou) /g, ' <span class="kw">$1</span> ');
       const n = porLinha[i + 1];
-      ol.append(el("li", n ? { class: "decisao", "data-n": n, html: h || " " } : { html: h || " " }));
+      ol.append(el("li", n ? { class: "decisao", "data-n": n, "data-linha": i + 1, html: h || " " } : { "data-linha": i + 1, html: h || " " }));
     });
-    return el("div", { class: "pseudo", role: "figure", "aria-label": "Pseudocódigo em português" }, ol);
+    return el("div", { class: "pseudo", role: "figure", "aria-label": "Pseudocódigo em português", "data-faixa": f.id }, ol);
   }
 
   function encarte(f) {
@@ -118,7 +118,7 @@
     const entrada = ordena ? "números" : "pontos";
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
     const dist = m.tempo.distribuicao;
-    const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div"), fluxo = el("div", { class: "fluxo" });
+    const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div"), fluxo = el("div", { class: "fluxo", "data-faixa": f.id });
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
     capa.addEventListener("click", () => tocar(f, a));
@@ -135,12 +135,13 @@
             <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
             <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
             <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
-            <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} no vídeo</dd>
+            <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
             <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
             <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
-            <dt>duração</dt><dd>${relogio(f.duracao)}</dd>` }),
+            <dt>duração</dt><dd>${relogio(duracao(f))} a 1×, na entrada do encarte</dd>` }),
         ]),
         el("p", { class: "resumo", text: f.resumo }),
+        el("p", { class: "ao-vivo", "data-ao-vivo": f.id }),
         el("div", { class: "acoes" }, [botao, el("span", { text: `faixa ${a.faixas.indexOf(f) + 1} de ${a.faixas.length}, álbum ${a.titulo}` })]),
       ])]),
 
@@ -148,7 +149,7 @@
         el("section", {}, [
           el("h2", { text: "Tempo" }),
           el("p", { class: "ordem", text: f.tempo.notacao }),
-          el("p", { class: "conta", html: `<b>${mil(ex.ops)}</b> ${esc(m.tempo.unidade)}<span>${ordena ? `${ex.n} números, ${ex.movimentos} ${esc(ex.movimento)} no vídeo` : `${ex.n} × ${ex.k} × ${ex.i} no exemplo do vídeo`}</span>` }),
+          el("p", { class: "conta", html: `<b>${mil(ex.ops)}</b> ${esc(m.tempo.unidade)}<span>${ordena ? `${ex.n} números, ${ex.movimentos} ${esc(ex.movimento)} na entrada do encarte` : `${ex.n} × ${ex.k} × ${ex.i} na entrada do encarte`}</span>` }),
           el("p", { class: "porque", text: f.tempo.porque }),
           f.tempo.nota && el("p", { class: "nota", text: f.tempo.nota }),
         ]),
@@ -185,7 +186,7 @@
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
             `Comparações para n de ${m.tempo.crescimento[0].n} a ${mil(m.tempo.crescimento.at(-1).n)}. ${m.tempo.crescimento_dados}; a faixa cinza vai do menor ao maior dos aleatórios. Tracejadas: n²/2 e n log₂ n, de referência.` })]),
           el("figure", { class: "figura" }, [fig2, el("figcaption", { text:
-            `${dist.vetores} vetores embaralhados de ${dist.n} números: de ${Math.min(...dist.comparacoes)} a ${Math.max(...dist.comparacoes)} comparações. O vídeo usa a semente ${ex.semente}.` })]),
+            `${dist.vetores} vetores embaralhados de ${dist.n} números: de ${Math.min(...dist.comparacoes)} a ${Math.max(...dist.comparacoes)} comparações. A entrada do encarte usa a semente ${ex.semente}.` })]),
         ]),
       ]) : el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: o que cresce, e o que não se controla" }),
@@ -194,7 +195,7 @@
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
             `Total medido (preto) e custo de uma volta (cinza) para n de ${mil(m.tempo.crescimento[0].n)} a ${mil(m.tempo.crescimento.at(-1).n)}, k = ${ex.k}, em escala logarítmica: a razão entre os dois é o número de voltas. Um sorteio por n. ${m.tempo.crescimento_dados}.` })]),
           el("figure", { class: "figura" }, [fig2, el("figcaption", { text:
-            `O mesmo iris, ${m.tempo.voltas_por_semente.sementes} sorteios diferentes dos centros iniciais: de ${Math.min(...m.tempo.voltas_por_semente.voltas)} a ${Math.max(...m.tempo.voltas_por_semente.voltas)} voltas. O vídeo usa a semente ${ex.semente}.` })]),
+            `O mesmo iris, ${m.tempo.voltas_por_semente.sementes} sorteios diferentes dos centros iniciais: de ${Math.min(...m.tempo.voltas_por_semente.voltas)} a ${Math.max(...m.tempo.voltas_por_semente.voltas)} voltas. A entrada do encarte usa a semente ${ex.semente}.` })]),
         ]),
       ]),
 
@@ -252,16 +253,28 @@
     desenharLateral(a ? a.id : null);
     if (redesenhar) redesenhar();
     marcarTocando();
+    linhaAcesa = null;
+    if (sim) acender(sim.linhaEm(u));
     window.scrollTo(0, 0);
     main.focus({ preventScroll: true });
   }
 
   // ---------- player ----------
-  // um só <video>, fora das rotas: trocar de página não para a faixa
+  // a faixa é uma simulação ao vivo (simulacao/palco.js): o algoritmo roda em
+  // JS, e o relógio anda pelas "unidades" da execução (uma comparação = 1)
 
-  const video = $("#video"), palco = $("#palco"), fundo = $("#fundo");
+  const palco = $("#palco"), fundo = $("#fundo"), tela = $("#tela");
   const botaoTocar = $("#tocar"), trilho = $("#trilho");
-  let faixa = null, fila = [], pos = null, arrasto = null, arrastandoTrilho = false;
+  let faixa = null, fila = [], sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, linhaAcesa = null;
+  let pos = null, arrasto = null, esperaProxima = null;
+  const cfgs = {};                      // a entrada escolhida em cada faixa
+  const padroes = {};                   // simulação padrão (para a duração das listas)
+
+  const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null } : { tipo: "padrao", n: f.exemplo.n, semente: 1 });
+  function duracao(f) {
+    if (!padroes[f.id]) padroes[f.id] = window.Palco.criar(f, cfgPadrao(f));
+    return padroes[f.id].total / padroes[f.id].ritmo;   // segundos a 1×
+  }
 
   function modo(m) {
     palco.dataset.modo = m;
@@ -272,35 +285,38 @@
     botao.setAttribute("aria-label", m === "grande" ? "Minimizar" : "Ampliar");
     if (m === "grande") palco.style.left = palco.style.top = "";
     if (m === "mini") posicionarMini();
+    pintar();
   }
 
-  // o vídeo é baixado inteiro e tocado da memória: assim o seletor de tempo
-  // funciona em qualquer servidor, até nos que não atendem pedidos por trecho
-  // (por file://, o download é bloqueado e o endereço direto já funciona)
-  const copias = {};
-  async function fonte(f) {
-    if (!copias[f.id]) {
-      copias[f.id] = fetch(f.video)
-        .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(r.status))))
-        .then((b) => URL.createObjectURL(b))
-        .catch(() => f.video);
-    }
-    return copias[f.id];
+  function montarSim() {
+    sim = window.Palco.criar(faixa, cfgs[faixa.id]);
+    u = 0;
+    linhaAcesa = null;
+    atualizarBarra();
+    pintar();
   }
 
-  async function tocar(f, a) {
+  function tocar(f, a) {
     fila = (a || albumDe(f)).faixas;
-    modo("grande");
+    clearTimeout(esperaProxima);
     if (!faixa || faixa.id !== f.id) {
       faixa = f;
-      video.poster = f.poster;
-      atualizarBarra();
-      marcarTocando();
-      const src = await fonte(f);
-      if (faixa !== f) return;                       // trocou de faixa enquanto baixava
-      video.src = src;
-    }
-    video.play().catch(() => {});
+      if (!cfgs[f.id]) cfgs[f.id] = cfgPadrao(f);
+      $("#palco-fluxo").replaceChildren(f.pseudocodigo ? window.Fluxograma(f.pseudocodigo) : "");
+      $("#palco-fluxo").dataset.faixa = f.id;
+      sincronizarControles();
+      montarSim();
+    } else if (u >= sim.total) u = 0;
+    modo("grande");
+    play(true);
+    marcarTocando();
+  }
+
+  function play(sim_) {
+    tocando = sim_ && !!sim;
+    botaoTocar.textContent = tocando ? "❚❚" : "▶";
+    botaoTocar.setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
+    ultimoQuadro = performance.now();
     marcarTocando();
   }
 
@@ -314,6 +330,61 @@
     }
   }
 
+  // o laço de animação: avança o relógio e redesenha
+  function quadro(agora) {
+    if (tocando && sim) {
+      u = Math.min(sim.total, u + (agora - ultimoQuadro) / 1000 * sim.ritmo * vel);
+      if (u >= sim.total) {
+        play(false);
+        esperaProxima = setTimeout(() => pular(1), 1500);   // o álbum segue tocando
+      }
+      pintar();
+    }
+    ultimoQuadro = agora;
+    requestAnimationFrame(quadro);
+  }
+
+  function pintar() {
+    if (!sim || palco.hidden) return atualizarTempo();
+    window.Palco.pintar(tela, sim, u);
+    atualizarTempo();
+    acender(sim.linhaEm(u));
+  }
+
+  function atualizarTempo() {
+    if (!sim) return;
+    $("#tempo-agora").textContent = relogio(u / (sim.ritmo * vel));
+    $("#tempo-total").textContent = relogio(sim.total / (sim.ritmo * vel));
+    if (!arrastandoTrilho) trilho.value = String(sim.total ? Math.round(1000 * u / sim.total) : 0);
+    const feitos = sim.passos.filter((x) => x <= u + 1e-9).length;
+    $("#passo-conta").textContent = `passo ${feitos} de ${sim.passos.length}`;
+    const vivo = document.querySelector(`[data-ao-vivo="${faixa.id}"]`);
+    if (vivo) vivo.textContent = textoAoVivo();
+  }
+
+  function textoAoVivo() {
+    const r = sim.resumo, c = cfgs[faixa.id];
+    if (faixa.alg === "kmeans") {
+      return `Tocando agora: k = ${r.k}, ${c.semente === null ? "os centros do encarte" : "centros sorteados"}; ${mil(sim.contagemEm(u))} de ${mil(r.distancias)} distâncias, ${r.voltas} voltas.`;
+    }
+    const entrada = { padrao: "a entrada do encarte", aleatorio: "entrada aleatória", ordenado: "entrada já ordenada", invertido: "entrada invertida" }[c.tipo];
+    return `Tocando agora: n = ${r.n}, ${entrada}; ${mil(sim.contagemEm(u))} de ${mil(r.comparacoes)} comparações, ${mil(r.movimentos)} ${r.movimento}, ${r.pico ? `pico de ${r.pico} valores extras` : "sem memória extra"}.`;
+  }
+
+  // acende a linha do pseudocódigo da vez em todo lugar que mostra esta faixa
+  function acender(linha) {
+    if (linha === linhaAcesa) return;
+    linhaAcesa = linha;
+    document.querySelectorAll("[data-faixa] .acesa").forEach((e) => e.classList.remove("acesa"));
+    if (!faixa || linha == null) return;
+    document.querySelectorAll(`[data-faixa="${faixa.id}"] [data-linha="${linha}"]`).forEach((e) => e.classList.add("acesa"));
+    const caixa = $("#palco-fluxo"), alvo = caixa.querySelector(".acesa");
+    if (alvo && palco.dataset.modo === "grande") {   // mantém a caixa acesa à vista
+      const r = alvo.getBoundingClientRect(), c = caixa.getBoundingClientRect();
+      if (r.top < c.top + 20 || r.bottom > c.bottom - 20) caixa.scrollTop += r.top - c.top - c.height / 2 + r.height / 2;
+    }
+  }
+
   function atualizarBarra() {
     const a = albumDe(faixa);
     $("#agora-capa").replaceChildren(el("img", { src: faixa.poster, alt: "" }));
@@ -321,11 +392,10 @@
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
     $("#agora").href = rotaFaixa(faixa);
     $("#palco-titulo").textContent = `${faixa.nome} · ${a.titulo}`;
-    $("#medidor").innerHTML = `<b>${esc(faixa.tempo.notacao)}</b> ${mil(faixa.exemplo.ops)} ${esc(faixa.medido.tempo.unidade)}<br>`
-      + `<b>${esc(faixa.memoria.notacao)}</b> ${faixa.medido.memoria.pico ? `${mil(faixa.medido.memoria.pico)} valores` : "sem memória extra"}, <b>M = ${faixa.medido.ciclomatica.M}</b>`;
-    $("#tempo-total").textContent = relogio(faixa.duracao);
-    $("#tempo-agora").textContent = "0:00";
-    trilho.value = "0";
+    const r = sim.resumo;
+    $("#medidor").innerHTML = faixa.alg === "kmeans"
+      ? `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.distancias)} distâncias, ${r.voltas} voltas<br><b>${esc(faixa.memoria.notacao)}</b> ${mil(r.pico)} valores, <b>M = ${faixa.medido.ciclomatica.M}</b>`
+      : `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.comparacoes)} comparações, n = ${r.n}<br><b>${esc(faixa.memoria.notacao)}</b> ${r.pico ? `${mil(r.pico)} valores` : "sem memória extra"}, <b>M = ${faixa.medido.ciclomatica.M}</b>`;
     habilitar();
   }
 
@@ -339,45 +409,92 @@
 
   function marcarTocando() {
     document.querySelectorAll(".faixas tr[data-id]").forEach((tr, i) => {
-      const sim = !!faixa && tr.dataset.id === faixa.id;
-      tr.classList.toggle("tocando", sim);
-      tr.querySelector(".n").textContent = sim && !video.paused ? "▶" : String(i + 1);   // tocando: ▶; pausada: o número, em verde
+      const sim_ = !!faixa && tr.dataset.id === faixa.id;
+      tr.classList.toggle("tocando", sim_);
+      tr.querySelector(".n").textContent = sim_ && tocando ? "▶" : String(i + 1);   // tocando: ▶; pausada: o número, em verde
     });
   }
 
+  // ---------- controles da faixa ----------
+
+  function sincronizarControles() {
+    const c = cfgs[faixa.id], km = faixa.alg === "kmeans";
+    palco.classList.toggle("e-kmeans", km);
+    if (km) $("#cfg-k").value = String(c.k);
+    else { $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao"; }
+    $("#cfg-sortear").textContent = km ? "sortear centros" : "embaralhar";
+  }
+
+  function mudarCfg(muda) {
+    if (!faixa) return;
+    clearTimeout(esperaProxima);
+    Object.assign(cfgs[faixa.id], muda);
+    sincronizarControles();
+    const estava = tocando;
+    montarSim();
+    play(estava);
+  }
+
+  $("#cfg-tipo").addEventListener("change", (e) => {
+    const tipo = e.target.value;
+    mudarCfg(tipo === "padrao" ? cfgPadrao(faixa) : { tipo, n: Number($("#cfg-n").value), semente: novaSemente() });
+  });
+  $("#cfg-n").addEventListener("change", (e) => mudarCfg({ n: Number(e.target.value), semente: novaSemente() }));
+  $("#cfg-k").addEventListener("change", (e) => mudarCfg({ k: Number(e.target.value), semente: novaSemente() }));
+  $("#cfg-sortear").addEventListener("click", () => {
+    if (faixa.alg === "kmeans") mudarCfg({ semente: novaSemente() });
+    else mudarCfg({ tipo: "aleatorio", n: Number($("#cfg-n").value), semente: novaSemente() });
+  });
+  $("#cfg-vel").addEventListener("change", (e) => { vel = Number(e.target.value); atualizarTempo(); });
+  const novaSemente = () => Math.floor(Math.random() * 2 ** 31);
+
+  // passo a passo: pausa e vai ao fim do passo anterior/seguinte
+  function passo(dir) {
+    if (!sim) return;
+    clearTimeout(esperaProxima);
+    play(false);
+    const ps = sim.passos, eps = 1e-9;
+    if (dir > 0) u = ps.find((x) => x > u + eps) ?? sim.total;
+    else u = [...ps].reverse().find((x) => x < u - eps) ?? 0;
+    pintar();
+  }
+  $("#passo-antes").addEventListener("click", () => passo(-1));
+  $("#passo-depois").addEventListener("click", () => passo(1));
+
+  // ---------- barra do player ----------
+
   botaoTocar.addEventListener("click", () => {
     if (!faixa) return;
-    if (video.paused) {
-      video.play().catch(() => {});
+    clearTimeout(esperaProxima);
+    if (!tocando) {
+      if (u >= sim.total) u = 0;
       if (palco.dataset.modo === "oculto") modo("mini");
-    } else video.pause();
+      play(true);
+    } else play(false);
   });
   $("#anterior").addEventListener("click", () => pular(-1));
   $("#proxima").addEventListener("click", () => pular(1));
-  video.addEventListener("play", () => { botaoTocar.textContent = "❚❚"; botaoTocar.setAttribute("aria-label", "Pausar"); marcarTocando(); });
-  video.addEventListener("pause", () => { botaoTocar.textContent = "▶"; botaoTocar.setAttribute("aria-label", "Tocar"); marcarTocando(); });
-  video.addEventListener("ended", () => pular(1));   // o álbum segue tocando
-  video.addEventListener("timeupdate", () => {
-    if (!video.duration) return;
-    $("#tempo-agora").textContent = relogio(video.currentTime);
-    if (!arrastandoTrilho) trilho.value = String(Math.round(1000 * video.currentTime / video.duration));
-  });
-  video.addEventListener("click", () => {
-    if (palco.dataset.modo === "grande") { if (video.paused) video.play().catch(() => {}); else video.pause(); }
-  });
+  let arrastandoTrilho = false;
   trilho.addEventListener("input", () => {
+    if (!sim) return;
     arrastandoTrilho = true;
-    if (video.duration) video.currentTime = video.duration * Number(trilho.value) / 1000;
+    clearTimeout(esperaProxima);
+    u = sim.total * Number(trilho.value) / 1000;
+    pintar();
   });
   trilho.addEventListener("change", () => { arrastandoTrilho = false; });
+  tela.addEventListener("click", () => { if (palco.dataset.modo === "grande") botaoTocar.click(); });
 
-  // grande → mini: minimizar, clicar fora ou Esc; o vídeo continua tocando
+  // grande → mini: minimizar, clicar fora ou Esc; a simulação continua
   $("#palco-modo").addEventListener("click", (e) => { e.stopPropagation(); modo(palco.dataset.modo === "grande" ? "mini" : "grande"); });
-  $("#palco-fechar").addEventListener("click", (e) => { e.stopPropagation(); video.pause(); modo("oculto"); });
+  $("#palco-fechar").addEventListener("click", (e) => { e.stopPropagation(); play(false); clearTimeout(esperaProxima); modo("oculto"); });
   fundo.addEventListener("click", () => modo("mini"));
+  document.querySelectorAll(".palco-controles select").forEach((s) => s.addEventListener("change", () => s.blur()));   // as setas voltam a ser do player
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && palco.dataset.modo === "grande") modo("mini");
-    if (e.key === " " && faixa && !e.target.closest("input, button, a, textarea")) { e.preventDefault(); botaoTocar.click(); }
+    if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
+    if (e.target.closest("input, select, textarea")) return;
+    if (e.key === " " && faixa && !e.target.closest("button, a")) { e.preventDefault(); botaoTocar.click(); }
+    if (palco.dataset.modo === "grande" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
   });
 
   // mini player: arrasta pela tela, sempre dentro dela; um toque sem arrastar amplia
@@ -389,8 +506,8 @@
 
   function prenderMini() {
     if (palco.dataset.modo !== "mini" || !pos) return;
-    pos.x = Math.min(Math.max(8, pos.x), window.innerWidth - palco.offsetWidth - 8);
     const barra = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--barra"), 10) || 84;
+    pos.x = Math.min(Math.max(8, pos.x), window.innerWidth - palco.offsetWidth - 8);
     pos.y = Math.min(Math.max(8, pos.y), window.innerHeight - barra - palco.offsetHeight - 8);   // nunca atrás da barra
     palco.style.left = `${pos.x}px`;
     palco.style.top = `${pos.y}px`;
@@ -419,11 +536,12 @@
   let espera;
   window.addEventListener("resize", () => {
     clearTimeout(espera);
-    espera = setTimeout(() => { if (redesenhar) redesenhar(); prenderMini(); }, 120);
+    espera = setTimeout(() => { if (redesenhar) redesenhar(); prenderMini(); pintar(); }, 120);
   });
   window.addEventListener("hashchange", rota);
 
   if (calmo) document.querySelector(".cursor").style.display = "none";
   habilitar();
   rota();
+  requestAnimationFrame(quadro);
 })();

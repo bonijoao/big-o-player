@@ -5,7 +5,7 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
-  "duracao": 47.4,
+  "alg": "bolha",
   "id": "bubble-sort",
   "nome": "Bubble sort",
   "variante": "com parada antecipada",
@@ -24,7 +24,12 @@ window.GALERIA = [
     "pilha": "níveis da pilha de recursão"
    }
   },
-  "video": "algoritmos/bolha/bolha.mp4",
+  "video": {
+   "ideia": [
+    "compara dois vizinhos; se estão fora de ordem, troca",
+    "cada passada leva o maior que sobrou para o fim"
+   ]
+  },
   "placa": {
    "autor": "autoria incerta",
    "ano": "anos 1950; o nome bubble sort aparece em 1962, com Kenneth Iverson"
@@ -34,6 +39,32 @@ window.GALERIA = [
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
    "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
    "ops": 210,
    "movimentos": 111,
    "movimento": "trocas"
@@ -647,7 +678,7 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
-  "duracao": 42.3,
+  "alg": "insercao",
   "id": "insertion-sort",
   "nome": "Insertion sort",
   "variante": "com trocas entre vizinhos",
@@ -666,7 +697,12 @@ window.GALERIA = [
     "pilha": "níveis da pilha de recursão"
    }
   },
-  "video": "algoritmos/insercao/insercao.mp4",
+  "video": {
+   "ideia": [
+    "o próximo número desce até achar alguém menor",
+    "a esquerda fica sempre ordenada"
+   ]
+  },
   "placa": {
    "autor": "método tradicional",
    "ano": "anterior aos computadores"
@@ -676,6 +712,32 @@ window.GALERIA = [
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
    "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
    "ops": 132,
    "movimentos": 111,
    "movimento": "trocas"
@@ -1231,7 +1293,7 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
-  "duracao": 38.9,
+  "alg": "intercalacao",
   "id": "merge-sort",
   "nome": "Merge sort",
   "variante": "de cima para baixo",
@@ -1254,7 +1316,12 @@ window.GALERIA = [
    ],
    "vazados": "são níveis da pilha, que crescem com log n"
   },
-  "video": "algoritmos/intercalacao/intercalacao.mp4",
+  "video": {
+   "ideia": [
+    "divide ao meio até sobrar um número por pedaço",
+    "intercala os pedaços comparando a frente de cada um"
+   ]
+  },
   "placa": {
    "autor": "John von Neumann",
    "ano": "1945"
@@ -1264,6 +1331,32 @@ window.GALERIA = [
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
    "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
    "ops": 79,
    "movimentos": 224,
    "movimento": "escritas"
@@ -2151,7 +2244,7 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
-  "duracao": 40.1,
+  "alg": "rapida",
   "id": "quick-sort",
   "nome": "Quick sort",
   "variante": "partição de Lomuto, pivô = último",
@@ -2173,7 +2266,13 @@ window.GALERIA = [
    "cresce_com_n": [],
    "vazados": "são níveis da pilha"
   },
-  "video": "algoritmos/rapida/rapida.mp4",
+  "video": {
+   "ideia": [
+    "pivô = o último do trecho; quem é menor que ele vai para a esquerda",
+    "o pivô vai para o meio: já está no lugar final",
+    "e repete em cada lado, cada vez num trecho menor"
+   ]
+  },
   "placa": {
    "autor": "Tony Hoare",
    "ano": "1959, publicado em 1961"
@@ -2183,6 +2282,32 @@ window.GALERIA = [
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
    "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
    "ops": 83,
    "movimentos": 63,
    "movimento": "trocas"
@@ -2849,7 +2974,7 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
-  "duracao": 37.1,
+  "alg": "kmeans",
   "id": "k-means",
   "nome": "K-means",
   "variante": "algoritmo de Lloyd",
@@ -2880,7 +3005,6 @@ window.GALERIA = [
    "autor": "Stuart Lloyd",
    "ano": "1957, publicado em 1982"
   },
-  "video": "algoritmos/kmeans/kmeans.mp4",
   "poster": "algoritmos/kmeans/kmeans.png",
   "exemplo": {
    "dados": "iris (R), pétalas: comprimento × largura, cm",
@@ -2895,7 +3019,609 @@ window.GALERIA = [
    ],
    "i": 7,
    "ops": 3150,
-   "por_volta": 450
+   "por_volta": 450,
+   "pontos": [
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.3,
+     0.2
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.7,
+     0.4
+    ],
+    [
+     1.4,
+     0.3
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.5,
+     0.1
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.6,
+     0.2
+    ],
+    [
+     1.4,
+     0.1
+    ],
+    [
+     1.1,
+     0.1
+    ],
+    [
+     1.2,
+     0.2
+    ],
+    [
+     1.5,
+     0.4
+    ],
+    [
+     1.3,
+     0.4
+    ],
+    [
+     1.4,
+     0.3
+    ],
+    [
+     1.7,
+     0.3
+    ],
+    [
+     1.5,
+     0.3
+    ],
+    [
+     1.7,
+     0.2
+    ],
+    [
+     1.5,
+     0.4
+    ],
+    [
+     1.0,
+     0.2
+    ],
+    [
+     1.7,
+     0.5
+    ],
+    [
+     1.9,
+     0.2
+    ],
+    [
+     1.6,
+     0.2
+    ],
+    [
+     1.6,
+     0.4
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.6,
+     0.2
+    ],
+    [
+     1.6,
+     0.2
+    ],
+    [
+     1.5,
+     0.4
+    ],
+    [
+     1.5,
+     0.1
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.2,
+     0.2
+    ],
+    [
+     1.3,
+     0.2
+    ],
+    [
+     1.4,
+     0.1
+    ],
+    [
+     1.3,
+     0.2
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.3,
+     0.3
+    ],
+    [
+     1.3,
+     0.3
+    ],
+    [
+     1.3,
+     0.2
+    ],
+    [
+     1.6,
+     0.6
+    ],
+    [
+     1.9,
+     0.4
+    ],
+    [
+     1.4,
+     0.3
+    ],
+    [
+     1.6,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     1.5,
+     0.2
+    ],
+    [
+     1.4,
+     0.2
+    ],
+    [
+     4.7,
+     1.4
+    ],
+    [
+     4.5,
+     1.5
+    ],
+    [
+     4.9,
+     1.5
+    ],
+    [
+     4.0,
+     1.3
+    ],
+    [
+     4.6,
+     1.5
+    ],
+    [
+     4.5,
+     1.3
+    ],
+    [
+     4.7,
+     1.6
+    ],
+    [
+     3.3,
+     1.0
+    ],
+    [
+     4.6,
+     1.3
+    ],
+    [
+     3.9,
+     1.4
+    ],
+    [
+     3.5,
+     1.0
+    ],
+    [
+     4.2,
+     1.5
+    ],
+    [
+     4.0,
+     1.0
+    ],
+    [
+     4.7,
+     1.4
+    ],
+    [
+     3.6,
+     1.3
+    ],
+    [
+     4.4,
+     1.4
+    ],
+    [
+     4.5,
+     1.5
+    ],
+    [
+     4.1,
+     1.0
+    ],
+    [
+     4.5,
+     1.5
+    ],
+    [
+     3.9,
+     1.1
+    ],
+    [
+     4.8,
+     1.8
+    ],
+    [
+     4.0,
+     1.3
+    ],
+    [
+     4.9,
+     1.5
+    ],
+    [
+     4.7,
+     1.2
+    ],
+    [
+     4.3,
+     1.3
+    ],
+    [
+     4.4,
+     1.4
+    ],
+    [
+     4.8,
+     1.4
+    ],
+    [
+     5.0,
+     1.7
+    ],
+    [
+     4.5,
+     1.5
+    ],
+    [
+     3.5,
+     1.0
+    ],
+    [
+     3.8,
+     1.1
+    ],
+    [
+     3.7,
+     1.0
+    ],
+    [
+     3.9,
+     1.2
+    ],
+    [
+     5.1,
+     1.6
+    ],
+    [
+     4.5,
+     1.5
+    ],
+    [
+     4.5,
+     1.6
+    ],
+    [
+     4.7,
+     1.5
+    ],
+    [
+     4.4,
+     1.3
+    ],
+    [
+     4.1,
+     1.3
+    ],
+    [
+     4.0,
+     1.3
+    ],
+    [
+     4.4,
+     1.2
+    ],
+    [
+     4.6,
+     1.4
+    ],
+    [
+     4.0,
+     1.2
+    ],
+    [
+     3.3,
+     1.0
+    ],
+    [
+     4.2,
+     1.3
+    ],
+    [
+     4.2,
+     1.2
+    ],
+    [
+     4.2,
+     1.3
+    ],
+    [
+     4.3,
+     1.3
+    ],
+    [
+     3.0,
+     1.1
+    ],
+    [
+     4.1,
+     1.3
+    ],
+    [
+     6.0,
+     2.5
+    ],
+    [
+     5.1,
+     1.9
+    ],
+    [
+     5.9,
+     2.1
+    ],
+    [
+     5.6,
+     1.8
+    ],
+    [
+     5.8,
+     2.2
+    ],
+    [
+     6.6,
+     2.1
+    ],
+    [
+     4.5,
+     1.7
+    ],
+    [
+     6.3,
+     1.8
+    ],
+    [
+     5.8,
+     1.8
+    ],
+    [
+     6.1,
+     2.5
+    ],
+    [
+     5.1,
+     2.0
+    ],
+    [
+     5.3,
+     1.9
+    ],
+    [
+     5.5,
+     2.1
+    ],
+    [
+     5.0,
+     2.0
+    ],
+    [
+     5.1,
+     2.4
+    ],
+    [
+     5.3,
+     2.3
+    ],
+    [
+     5.5,
+     1.8
+    ],
+    [
+     6.7,
+     2.2
+    ],
+    [
+     6.9,
+     2.3
+    ],
+    [
+     5.0,
+     1.5
+    ],
+    [
+     5.7,
+     2.3
+    ],
+    [
+     4.9,
+     2.0
+    ],
+    [
+     6.7,
+     2.0
+    ],
+    [
+     4.9,
+     1.8
+    ],
+    [
+     5.7,
+     2.1
+    ],
+    [
+     6.0,
+     1.8
+    ],
+    [
+     4.8,
+     1.8
+    ],
+    [
+     4.9,
+     1.8
+    ],
+    [
+     5.6,
+     2.1
+    ],
+    [
+     5.8,
+     1.6
+    ],
+    [
+     6.1,
+     1.9
+    ],
+    [
+     6.4,
+     2.0
+    ],
+    [
+     5.6,
+     2.2
+    ],
+    [
+     5.1,
+     1.5
+    ],
+    [
+     5.6,
+     1.4
+    ],
+    [
+     6.1,
+     2.3
+    ],
+    [
+     5.6,
+     2.4
+    ],
+    [
+     5.5,
+     1.8
+    ],
+    [
+     4.8,
+     1.8
+    ],
+    [
+     5.4,
+     2.1
+    ],
+    [
+     5.6,
+     2.4
+    ],
+    [
+     5.1,
+     2.3
+    ],
+    [
+     5.1,
+     1.9
+    ],
+    [
+     5.9,
+     2.3
+    ],
+    [
+     5.7,
+     2.5
+    ],
+    [
+     5.2,
+     2.3
+    ],
+    [
+     5.0,
+     1.9
+    ],
+    [
+     5.2,
+     2.0
+    ],
+    [
+     5.4,
+     2.3
+    ],
+    [
+     5.1,
+     1.8
+    ]
+   ]
   },
   "medido": {
    "tempo": {

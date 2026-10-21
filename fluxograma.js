@@ -60,13 +60,15 @@
 
   // ---------- caixas ----------
 
-  function caixa(texto, tipo) {
+  function caixa(texto, tipo, nLinha) {
     const linhas = quebra(texto, 30);
     const w = Math.max(...linhas.map((l) => l.length)) * CW + (tipo === "chamada" ? 34 : 22);
     const h = linhas.length * LH + 14;
     return {
       L: w / 2, R: w / 2, h, termina: tipo === "pare",
-      desenha(g, cx, y, ctx) {
+      desenha(g0, cx, y, ctx) {
+        const g = svg("g", nLinha ? { "data-linha": nLinha } : {});
+        g0.append(g);
         const x = cx - w / 2;
         if (tipo === "pill") g.append(svg("rect", { x, y, width: w, height: h, rx: h / 2, fill: FUNDO, stroke: TINTA, "stroke-width": 1.4 }));
         else g.append(svg("rect", { x, y, width: w, height: h, rx: 3, fill: "#fff", stroke: TINTA, "stroke-width": 1.4 }));
@@ -75,19 +77,21 @@
           linha(g, [[x + w - 7, y], [x + w - 7, y + h]], TINTA);
         }
         textoMultilinha(g, linhas, cx, y + h / 2, tipo === "pare" ? { "font-weight": 600 } : {});
-        if (tipo === "pare") seta(g, [[cx + w / 2, y + h / 2], [ctx.trilho, y + h / 2]]);
+        if (tipo === "pare") seta(g0, [[cx + w / 2, y + h / 2], [ctx.trilho, y + h / 2]]);
       },
     };
   }
 
   // losango (se/enquanto) ou hexágono (para); devolve a forma com os vértices
-  function decisao(texto, hexagono) {
+  function decisao(texto, hexagono, nLinha) {
     const linhas = quebra(texto, hexagono ? 24 : 16);
     const tw = Math.max(...linhas.map((l) => l.length)) * CW, th = linhas.length * LH;
     const w = hexagono ? tw + 40 : tw * 2 + 20, h = hexagono ? th + 16 : th * 2 + 18;
     return {
       L: w / 2, R: w / 2, h,
-      desenha(g, cx, y) {
+      desenha(g0, cx, y) {
+        const g = svg("g", { "data-linha": nLinha });
+        g0.append(g);
         const pts = hexagono
           ? [[cx - w / 2, y + h / 2], [cx - w / 2 + 12, y], [cx + w / 2 - 12, y], [cx + w / 2, y + h / 2], [cx + w / 2 - 12, y + h], [cx - w / 2 + 12, y + h]]
           : [[cx, y], [cx + w / 2, y + h / 2], [cx, y + h], [cx - w / 2, y + h / 2]];
@@ -99,7 +103,7 @@
 
   // cadeia de condições: "sim" desce de uma para a próxima; "não" sai pela direita
   function cadeia(item) {
-    const formas = item.conds.map((c) => decisao(item.rotulo === "para" ? c : `${c}?`, item.rotulo === "para"));   // o "para" já vem no texto
+    const formas = item.conds.map((c) => decisao(item.rotulo === "para" ? c : `${c}?`, item.rotulo === "para", item.linha));   // o "para" já vem no texto
     const L = Math.max(...formas.map((f) => f.L)), R = Math.max(...formas.map((f) => f.R));
     const h = formas.reduce((t, f) => t + f.h, 0) + G * (formas.length - 1);
     return {
@@ -218,15 +222,15 @@
   function bloco(item) {
     if (item.tipo === "se") return se(item);
     if (item.tipo === "laco") return laco(item);
-    if (item.tipo === "pare") return caixa("pare", "pare");
-    if (item.tipo === "acao") return caixa(item.texto, item.chamada ? "chamada" : "passo");
-    return caixa(item.texto, "passo");   // devolva
+    if (item.tipo === "pare") return caixa("pare", "pare", item.linha);
+    if (item.tipo === "acao") return caixa(item.texto, item.chamada ? "chamada" : "passo", item.linha);
+    return caixa(item.texto, "passo", item.linha);   // devolva
   }
 
   // ---------- desenho completo ----------
 
   window.Fluxograma = function (pseudo) {
-    const ini = caixa(`início: ${pseudo.assinatura}`, "pill");
+    const ini = caixa(`início: ${pseudo.assinatura}`, "pill", 1);   // linha 1: o cabeçalho
     const corpo = sequencia(pseudo.arvore);
     const fim = caixa("fim", "pill");
     const L = Math.max(ini.L, corpo.L, fim.L), R = Math.max(ini.R, corpo.R, fim.R);

@@ -89,7 +89,7 @@
       else if (b % passo === 0 && Math.abs(b - alvo) > 1) s.append(svg("text", { x: bx + bw / 2, y: H - m.b + 17, "text-anchor": "middle", "font-size": 11, fill: "#686c73" }, lo + b * larg));
     }
     const hAlvo = (H - m.t - m.b) * cont[alvo] / max;
-    s.append(svg("text", { x: Math.min(W - 24, Math.max(24, m.l + alvo * bw + bw / 2)), y: H - m.b - hAlvo - 8, "text-anchor": "middle", "font-size": 12, fill: "#1e1e1e", "font-weight": 600 }, "vídeo"));
+    s.append(svg("text", { x: Math.min(W - 24, Math.max(24, m.l + alvo * bw + bw / 2)), y: H - m.b - hAlvo - 8, "text-anchor": "middle", "font-size": 12, fill: "#1e1e1e", "font-weight": 600 }, "encarte"));
     s.append(svg("text", { x: W / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, rotuloX));
     caixa.replaceChildren(s);
   }

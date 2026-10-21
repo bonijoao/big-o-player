@@ -1,6 +1,6 @@
 # É complexo, baby?
 
-Galeria de algoritmos com as contas à mostra. Cada algoritmo tem um vídeo curto, gerado por código no visual da skill `explainer-videos`, e um painel com três medidas:
+Galeria de algoritmos com as contas à mostra, em forma de player de música: cada tema é um álbum, cada algoritmo uma faixa. A faixa é uma simulação ao vivo, em JavaScript, no visual da skill `explainer-videos`: dá para embaralhar, mudar o tamanho e o tipo da entrada, a velocidade, andar passo a passo e ver o fluxograma acendendo enquanto o algoritmo roda. Cada faixa traz três medidas:
 
 - **tempo**: operações contadas rodando a implementação (não estimadas);
 - **memória**: pico de valores guardados além da entrada;
@@ -20,9 +20,11 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), renderiza o vídeo (`video.py` → `.mp4` + pôster `.png`) e junta tudo em `dados.js`, que a página lê. Sem `--tudo`, só junta.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Sem `--tudo`, só junta. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nos vetores guardados (o da entrada do encarte e os 7 de conferência).
 
-Requisitos: Python 3 com Pillow, ffmpeg, R com jsonlite, IBM Plex Mono instalada e a skill `explainer-videos` em `~/.claude/skills/` (o motor `engine.py` é importado de lá, sem cópia).
+Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório).
+
+Requisitos: Python 3 com Pillow, Node, ffmpeg (só para exportar clipes), R com jsonlite, IBM Plex Mono instalada e a skill `explainer-videos` em `~/.claude/skills/` (o motor `engine.py` é importado de lá, sem cópia).
 
 ## Estrutura
 
@@ -34,7 +36,10 @@ motor/ordenacao.py     molde das ordenações: ajudantes que contam (maior, troc
 motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens e ordem
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
-gerar.py               junta tudo em dados.js
+simulacao/algoritmos.js  os algoritmos em JS, contando como o Python, com a linha do pseudocódigo de cada evento
+simulacao/palco.js     a simulação: estado de cada instante, linha do tempo e desenho em canvas
+testes/conferir_js.mjs JS × Python nos mesmos vetores
+gerar.py               junta tudo em dados.js e roda o teste
 index.html, estilo.css, galeria.js
 docs/plans/            desenhos aprovados
 ```
