@@ -173,7 +173,9 @@
     busca: { entrada: "números", conta: (ex) => `${ex.n} números, ${ex.posicao >= 0 ? `o ${ex.alvo} está na casa ${ex.posicao + 1}` : `o ${ex.alvo} não está no vetor`}, na entrada do encarte` },
     parenteses: { entrada: "símbolos", conta: (ex) => `${ex.n} símbolos, ${ex.comparacoes} pares conferidos, na entrada do encarte` },
     atendimento: { entrada: "clientes", conta: (ex) => `${ex.n} clientes, espera média de ${decimal(ex.soma / ex.n)} min, na entrada do encarte` },
+    grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
   };
+  const nomeEstrutura = (ex) => (ex.dist ? "fila" : "pilha");
 
   const PALAVRAS = /^(\s*)(procedimento|para|enquanto|senão se|senão|se|pare|devolva)\b/;
 
@@ -417,6 +419,8 @@
       opcoes: [["padrao", "o do encarte", "o texto do encarte"], ["balanceada", "balanceado", "texto balanceado"], ["par_errado", "um par errado", "um par errado"], ["sobra_aberto", "sobra aberto", "sobrando aberto"], ["so_abre", "só abre", "só abrindo"]] },
     atendimento: { rotulo: "movimento", ns: [8, 12, 16, 24, 32, 48], sortear: "sortear clientes", sorteado: "no_limite",
       opcoes: [["padrao", "o do encarte", "os clientes do encarte"], ["calmo", "calmo", "movimento calmo"], ["no_limite", "no limite", "movimento no limite"], ["lotado", "lotado", "movimento lotado"]] },
+    grafo: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado",
+      opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
   };
   const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
   const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];
@@ -609,6 +613,7 @@
     else {
       const E = ENTRADAS[tipoDe(faixa)];
       $("#cfg-tipo-rotulo").textContent = E.rotulo;
+      $("#cfg-n-rotulo").textContent = E.n || "n";
       $("#cfg-tipo").replaceChildren(...E.opcoes.map(([v, t]) => el("option", { value: v, text: t })));
       const ns = E.ns.includes(c.n) ? E.ns : [...E.ns, c.n].sort((p, q) => p - q);   // o n do encarte sempre aparece
       $("#cfg-n").replaceChildren(...ns.map((n) => el("option", { text: String(n) })));

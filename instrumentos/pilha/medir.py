@@ -19,7 +19,8 @@ OPERACOES = [
 ]
 
 
-def sortear(r, variante, n):
+def sortear(r, variante, e):
+    n = e.n
     op = r.choice(["empilhar", "empilhar", "desempilhar", "topo"]) if n else "empilhar"
     return op, [r.randrange(100)] if op == "empilhar" else []
 

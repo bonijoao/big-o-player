@@ -197,6 +197,7 @@
     "n²/2": { nome: "n²/2", f: (n) => n * n / 2 },
     "n log₂ n": { nome: "n log₂ n", f: (n) => n * Math.log2(n) },
     n: { nome: "n", f: (n) => n },
+    V: { nome: "V", f: (n) => n },
     "2n": { nome: "2n", f: (n) => 2 * n },
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
   };
@@ -241,7 +242,7 @@
     }
     const n = itens.filter(([c]) => cheios.includes(c)).reduce((t, [, x]) => t + x, 0);
     const resto = a.medido.memoria.pico - n;
-    const partes = [n && `${n} crescem com n (preenchidos)`, resto && `${resto} ${esc(a.memoria.vazados || "crescem mais devagar")} (vazados)`].filter(Boolean);
+    const partes = [n && `${n} crescem com ${a.memoria.variavel || "n"} (preenchidos)`, resto && `${resto} ${esc(a.memoria.vazados || "crescem mais devagar")} (vazados)`].filter(Boolean);
     frag.append(el("p", { class: "memoria-total", html: `<b>${mil(a.medido.memoria.pico)} valores</b> no pico: ${partes.join(", ")}.` }));
     return frag;
   }

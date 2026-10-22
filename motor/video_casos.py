@@ -146,3 +146,47 @@ def montar_atendimento(pasta):
         rich(d, [("espera média ", ""), (f"{media} min", "bg"), (f", maior fila: {ex['maior']}", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+def montar_grafo(pasta):
+    """Busca em largura ou em profundidade: o grafo do encarte no fim, com a
+    árvore da busca em tinta e, em cada vértice, a distância (largura) ou a
+    ordem de visita (profundidade), em verde: é o resultado."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    k, V, arestas = ex["k"], ex["n"], ex["arestas"]
+    largura = "dist" in ex
+    num = ex["dist"] if largura else ex["ordem"]
+    # a árvore: cada vértice descoberto liga-se a quem estava em visita (largura) ou no topo (profundidade)
+    arvore, vez, pilha = set(), None, []
+    for e in ex["eventos"]:
+        if e[0] == "visita":
+            vez = e[1]
+        elif e[0] in ("enfileira", "empilha"):
+            alvo = vez if largura else (pilha[-1] if pilha else None)
+            if alvo is not None:
+                arvore.add(tuple(sorted((alvo, e[1]))))
+            if not largura:
+                pilha.append(e[1])
+        elif e[0] == "desempilha":
+            pilha.pop()
+    GX0, GY0 = 90, 100
+    passo = min(360, 110 * (k - 1)) / max(1, k - 1)
+    raio = min(17, passo * 0.3)
+    pos = lambda u: (GX0 + (u % k) * passo, GY0 + (u // k) * passo)
+    nome = "fila" if largura else "pilha"
+
+    def cena(d, t, im):
+        for a, b in arestas:
+            naArvore = (a, b) in arvore
+            line(d, pos(a), pos(b), INK if naArvore else PALIDO, w=3 if naArvore else 1)
+        for v in range(V):
+            x, y = pos(v)
+            d.ellipse((x - raio, y - raio, x + raio, y + raio), fill=CLARO, outline=GRAY, width=1)
+            texto(d, str(num[v]), x, y - raio * 0.55, int(min(15, raio * 0.95)), GREEN, b=True, align="c")
+        _painel(d, [("operações", str(ex["ops"]), 40, True),
+                    (f"{nome} mais {'longa' if largura else 'alta'}", f"{ex['estrutura']} vértices", 20, False)])
+        fim = f", o mais longe a {max(num)} arestas" if largura else f", pilha de até {ex['estrutura']}"
+        rich(d, [("visitou os ", ""), (f"{V} vértices", "b"), (": ", ""), (f"{ex['ops']} operações", "bg"), (fim, "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5

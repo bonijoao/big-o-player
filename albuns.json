@@ -115,16 +115,6 @@
   "frase": "Caminhos, vizinhos e distâncias.",
   "em_producao": [
    {
-    "nome": "Busca em largura",
-    "tempo": "O(V + E)",
-    "memoria": "O(V)"
-   },
-   {
-    "nome": "Busca em profundidade",
-    "tempo": "O(V + E)",
-    "memoria": "O(V)"
-   },
-   {
     "nome": "Dijkstra",
     "tempo": "O((V + E) log V)",
     "memoria": "O(V)"

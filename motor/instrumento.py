@@ -2,10 +2,13 @@
 
 Cada instrumento declara, no seu medir.py:
   ESTRUTURAS  {variante: classe}; a classe recebe um Contador
-  ENCHER      a operação que põe um valor (monta a estrutura com 0, 1, …, n − 1)
+  ENCHER      a operação que põe um valor (monta a estrutura com 0, 1, …, n − 1),
+              ou uma função montar(classe, conta, n) que devolve a estrutura pronta
+              (o Grafo monta n vértices e as arestas do grafo de medição)
   OPERACOES   [{id, estrutura, chamada, args(n) → lista, minimo, seguidas?}]
               seguidas = "media" ou "pior": n chamadas a partir da estrutura vazia
-  sortear     sortear(r, variante, n) → (chamada, args): sequências para conferir
+  sortear     sortear(r, variante, e) → (chamada, args): sequências para conferir,
+              a partir da estrutura montada com INICIO valores (padrão 0)
 
 Custo = leituras + escritas de casas (instrumentos/vetor/vetor.py). Para cada
 operação, guarda a chamada exata (com os argumentos) e o que ela custou, para
@@ -25,9 +28,12 @@ PASSOS = 80                  # operações por sequência
 
 def montar(classe, encher, n):
     conta = Contador()
-    e = classe(conta)
-    for i in range(n):
-        getattr(e, encher)(i)
+    if callable(encher):
+        e = encher(classe, conta, n)
+    else:
+        e = classe(conta)
+        for i in range(n):
+            getattr(e, encher)(i)
     conta.ops.clear()
     return e, conta
 
@@ -61,7 +67,7 @@ def seguidas(classe, op, n):
     return {"n": n, "vezes": n, **custo(conta)}
 
 
-def medir(ESTRUTURAS, ENCHER, OPERACOES, sortear, pasta):
+def medir(ESTRUTURAS, ENCHER, OPERACOES, sortear, pasta, INICIO=0):
     operacoes = {}
     for op in OPERACOES:
         classe = ESTRUTURAS[op["estrutura"]]
@@ -82,17 +88,17 @@ def medir(ESTRUTURAS, ENCHER, OPERACOES, sortear, pasta):
     for v, classe in ESTRUTURAS.items():
         for s in CONFERIR:
             r = random.Random(s)
-            e, conta = montar(classe, ENCHER, 0)
+            e, conta = montar(classe, ENCHER, INICIO)
             passos = []
             for _ in range(PASSOS):
-                chamada, args = sortear(r, v, e.n)
+                chamada, args = sortear(r, v, e)
                 conta.ops.clear()
                 volta = getattr(e, chamada)(*args)
                 passos.append({"chamada": chamada, "args": args, "volta": volta, **custo(conta)})
-            conferir.append({"estrutura": v, "semente": s, "passos": passos,
+            conferir.append({"estrutura": v, "semente": s, "inicio": INICIO, "passos": passos,
                              "valores": e.valores(), "casas": e.capacidade})
 
-    dados = {"encher": ENCHER, "tamanhos": TAMANHOS, "operacoes": operacoes,
+    dados = {"encher": ENCHER.__name__ if callable(ENCHER) else ENCHER, "tamanhos": TAMANHOS, "operacoes": operacoes,
              "capacidade": capacidade, "conferir": conferir}
     with open(os.path.join(pasta, "dados.json"), "w") as f:
         json.dump(dados, f, ensure_ascii=False)

@@ -23,7 +23,8 @@ OPERACOES = [
 ]
 
 
-def sortear(r, variante, n):
+def sortear(r, variante, e):
+    n = e.n
     ops = ["anexar", "inserir", "buscar"] + (["ler", "escrever", "remover"] if n else [])
     op = r.choice(ops)
     if op == "anexar":

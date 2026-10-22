@@ -18,7 +18,7 @@
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6 };          // accelerando: unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, grafo: 6 };          // accelerando: unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -406,7 +406,7 @@
     let lx = 70;
     for (const [cor, rot] of itens) {
       ctx.fillStyle = cor; ctx.fillRect(lx, y + 2, 10, 10);
-      if (cor === COR.claro) { ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(lx + 0.5, y + 2.5, 9, 9); }
+      if (cor === COR.claro || cor === "#fff") { ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(lx + 0.5, y + 2.5, 9, 9); }
       texto(ctx, rot, lx + 16, y, 11, COR.cinza);
       ctx.font = `400 11px ${MONO}`;
       lx += 16 + ctx.measureText(rot).width + 26;
@@ -712,6 +712,123 @@
     };
   }
 
+  // ---------- busca em largura e em profundidade ----------
+
+  function simGrafo(faixa, k, arestas, accelerando) {
+    const largura = faixa.alg === "largura", V = k * k;
+    const r = Algoritmos[faixa.alg](V, arestas);
+    const ideia = faixa.video.ideia, nomeEst = largura ? "fila" : "pilha";
+    const chave = (u, v) => (u < v ? `${u},${v}` : `${v},${u}`);
+    // papel de cada vértice: 0 = não visto, 1 = na fila ou na pilha, 2 = o da vez, 3 = já saiu
+    const papel = new Array(V).fill(0), num = new Array(V).fill(null), arvore = new Set(), olhadas = new Set();
+    const est_ = [];   // a fila ou a pilha: os vértices, do início (ou fundo) para o fim (ou topo)
+    let vez = null, ops = 0, viz = 0, pico = 0, visitados = 0, olhando = null;   // olhando: a aresta da vez, até o próximo vértice
+    const est = r.eventos.map((e) => {
+      if (e.t === "visita" || e.t === "topo" || e.t === "desempilha" || e.t === "testa" || e.t === "devolva") olhando = null;
+      if (e.t === "enfileira" || e.t === "empilha") {
+        est_.push(e.v); papel[e.v] = 1; ops++;
+        if (vez !== null) arvore.add(chave(vez, e.v));     // quem descobriu e quem foi descoberto
+        if (largura) { if (num[e.v] === null) num[e.v] = 0; }   // a origem; os outros já ganharam a distância
+        else { num[e.v] = ++visitados; if (vez !== null) papel[vez] = 1; vez = e.v; papel[e.v] = 2; }
+      } else if (e.t === "visita") {
+        est_.shift(); ops++;
+        if (vez !== null) papel[vez] = 3;
+        vez = e.u; papel[e.u] = 2;
+      } else if (e.t === "topo") {
+        ops++;
+        if (vez !== null && vez !== e.u && papel[vez] === 2) papel[vez] = 1;
+        vez = e.u; papel[e.u] = 2;
+      } else if (e.t === "desempilha") {
+        est_.pop(); ops++; papel[e.u] = 3; vez = null;
+      } else if (e.t === "olha") {
+        viz++; ops++; olhando = [e.u, e.v]; olhadas.add(chave(e.u, e.v));
+      } else if (e.t === "atribui" && largura && e.v !== undefined) {
+        num[e.v] = e.d;
+      } else if (e.t === "devolva") {
+        if (vez !== null) papel[vez] = 3;
+        vez = null;
+      }
+      pico = Math.max(pico, est_.length);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, papel: papel.slice(), num: num.slice(), arvore: new Set(arvore),
+        nOlhadas: olhadas.size, olhando, est: est_.slice(), ops, viz, pico };
+    });
+    if (ops !== r.ops || pico !== r.estrutura) throw new Error("reprodução da busca no grafo não bate");
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { atribui: 0.4, enfileira: 1, empilha: 1, visita: 1.5, topo: 0.5, testa: 0.3,
+      olha: 1, avanca: 0.2, compara: 0.4, desempilha: 1, devolva: 3 }, (t) => t === "olha", 6, 2.5);
+    const tl = linhaDoTempo(pesos);
+
+    // geometria: a grade à esquerda, a fila ou a pilha em pé no meio, o painel à direita
+    const GX0 = 90, GY0 = 100, LADO = Math.min(360, 110 * (k - 1)), passo = LADO / Math.max(1, k - 1);
+    const raio = Math.min(17, passo * 0.3);
+    const pos = (u) => [GX0 + (u % k) * passo, GY0 + Math.floor(u / k) * passo];
+    const SX = 540, SW = 64, SBASE = 470, sh = Math.min(28, 340 / Math.max(4, r.estrutura)), STOPO = SBASE - Math.max(4, r.estrutura) * sh;
+    const maisLonge = largura ? Math.max(...r.dist) : null;
+
+    function desenhar(ctx, u) {
+      const k_ = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k_ >= 0 ? est[k_] : { papel: new Array(V).fill(0), num: new Array(V).fill(null), arvore: new Set(), olhando: null, est: [], ops: 0, viz: 0, pico: 0, nOlhadas: 0 };
+      // arestas: as da árvore da busca em tinta; a que está sendo olhada em coral
+      for (const [a, b] of arestas) {
+        const [x0, y0] = pos(a), [x1, y1] = pos(b);
+        const naArvore = s.arvore.has(chave(a, b));
+        linha(ctx, x0, y0, x1, y1, naArvore ? COR.tinta : COR.palido, naArvore ? 3 : 1.5);
+      }
+      if (s.olhando && !fim) { const [x0, y0] = pos(s.olhando[0]), [x1, y1] = pos(s.olhando[1]); linha(ctx, x0, y0, x1, y1, COR.mexeu, 4); }
+      for (let v = 0; v < V; v++) {
+        const [x, y] = pos(v), p = fim ? 3 : s.papel[v];
+        ctx.beginPath(); ctx.arc(x, y, raio, 0, 7);
+        ctx.fillStyle = p === 2 ? COR.mexeu : p === 3 ? COR.claro : "#fff"; ctx.fill();
+        ctx.strokeStyle = p === 0 ? COR.palido : p === 3 ? COR.cinza : COR.tinta; ctx.lineWidth = p === 1 ? 2.5 : 1.5; ctx.stroke();
+        if (s.num[v] !== null) texto(ctx, String(s.num[v]), x, y - Math.min(8, raio * 0.5), Math.min(15, raio * 0.95), fim ? COR.verde : p === 2 ? "#fff" : COR.tinta, 700, "center");
+        if (raio >= 9) texto(ctx, String(v + 1), x + raio * 0.75, y - raio - 11, 10, COR.cinza);
+      }
+      // a fila (o início em cima: sai por cima, entra por baixo) ou a pilha (o fundo embaixo, o topo em cima)
+      texto(ctx, nomeEst, SX + SW / 2, STOPO - 36, 13, COR.cinza, 400, "center");
+      linha(ctx, SX, STOPO - 14, SX, SBASE, COR.palido); linha(ctx, SX + SW, STOPO - 14, SX + SW, SBASE, COR.palido);
+      if (!largura) linha(ctx, SX, SBASE, SX + SW, SBASE, COR.tinta, 2);
+      const ult = k_ >= 0 ? est[k_].t : null;
+      s.est.forEach((v, j) => {
+        const y = largura ? STOPO + j * sh : SBASE - (j + 1) * sh;
+        const novo = j === s.est.length - 1 && (ult === "enfileira" || ult === "empilha");
+        ctx.fillStyle = novo ? COR.mexeu : COR.claro;
+        ctx.fillRect(SX + 4, y + 1, SW - 8, sh - 2);
+        if (sh >= 12) texto(ctx, String(v + 1), SX + SW / 2, y + sh / 2 - Math.min(8, sh * 0.38), Math.min(15, sh * 0.7), novo ? "#fff" : COR.tinta, 600, "center");
+      });
+      if (s.est.length) {
+        if (largura) {
+          texto(ctx, "← sai", SX + SW + 6, STOPO + sh / 2 - 7, 11, COR.cinza);
+          texto(ctx, "← entra", SX + SW + 6, STOPO + (s.est.length - 1) * sh + sh / 2 - 7 + (s.est.length === 1 ? 14 : 0), 11, COR.cinza);
+        } else texto(ctx, "topo", SX + SW + 6, SBASE - s.est.length * sh + sh / 2 - 7, 11, COR.cinza);
+      }
+
+      const x = 680;
+      texto(ctx, "operações", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.ops), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "vizinhos olhados", x, 174, 13, COR.cinza);
+      texto(ctx, `${s.viz} de ${2 * arestas.length}`, x, 190, 26, COR.tinta, 700);
+      const fixo = largura ? V : 2 * V;
+      texto(ctx, "memória extra agora", x, 244, 13, COR.cinza);
+      texto(ctx, `${fixo} + ${s.est.length} ${nomeEst === "fila" ? "na fila" : "na pilha"}`, x, 260, 20, COR.tinta, 700);
+      texto(ctx, `${nomeEst} mais ${largura ? "longa" : "alta"}: ${s.pico}`, x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `V = ${V} vértices, E = ${arestas.length} arestas`, x, 330, 13, COR.cinza);
+      texto(ctx, largura ? "no vértice: a distância à origem" : "no vértice: a ordem de visita", x, 350, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "o da vez"], ["#fff", `na ${nomeEst}`], [COR.claro, "já saiu"], [COR.tinta, "aresta da árvore"]], 500);
+
+      if (fim && largura) legenda(ctx, [["visitou os ", ""], [`${V} vértices`, "b"], [": ", ""], [`${r.ops} operações`, "g"], [`, o mais longe a ${maisLonge} arestas`, ""]]);
+      else if (fim) legenda(ctx, [["visitou os ", ""], [`${V} vértices`, "b"], [": ", ""], [`${r.ops} operações`, "g"], [`, pilha de até ${r.estrutura}`, ""]]);
+      else if (s.viz < 6) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k_ = tl.eventoEm(u); return k_ >= 0 ? est[k_].ops : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.grafo, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: V }, contagemEm,
+      medidor: () => `${r.ops} operações, V = ${V}, E = ${arestas.length}<br>${nomeEst} de até ${r.estrutura}`,
+      aoVivo: (u, cfg) => `Tocando agora: ${V} vértices e ${arestas.length} arestas, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} operações, ${nomeEst} de até ${r.estrutura} ${r.estrutura === 1 ? "vértice" : "vértices"}.`,
+    };
+  }
+
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
@@ -725,6 +842,10 @@
     if (tipo === "atendimento") {
       const e = padrao ? ex : Algoritmos.clientes(cfg.n, ex.movimentos[cfg.tipo], cfg.semente);
       return simAtendimento(faixa, e.chegada, e.duracao, accelerando);
+    }
+    if (tipo === "grafo") {
+      const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));
+      return simGrafo(faixa, k, padrao ? ex.arestas : Algoritmos.grafoGrade(k, cfg.tipo, cfg.semente), accelerando);
     }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;

@@ -373,6 +373,108 @@
       ops: (c.ops.enfileirar || 0) + (c.ops.desenfileirar || 0), casas: fila.reg.leituras + fila.reg.escritas };
   }
 
+  // ---------- grafos (algoritmos/largura, algoritmos/profundidade) ----------
+
+  // a lista de adjacência do instrumento Grafo, montada sem entrar na conta
+  function listaDe(V, arestas) {
+    const g = instrumentos().GrafoLista(undefined, V);
+    for (const [u, v] of arestas) g.por(u, v);
+    g.reg.leituras = 0; g.reg.escritas = 0; g.reg.eventos = [];
+    return g;
+  }
+  const rotulo = (v) => (v === null ? null : v + 1);   // vértices a partir de 1, como no pseudocódigo
+
+  /** Busca em largura a partir do vértice 0, com a Fila circular do instrumento. */
+  function largura(V, arestas) {
+    const c = contador(), g = listaDe(V, arestas), fila = instrumentos().FilaCircular();
+    const dist = new Array(V).fill(null);       // null = ∞, ainda não visto
+    c.aloca("dist", V);
+    const d = (x) => (x === null ? "∞" : x);
+    const vars = c.vars = { u: null, v: null, "dist[u]": null, "dist[v]": null, "tamanho da fila": 0 };
+    const enfileira = (v, linha) => {
+      c.op("enfileirar"); fila.enfileirar(v); c.aloca("fila", fila.n); vars["tamanho da fila"] = fila.n;
+      c.push({ t: "enfileira", v, linha });
+    };
+    c.push({ t: "atribui", linha: 2 });
+    dist[0] = 0;
+    enfileira(0, 3);
+    const visitas = [];
+    for (;;) {
+      c.push({ t: "testa", linha: 4 });
+      if (fila.n === 0) break;
+      c.op("desenfileirar"); const u = fila.desenfileirar(); c.aloca("fila", fila.n);
+      visitas.push(u);
+      Object.assign(vars, { u: rotulo(u), v: null, "dist[u]": dist[u], "dist[v]": null, "tamanho da fila": fila.n });
+      c.push({ t: "visita", u, linha: 5 });
+      for (let i = 0; i < g.grau(u); i++) {
+        c.op("vizinhos"); const v = g.vizinho(u, i);
+        Object.assign(vars, { v: rotulo(v), "dist[v]": d(dist[v]) });
+        c.push({ t: "olha", u, v, linha: 6 });
+        c.push({ t: "compara", v, linha: 7 });
+        if (dist[v] === null) {
+          dist[v] = dist[u] + 1;
+          vars["dist[v]"] = dist[v];
+          c.push({ t: "atribui", v, d: dist[v], linha: 8 });
+          enfileira(v, 9);
+        }
+      }
+    }
+    c.push({ t: "devolva", linha: 10 });
+    return { V, arestas, dist, visitas, eventos: c.eventos, pico: c.pico, estrutura: c.pico - V,
+      ops: (c.ops.enfileirar || 0) + (c.ops.desenfileirar || 0) + (c.ops.vizinhos || 0),
+      casas: g.reg.leituras + g.reg.escritas + fila.reg.leituras + fila.reg.escritas };
+  }
+
+  /** Busca em profundidade a partir do vértice 0: topo + próximo vizinho, com a Pilha do instrumento. */
+  function profundidade(V, arestas) {
+    const c = contador(), g = listaDe(V, arestas), pilha = instrumentos().Pilha();
+    const ordem = new Array(V).fill(0), proximo = new Array(V).fill(0);
+    c.aloca("ordem", V); c.aloca("proximo", V);
+    // próximo[u] a partir de 1, como no pseudocódigo
+    const vars = c.vars = { u: null, v: null, "próximo[u]": null, "grau(u)": null, "ordem[v]": null, k: null, "tamanho da pilha": 0 };
+    const empilha = (v, linha) => {
+      c.op("empilhar"); pilha.empilhar(v); c.aloca("pilha", pilha.n); vars["tamanho da pilha"] = pilha.n;
+      c.push({ t: "empilha", v, linha });
+    };
+    c.push({ t: "atribui", linha: 2 });
+    let k = 1;
+    ordem[0] = k;
+    vars.k = k;
+    empilha(0, 3);
+    const visitas = [0];
+    for (;;) {
+      c.push({ t: "testa", linha: 4 });
+      if (pilha.n === 0) break;
+      c.op("topo"); const u = pilha.topo();
+      Object.assign(vars, { u: rotulo(u), v: null, "próximo[u]": proximo[u] + 1, "grau(u)": g.grau(u), "ordem[v]": null });
+      c.push({ t: "topo", u, linha: 5 });
+      c.push({ t: "testa", linha: 6 });
+      if (proximo[u] < g.grau(u)) {
+        c.op("vizinhos"); const v = g.vizinho(u, proximo[u]);
+        Object.assign(vars, { v: rotulo(v), "ordem[v]": ordem[v] });
+        c.push({ t: "olha", u, v, linha: 7 });
+        proximo[u]++;
+        vars["próximo[u]"] = proximo[u] + 1;
+        c.push({ t: "avanca", u, linha: 8 });
+        c.push({ t: "compara", v, linha: 9 });
+        if (ordem[v] === 0) {
+          k++; ordem[v] = k;
+          Object.assign(vars, { k, "ordem[v]": k });
+          c.push({ t: "atribui", v, k, linha: 10 });
+          empilha(v, 11);
+          visitas.push(v);
+        }
+      } else {
+        c.op("desempilhar"); pilha.desempilhar(); c.aloca("pilha", pilha.n); vars["tamanho da pilha"] = pilha.n;
+        c.push({ t: "desempilha", u, linha: 13 });
+      }
+    }
+    c.push({ t: "devolva", linha: 14 });
+    return { V, arestas, ordem, visitas, eventos: c.eventos, pico: c.pico, estrutura: c.pico - 2 * V,
+      ops: (c.ops.empilhar || 0) + (c.ops.desempilhar || 0) + (c.ops.topo || 0) + (c.ops.vizinhos || 0),
+      casas: g.reg.leituras + g.reg.escritas + pilha.reg.leituras + pilha.reg.escritas };
+  }
+
   // ---------- entradas ----------
 
   // gerador com semente (mulberry32): o mesmo número de sorteio dá o mesmo vetor
@@ -444,7 +546,34 @@
     return { chegada, duracao };
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, entrada, entradaBusca, textoParenteses, clientes, centrosIniciais, ORDENACOES };
+  /** As arestas de um grafo em grade k × k, como motor/grade.py:gerar (com outro sorteador):
+   *  a grade cheia, um sorteado conexo (árvore que cobre a grade + cada aresta que sobra com chance 1/3)
+   *  ou o caminho em serpentina que começa no vértice 0. */
+  function grafoGrade(k, caso, semente) {
+    const todas = [];
+    for (let u = 0; u < k * k; u++) {
+      if ((u % k) + 1 < k) todas.push([u, u + 1]);
+      if (Math.floor(u / k) + 1 < k) todas.push([u, u + k]);
+    }
+    const ordena = (as) => as.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+    if (caso === "grade") return ordena(todas);
+    if (caso === "caminho") {
+      const ordem = [];
+      for (let l = 0; l < k; l++) for (let c = 0; c < k; c++) ordem.push(l * k + (l % 2 ? k - 1 - c : c));
+      return ordena(ordem.slice(1).map((v, i) => [Math.min(ordem[i], v), Math.max(ordem[i], v)]));
+    }
+    const r = sorteador(semente), pai = Array.from({ length: k * k }, (_, i) => i);
+    const raiz = (x) => { while (pai[x] !== x) { pai[x] = pai[pai[x]]; x = pai[x]; } return x; };
+    for (let i = todas.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = todas[i]; todas[i] = todas[j]; todas[j] = x; }
+    const escolhidas = [];
+    for (const [u, v] of todas) {
+      const a = raiz(u), b = raiz(v);
+      if (a !== b) { pai[a] = b; escolhidas.push([u, v]); } else if (r() < 1 / 3) escolhidas.push([u, v]);
+    }
+    return ordena(escolhidas);
+  }
+
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, largura, profundidade, entrada, entradaBusca, textoParenteses, clientes, grafoGrade, centrosIniciais, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

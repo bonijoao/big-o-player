@@ -523,3 +523,13 @@ svg text { font-family: var(--mono); }
   * { scroll-behavior: auto !important; }
 }
 .palco[data-modo="mini"] .palco-fluxo { display: none; }
+
+/* ---------- a demo do grafo: as três vistas lado a lado (empilham no estreito) ---------- */
+
+.demo-grafo { display: block; }
+.demo-grafo svg { width: auto; max-width: 100%; max-height: none; }
+.demo-vistas { display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: flex-start; justify-content: center; }
+.demo-vista { margin: 0; min-width: 0; max-width: 100%; }
+.demo-vista figcaption { font-size: 0.78rem; color: var(--cinza); margin: 0 0 6px; }
+.demo-vista svg { display: block; height: auto; }
+.custo-vista { display: block; }

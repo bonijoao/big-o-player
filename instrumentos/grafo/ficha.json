@@ -1,0 +1,137 @@
+{
+ "id": "grafo",
+ "nome": "Grafo",
+ "variante": "três vistas: matriz de adjacência, lista de adjacência e matriz de incidência",
+ "frase": "Pontos e as ligações entre eles, guardados de três jeitos.",
+ "resumo": "Um grafo são vértices e arestas, cada aresta ligando dois vértices. Aqui ele não é dirigido: a aresta u–v vale nos dois sentidos. As mesmas arestas cabem em três vistas, e cada uma responde rápido a uma pergunta e devagar a outra. A matriz de adjacência diz na hora se u e v estão ligados, mas guarda V × V casas. A lista de adjacência guarda só os vizinhos de cada um e entrega os vizinhos de u sem procurar. A matriz de incidência guarda uma coluna por aresta: tudo começa varrendo a linha de u.",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ },
+ "n": "V",
+ "eixo": "V (vértices, com E = 3V arestas)",
+ "memoria": {
+  "notacao": "O(V²), O(V + E) e O(V · E)",
+  "porque": "A matriz de adjacência guarda V × V casas, tenha o grafo poucas arestas ou muitas. A lista de adjacência guarda uma casa por vértice (onde começa a lista dele) e duas por aresta (u na lista de v e v na lista de u), mais a folga de cada vetor, que dobra quando enche. A matriz de incidência guarda V casas por aresta."
+ },
+ "variantes": {
+  "matriz": "matriz de adjacência",
+  "lista": "lista de adjacência",
+  "incidencia": "matriz de incidência"
+ },
+ "operacoes": [
+  {
+   "id": "existe-matriz",
+   "nome": "a aresta u–v existe?",
+   "notacao": "O(1)",
+   "porque": "Uma leitura: a casa da linha u e coluna v."
+  },
+  {
+   "id": "existe-lista",
+   "nome": "a aresta u–v existe?",
+   "notacao": "O(grau)",
+   "porque": "Busca v na lista de u, casa por casa; se não está lá, lê a lista inteira."
+  },
+  {
+   "id": "existe-incidencia",
+   "nome": "a aresta u–v existe?",
+   "notacao": "O(E)",
+   "porque": "Varre a linha de u; em cada coluna com 1, olha se v também tem 1 ali."
+  },
+  {
+   "id": "vizinhos-matriz",
+   "nome": "os vizinhos de u",
+   "notacao": "O(V)",
+   "porque": "Lê a linha u inteira, V casas, mesmo que u tenha poucos vizinhos."
+  },
+  {
+   "id": "vizinhos-lista",
+   "nome": "os vizinhos de u",
+   "notacao": "O(grau)",
+   "porque": "Lê a lista de u: uma casa por vizinho, nada mais."
+  },
+  {
+   "id": "vizinhos-incidencia",
+   "nome": "os vizinhos de u",
+   "notacao": "O(E + grau · V)",
+   "porque": "Varre a linha de u e, em cada coluna com 1, desce a coluna até achar a outra ponta."
+  },
+  {
+   "id": "grau-matriz",
+   "nome": "o grau de u",
+   "notacao": "O(V)",
+   "porque": "Soma a linha u inteira."
+  },
+  {
+   "id": "grau-lista",
+   "nome": "o grau de u",
+   "notacao": "O(1)",
+   "porque": "É o tamanho do vetor de u, guardado à parte: nenhuma casa lida."
+  },
+  {
+   "id": "grau-incidencia",
+   "nome": "o grau de u",
+   "notacao": "O(E)",
+   "porque": "Soma a linha de u: uma casa por aresta."
+  },
+  {
+   "id": "por-matriz",
+   "nome": "pôr a aresta u–v",
+   "notacao": "O(1)",
+   "porque": "Escreve 1 nas casas (u, v) e (v, u)."
+  },
+  {
+   "id": "por-lista",
+   "nome": "pôr a aresta u–v, com folga",
+   "notacao": "O(1) amortizado",
+   "porque": "Anexa v na lista de u e u na lista de v. Se um dos vetores enche, dobra e copia, como no Vetor."
+  },
+  {
+   "id": "por-incidencia",
+   "nome": "pôr a aresta u–v",
+   "notacao": "O(V)",
+   "porque": "Abre uma coluna nova e escreve as V casas dela: 1 em u e em v, 0 no resto."
+  },
+  {
+   "id": "tirar-matriz",
+   "nome": "tirar a aresta u–v",
+   "notacao": "O(1)",
+   "porque": "Escreve 0 nas casas (u, v) e (v, u)."
+  },
+  {
+   "id": "tirar-lista",
+   "nome": "tirar a aresta u–v",
+   "notacao": "O(grau)",
+   "porque": "Busca v na lista de u, tira e puxa os de depois uma casa para trás; o mesmo com u na lista de v."
+  },
+  {
+   "id": "tirar-incidencia",
+   "nome": "tirar a aresta u–v",
+   "notacao": "O(E + V)",
+   "porque": "Acha a coluna da aresta varrendo a linha de u e põe a última coluna no lugar dela, V leituras e V escritas."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "vizinhos-matriz",
+   "rotulo": "vizinhos, matriz de adjacência"
+  },
+  {
+   "id": "vizinhos-lista",
+   "rotulo": "vizinhos, lista"
+  },
+  {
+   "id": "vizinhos-incidencia",
+   "rotulo": "vizinhos, incidência"
+  },
+  {
+   "id": "existe-matriz",
+   "rotulo": "existe, matriz de adjacência"
+  }
+ ],
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas, contadas rodando as três vistas em Python no grafo de medição: V vértices, cada um ligado aos três seguintes dando a volta (E = 3V, grau 6), com V = {ns}. As perguntas são sobre o vértice 0, com uma aresta que não existe no existe e no pôr (o pior caso de quem procura). O número de vértices e de arestas e o tamanho de cada lista, guardados à parte, não contam.",
+  "custo": "O custo de achar os vizinhos de um vértice nas três vistas, e o de saber se uma aresta existe na matriz de adjacência, para V de {v0} a {v1} no grafo de medição, medido uma vez por V. Os vizinhos são sempre 6: a lista lê só eles, a matriz de adjacência lê a linha inteira e a de incidência varre a linha e desce as colunas.",
+  "casas": "Casas que cada vista guarda no grafo de medição, para V de {v0} a {v1} (E = 3V). A lista cresce como V; as duas matrizes, como V², e a de incidência três vezes mais depressa, porque E = 3V."
+ }
+}

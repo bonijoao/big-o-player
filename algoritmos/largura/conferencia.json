@@ -1,0 +1,7 @@
+{
+  "referencia": "igraph::bfs() (igraph 2.3.3) e largura_r() (reimplementação em R)",
+  "versao_r": "4.6.0",
+  "vetores": 16,
+  "tudo_ok": true,
+  "resumo": "Rodado no R 4.6.0 com o igraph 2.3.3 em 16 grafos (o do encarte e 15 grades 6 × 6: sorteadas, cheias e em caminho): a ordem de visita e a distância de cada vértice batem com o bfs() do igraph, e a reimplementação em R conta as mesmas operações e a mesma fila mais longa."
+}

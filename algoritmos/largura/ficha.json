@@ -1,0 +1,54 @@
+{
+ "id": "busca-em-largura",
+ "nome": "Busca em largura",
+ "variante": "grafo em grade, a partir de um canto",
+ "familia": "grafos",
+ "resumo": "Sai da origem e visita o grafo em camadas: primeiro os vizinhos dela, depois os vizinhos dos vizinhos. Quem é visto entra no fim da fila e espera a vez; quem sai da fila tem os vizinhos olhados um por um. A distância de cada vértice à origem, em arestas, sai de graça: é a do vértice que o descobriu mais um.",
+ "instrumentos": [
+  {
+   "id": "grafo",
+   "papel": "a lista de adjacência: os vizinhos de u custam grau(u) leituras"
+  },
+  {
+   "id": "fila",
+   "papel": "os vértices vistos que esperam a vez, na versão circular; quem foi visto primeiro sai primeiro"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(V + E)",
+  "porque": "Cada vértice entra na fila uma vez e sai uma vez: 2V operações. Quando ele sai, olha cada vizinho; somando todos os vértices, cada aresta é olhada pelas duas pontas: 2E. O total cresce como V + E.",
+  "nota": "Numa matriz de adjacência, olhar os vizinhos de u custa V leituras, seja qual for o grau: o total vira O(V²). Na grade, E fica entre V − 1 e 2V, e V + E cresce como V."
+ },
+ "memoria": {
+  "notacao": "O(V)",
+  "porque": "O vetor dist guarda uma distância por vértice: V casas. A fila guarda a fronteira, os vistos que esperam a vez; no caminho ela nunca passa de 1, na grade cheia chega à diagonal, e num grafo em estrela chegaria a V − 1.",
+  "nomes": {
+   "dist": "distâncias (uma por vértice)",
+   "fila": "vértices na fila"
+  },
+  "cresce_com_n": [
+   "dist"
+  ],
+  "vazados": "na fila, a fronteira da busca",
+  "variavel": "V"
+ },
+ "video": {
+  "ideia": [
+   "quem é visto entra no fim da fila; quem sai olha os vizinhos",
+   "camada por camada: a distância é a do vizinho que descobriu, mais um"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e que grafo entra",
+  "texto": "As mesmas contas para grades cada vez maiores e para três grafos: sorteado, grade cheia e caminho em serpentina. Em escala logarítmica, quem cresce como V sobe em linha reta, com inclinação 1; os três grafos correm paralelos, separados pelo número de arestas.",
+  "crescimento": "Operações na fila e vizinhos olhados para V de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos grafos sorteados. Tracejada: V, de referência.",
+  "distribuicao": "{vezes} grafos sorteados de {nd} vértices: a fila mais longa vai de {min} a {max} vértices. A barra preta é o grafo do encarte.",
+  "rotulo": "fila mais longa (V = {nd})",
+  "memoria": "A fila mais longa para cada V, nos três grafos (nos sorteados, a maior entre eles). O vetor dist, sempre com V casas, fica de fora. No caminho, a fila nunca passa de 1; na grade cheia, ela é a diagonal, que cresce como a raiz de V."
+ },
+ "pseudocodigo": "procedimento largura(G, s):\n    dist[v] ← ∞ para todo vértice v\n    dist[s] ← 0;  enfileire s\n    enquanto a fila não está vazia:\n        u ← desenfileire\n        para cada vizinho v de u:\n            se dist[v] = ∞:\n                dist[v] ← dist[u] + 1\n                enfileire v\n    devolva dist\n",
+ "placa": {
+  "autor": "Edward F. Moore (o caminho mais curto num labirinto)",
+  "ano": "1959"
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "id": "busca-em-profundidade",
+ "nome": "Busca em profundidade",
+ "variante": "grafo em grade, a partir de um canto; pilha no lugar da recursão",
+ "familia": "grafos",
+ "resumo": "Sai da origem e anda sempre para um vizinho ainda não visto, o mais fundo que der. Quando o vértice da vez não tem mais vizinho novo, volta um passo e tenta o próximo vizinho de quem veio antes. A pilha guarda o caminho de volta: é a recursão escrita à mão, e visita na mesma ordem da versão recursiva.",
+ "instrumentos": [
+  {
+   "id": "grafo",
+   "papel": "a lista de adjacência: o próximo vizinho de u custa uma leitura"
+  },
+  {
+   "id": "pilha",
+   "papel": "o caminho da origem até o vértice da vez; voltar é desempilhar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(V + E)",
+  "porque": "Cada vértice é empilhado e desempilhado uma vez: 2V. Cada aresta é olhada pelas duas pontas: 2E. Antes de cada olhada, e mais uma vez por vértice quando acabam os vizinhos, a busca lê o topo da pilha: 2E + V. O total cresce como V + E.",
+  "nota": "Numa matriz de adjacência, achar o próximo vizinho varre a linha do vértice: o total vira O(V²). Na grade, E fica entre V − 1 e 2V, e V + E cresce como V."
+ },
+ "memoria": {
+  "notacao": "O(V)",
+  "porque": "Dois vetores de V casas: ordem (o número de visita de cada vértice, 0 se ainda não visto) e próximo (qual vizinho olhar na volta). A pilha guarda o caminho atual: na grade cheia e no caminho, a busca desce por todos os vértices sem voltar, e a pilha chega a V.",
+  "nomes": {
+   "ordem": "ordem de visita (uma por vértice)",
+   "proximo": "próximo vizinho (um por vértice)",
+   "pilha": "vértices na pilha"
+  },
+  "cresce_com_n": [
+   "ordem",
+   "proximo",
+   "pilha"
+  ],
+  "variavel": "V"
+ },
+ "video": {
+  "ideia": [
+   "anda para um vizinho novo; sem vizinho novo, volta um passo",
+   "a pilha é o caminho de volta: o último a entrar é o primeiro a sair"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e que grafo entra",
+  "texto": "As mesmas contas para grades cada vez maiores e para três grafos: sorteado, grade cheia e caminho em serpentina. Em escala logarítmica, quem cresce como V sobe em linha reta, com inclinação 1; os três grafos correm paralelos, separados pelo número de arestas.",
+  "crescimento": "Operações na pilha e vizinhos olhados para V de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos grafos sorteados. Tracejada: V, de referência.",
+  "distribuicao": "{vezes} grafos sorteados de {nd} vértices: a pilha mais alta vai de {min} a {max} vértices. A barra preta é o grafo do encarte.",
+  "rotulo": "pilha mais alta (V = {nd})",
+  "memoria": "A pilha mais alta para cada V, nos três grafos (nos sorteados, a maior entre eles). Os vetores ordem e próximo, sempre com V casas cada, ficam de fora. Na grade cheia e no caminho, a pilha chega a V."
+ },
+ "pseudocodigo": "procedimento profundidade(G, s):\n    ordem[v] ← 0 e próximo[v] ← 1 para todo vértice v\n    k ← 1;  ordem[s] ← k;  empilhe s\n    enquanto a pilha não está vazia:\n        u ← topo da pilha\n        se próximo[u] ≤ grau(u):\n            v ← o próximo[u]-ésimo vizinho de u\n            próximo[u] ← próximo[u] + 1\n            se ordem[v] = 0:\n                k ← k + 1;  ordem[v] ← k\n                empilhe v\n        senão:\n            desempilhe\n    devolva ordem\n",
+ "placa": {
+  "autor": "Charles Pierre Trémaux (saída de labirintos, à mão)",
+  "ano": "século XIX"
+ }
+}

@@ -42,7 +42,7 @@ function confereLinhas(pasta, eventos) {
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
-    atribui: "passo", sai: "chamada" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    atribui: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -77,6 +77,10 @@ function confereVars(pasta, vetor, eventos) {
     atendimento: (e) => (e.t !== "enfileira" || (e.vars.i === e.i + 1 && e.vars["tamanho da fila"] === e.casas.filter((x) => x !== null).length))
       && (e.t !== "chama" && e.t !== "direto" || e.vars.k === e.k + 1)
       && (e.t !== "atende" || (e.vars.k === e.k + 1 && e.vars["início"] === e.inicio && e.vars.livre === e.fim)),
+    largura: (e) => (e.t !== "visita" || (e.vars.u === e.u + 1 && e.vars["v"] === null)) && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1))
+      && (e.t !== "atribui" || e.v === undefined || e.vars["dist[v]"] === e.d) && (e.t !== "enfileira" || e.vars["tamanho da fila"] >= 1),
+    profundidade: (e) => (e.t !== "topo" || e.vars.u === e.u + 1) && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1 && e.vars["próximo[u]"] <= e.vars["grau(u)"]))
+      && (e.t !== "atribui" || e.v === undefined || (e.vars.k === e.k && e.vars["ordem[v]"] === e.k)) && (e.t !== "desempilha" || e.vars.u === e.u + 1),
     kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
   }[pasta];
   let erros = 0;
@@ -163,6 +167,18 @@ for (const pasta of ["sequencial", "binaria"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: atendimento (${casos.length} sorteios)`);
 }
 
+for (const pasta of ["largura", "profundidade"]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
+  const res = pasta === "largura" ? "dist" : "ordem";
+  const medidas = (r) => ({ visitas: r.visitas, [res]: r[res], ops: r.ops, estrutura: r.estrutura, casas: r.casas });
+  const casos = [{ ...ex, caso: "encarte" }, ...d.conferir];
+  let ok = confere(`${pasta} pico`, A[pasta](ex.k * ex.k, ex.arestas).pico, d.memoria.pico);
+  for (const c of casos) ok = confere(`${pasta} ${c.caso} k=${c.k}`, medidas(A[pasta](c.k * c.k, c.arestas)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas(pasta, A[pasta](c.k * c.k, c.arestas).eventos) && ok;
+  for (const c of casos) ok = confereVars(pasta, null, A[pasta](c.k * c.k, c.arestas).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} grafos)`);
+}
+
 // os geradores de entrada do palco (o menu "sortear"): cada caso tem de dar o que promete
 {
   let ok = true;
@@ -181,6 +197,14 @@ for (const pasta of ["sequencial", "binaria"]) {
         const intervalos = chegada.every((c, k) => dentro(c - (k ? chegada[k - 1] : 0), lim.chegada));
         ok = confere(`clientes ${m} n=${n} s=${semente}`, [chegada.length, intervalos, duracao.every((d) => dentro(d, lim.atendimento))], [n, true, true]) && ok;
       }
+    }
+  }
+  // grafos: o número de arestas de cada caso e o sorteado conexo (a busca visita todos)
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const k of [3, 4, 5, 6, 7]) {
+      const V = k * k, E = (caso) => A.grafoGrade(k, caso, semente).length;
+      const visitou = A.largura(V, A.grafoGrade(k, "sorteado", semente)).visitas.length;
+      ok = confere(`grafo k=${k} s=${semente}`, [E("grade"), E("caminho"), E("sorteado") >= V - 1, visitou], [2 * k * (k - 1), V - 1, true, V]) && ok;
     }
   }
   console.log(`${ok ? "ok" : "FALHOU"}: geradores de entrada do palco`);
@@ -219,7 +243,7 @@ for (const pasta of INSTRUMENTOS) {
   }
   for (const c of d.conferir) {
     casos++;
-    const e = I.montar(c.estrutura, d.encher, 0);
+    const e = I.montar(c.estrutura, d.encher, c.inicio ?? 0);
     const passos = c.passos.map((p) => ({ chamada: p.chamada, args: p.args, ...((r) => ({ volta: r.volta, ...custo(r) }))(I.operar(e, p.chamada, p.args)) }));
     ok = confere(`${pasta} ${c.estrutura} sequência ${c.semente}`, { passos, valores: e.valores(), casas: e.capacidade },
       { passos: c.passos, valores: c.valores, casas: c.casas }) && ok;

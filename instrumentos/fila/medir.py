@@ -21,7 +21,8 @@ for v in ESTRUTURAS:
     ]
 
 
-def sortear(r, variante, n):
+def sortear(r, variante, e):
+    n = e.n
     op = r.choice(["enfileirar", "enfileirar", "desenfileirar", "primeiro"]) if n else "enfileirar"
     return op, [r.randrange(100)] if op == "enfileirar" else []
 

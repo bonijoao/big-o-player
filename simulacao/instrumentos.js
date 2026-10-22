@@ -130,7 +130,96 @@
     return e;
   }
 
-  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular };
+  // ---------- grafo em três vistas (instrumentos/grafo/grafo.py) ----------
+  // Os eventos dizem a casa de cada vista: na matriz, (u, v); na lista, a
+  // casa i do vetor do vértice `lista`; na incidência, a linha w da coluna j.
+
+  const ordenadas = (as) => as.sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+
+  function GrafoMatriz(reg = registro(), V = 0) {
+    const casas = new Array(V * V).fill(0);
+    const le = (u, v) => { reg.leituras++; reg.eventos.push({ t: "le", u, v }); return casas[u * V + v]; };
+    const escreve = (u, v, x) => { reg.escritas++; reg.eventos.push({ t: "escreve", u, v, x }); casas[u * V + v] = x; };
+    const g = {
+      reg, V, E: 0, casas,
+      por(u, v) { escreve(u, v, 1); escreve(v, u, 1); g.E++; },
+      tirar(u, v) { escreve(u, v, 0); escreve(v, u, 0); g.E--; },
+      existe: (u, v) => le(u, v) === 1,
+      vizinhos(u) { const viz = []; for (let v = 0; v < V; v++) if (le(u, v) === 1) viz.push(v); return viz; },
+      grau(u) { let s = 0; for (let v = 0; v < V; v++) s += le(u, v); return s; },
+      arestas() { const as = []; for (let u = 0; u < V; u++) for (let v = u + 1; v < V; v++) if (casas[u * V + v]) as.push([u, v]); return as; },
+      valores: () => g.arestas(),
+      get capacidade() { return casas.length; },
+    };
+    return g;
+  }
+
+  function GrafoLista(reg = registro(), V = 0) {
+    // cada vértice tem o seu vetor; os custos somam no registro do grafo, e os eventos dizem de que lista são
+    const sub = (u) => ({
+      get leituras() { return reg.leituras; }, set leituras(x) { reg.leituras = x; },
+      get escritas() { return reg.escritas; }, set escritas(x) { reg.escritas = x; },
+      eventos: { push: (ev) => reg.eventos.push({ ...ev, lista: u }) },
+    });
+    const listas = Array.from({ length: V }, (_, u) => Vetor(sub(u)));
+    const g = {
+      reg, V, E: 0, listas,
+      por(u, v) { listas[u].anexar(v); listas[v].anexar(u); g.E++; },
+      tirar(u, v) { listas[u].remover(listas[u].buscar(v)); listas[v].remover(listas[v].buscar(u)); g.E--; },
+      existe: (u, v) => listas[u].buscar(v) >= 0,
+      vizinhos: (u) => Array.from({ length: listas[u].n }, (_, i) => listas[u].ler(i)),
+      vizinho: (u, i) => listas[u].ler(i),
+      grau: (u) => listas[u].n,
+      arestas: () => ordenadas(listas.flatMap((l, u) => l.valores().filter((v) => u < v).map((v) => [u, v]))),
+      valores: () => g.arestas(),
+      get capacidade() { return V + listas.reduce((s, l) => s + l.capacidade, 0); },
+    };
+    return g;
+  }
+
+  function GrafoIncidencia(reg = registro(), V = 0) {
+    const colunas = [];
+    const le = (w, j) => { reg.leituras++; reg.eventos.push({ t: "le", w, j }); return colunas[j][w]; };
+    const escreve = (w, j, x) => { reg.escritas++; reg.eventos.push({ t: "escreve", w, j, x }); colunas[j][w] = x; };
+    const outraPonta = (u, j) => { for (let w = 0; w < V; w++) if (w !== u && le(w, j) === 1) return w; return -1; };
+    const coluna = (u, v) => { for (let j = 0; j < colunas.length; j++) if (le(u, j) === 1 && le(v, j) === 1) return j; return -1; };
+    const g = {
+      reg, V, colunas,
+      get E() { return colunas.length; },
+      por(u, v) {
+        colunas.push(new Array(V).fill(null));
+        reg.eventos.push({ t: "coluna", j: colunas.length - 1 });
+        const j = colunas.length - 1;
+        for (let w = 0; w < V; w++) escreve(w, j, w === u || w === v ? 1 : 0);
+      },
+      tirar(u, v) {
+        const j = coluna(u, v), ult = colunas.length - 1;
+        if (j !== ult) for (let w = 0; w < V; w++) escreve(w, j, le(w, ult));
+        colunas.pop();
+        reg.eventos.push({ t: "tira", j: ult });
+      },
+      existe: (u, v) => coluna(u, v) >= 0,
+      vizinhos(u) { const viz = []; for (let j = 0; j < colunas.length; j++) if (le(u, j) === 1) viz.push(outraPonta(u, j)); return viz; },
+      grau(u) { let s = 0; for (let j = 0; j < colunas.length; j++) s += le(u, j); return s; },
+      arestas: () => ordenadas(colunas.map((c) => c.flatMap((x, w) => (x ? [w] : [])))),
+      valores: () => g.arestas(),
+      get capacidade() { return V * colunas.length; },
+    };
+    return g;
+  }
+
+  /** O grafo de medição (grafo.anel): cada vértice ligado aos três seguintes, dando a volta. */
+  function anel(V) {
+    const vistas = new Set(), arestas = [];
+    for (let i = 0; i < V; i++) for (const d of [1, 2, 3]) {
+      const u = i, v = (i + d) % V, a = Math.min(u, v), b = Math.max(u, v);
+      if (u !== v && !vistas.has(`${a},${b}`)) { vistas.add(`${a},${b}`); arestas.push([a, b]); }
+    }
+    return arestas;
+  }
+
+  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular,
+    matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
   function operar(e, chamada, args = []) {
@@ -140,14 +229,20 @@
     return { volta: volta === undefined ? null : volta, leituras: r.leituras, escritas: r.escritas, eventos: r.eventos };
   }
 
-  /** Estrutura `variante` com os valores 0, 1, …, n − 1 postos por `encher`. */
+  /** Estrutura `variante` com os valores 0, 1, …, n − 1 postos por `encher`;
+   *  no grafo (encher = "anel"), n vértices e as arestas do anel. */
   function montar(variante, encher, n) {
+    if (encher === "anel") {
+      const g = ESTRUTURAS[variante](registro(), n);
+      for (const [u, v] of anel(n)) g.por(u, v);
+      return g;
+    }
     const e = ESTRUTURAS[variante]();
     for (let i = 0; i < n; i++) e[encher](i);
     return e;
   }
 
-  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, ESTRUTURAS, operar, montar };
+  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);
