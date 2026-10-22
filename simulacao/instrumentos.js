@@ -130,6 +130,58 @@
     return e;
   }
 
+  // ---------- heap de mínimo sobre o vetor (instrumentos/heap/heap.py) ----------
+  // Os valores são números ou pares comparados em ordem, como as tuplas do Python:
+  // (gravidade, chegada) na fila de prioridade, (distância, vértice) no Dijkstra.
+
+  function antes(a, b) {
+    if (!Array.isArray(a)) return a < b;
+    for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] < b[k];
+    return false;
+  }
+
+  function Heap(reg = registro()) {
+    const v = Vetor(reg);
+    const subir = (i, x) => {
+      while (i > 0) {
+        const p = (i - 1) >> 1, y = v.ler(p);
+        if (!antes(x, y)) break;
+        v.escrever(i, y); v.escrever(p, x);
+        i = p;
+      }
+    };
+    const descer = (i, x) => {
+      const n = v.n;
+      while (2 * i + 1 < n) {
+        let m = 2 * i + 1, xm = v.ler(m);
+        if (m + 1 < n) { const xd = v.ler(m + 1); if (antes(xd, xm)) { m++; xm = xd; } }
+        if (!antes(xm, x)) break;
+        v.escrever(i, xm); v.escrever(m, x);
+        i = m;
+      }
+    };
+    const h = {
+      reg,
+      inserir(x) { v.anexar(x); subir(v.n - 1, x); },
+      tirar() {
+        const menor = v.ler(0), ult = v.remover(v.n - 1);
+        if (v.n > 0) { v.escrever(0, ult); descer(0, ult); }
+        return menor;
+      },
+      menor: () => v.ler(0),
+      montar(valores) {
+        for (const x of valores) v.anexar(x);
+        for (let i = (v.n >> 1) - 1; i >= 0; i--) descer(i, v.ler(i));
+      },
+      inserir_todos(valores) { for (const x of valores) h.inserir(x); },
+      valores: () => v.valores(),
+      casas: () => v.casas(),
+      get n() { return v.n; },
+      get capacidade() { return v.capacidade; },
+    };
+    return h;
+  }
+
   // ---------- grafo em três vistas (instrumentos/grafo/grafo.py) ----------
   // Os eventos dizem a casa de cada vista: na matriz, (u, v); na lista, a
   // casa i do vetor do vértice `lista`; na incidência, a linha w da coluna j.
@@ -226,7 +278,7 @@
     return arestas;
   }
 
-  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular,
+  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, heap: Heap,
     matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
@@ -250,7 +302,7 @@
     return e;
   }
 
-  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
+  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);

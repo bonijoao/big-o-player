@@ -232,8 +232,8 @@ for (const pasta of INSTRUMENTOS) {
         }
         obtido = o.seguidas === "pior" ? { n: t.n, ...pior } : { n: t.n, vezes: t.n, ...soma };
       } else {
-        const e = I.montar(o.estrutura, d.encher, t.n);
-        obtido = { n: t.n, args: t.args, ...custo(I.operar(e, o.chamada, t.args)) };
+        const e = I.montar(o.estrutura, d.encher, o.vazia ? 0 : t.n);   // as montagens partem da estrutura vazia
+        obtido = { n: t.n, args: t.args, ...(o.vazia ? { vezes: t.n } : {}), ...custo(I.operar(e, o.chamada, t.args)) };
       }
       ok = confere(`${pasta} ${id} n=${t.n}`, obtido, t) && ok;
     }

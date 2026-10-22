@@ -7,6 +7,8 @@ Cada instrumento declara, no seu medir.py:
               (o Grafo monta n vértices e as arestas do grafo de medição)
   OPERACOES   [{id, estrutura, chamada, args(n) → lista, minimo, seguidas?}]
               seguidas = "media" ou "pior": n chamadas a partir da estrutura vazia
+              vazia = True: uma chamada a partir da estrutura vazia, com os n valores
+              nos argumentos (as montagens do Heap); guarda vezes = n
   sortear     sortear(r, variante, e) → (chamada, args): sequências para conferir,
               a partir da estrutura montada com INICIO valores (padrão 0)
 
@@ -43,11 +45,11 @@ def custo(conta):
 
 
 def uma(classe, encher, op, n):
-    """Monta com n valores e roda a operação uma vez."""
-    e, conta = montar(classe, encher, n)
+    """Monta com n valores (ou vazia, se a operação recebe os n valores) e roda a operação uma vez."""
+    e, conta = montar(classe, encher, 0 if op.get("vazia") else n)
     args = op["args"](n)
     getattr(e, op["chamada"])(*args)
-    return {"n": n, "args": args, **custo(conta)}
+    return {"n": n, "args": args, **({"vezes": n} if op.get("vazia") else {}), **custo(conta)}
 
 
 def seguidas(classe, op, n):
@@ -79,7 +81,7 @@ def medir(ESTRUTURAS, ENCHER, OPERACOES, sortear, pasta, INICIO=0):
             tabela = [uma(classe, ENCHER, op, n) for n in TAMANHOS]
             serie = [uma(classe, ENCHER, op, n) for n in SERIE if n >= minimo]
         operacoes[op["id"]] = {"estrutura": op["estrutura"], "chamada": op["chamada"],
-                               "seguidas": op.get("seguidas"), "tabela": tabela, "serie": serie}
+                               "seguidas": op.get("seguidas"), "vazia": bool(op.get("vazia")), "tabela": tabela, "serie": serie}
 
     capacidade = {v: [{"n": n, "casas": montar(c, ENCHER, n)[0].capacidade} for n in SERIE]
                   for v, c in ESTRUTURAS.items()}
@@ -108,6 +110,6 @@ def medir(ESTRUTURAS, ENCHER, OPERACOES, sortear, pasta, INICIO=0):
         cel = []
         for t in o["tabela"]:
             total = t["leituras"] + t["escritas"]
-            cel.append(f"n={t['n']}: {total / t['vezes']:.3f}" if o["seguidas"] == "media" else f"n={t['n']}: {total}")
+            cel.append(f"n={t['n']}: {total / t['vezes']:.3f}" if o["seguidas"] == "media" or o["vazia"] else f"n={t['n']}: {total}")
         print(f"  {i:24s} {'  '.join(cel)}")
     return dados

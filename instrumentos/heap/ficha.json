@@ -1,0 +1,65 @@
+{
+ "id": "heap",
+ "nome": "Heap",
+ "variante": "de mínimo, sobre um vetor dinâmico; a árvore é o próprio vetor",
+ "frase": "Uma árvore guardada num vetor: o menor sempre no topo.",
+ "resumo": "Todo pai é menor ou igual aos filhos, então o menor de todos mora no topo. A árvore não tem ponteiros: ela é o vetor lido por uma conta. Os filhos da casa i estão nas casas 2i + 1 e 2i + 2, e o pai está na casa ⌊(i − 1)/2⌋. Inserir põe o valor no fim e o sobe; tirar o menor leva o último para o topo e o desce. Cada um anda no máximo a altura da árvore, uns log₂ n níveis. É a fila de prioridade das faixas, e o heapsort usa o mesmo descer, com a comparação invertida.",
+ "placa": {
+  "autor": "J. W. J. Williams (heapsort); Robert W. Floyd (montar de baixo para cima)",
+  "ano": "1964"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "As casas do vetor por baixo: uma por valor guardado, mais a folga do vetor, que dobra quando enche. Pai e filhos não guardam nada: saem da conta dos índices."
+ },
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas, contadas rodando o heap em Python. Inserir, tirar e ver o menor rodam num heap já montado com 0, 1, …, n − 1: inserir −1 sobe até a raiz e tirar o menor desce até uma folha, os piores casos. As duas montagens partem do heap vazio e recebem os mesmos n valores, do maior para o menor; nelas, a tabela traz o total e o custo por valor.",
+  "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Cheia: tirar o menor, que cresce com a altura da árvore, em degraus a cada potência de 2. Tracejadas: as duas montagens, em custo por valor (o total dividido por n). Montar de uma vez fica parado; inserir um por um cresce como log n. Inserir sozinho fica de fora: além de subir, ele paga as vezes em que as casas acabam e o vetor dobra, como no Vetor."
+ },
+ "operacoes": [
+  {
+   "id": "inserir",
+   "nome": "inserir",
+   "notacao": "O(log n)",
+   "porque": "Escreve no fim e sobe: a cada nível, lê o pai e, se o novo é menor, troca os dois (duas escritas). Sobe no máximo a altura da árvore."
+  },
+  {
+   "id": "tirar",
+   "nome": "tirar o menor",
+   "notacao": "O(log n)",
+   "porque": "Lê a casa 0, leva o último para lá e o desce: a cada nível, lê os dois filhos e troca com o menor deles."
+  },
+  {
+   "id": "menor",
+   "nome": "ver o menor",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da casa 0: o menor está sempre no topo."
+  },
+  {
+   "id": "montar",
+   "nome": "montar de uma vez",
+   "notacao": "O(n)",
+   "porque": "Põe os n valores no vetor e desce cada pai, do último até a raiz. Metade das casas são folhas e nem descem; só a raiz desce a árvore inteira. Somando as alturas, menos de n trocas."
+  },
+  {
+   "id": "inserir_todos",
+   "nome": "inserir um por um",
+   "notacao": "O(n log n)",
+   "porque": "n inserções seguidas. Do maior para o menor, cada valor novo sobe até a raiz: o k-ésimo sobe log₂ k níveis."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "tirar",
+   "rotulo": "tirar o menor"
+  },
+  {
+   "id": "inserir_todos",
+   "rotulo": "um por um"
+  },
+  {
+   "id": "montar",
+   "rotulo": "de uma vez"
+  }
+ ]
+}

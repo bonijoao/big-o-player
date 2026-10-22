@@ -40,6 +40,11 @@
       const P = [[10, 12], [38, 10], [24, 26], [8, 38], [40, 38]];
       [[0, 1], [0, 2], [1, 2], [2, 3], [2, 4], [3, 4]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
       P.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 4, fill: COR.tinta })));
+    } else if (id === "heap") {
+      const P = [[24, 8], [13, 22], [35, 22]];
+      [[0, 1], [0, 2]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
+      P.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 4.5, fill: COR.tinta })));
+      [0, 1, 2].forEach((k) => casa(6 + k * 10, 34, 8, 8, true)); casa(36, 34, 8, 8, false);
     } else { [0, 1, 2].forEach((k) => casa(4 + k * 10, 20, 8, 8, true)); casa(34, 20, 8, 8, false); }
     return el("span", { class: `capa capa-instrumento ${extra}` }, s);
   }
@@ -616,6 +621,190 @@
     return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
   }
 
+  // ---------- a demo do Heap: a árvore em cima, o vetor embaixo ----------
+  // As duas vistas são o mesmo vetor: a casa i é o nó i. Cada evento acende a
+  // casa nas duas ao mesmo tempo. Apontar um nó (ou uma casa) acende o pai e os filhos.
+
+  const MAXH = 15;                       // até 15 valores: a árvore com 4 níveis cheios
+  const FAMILIA = "#8c50b9";             // pai e filhos da casa apontada (categoria, não grandeza)
+
+  function demoHeap() {
+    let h = null, q = null, log = [], lote = [], foco = null;
+    const anim = animador();
+    const figura = el("div", { class: "demo-figura demo-heap" });
+    const custou = el("p", { class: "demo-custou", "aria-live": "polite" });
+    const lista = el("ol", { class: "demo-log" });
+    const aviso = el("p", { class: "demo-aviso" });
+    const textoLote = el("p", { class: "demo-aviso" });
+    const conta = el("p", { class: "demo-dica demo-conta", "aria-live": "polite" });
+    const entX = el("input", { type: "number", id: "x-heap", min: 0, max: 99, value: String(sorteia()), inputmode: "numeric" });
+
+    function sortearLote() {
+      const s = new Set();
+      while (s.size < MAXH) s.add(sorteia());
+      lote = [...s].sort((a, b) => b - a);
+      textoLote.textContent = `As duas montagens recomeçam do heap vazio com os mesmos ${MAXH} valores, do maior para o menor (o pior caso das duas): ${lote.join(" ")}.`;
+    }
+
+    function recomecar() {
+      anim.parar();
+      h = I.Heap();
+      for (let k = 0; k < 5; k++) h.inserir(sorteia());
+      q = quadro(h);
+      log = []; foco = null;
+      sortearLote();
+      custou.textContent = "5 valores inseridos para começar; clique numa operação.";
+      aviso.textContent = "";
+      desenhar(); listar(); habilitar();
+    }
+
+    // `nova`: as montagens recomeçam do heap vazio
+    function fazer(chamada, args, nome, nova) {
+      anim.terminar();
+      if (nova) h = I.Heap();
+      q = quadro(h);
+      const r = I.operar(h, chamada, args);
+      habilitar();
+      const fim = () => {
+        q = quadro(h);
+        desenhar(); habilitar();
+        const devolveu = r.volta !== null ? ` → ${r.volta}` : "";
+        const soma = r.leituras + r.escritas;
+        custou.replaceChildren(el("b", { text: nome + devolveu }), el("span", { text: ` custou ${textoCusto(r)}` }),
+          el("span", { class: "total", text: ` = ${plural(soma, "acesso", "acessos")}` }));
+        const dobrou = r.eventos.filter((e) => e.t === "realoca").length;
+        aviso.textContent = dobrou ? `As casas acabaram${dobrou > 1 ? ` ${dobrou} vezes` : ""}: o vetor reservou o dobro e copiou os valores, um por um.` : "";
+        log.unshift({ nome: nome + devolveu, custo: soma });
+        log = log.slice(0, 6);
+        listar();
+      };
+      fim.quadro = desenhar;
+      anim.tocar([r.eventos], (j, ev) => aplicar(q, ev), fim);
+    }
+
+    function listar() {
+      lista.replaceChildren(...log.map((l) => el("li", {}, [el("span", { text: l.nome }), el("b", { text: plural(l.custo, "acesso", "acessos") })])));
+    }
+
+    // ---------- desenho ----------
+
+    const pai = (i) => (i - 1) >> 1;
+    function familia(i) {
+      if (i === null) return new Set();
+      return new Set([i > 0 ? pai(i) : -1, 2 * i + 1, 2 * i + 2].filter((k) => k >= 0));
+    }
+
+    function explicar() {
+      const n = h.n;
+      if (foco === null || foco >= n) { conta.textContent = "Aponte um nó ou uma casa (ou toque) para ver onde moram o pai e os filhos: é só conta."; return; }
+      const i = foco, f = (k) => (k < n ? `casa ${k}` : `casa ${k}, vazia`);
+      conta.textContent = (i > 0 ? `Casa ${i}: o pai está em ⌊(${i} − 1)/2⌋ = ${pai(i)}; ` : "Casa 0, a raiz: não tem pai; ")
+        + `os filhos, em 2·${i} + 1 = ${f(2 * i + 1)} e 2·${i} + 2 = ${f(2 * i + 2)}.`;
+    }
+
+    function desenhar() {
+      const estreito = figura.clientWidth > 0 && figura.clientWidth < 560;
+      const col = estreito ? 8 : 16, W = 24 + col * 42 + 12;
+      const R = estreito ? 15 : 18, Y0 = R + 8, DY = estreito ? 58 : 64;
+      const pos = (i) => { const d = Math.floor(Math.log2(i + 1)), j = i + 1 - 2 ** d; return [(j + 0.5) * W / 2 ** d, Y0 + d * DY]; };
+      const casas = q.casas, n = casas.filter((x, i) => x !== null && i < MAXH).length;
+      const fam = familia(foco !== null && foco < h.n ? foco : null);
+      const g = svg("g");
+
+      // a árvore: as arestas primeiro, depois os nós (o valor dentro, o índice embaixo)
+      const tem = (i) => i < MAXH && i < casas.length && casas[i] !== null;
+      for (let i = 1; i < MAXH; i++) if (tem(i) && tem(pai(i))) {
+        const [x0, y0] = pos(pai(i)), [x1, y1] = pos(i);
+        g.append(svg("line", { x1: x0, y1: y0, x2: x1, y2: y1, stroke: COR.palido, "stroke-width": 1.5 }));
+      }
+      for (let i = 0; i < MAXH; i++) {
+        if (!tem(i)) continue;
+        const [x, y] = pos(i), papel = q.cores[i];
+        const fill = papel === "le" ? COR.le : papel === "escreve" ? COR.escreve : "#fff";
+        const marcado = i === foco || fam.has(i);
+        const no = svg("g", { "data-i": i, style: "cursor: pointer" });
+        no.append(svg("circle", { cx: x, cy: y, r: R, fill, stroke: i === foco ? COR.tinta : fam.has(i) ? FAMILIA : papel ? fill : COR.tinta,
+          "stroke-width": marcado ? 3 : 1.5 }));
+        no.append(svg("text", { x, y: y + 5, "text-anchor": "middle", "font-size": estreito ? 13 : 14, "font-weight": 600, fill: papel ? "#fff" : COR.tinta }, String(casas[i])));
+        no.append(svg("text", { x, y: y + R + 12, "text-anchor": "middle", "font-size": 10, fill: fam.has(i) ? FAMILIA : COR.cinza, "font-weight": marcado ? 600 : 400 }, String(i)));
+        g.append(no);
+      }
+
+      // o vetor: as mesmas casas, com a folga reservada tracejada
+      let y = Y0 + 3 * DY + R + 26;
+      const cap = casas.length;
+      g.append(svg("text", { x: 24, y: y + 14, "font-size": 12, fill: COR.cinza },
+        `${estreito ? "o vetor" : "o vetor por baixo"}: n = ${h.n}, ${cap} ${cap === 1 ? "casa reservada" : "casas reservadas"}`));
+      const yv = y + 6;
+      y += fileira(g, casas, q.cores, yv, col, String, n ? { 0: "menor" } : {}) + 6;
+      // por cima de cada casa ocupada: o contorno da família e a área de apontar
+      casas.forEach((x, i) => {
+        if (x === null || i >= MAXH) return;
+        const cx = 24 + (i % col) * 42, cy = yv + Math.floor(i / col) * 68 + 32;
+        if (i === foco || fam.has(i)) g.append(svg("rect", { x: cx - 2, y: cy - 2, width: 42, height: 42, rx: 4, fill: "none",
+          stroke: i === foco ? COR.tinta : FAMILIA, "stroke-width": 2.5 }));
+        g.append(svg("rect", { x: cx, y: cy, width: 38, height: 38, fill: "transparent", "data-i": i, style: "cursor: pointer" }));
+      });
+      if (q.novas) {
+        g.append(svg("text", { x: 24, y: y + 14, "font-size": 12, fill: COR.escreve, "font-weight": 600 }, `casas novas: ${q.novas.length}, copiando`));
+        y += fileira(g, q.novas, q.coresNovas, y + 6, col, String) + 6;
+      }
+      y += 8;
+      const s = svg("svg", { viewBox: `0 0 ${W} ${y}`, width: W, height: y, role: "img",
+        "aria-label": `Heap com ${h.n} valores, em árvore e no vetor: ${h.valores().join(", ") || "vazio"}` });
+      s.append(g);
+      figura.replaceChildren(s);
+      explicar();
+    }
+
+    // apontar (mouse ou toque) um nó ou uma casa: o pai e os filhos acendem nas duas vistas
+    figura.addEventListener("pointerover", (e) => {
+      const alvo = e.target.closest && e.target.closest("[data-i]");
+      const i = alvo ? Number(alvo.dataset.i) : null;
+      if (i !== foco) { foco = i; desenhar(); }
+    });
+    figura.addEventListener("pointerleave", () => { if (foco !== null) { foco = null; desenhar(); } });
+
+    // ---------- controles ----------
+
+    const botoes = [];
+    const botao = (rot, acao, cond) => {
+      const b = el("button", { type: "button", class: "botao-passo", text: rot });
+      b.addEventListener("click", () => { if (cond()) acao(); });
+      botoes.push({ b, cond });
+      return b;
+    };
+    const lerX = () => {
+      const x = Number(entX.value);
+      if (entX.value === "" || !Number.isInteger(x) || x < 0 || x > 99) { aviso.textContent = "O valor vai de 0 a 99."; return null; }
+      return x;
+    };
+    const ops = [
+      botao("inserir x", () => { const x = lerX(); if (x !== null) { fazer("inserir", [x], `inserir ${x}`); entX.value = String(sorteia()); } }, () => h.n < MAXH),
+      botao("tirar o menor", () => fazer("tirar", [], "tirar o menor"), () => h.n > 0),
+      botao("ver o menor", () => fazer("menor", [], "ver o menor"), () => h.n > 0),
+      botao(`montar os ${MAXH} de uma vez`, () => fazer("montar", [lote.slice()], `montar os ${MAXH} de uma vez`, true), () => true),
+      botao(`inserir os ${MAXH} um por um`, () => fazer("inserir_todos", [lote.slice()], `inserir os ${MAXH} um por um`, true), () => true),
+    ];
+    function habilitar() { for (const { b, cond } of botoes) b.disabled = !cond(); }
+    const recomeca = el("button", { type: "button", class: "botao-passo", text: "recomeçar" });
+    recomeca.addEventListener("click", () => recomecar());
+
+    const legenda = el("p", { class: "demo-legenda", html:
+      `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita <i class="livre"></i>casa reservada, livre <i class="contorno" style="box-shadow: inset 0 0 0 2px ${FAMILIA}"></i>pai e filhos da casa apontada` });
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [el("label", { for: "x-heap", text: "valor" }), entX]), textoLote]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [lista], "historico"),
+    ]);
+    const tela = el("div", { class: "demo-tela" }, [figura, conta, legenda, el("p", { class: "demo-dica", text: tipoTexto("heap") })]);
+    const raiz = el("div", { class: "demo" }, [tela, painel]);
+    recomecar();
+    return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
+  }
+
   // ---------- gráficos: custo × n e casas × n ----------
 
   // o menor n medido nas séries (o Grafo começa em V = 8, onde o anel de medição já é ele mesmo)
@@ -627,7 +816,7 @@
 
   function graficoCusto(caixa, inst) {
     const ops = inst.medido.operacoes;
-    const series = inst.grafico.map((g, k) => ({ ...g, cor: SERIES[k % SERIES.length], media: ops[g.id].seguidas === "media",
+    const series = inst.grafico.map((g, k) => ({ ...g, cor: SERIES[k % SERIES.length], media: ops[g.id].seguidas === "media" || ops[g.id].vazia,
       pts: ops[g.id].serie.map((t) => [t.n, total(t)]) }));
     caixa.replaceChildren();
     const W = Math.max(300, caixa.clientWidth), H = 300, direto = W >= 600;
@@ -726,6 +915,7 @@
       const celulas = d.tabela.map((t) => {
         if (d.seguidas === "media") return el("td", { class: "num", text: decimal(total(t)) });
         if (d.seguidas === "pior") return el("td", { class: "num", html: `${mil(total(t))}<small>na ${mil(t.k)}ª</small>` });
+        if (d.vazia) return el("td", { class: "num", html: `${mil(t.leituras + t.escritas)}<small>${decimal(total(t))} por valor</small>` });
         return el("td", { class: "num", text: mil(total(t)) });
       });
       return el("tr", {}, [
@@ -745,7 +935,7 @@
   /** Monta a página; devolve { el, redesenhar, parar }. ctx: { faixas, rotaFaixa, tocar, feat } */
   function pagina(inst, ctx) {
     const usam = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === inst.id));
-    const d = inst.id === "grafo" ? demoGrafo(inst) : demo(inst, ctx);
+    const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "heap" ? demoHeap() : demo(inst, ctx);
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos, nome = inst.n || "n";
     // legendas próprias da ficha (o Grafo), com os números do dados.json
@@ -813,6 +1003,7 @@
       vetor: "Escolha um valor e uma posição e toque o vetor. Cada clique roda a operação no vetor de verdade e mostra casa por casa o que ela leu e escreveu. Repare no anexar quando as casas acabam.",
       pilha: "Empilhe e desempilhe: só o topo se mexe. O repasse toca a pilha de chamadas de uma faixa recursiva: cada chamada empilha um nível, cada retorno desempilha.",
       fila: "Cada clique roda a mesma operação nas duas filas, lado a lado. Compare o desenfileirar: a ingênua puxa todos para a frente, a circular só anda o início.",
+      heap: "Insira e tire o menor: a casa que se mexe acende ao mesmo tempo na árvore e no vetor, porque são a mesma casa. Repare que inserir sobe e tirar desce, no máximo a altura da árvore. Depois compare as duas montagens com os mesmos valores: de uma vez, de baixo para cima, sai mais barato que um por um.",
       grafo: "Escolha u e v e clique numa operação: ela roda nas três vistas ao mesmo tempo, sobre as mesmas arestas, e cada vista mostra as casas que leu e escreveu. A letra de cada aresta no desenho é a coluna dela na matriz de incidência. Compare os vizinhos de u: a lista lê só eles, a matriz de adjacência lê a linha inteira.",
     }[id];
   }

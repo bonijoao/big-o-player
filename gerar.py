@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(RAIZ, "motor"))
 import pseudocodigo  # noqa: E402
 ALGORITMOS = ["sequencial", "binaria", "bolha", "insercao", "selecao", "intercalacao", "rapida",
               "parenteses", "atendimento", "largura", "profundidade", "kmeans"]   # ordem da galeria (dentro de cada álbum)
-INSTRUMENTOS = ["vetor", "pilha", "fila", "grafo"]
+INSTRUMENTOS = ["vetor", "pilha", "fila", "grafo", "heap"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)
 CICLOMATICA = {
  "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
