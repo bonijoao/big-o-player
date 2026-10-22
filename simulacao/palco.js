@@ -742,6 +742,126 @@
     };
   }
 
+  // ---------- fila de prioridade: o pronto-socorro ----------
+
+  function simPrioridade(faixa, chegada, duracao, gravidade, accelerando) {
+    const r = Algoritmos.prioridade(chegada, duracao, gravidade);
+    const N = chegada.length, ideia = faixa.video.ideia;
+    // o heap depois de cada inserir e tirar (pares [gravidade, paciente]) e as casas que a operação escreveu
+    let t = 0, casas = [], escritas = [], atendendo = null, ops = 0, soma = 0, atendidos = 0, maior = 0;
+    const serie = [[0, 0]];             // [minuto, pacientes no heap]
+    const est = r.eventos.map((e) => {
+      escritas = [];
+      if (e.t === "insere" || e.t === "chama") { t = e.tempo; casas = e.casas; escritas = e.escritas; ops = e.acessos; }
+      else if (e.t === "direto") t = e.tempo;
+      else if (e.t === "atende") { atendendo = e; soma += e.espera; atendidos++; }
+      else if (e.t === "maior") maior = e.maior;
+      if (e.t === "insere" || e.t === "chama") {
+        if (serie.at(-1)[0] === t) serie.at(-1)[1] = casas.length; else serie.push([t, casas.length]);
+      }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, tempo: t, casas, escritas, atendendo, ops, soma, atendidos, maior, e };
+    });
+    if (ops !== r.ops || soma !== r.soma) throw new Error("reprodução do pronto-socorro não bate");
+    const fimDia = Math.max(...r.eventos.filter((e) => e.t === "atende").map((e) => e.fim));
+    const MIN = 0.5, HOLD = accelerando ? { insere: 1.2, chama: 1.2, direto: 1.2, atende: 0.6, testa: 0.15, maior: 0.3, devolva: 2 } : {};
+    const pesos = !accelerando ? est.map(() => 1)
+      : est.map((s, k) => (HOLD[s.t] || 0) + MIN * ((k + 1 < est.length ? est[k + 1].tempo : fimDia) - s.tempo));
+    const tl = linhaDoTempo(pesos);
+    const relogio = (u, k) => {
+      if (k < 0) return 0;
+      const s = est[k], h = HOLD[s.t] || 0, prox = k + 1 < est.length ? est[k + 1].tempo : fimDia;
+      return s.tempo + Math.max(0, Math.min(1, (u - tl.inicio[k] - h) / Math.max(1e-9, pesos[k] - h))) * (prox - s.tempo);
+    };
+    const kChama = (() => { const j = est.findIndex((s) => s.t === "chama"); return j < 0 ? Infinity : j; })();   // a legenda troca no primeiro chamado
+    // a espera média de cada gravidade, no fim do dia
+    const G = Math.max(...gravidade), medias = Array.from({ length: G }, (_, j) => {
+      const w = r.esperas.filter((_, k) => gravidade[k] === j + 1);
+      return w.length ? w.reduce((a, b) => a + b, 0) / w.length : null;
+    });
+
+    // geometria: o médico e o heap em cima (a árvore e o vetor embaixo dela), a fila ao longo do dia embaixo
+    const GX0 = 70, GX1 = 600, HX0 = 210, NIV = Math.floor(Math.log2(Math.max(1, r.maior))) + 1;
+    const TY0 = 96, TY1 = 226, DY = (TY1 - TY0) / Math.max(1, NIV - 1);
+    const R = Math.min(15, (GX1 - HX0) / 2 ** (NIV - 1) * 0.42);
+    const pos = (i) => { const d = Math.floor(Math.log2(i + 1)), j = i + 1 - 2 ** d; return [HX0 + (j + 0.5) * (GX1 - HX0) / 2 ** d, TY0 + d * DY]; };
+    const GY0 = 330, GY1 = 430, ymax = Math.max(1, r.maior);
+    const gx = (m) => GX0 + m / fimDia * (GX1 - GX0), gy = (q) => GY1 - q / ymax * (GY1 - GY0 - 10);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total, agora = fim ? fimDia : relogio(u, k);
+      const s = k >= 0 ? est[k] : { casas: [], escritas: [], atendendo: null, ops: 0, soma: 0, atendidos: 0, maior: 0 };
+      const mexeu = new Set(s.escritas);
+      // o médico
+      const at = s.atendendo && agora < s.atendendo.fim ? s.atendendo : null;
+      ctx.strokeStyle = COR.tinta; ctx.lineWidth = 2; ctx.strokeRect(GX0, 92, 110, 74);
+      texto(ctx, "médico", GX0 + 55, 74, 11, COR.cinza, 400, "center");
+      if (at) {
+        texto(ctx, `paciente ${at.k + 1}`, GX0 + 55, 100, 14, COR.tinta, 600, "center");
+        texto(ctx, `gravidade ${at.g}`, GX0 + 55, 118, 11, COR.cinza, 400, "center");
+        const f = Math.min(1, (agora - at.inicio) / (at.fim - at.inicio));
+        ctx.fillStyle = COR.claro; ctx.fillRect(GX0 + 12, 142, 86, 8);
+        ctx.fillStyle = COR.tinta; ctx.fillRect(GX0 + 12, 142, 86 * f, 8);
+      } else texto(ctx, "livre", GX0 + 55, 116, 14, COR.cinza, 400, "center");
+
+      // o heap: a árvore (no nó, a gravidade; embaixo, o paciente) e o vetor por baixo
+      texto(ctx, `fila de prioridade: o heap, ${s.casas.length} ${s.casas.length === 1 ? "paciente" : "pacientes"}`, HX0, 62, 11, COR.cinza);
+      for (let i = 1; i < s.casas.length; i++) { const [x0, y0] = pos((i - 1) >> 1), [x1, y1] = pos(i); linha(ctx, x0, y0, x1, y1, COR.palido, 1.5); }
+      s.casas.forEach(([g, p], i) => {
+        const [x, y] = pos(i), m = mexeu.has(i);
+        ctx.beginPath(); ctx.arc(x, y, R, 0, 7);
+        ctx.fillStyle = m ? COR.mexeu : "#fff"; ctx.fill();
+        ctx.strokeStyle = COR.tinta; ctx.lineWidth = 1.5; ctx.stroke();
+        texto(ctx, String(g), x, y - Math.min(8, R * 0.55), Math.min(15, R * 1.05), m ? "#fff" : COR.tinta, 700, "center");
+        if (R >= 9) texto(ctx, `p${p + 1}`, x, y + R + 2, 9, COR.cinza, 400, "center");
+      });
+      const VY = 262, cw = Math.min(30, (GX1 - HX0) / Math.max(8, s.casas.length));
+      texto(ctx, "o vetor por baixo: a casa i é o nó i", HX0, VY - 18, 11, COR.cinza);
+      s.casas.forEach(([g], i) => {
+        const xx = HX0 + i * cw, m = mexeu.has(i);
+        ctx.fillStyle = m ? COR.mexeu : COR.claro; ctx.fillRect(xx + 1, VY, cw - 2, 26);
+        ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(xx + 1, VY, cw - 2, 26);
+        if (cw >= 12) texto(ctx, String(g), xx + cw / 2, VY + 6, Math.min(13, cw * 0.5), m ? "#fff" : COR.tinta, 600, "center");
+      });
+
+      // quantos esperam, ao longo do dia, até o minuto de agora
+      texto(ctx, "pacientes esperando ao longo do tempo", GX0, GY0 - 22, 11, COR.cinza);
+      linha(ctx, GX0, GY1, GX1, GY1, COR.palido);
+      for (let q = 0; q <= ymax; q += Math.max(1, Math.ceil(ymax / 4))) texto(ctx, String(q), GX0 - 8, gy(q) - 7, 11, COR.cinza, 400, "right");
+      for (const c of chegada) if (c <= agora) linha(ctx, gx(c), GY1 + 3, gx(c), GY1 + 9, COR.cinza);
+      texto(ctx, "chegadas", GX0, GY1 + 14, 11, COR.cinza);
+      ctx.strokeStyle = COR.tinta; ctx.lineWidth = 2; ctx.beginPath();
+      let q = 0;
+      ctx.moveTo(gx(0), gy(0));
+      for (const [m, tam] of serie) { if (m > agora) break; ctx.lineTo(gx(m), gy(q)); ctx.lineTo(gx(m), gy(tam)); q = tam; }
+      ctx.lineTo(gx(agora), gy(q)); ctx.stroke();
+
+      const x = 650;
+      texto(ctx, "acessos ao heap", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.ops), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "espera média até aqui", x, 174, 13, COR.cinza);
+      texto(ctx, s.atendidos ? `${decimal(s.soma / s.atendidos)} min` : "—", x, 190, 26, COR.tinta, 700);
+      texto(ctx, "memória extra agora", x, 244, 13, COR.cinza);
+      texto(ctx, `${s.casas.length} ${s.casas.length === 1 ? "paciente" : "pacientes"} no heap`, x, 260, 20, COR.tinta, 700);
+      texto(ctx, `maior fila até aqui: ${s.maior}`, x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N} pacientes`, x, 330, 13, COR.cinza);
+      texto(ctx, `minuto ${Math.floor(agora)}`, x, 350, 13, COR.cinza);
+      if (fim) medias.forEach((m, j) => texto(ctx, `gravidade ${j + 1}: ${m === null ? "ninguém" : `${decimal(m)} min`}`, x, 382 + j * 18, 12, j === 0 ? COR.verde : COR.cinza, j === 0 ? 600 : 400));
+      legendaCores(ctx, [[COR.mexeu, "casa escrita agora (o caminho que subiu ou desceu)"], ["#fff", "no nó: a gravidade, 1 = a mais urgente", COR.tinta]], 486);
+
+      if (fim) legenda(ctx, [["gravidade 1 espera ", ""], [`${decimal(medias[0] ?? 0)} min`, "g"], [`; gravidade ${G}, ${medias[G - 1] === null ? "ninguém" : `${decimal(medias[G - 1])} min`}`, ""]]);
+      else if (k < kChama) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.atendimento, accelerando),
+      resumo: { ops: r.ops, soma: r.soma, maior: r.maior, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} acessos ao heap, n = ${N}<br>heap de até ${r.maior}`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} pacientes, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} acessos ao heap, espera média de ${decimal(r.soma / N)} min, maior fila de ${r.maior}.`,
+    };
+  }
+
   // ---------- busca em largura e em profundidade ----------
 
   function simGrafo(faixa, k, arestas, accelerando) {
@@ -872,6 +992,10 @@
     if (tipo === "atendimento") {
       const e = padrao ? ex : Algoritmos.clientes(cfg.n, ex.movimentos[cfg.tipo], cfg.semente);
       return simAtendimento(faixa, e.chegada, e.duracao, accelerando);
+    }
+    if (tipo === "prioridade") {
+      const e = padrao ? ex : Algoritmos.pacientes(cfg.n, ex.movimentos[cfg.tipo], ex.gravidades, cfg.semente);
+      return simPrioridade(faixa, e.chegada, e.duracao, e.gravidade, accelerando);
     }
     if (tipo === "grafo") {
       const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));

@@ -173,6 +173,7 @@
     busca: { entrada: "números", conta: (ex) => `${ex.n} números, ${ex.posicao >= 0 ? `o ${ex.alvo} está na casa ${ex.posicao + 1}` : `o ${ex.alvo} não está no vetor`}, na entrada do encarte` },
     parenteses: { entrada: "símbolos", conta: (ex) => `${ex.n} símbolos, ${ex.comparacoes} pares conferidos, na entrada do encarte` },
     atendimento: { entrada: "clientes", conta: (ex) => `${ex.n} clientes, espera média de ${decimal(ex.soma / ex.n)} min, na entrada do encarte` },
+    prioridade: { entrada: "pacientes", conta: (ex) => `${ex.n} pacientes, espera média de ${decimal(ex.soma / ex.n)} min (gravidade 1: ${decimal(ex.por_gravidade[0])} min), na entrada do encarte` },
     grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
   };
   const nomeEstrutura = (ex) => (ex.dist ? "fila" : "pilha");
@@ -419,6 +420,8 @@
       opcoes: [["padrao", "o do encarte", "o texto do encarte"], ["balanceada", "balanceado", "texto balanceado"], ["par_errado", "um par errado", "um par errado"], ["sobra_aberto", "sobra aberto", "sobrando aberto"], ["so_abre", "só abre", "só abrindo"]] },
     atendimento: { rotulo: "movimento", ns: [8, 12, 16, 24, 32, 48], sortear: "sortear clientes", sorteado: "no_limite",
       opcoes: [["padrao", "o do encarte", "os clientes do encarte"], ["calmo", "calmo", "movimento calmo"], ["no_limite", "no limite", "movimento no limite"], ["lotado", "lotado", "movimento lotado"]] },
+    prioridade: { rotulo: "movimento", ns: [8, 12, 16, 24, 32, 48], sortear: "sortear pacientes", sorteado: "no_limite",
+      opcoes: [["padrao", "o do encarte", "os pacientes do encarte"], ["calmo", "calmo", "movimento calmo"], ["no_limite", "no limite", "movimento no limite"], ["lotado", "lotado", "movimento lotado"]] },
     grafo: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado", fixos: ["grade", "caminho"],
       opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
   };

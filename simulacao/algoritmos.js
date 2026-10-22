@@ -406,6 +406,57 @@
       ops: (c.ops.enfileirar || 0) + (c.ops.desenfileirar || 0), casas: fila.reg.leituras + fila.reg.escritas };
   }
 
+  /** Pronto-socorro (algoritmos/prioridade/prioridade.py), com o Heap do instrumento: chave (gravidade, chegada). */
+  function prioridade(chegada, duracao, gravidade) {
+    const c = contador(), I = instrumentos(), heap = I.Heap(), n = chegada.length;
+    const esperas = new Array(n).fill(null), ordem = [];
+    let livre = 0, soma = 0, maior = 0, i = 0, acessos = 0;
+    // cada operação no heap: soma o custo e guarda as casas que ela escreveu (o caminho que subiu ou desceu)
+    const noHeap = (chamada, args) => {
+      const r = I.operar(heap, chamada, args);
+      acessos += r.leituras + r.escritas;
+      return { volta: r.volta, casas: heap.casas().slice(0, heap.n), escritas: [...new Set(r.eventos.filter((e) => e.t === "escreve").map((e) => e.i))] };
+    };
+    const V = c.vars = { atendimento: null, i: 1, k: null, g: null, livre: 0, "início": null, soma: 0, maior: 0, "tamanho do heap": 0 };
+    for (let volta = 0; volta < n; volta++) {
+      Object.assign(V, { atendimento: volta + 1, k: null, g: null, "início": null });
+      for (;;) {
+        c.push({ t: "testa", linha: 5 });
+        if (!(i < n && chegada[i] < livre)) break;
+        c.op("inserir"); const r = noHeap("inserir", [[gravidade[i], i]]); c.aloca("heap", heap.n);
+        V["tamanho do heap"] = heap.n;
+        c.push({ t: "insere", i, g: gravidade[i], tempo: chegada[i], ...r, acessos, linha: 6 });
+        i++;
+        V.i = i + 1;
+        maior = Math.max(maior, heap.n);
+        V.maior = maior;
+        c.push({ t: "maior", maior, linha: 7 });
+      }
+      c.push({ t: "testa", linha: 8 });
+      let k;
+      if (heap.n > 0) {
+        c.op("tirar"); const r = noHeap("tirar", []); c.aloca("heap", heap.n);
+        k = r.volta[1];
+        Object.assign(V, { k: k + 1, g: gravidade[k], "tamanho do heap": heap.n });
+        c.push({ t: "chama", k, g: gravidade[k], tempo: livre, casas: r.casas, escritas: r.escritas, acessos, linha: 9 });
+      } else {
+        k = i; i++;
+        Object.assign(V, { k: k + 1, g: gravidade[k], i: i + 1 });
+        c.push({ t: "direto", k, g: gravidade[k], tempo: chegada[k], linha: 11 });
+      }
+      const inicio = Math.max(livre, chegada[k]);
+      esperas[k] = inicio - chegada[k];
+      ordem.push(k);
+      soma += esperas[k];
+      livre = inicio + duracao[k];
+      Object.assign(V, { "início": inicio, soma, livre });
+      c.push({ t: "atende", k, g: gravidade[k], inicio, fim: livre, espera: esperas[k], linha: 12 });
+    }
+    c.push({ t: "devolva", linha: 15 });
+    return { chegada, duracao, gravidade, eventos: c.eventos, soma, maior, esperas, ordem, pico: c.pico,
+      ops: acessos, operacoes: (c.ops.inserir || 0) + (c.ops.tirar || 0) };
+  }
+
   // ---------- grafos (algoritmos/largura, algoritmos/profundidade) ----------
 
   // a lista de adjacência do instrumento Grafo, montada sem entrar na conta
@@ -579,6 +630,17 @@
     return { chegada, duracao };
   }
 
+  /** n pacientes: como os clientes, mais a gravidade de cada um (de g0 a g1, sorteada). */
+  function pacientes(n, movimento, gravidades, semente) {
+    const r = sorteador(semente), entre = ([a, b]) => a + Math.floor(r() * (b - a + 1));
+    const chegada = [], duracao = [], gravidade = [];
+    let t = 0;
+    for (let k = 0; k < n; k++) { t += entre(movimento.chegada); chegada.push(t); }
+    for (let k = 0; k < n; k++) duracao.push(entre(movimento.atendimento));
+    for (let k = 0; k < n; k++) gravidade.push(entre(gravidades));
+    return { chegada, duracao, gravidade };
+  }
+
   /** As arestas de um grafo em grade k × k, como motor/grade.py:gerar (com outro sorteador):
    *  a grade cheia, um sorteado conexo (árvore que cobre a grade + cada aresta que sobra com chance 1/3)
    *  ou o caminho em serpentina que começa no vértice 0. */
@@ -606,7 +668,7 @@
     return ordena(escolhidas);
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, largura, profundidade, entrada, entradaBusca, textoParenteses, clientes, grafoGrade, centrosIniciais, ORDENACOES };
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, prioridade, largura, profundidade, entrada, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, centrosIniciais, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

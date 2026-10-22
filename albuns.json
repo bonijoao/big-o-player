@@ -94,11 +94,6 @@
     "nome": "Árvore equilibrada (AVL)",
     "tempo": "O(log n) por operação",
     "memoria": "O(n)"
-   },
-   {
-    "nome": "Fila de prioridade",
-    "tempo": "O(log n) por operação",
-    "memoria": "O(n)"
    }
   ]
  },

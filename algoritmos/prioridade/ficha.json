@@ -1,0 +1,48 @@
+{
+ "id": "fila-de-prioridade",
+ "nome": "Fila de prioridade",
+ "variante": "pronto-socorro: um médico, gravidade de 1 a 5",
+ "familia": "árvores e heaps",
+ "resumo": "Pacientes chegam ao pronto-socorro em minutos sorteados, cada um com uma gravidade de 1 (a mais urgente) a 5. Quem chega com o médico ocupado espera na fila de prioridade. Quando o médico fica livre, chama o mais urgente e, no empate, quem chegou primeiro. É a Fila de atendimento com outra regra: aqui, quem chega por último pode passar na frente.",
+ "instrumentos": [
+  {
+   "id": "heap",
+   "papel": "a fila de prioridade: um heap de mínimo com a chave (gravidade, chegada); chamar o próximo é tirar o menor"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n log n)",
+  "porque": "Cada paciente que espera entra no heap uma vez e sai uma vez. Entrar sobe e sair desce, e cada um anda no máximo a altura do heap, uns log₂ n níveis. São até 2n operações de O(log n) cada.",
+  "nota": "Num dia calmo, o heap quase não passa de um ou dois pacientes, e cada operação custa pouco: o total fica perto de n. Lotado, o heap cresce com o dia, e a altura dele aparece na conta. Uma fila ingênua, que procurasse o mais urgente olhando todos, faria O(n) por chamada e O(n²) no dia."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "O heap guarda quem está esperando, um par (gravidade, chegada) por paciente. Num dia calmo, quase ninguém; lotado, o heap cresce sem parar e chega a uma fração de n.",
+  "nomes": {
+   "heap": "pacientes esperando no heap"
+  },
+  "cresce_com_n": [
+   "heap"
+  ],
+  "vazio": "não guarda nada"
+ },
+ "video": {
+  "ideia": [
+   "quem chega com o médico ocupado entra no heap: sobe enquanto for mais urgente que o pai",
+   "o médico chama o topo do heap, o mais urgente; o último sobe para a raiz e desce"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e o movimento do dia",
+  "texto": "As mesmas contas para cada vez mais pacientes e para três movimentos: calmo, no limite (chegam tantos quantos o médico atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1; o lotado sobe um pouco mais inclinado, porque o heap fica alto.",
+  "crescimento": "Acessos ao heap (casas lidas e escritas) para n de {n0} a {n1} pacientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: n log₂ n, de referência.",
+  "distribuicao": "{vezes} sorteios de {nd} pacientes num dia lotado: a maior fila vai de {min} a {max} pacientes. A barra preta é o sorteio do encarte.",
+  "rotulo": "maior fila (n = {nd})",
+  "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, o heap cresce com n; calmo, quase não sai do lugar."
+ },
+ "pseudocodigo": "procedimento pronto_socorro(chegada, duração, gravidade):\n    heap ← vazio;  livre ← 0;  i ← 1\n    soma ← 0;  maior ← 0\n    para cada atendimento, de 1 até n:\n        enquanto i ≤ n e chegada[i] < livre:\n            insira (gravidade[i], i) no heap;  i ← i + 1\n            maior ← máximo(maior, tamanho do heap)\n        se o heap não está vazio:\n            (g, k) ← tire o menor do heap\n        senão:\n            k ← i;  i ← i + 1\n        início ← máximo(livre, chegada[k])\n        soma ← soma + início − chegada[k]\n        livre ← início + duração[k]\n    devolva soma, maior\n",
+ "placa": {
+  "autor": "sem autoria única; o heap como fila de prioridade é de J. W. J. Williams",
+  "ano": "1964"
+ }
+}

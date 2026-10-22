@@ -1,0 +1,7 @@
+{
+  "referencia": "order() em R, sem heap, e um heap reescrito em R que conta casas",
+  "versao_r": "4.6.0",
+  "vetores": 16,
+  "tudo_ok": true,
+  "resumo": "Refeito em R 4.6.0 em 16 sorteios (o do encarte e 15 de 50 pacientes: calmo, no limite e lotado). Escolhendo o mais urgente com order(), sem heap nenhum, a ordem de atendimento, a espera de cada paciente e a maior fila batem com o Python; um heap reescrito em R conta os mesmos acessos ao heap."
+}

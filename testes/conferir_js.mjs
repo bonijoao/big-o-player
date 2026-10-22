@@ -42,7 +42,7 @@ function confereLinhas(pasta, eventos) {
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
-    atribui: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    atribui: "passo", insere: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -79,6 +79,9 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "compara" || (e.vars.topo === e.topo && e.vars.s === e.s)) && (e.t !== "erro" || e.vars.certo === false),
     atendimento: (e) => (e.t !== "enfileira" || (e.vars.i === e.i + 1 && e.vars["tamanho da fila"] === e.casas.filter((x) => x !== null).length))
       && (e.t !== "chama" && e.t !== "direto" || e.vars.k === e.k + 1)
+      && (e.t !== "atende" || (e.vars.k === e.k + 1 && e.vars["início"] === e.inicio && e.vars.livre === e.fim)),
+    prioridade: (e) => (e.t !== "insere" || (e.vars.i === e.i + 1 && e.vars["tamanho do heap"] === e.casas.length))
+      && (e.t !== "chama" && e.t !== "direto" || (e.vars.k === e.k + 1 && e.vars.g === e.g))
       && (e.t !== "atende" || (e.vars.k === e.k + 1 && e.vars["início"] === e.inicio && e.vars.livre === e.fim)),
     largura: (e) => (e.t !== "visita" || (e.vars.u === e.u + 1 && e.vars["v"] === null)) && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1))
       && (e.t !== "atribui" || e.v === undefined || e.vars["dist[v]"] === e.d) && (e.t !== "enfileira" || e.vars["tamanho da fila"] >= 1),
@@ -170,6 +173,18 @@ for (const pasta of ["sequencial", "binaria"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: atendimento (${casos.length} sorteios)`);
 }
 
+{
+  const d = ler("algoritmos/prioridade/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ soma: r.soma, maior: r.maior, esperas: r.esperas, ordem: r.ordem, ops: r.ops, operacoes: r.operacoes, pico: r.pico });
+  const casos = [{ movimento: "encarte", ...ex, pico: d.memoria.pico }, ...d.conferir];
+  const roda = (c) => A.prioridade(c.chegada, c.duracao, c.gravidade);
+  let ok = true;
+  for (const c of casos) ok = confere(`prioridade ${c.movimento}`, medidas(roda(c)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("prioridade", roda(c).eventos) && ok;
+  for (const c of casos) ok = confereVars("prioridade", null, roda(c).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: prioridade (${casos.length} sorteios)`);
+}
+
 for (const pasta of ["largura", "profundidade"]) {
   const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
   const res = pasta === "largura" ? "dist" : "ordem";
@@ -199,6 +214,9 @@ for (const pasta of ["largura", "profundidade"]) {
         const dentro = (x, [a, b]) => x >= a && x <= b;
         const intervalos = chegada.every((c, k) => dentro(c - (k ? chegada[k - 1] : 0), lim.chegada));
         ok = confere(`clientes ${m} n=${n} s=${semente}`, [chegada.length, intervalos, duracao.every((d) => dentro(d, lim.atendimento))], [n, true, true]) && ok;
+        const p = A.pacientes(n, lim, [1, 5], semente);
+        ok = confere(`pacientes ${m} n=${n} s=${semente}`, [p.gravidade.length, p.gravidade.every((g) => dentro(g, [1, 5])), A.prioridade(p.chegada, p.duracao, p.gravidade).ordem.length],
+          [n, true, n]) && ok;
       }
     }
   }

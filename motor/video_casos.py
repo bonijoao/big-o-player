@@ -4,6 +4,7 @@ do dados.json. A animação dessas faixas mora só na simulação ao vivo
 (simulacao/palco.js); aqui sai a capa provisória.
 
   montar_busca(pasta) / montar_parenteses(pasta) / montar_atendimento(pasta)
+  / montar_prioridade(pasta) / montar_grafo(pasta) / montar_dijkstra(pasta)
 devolvem (cenas, t_poster), como video_ordenacao.montar.
 """
 import json
@@ -144,6 +145,38 @@ def montar_atendimento(pasta):
         _painel(d, [("operações na fila", str(ex["ops"]), 40, True), ("espera média", f"{media} min", 26, False),
                     ("maior fila", f"{ex['maior']} clientes", 20, False)])
         rich(d, [("espera média ", ""), (f"{media} min", "bg"), (f", maior fila: {ex['maior']}", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_prioridade(pasta):
+    """Pronto-socorro: a espera média de cada gravidade, em barras deitadas
+    (o comprimento é o minuto; a cor é a mesma para todas)."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    N, medias = ex["n"], ex["por_gravidade"]
+    g0 = ex["gravidades"][0]
+    maior = max(m for m in medias if m is not None) or 1
+    BY0, PASSO, larg = 130, 56, BX1 - BX0 - 120
+    fmt = lambda m: f"{m:.1f}".replace(".", ",")  # noqa: E731
+
+    def cena(d, t, im):
+        texto(d, "espera média de cada gravidade (1 = a mais urgente)", BX0, BY0 - 40, 13, GRAY)
+        for j, m in enumerate(medias):
+            y = BY0 + j * PASSO
+            texto(d, f"gravidade {g0 + j}", BX0, y + 6, 14, INK)
+            x0 = BX0 + 120
+            if m is None:
+                texto(d, "ninguém", x0, y + 6, 13, GRAY)
+                continue
+            d.rectangle((x0, y, x0 + max(2, m / maior * (larg - 70)), y + 30), fill=INK)
+            texto(d, f"{fmt(m)} min", x0 + max(2, m / maior * (larg - 70)) + 10, y + 6, 14, INK, b=True)
+        media = fmt(ex["soma"] / N)
+        _painel(d, [("acessos ao heap", str(ex["ops"]), 40, True), ("espera média", f"{media} min", 26, False),
+                    ("maior fila", f"{ex['maior']} pacientes", 20, False)])
+        ult = len(medias) - 1
+        rich(d, [("gravidade 1 espera ", ""), (f"{fmt(medias[0])} min", "bg"),
+                 (f"; gravidade {g0 + ult}, {fmt(medias[ult])} min", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
 

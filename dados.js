@@ -7330,6 +7330,1050 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "prioridade",
+  "id": "fila-de-prioridade",
+  "nome": "Fila de prioridade",
+  "variante": "pronto-socorro: um médico, gravidade de 1 a 5",
+  "familia": "árvores e heaps",
+  "resumo": "Pacientes chegam ao pronto-socorro em minutos sorteados, cada um com uma gravidade de 1 (a mais urgente) a 5. Quem chega com o médico ocupado espera na fila de prioridade. Quando o médico fica livre, chama o mais urgente e, no empate, quem chegou primeiro. É a Fila de atendimento com outra regra: aqui, quem chega por último pode passar na frente.",
+  "instrumentos": [
+   {
+    "id": "heap",
+    "papel": "a fila de prioridade: um heap de mínimo com a chave (gravidade, chegada); chamar o próximo é tirar o menor"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n log n)",
+   "porque": "Cada paciente que espera entra no heap uma vez e sai uma vez. Entrar sobe e sair desce, e cada um anda no máximo a altura do heap, uns log₂ n níveis. São até 2n operações de O(log n) cada.",
+   "nota": "Num dia calmo, o heap quase não passa de um ou dois pacientes, e cada operação custa pouco: o total fica perto de n. Lotado, o heap cresce com o dia, e a altura dele aparece na conta. Uma fila ingênua, que procurasse o mais urgente olhando todos, faria O(n) por chamada e O(n²) no dia."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "O heap guarda quem está esperando, um par (gravidade, chegada) por paciente. Num dia calmo, quase ninguém; lotado, o heap cresce sem parar e chega a uma fração de n.",
+   "nomes": {
+    "heap": "pacientes esperando no heap"
+   },
+   "cresce_com_n": [
+    "heap"
+   ],
+   "vazio": "não guarda nada"
+  },
+  "video": {
+   "ideia": [
+    "quem chega com o médico ocupado entra no heap: sobe enquanto for mais urgente que o pai",
+    "o médico chama o topo do heap, o mais urgente; o último sobe para a raiz e desce"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e o movimento do dia",
+   "texto": "As mesmas contas para cada vez mais pacientes e para três movimentos: calmo, no limite (chegam tantos quantos o médico atende) e lotado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1; o lotado sobe um pouco mais inclinado, porque o heap fica alto.",
+   "crescimento": "Acessos ao heap (casas lidas e escritas) para n de {n0} a {n1} pacientes. {dados}; a faixa cinza vai do menor ao maior dos sorteios no limite. Tracejada: n log₂ n, de referência.",
+   "distribuicao": "{vezes} sorteios de {nd} pacientes num dia lotado: a maior fila vai de {min} a {max} pacientes. A barra preta é o sorteio do encarte.",
+   "rotulo": "maior fila (n = {nd})",
+   "memoria": "Maior fila para cada n, nos três movimentos (a maior entre os sorteios). Lotado, o heap cresce com n; calmo, quase não sai do lugar."
+  },
+  "placa": {
+   "autor": "sem autoria única; o heap como fila de prioridade é de J. W. J. Williams",
+   "ano": "1964"
+  },
+  "poster": "algoritmos/prioridade/prioridade.png",
+  "exemplo": {
+   "dados": "24 pacientes sorteados com a semente 11: um chega a cada 1 a 3 minutos, é atendido em 2 a 4 minutos e tem gravidade de 1 (a mais urgente) a 5",
+   "n": 24,
+   "semente": 11,
+   "caso": "lotado",
+   "chegada": [
+    2,
+    5,
+    7,
+    9,
+    12,
+    15,
+    16,
+    17,
+    20,
+    22,
+    25,
+    28,
+    29,
+    30,
+    32,
+    34,
+    35,
+    36,
+    39,
+    42,
+    45,
+    46,
+    49,
+    51
+   ],
+   "duracao": [
+    3,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    2,
+    4,
+    2,
+    2,
+    2,
+    2,
+    2,
+    4,
+    2,
+    3,
+    3,
+    3,
+    4,
+    2,
+    4,
+    2,
+    4
+   ],
+   "gravidade": [
+    3,
+    4,
+    1,
+    1,
+    4,
+    3,
+    4,
+    5,
+    1,
+    3,
+    3,
+    2,
+    5,
+    3,
+    1,
+    1,
+    5,
+    1,
+    4,
+    1,
+    3,
+    4,
+    1,
+    1
+   ],
+   "movimentos": {
+    "calmo": {
+     "chegada": [
+      2,
+      6
+     ],
+     "atendimento": [
+      1,
+      5
+     ]
+    },
+    "no_limite": {
+     "chegada": [
+      1,
+      5
+     ],
+     "atendimento": [
+      1,
+      5
+     ]
+    },
+    "lotado": {
+     "chegada": [
+      1,
+      3
+     ],
+     "atendimento": [
+      2,
+      4
+     ]
+    }
+   },
+   "gravidades": [
+    1,
+    5
+   ],
+   "soma": 260,
+   "maior": 7,
+   "esperas": [
+    0,
+    0,
+    2,
+    4,
+    7,
+    2,
+    40,
+    50,
+    3,
+    5,
+    6,
+    1,
+    40,
+    12,
+    1,
+    3,
+    36,
+    3,
+    21,
+    2,
+    3,
+    17,
+    1,
+    1
+   ],
+   "ordem": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    4,
+    8,
+    9,
+    11,
+    10,
+    14,
+    15,
+    17,
+    13,
+    19,
+    20,
+    22,
+    23,
+    6,
+    18,
+    21,
+    7,
+    12,
+    16
+   ],
+   "por_gravidade": [
+    2.2222222222222223,
+    1,
+    4.666666666666667,
+    17,
+    42
+   ],
+   "ops": 252,
+   "operacoes": 44
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "acessos ao heap",
+    "tipo": "prioridade",
+    "series": [
+     {
+      "caso": "calmo",
+      "nome": "calmo (média)"
+     },
+     {
+      "caso": "no_limite",
+      "nome": "no limite (média)"
+     },
+     {
+      "caso": "lotado",
+      "nome": "lotado (média)"
+     }
+    ],
+    "banda": "no_limite",
+    "crescimento": [
+     {
+      "n": 16,
+      "calmo": {
+       "media": 18.3,
+       "min": 9,
+       "max": 35,
+       "pico": 2,
+       "operacoes": 11,
+       "espera": 0.71875
+      },
+      "no_limite": {
+       "media": 67.3,
+       "min": 33,
+       "max": 127,
+       "pico": 4,
+       "operacoes": 24.2,
+       "espera": 3.575
+      },
+      "lotado": {
+       "media": 141.8,
+       "min": 75,
+       "max": 173,
+       "pico": 8,
+       "operacoes": 29.6,
+       "espera": 8.375
+      }
+     },
+     {
+      "n": 32,
+      "calmo": {
+       "media": 46,
+       "min": 21,
+       "max": 81,
+       "pico": 3,
+       "operacoes": 25,
+       "espera": 1.046875
+      },
+      "no_limite": {
+       "media": 172.2,
+       "min": 77,
+       "max": 334,
+       "pico": 7,
+       "operacoes": 51.2,
+       "espera": 5.3375
+      },
+      "lotado": {
+       "media": 407.9,
+       "min": 304,
+       "max": 481,
+       "pico": 14,
+       "operacoes": 61.2,
+       "espera": 15.428125
+      }
+     },
+     {
+      "n": 64,
+      "calmo": {
+       "media": 96.8,
+       "min": 51,
+       "max": 141,
+       "pico": 3,
+       "operacoes": 52.2,
+       "espera": 1.0921875
+      },
+      "no_limite": {
+       "media": 497.6,
+       "min": 214,
+       "max": 725,
+       "pico": 13,
+       "operacoes": 113.2,
+       "espera": 8.24375
+      },
+      "lotado": {
+       "media": 1178.7,
+       "min": 1090,
+       "max": 1267,
+       "pico": 26,
+       "operacoes": 125.8,
+       "espera": 35.8796875
+      }
+     },
+     {
+      "n": 128,
+      "calmo": {
+       "media": 183,
+       "min": 111,
+       "max": 318,
+       "pico": 5,
+       "operacoes": 99.8,
+       "espera": 1.03359375
+      },
+      "no_limite": {
+       "media": 1062.6,
+       "min": 465,
+       "max": 1984,
+       "pico": 17,
+       "operacoes": 221,
+       "espera": 9.8640625
+      },
+      "lotado": {
+       "media": 2958.2,
+       "min": 2447,
+       "max": 3141,
+       "pico": 51,
+       "operacoes": 253,
+       "espera": 62.83359375
+      }
+     },
+     {
+      "n": 256,
+      "calmo": {
+       "media": 381.9,
+       "min": 262,
+       "max": 621,
+       "pico": 4,
+       "operacoes": 197.2,
+       "espera": 1.088671875
+      },
+      "no_limite": {
+       "media": 2833.3,
+       "min": 1594,
+       "max": 5174,
+       "pico": 27,
+       "operacoes": 451,
+       "espera": 16.8109375
+      },
+      "lotado": {
+       "media": 7334.2,
+       "min": 6909,
+       "max": 7614,
+       "pico": 92,
+       "operacoes": 509.2,
+       "espera": 125.089453125
+      }
+     },
+     {
+      "n": 512,
+      "calmo": {
+       "media": 772.7,
+       "min": 565,
+       "max": 1023,
+       "pico": 7,
+       "operacoes": 403.8,
+       "espera": 1.1123046875
+      },
+      "no_limite": {
+       "media": 6666.9,
+       "min": 3193,
+       "max": 10662,
+       "pico": 31,
+       "operacoes": 936.6,
+       "espera": 21.2427734375
+      },
+      "lotado": {
+       "media": 17654.3,
+       "min": 17481,
+       "max": 17898,
+       "pico": 181,
+       "operacoes": 1020.8,
+       "espera": 258.63984375
+      }
+     },
+     {
+      "n": 1024,
+      "calmo": {
+       "media": 1514,
+       "min": 1173,
+       "max": 1909,
+       "pico": 5,
+       "operacoes": 819.8,
+       "espera": 1.08564453125
+      },
+      "no_limite": {
+       "media": 17440.1,
+       "min": 11362,
+       "max": 25056,
+       "pico": 47,
+       "operacoes": 1934.4,
+       "espera": 35.0130859375
+      },
+      "lotado": {
+       "media": 40736.4,
+       "min": 40155,
+       "max": 41366,
+       "pico": 366,
+       "operacoes": 2045.2,
+       "espera": 511.49091796875
+      }
+     }
+    ],
+    "eixo": "n (pacientes; dobra a cada passo)",
+    "refs": [
+     "n log₂ n"
+    ],
+    "crescimento_dados": "média de 10 sorteios de pacientes por tamanho",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 200,
+     "valores": [
+      8,
+      6,
+      6,
+      10,
+      6,
+      10,
+      11,
+      11,
+      5,
+      9,
+      7,
+      7,
+      8,
+      8,
+      9,
+      8,
+      6,
+      8,
+      8,
+      8,
+      10,
+      9,
+      9,
+      9,
+      8,
+      7,
+      9,
+      12,
+      8,
+      10,
+      9,
+      6,
+      6,
+      10,
+      6,
+      8,
+      8,
+      7,
+      10,
+      8,
+      10,
+      10,
+      6,
+      8,
+      8,
+      8,
+      9,
+      5,
+      6,
+      10,
+      4,
+      10,
+      9,
+      8,
+      6,
+      6,
+      8,
+      11,
+      6,
+      11,
+      8,
+      10,
+      9,
+      6,
+      8,
+      7,
+      10,
+      5,
+      8,
+      5,
+      8,
+      4,
+      8,
+      8,
+      6,
+      11,
+      8,
+      7,
+      9,
+      7,
+      7,
+      9,
+      9,
+      5,
+      6,
+      7,
+      8,
+      5,
+      8,
+      4,
+      10,
+      7,
+      7,
+      9,
+      8,
+      9,
+      9,
+      9,
+      8,
+      7,
+      8,
+      5,
+      9,
+      9,
+      11,
+      5,
+      4,
+      12,
+      8,
+      8,
+      8,
+      8,
+      9,
+      8,
+      7,
+      8,
+      10,
+      6,
+      8,
+      7,
+      7,
+      8,
+      9,
+      11,
+      7,
+      7,
+      9,
+      8,
+      7,
+      5,
+      8,
+      11,
+      5,
+      10,
+      5,
+      9,
+      9,
+      9,
+      5,
+      9,
+      7,
+      8,
+      10,
+      10,
+      6,
+      10,
+      5,
+      7,
+      12,
+      10,
+      6,
+      10,
+      7,
+      6,
+      8,
+      9,
+      11,
+      7,
+      9,
+      10,
+      7,
+      6,
+      11,
+      10,
+      9,
+      9,
+      8,
+      8,
+      8,
+      9,
+      13,
+      8,
+      6,
+      8,
+      7,
+      7,
+      6,
+      9,
+      7,
+      10,
+      11,
+      10,
+      9,
+      9,
+      7,
+      9,
+      8,
+      10,
+      8,
+      9,
+      8,
+      9,
+      8,
+      7,
+      7,
+      8,
+      10,
+      7,
+      5,
+      9
+     ],
+     "destaque": 7
+    }
+   },
+   "memoria": {
+    "pico": 7,
+    "detalhe": {
+     "heap": 7
+    }
+   },
+   "ciclomatica": {
+    "M": 5,
+    "nos": 20,
+    "arestas": 23,
+    "decisoes": [
+     {
+      "linha": 5,
+      "tipo": "for"
+     },
+     {
+      "linha": 6,
+      "tipo": "and/or"
+     },
+     {
+      "linha": 6,
+      "tipo": "while"
+     },
+     {
+      "linha": 10,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "for"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "while"
+      },
+      {
+       "id": 6,
+       "linha": 6,
+       "rotulo": "e"
+      },
+      {
+       "id": 7,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 8,
+       "linha": 8,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 9,
+       "linha": 9,
+       "rotulo": "assign"
+      },
+      {
+       "id": 10,
+       "linha": 10,
+       "rotulo": "if"
+      },
+      {
+       "id": 11,
+       "linha": 11,
+       "rotulo": "assign"
+      },
+      {
+       "id": 12,
+       "linha": 13,
+       "rotulo": "assign"
+      },
+      {
+       "id": 13,
+       "linha": 14,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 14,
+       "linha": 15,
+       "rotulo": "assign"
+      },
+      {
+       "id": 15,
+       "linha": 16,
+       "rotulo": "expr"
+      },
+      {
+       "id": 16,
+       "linha": 17,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 17,
+       "linha": 18,
+       "rotulo": "assign"
+      },
+      {
+       "id": 18,
+       "linha": 19,
+       "rotulo": "return"
+      },
+      {
+       "id": 19,
+       "linha": 20,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 14,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 15,
+       "para": 16,
+       "tipo": "segue"
+      },
+      {
+       "de": 16,
+       "para": 17,
+       "tipo": "segue"
+      },
+      {
+       "de": 17,
+       "para": 4,
+       "tipo": "volta"
+      },
+      {
+       "de": 4,
+       "para": 18,
+       "tipo": "segue"
+      },
+      {
+       "de": 18,
+       "para": 19,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def atender(chegada, duracao, gravidade, conta):\n    n = len(chegada)\n    heap = Heap(conta)\n    livre, soma, maior, i = 0, 0, 0, 0\n    for _ in range(n):\n        while i < n and chegada[i] < livre:\n            insere(heap, i, gravidade[i], conta)\n            i += 1\n            maior = max(maior, heap.n)\n        if heap.n > 0:\n            k = tira(heap, conta)\n        else:\n            k = i\n            i += 1\n        inicio = max(livre, chegada[k])\n        conta.evento(\"atende\", k, inicio)\n        soma += inicio - chegada[k]\n        livre = inicio + duracao[k]\n    return soma, maior\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "order() em R, sem heap, e um heap reescrito em R que conta casas",
+   "versao_r": "4.6.0",
+   "vetores": 16,
+   "tudo_ok": true,
+   "resumo": "Refeito em R 4.6.0 em 16 sorteios (o do encarte e 15 de 50 pacientes: calmo, no limite e lotado). Escolhendo o mais urgente com order(), sem heap nenhum, a ordem de atendimento, a espera de cada paciente e a maior fila batem com o Python; um heap reescrito em R conta os mesmos acessos ao heap."
+  },
+  "pseudocodigo": {
+   "assinatura": "pronto_socorro(chegada, duração, gravidade)",
+   "nome": "pronto_socorro",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "heap ← vazio;  livre ← 0;  i ← 1",
+     "chamada": false
+    },
+    {
+     "tipo": "acao",
+     "linha": 3,
+     "texto": "soma ← 0;  maior ← 0",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 4,
+     "op": "e",
+     "conds": [
+      "para cada atendimento, de 1 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "laco",
+       "rotulo": "enquanto",
+       "linha": 5,
+       "op": "e",
+       "conds": [
+        "i ≤ n",
+        "chegada[i] < livre"
+       ],
+       "corpo": [
+        {
+         "tipo": "acao",
+         "linha": 6,
+         "texto": "insira (gravidade[i], i) no heap;  i ← i + 1",
+         "chamada": false
+        },
+        {
+         "tipo": "acao",
+         "linha": 7,
+         "texto": "maior ← máximo(maior, tamanho do heap)",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "se",
+       "linha": 8,
+       "op": "e",
+       "conds": [
+        "o heap não está vazio"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 9,
+         "texto": "(g, k) ← tire o menor do heap",
+         "chamada": false
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "acao",
+         "linha": 11,
+         "texto": "k ← i;  i ← i + 1",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "acao",
+       "linha": 12,
+       "texto": "início ← máximo(livre, chegada[k])",
+       "chamada": false
+      },
+      {
+       "tipo": "acao",
+       "linha": 13,
+       "texto": "soma ← soma + início − chegada[k]",
+       "chamada": false
+      },
+      {
+       "tipo": "acao",
+       "linha": 14,
+       "texto": "livre ← início + duração[k]",
+       "chamada": false
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 15,
+     "texto": "devolva soma, maior"
+    }
+   ],
+   "linhas": [
+    "procedimento pronto_socorro(chegada, duração, gravidade):",
+    "    heap ← vazio;  livre ← 0;  i ← 1",
+    "    soma ← 0;  maior ← 0",
+    "    para cada atendimento, de 1 até n:",
+    "        enquanto i ≤ n e chegada[i] < livre:",
+    "            insira (gravidade[i], i) no heap;  i ← i + 1",
+    "            maior ← máximo(maior, tamanho do heap)",
+    "        se o heap não está vazio:",
+    "            (g, k) ← tire o menor do heap",
+    "        senão:",
+    "            k ← i;  i ← i + 1",
+    "        início ← máximo(livre, chegada[k])",
+    "        soma ← soma + início − chegada[k]",
+    "        livre ← início + duração[k]",
+    "    devolva soma, maior"
+   ],
+   "M": 5,
+   "nos": 16,
+   "arestas": 19,
+   "decisoes": [
+    4,
+    5,
+    5,
+    8
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "largura",
   "id": "busca-em-largura",
   "nome": "Busca em largura",
@@ -11020,11 +12064,6 @@ window.ALBUNS = [
    },
    {
     "nome": "Árvore equilibrada (AVL)",
-    "tempo": "O(log n) por operação",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fila de prioridade",
     "tempo": "O(log n) por operação",
     "memoria": "O(n)"
    }
