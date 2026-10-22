@@ -475,6 +475,164 @@
       casas: g.reg.leituras + g.reg.escritas + pilha.reg.leituras + pilha.reg.escritas };
   }
 
+  // ---------- estatística (algoritmos/mediana, algoritmos/welford, algoritmos/histograma) ----------
+
+  /** Mediana por quickselect (algoritmos/mediana/mediana.py): a partição do quick sort, sem recursão. */
+  function mediana(vetor) {
+    const c = contador(), v = vetor.slice(), n = v.length, k = Math.floor((n - 1) / 2);
+    const V = c.vars = { k: k + 1, a: 1, b: n, "pivô": null, i: null, j: null, m: null, resposta: null };
+    let a = 0, b = n - 1;
+    c.push({ t: "corta", a, b, linha: 3 });
+    for (;;) {
+      testa(c, 4);
+      if (!(a < b)) break;
+      V["pivô"] = v[b];
+      c.push({ t: "pivo", p: b, a, b, linha: 5 });
+      let i = a;
+      V.i = i + 1;
+      for (let j = a; j < b; j++) {
+        V.j = j + 1;
+        if (maior(v, b, j, c, 8)) { troca(v, i, j, c, 9); i++; V.i = i + 1; }
+      }
+      V.j = null;
+      troca(v, i, b, c, 11);
+      testa(c, 12);
+      if (i === k) { c.push({ t: "pare", linha: 13 }); break; }
+      testa(c, 14);
+      if (i < k) { a = i + 1; V.a = a + 1; c.push({ t: "corta", a, b, linha: 15 }); }
+      else { b = i - 1; V.b = b + 1; c.push({ t: "corta", a, b, linha: 17 }); }
+    }
+    let resposta = v[k];
+    V.resposta = resposta;
+    c.push({ t: "atribui", linha: 18 });
+    testa(c, 19);
+    if (n % 2 === 0) {
+      let m = k + 1;
+      V.m = m + 1;
+      c.push({ t: "menor", m, linha: 20 });
+      for (let j = k + 2; j < n; j++) {
+        V.j = j + 1;
+        if (maior(v, m, j, c, 22)) { m = j; V.m = m + 1; c.push({ t: "menor", m, linha: 23 }); }
+      }
+      V.j = null;
+      resposta = (v[k] + v[m]) / 2;
+      V.resposta = resposta;
+      c.push({ t: "atribui", m, linha: 24 });
+    }
+    c.push({ t: "devolva", linha: 25 });
+    return { vetor: vetor.slice(), final: v, k, mediana: resposta, eventos: c.eventos,
+      comparacoes: c.ops.comparacoes || 0, trocas: c.ops.trocas || 0, pico: c.pico };
+  }
+
+  /** Média e variância em uma passada (algoritmos/welford/welford.py). */
+  function welford(x) {
+    const c = contador();
+    let n = 0, media = 0, m2 = 0;
+    const V = c.vars = { n: 0, x: null, "δ": null, "média": 0, M2: 0 };
+    for (let i = 0; i < x.length; i++) {
+      c.op("leituras");
+      V.x = x[i];
+      c.push({ t: "le", i, linha: 3 });
+      n += 1;
+      const delta = x[i] - media;
+      media += delta / n;
+      Object.assign(V, { n, "δ": delta, "média": media });
+      c.push({ t: "atribui", i, linha: 6 });
+      m2 += delta * (x[i] - media);
+      V.M2 = m2;
+      c.push({ t: "atribui", i, linha: 7 });
+    }
+    c.push({ t: "devolva", linha: 8 });
+    return { media, variancia: m2 / (n - 1), eventos: c.eventos, leituras: c.ops.leituras || 0, pico: c.pico };
+  }
+
+  /** As duas contas com que o Welford é comparado, na mesma ordem do Python (leituras e pico, sem eventos). */
+  function somaDosQuadrados(x) {
+    let n = 0, s1 = 0, s2 = 0;
+    for (const v of x) { n += 1; s1 += v; s2 += v * v; }
+    return { media: s1 / n, variancia: (s2 - s1 * s1 / n) / (n - 1), leituras: n, pico: 0 };
+  }
+
+  function duasPassadas(x) {
+    let s = 0;
+    for (const v of x) s += v;
+    const media = s / x.length;
+    let q = 0;
+    for (const v of x) { const d = v - media; q += d * d; }
+    return { media, variancia: q / (x.length - 1), leituras: 2 * x.length, pico: x.length };
+  }
+
+  // o pretty() do R (src/appl/pretty.c), como algoritmos/histograma/histograma.py
+  const EPS = 2 ** -52, FOLGA = 1e-7;
+  const sturges = (n) => Math.ceil(Math.log2(n) + 1);
+  const potencia10 = (e) => (e >= 0 ? 10 ** e : 1 / 10 ** -e);
+  function pretty(menor, maior, ndiv, minN = 1, h = 1.5, h5 = 2.75) {
+    const dx = maior - menor;
+    let cell, pequeno;
+    if (dx === 0 && maior === 0) { cell = 1; pequeno = true; }
+    else {
+      cell = Math.max(Math.abs(menor), Math.abs(maior));
+      let u = 1 + (h5 >= 1.5 * h + 0.5 ? 1 / (1 + h) : 1.5 / (1 + h5));
+      u *= Math.max(1, ndiv) * EPS;
+      pequeno = dx < cell * u * 3;
+    }
+    if (pequeno) { if (cell > 10) cell = 9 + cell / 10; cell *= 0.75; if (minN > 1) cell /= minN; }
+    else { cell = dx; if (ndiv > 1) cell /= ndiv; }
+    const base = potencia10(Math.floor(Math.log10(cell)));
+    let unit = base;
+    if (2 * base - cell < h * (cell - unit)) {
+      unit = 2 * base;
+      if (5 * base - cell < h5 * (cell - unit)) {
+        unit = 5 * base;
+        if (10 * base - cell < h * (cell - unit)) unit = 10 * base;
+      }
+    }
+    let ns = Math.floor(menor / unit + 1e-10), nu = Math.ceil(maior / unit - 1e-10);
+    while (ns * unit > menor + 1e-10 * unit) ns--;
+    while (nu * unit < maior - 1e-10 * unit) nu++;
+    let k = Math.trunc(0.5 + nu - ns);
+    if (k < minN) {
+      k = minN - k;
+      if (ns >= 0) { nu += Math.floor(k / 2); ns -= Math.floor(k / 2) + (k % 2); }
+      else { ns -= Math.floor(k / 2); nu += Math.floor(k / 2) + (k % 2); }
+    }
+    return { a: ns * unit, b: nu * unit, h: unit };
+  }
+
+  /** Histograma com as classes do hist() do R (algoritmos/histograma/histograma.py). */
+  function histograma(x) {
+    const c = contador(), n = x.length;
+    c.op("leituras");
+    let menor = x[0], maior = x[0];
+    const V = c.vars = { i: 1, "x[i]": x[0], menor, maior, c: null, a: null, h: null, j: null, "contagens[j]": null };
+    c.push({ t: "atribui", i: 0, linha: 2 });
+    for (let i = 1; i < n; i++) {
+      c.op("leituras");
+      Object.assign(V, { i: i + 1, "x[i]": x[i] });
+      c.push({ t: "le", i, linha: 3 });
+      if (x[i] < menor) { menor = x[i]; V.menor = menor; c.push({ t: "menor", i, linha: 5 }); }
+      else if (x[i] > maior) { maior = x[i]; V.maior = maior; c.push({ t: "maior", i, linha: 7 }); }
+    }
+    const p = pretty(menor, maior, sturges(n)), a = p.a, h = p.h, nc = Math.round((p.b - p.a) / p.h);
+    Object.assign(V, { i: null, "x[i]": null, c: nc, a, h });
+    c.push({ t: "classes", linha: 8 });
+    const contagens = new Array(nc).fill(0);
+    c.aloca("contagens", nc);
+    c.push({ t: "atribui", linha: 9 });
+    for (let i = 0; i < n; i++) {
+      c.op("leituras");
+      let j = Math.ceil((x[i] - a) / h - FOLGA);
+      Object.assign(V, { i: i + 1, "x[i]": x[i], j, "contagens[j]": j >= 1 ? contagens[j - 1] : null });
+      c.push({ t: "classe", i, linha: 11 });
+      if (j < 1) { j = 1; Object.assign(V, { j, "contagens[j]": contagens[0] }); c.push({ t: "atribui", i, linha: 13 }); }
+      contagens[j - 1] += 1;
+      V["contagens[j]"] = contagens[j - 1];
+      c.push({ t: "conta", i, j: j - 1, linha: 14 });
+    }
+    c.push({ t: "devolva", linha: 15 });
+    return { x, menor, maior, a, h, c: nc, contagens, eventos: c.eventos, ops: c.ops.leituras || 0, pico: c.pico };
+  }
+
   // ---------- entradas ----------
 
   // gerador com semente (mulberry32): o mesmo número de sorteio dá o mesmo vetor
@@ -573,7 +731,17 @@
     return ordena(escolhidas);
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, largura, profundidade, entrada, entradaBusca, textoParenteses, clientes, grafoGrade, centrosIniciais, ORDENACOES };
+  /** n valores com uma casa decimal, na forma pedida (como algoritmos/histograma/medir.py:sortear, com outro sorteador). */
+  function amostra(n, forma, semente) {
+    const r = sorteador(semente);
+    const normal = (m, s) => m + s * Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+    const umaCasa = (v) => Math.round(v * 10) / 10;
+    return Array.from({ length: n }, () => umaCasa(forma === "normal" ? normal(50, 10)
+      : forma === "uniforme" ? 100 * r() : r() < 0.5 ? normal(35, 6) : normal(65, 6)));
+  }
+
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
+    histograma, pretty, sturges, entrada, entradaBusca, textoParenteses, clientes, grafoGrade, centrosIniciais, amostra, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

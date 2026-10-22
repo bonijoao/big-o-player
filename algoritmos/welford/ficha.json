@@ -1,0 +1,42 @@
+{
+ "id": "media-e-variancia",
+ "nome": "Média e variância em uma passada",
+ "variante": "algoritmo de Welford",
+ "familia": "estatística",
+ "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e não perde precisão quando os números são grandes e a variação é pequena, que é onde a fórmula da soma dos quadrados desanda.",
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada valor é lido uma vez e atualiza três números (n, média e M2) com meia dúzia de contas. São n leituras. As duas passadas leem tudo duas vezes: 2n.",
+  "nota": "A soma dos quadrados também lê n valores, mas calcula Σx² − (Σx)²/n: dois números enormes e quase iguais. A subtração joga fora os algarismos que sobram, e a variância pode sair até negativa. O Welford só soma desvios pequenos, e o erro fica no tamanho do arredondamento."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Guarda só n, a média e M2, que não crescem com n. Os valores passam e vão embora: dá para calcular sobre um fluxo que não cabe na memória.",
+  "nota": "As duas passadas precisam ler os mesmos valores de novo; num fluxo, isso exige guardar todos os n: O(n).",
+  "nomes": {
+   "guardados": "valores guardados para a segunda passada"
+  },
+  "cresce_com_n": [
+   "guardados"
+  ],
+  "vazio": "não guarda nenhum dos valores lidos"
+ },
+ "video": {
+  "ideia": [
+   "cada ano lido corrige a média pelo desvio δ dividido por n",
+   "M2 soma desvios pequenos: a variância é M2 / (n − 1)"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo, memória e precisão: três contas para a mesma variância",
+  "texto": "As três contas leem os mesmos valores. O Welford e a soma dos quadrados leem cada um uma vez; as duas passadas, duas vezes. O que separa o Welford da soma dos quadrados não é o tempo, é a precisão.",
+  "crescimento": "Leituras para n de {n0} a {n1}. {dados}. O Welford e a soma dos quadrados leem n valores; as duas passadas, 2n.",
+  "erro": "O LakeHuron somado a uma constante, de 1 a 10¹⁰ pés: a variância não muda, mas o erro de cada conta, sim. Erro relativo contra a variância exata dos mesmos números, calculada em frações. Erro zero aparece no chão do gráfico.",
+  "memoria": "Valores guardados no pico para cada n. O Welford e a soma dos quadrados não guardam nada; as duas passadas, num fluxo, guardam os n."
+ },
+ "pseudocodigo": "procedimento welford(fluxo):\n    n ← 0;  média ← 0;  M2 ← 0\n    para cada valor x do fluxo:\n        n ← n + 1\n        δ ← x − média\n        média ← média + δ / n\n        M2 ← M2 + δ · (x − média)\n    devolva média, M2 / (n − 1)\n",
+ "placa": {
+  "autor": "B. P. Welford",
+  "ano": "1962"
+ }
+}

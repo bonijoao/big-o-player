@@ -138,6 +138,10 @@
     const rotulos = [];
     for (const g of grupos) {
       const pts = g.vals.map((v, i) => [X(i), Y(v)]);
+      if (g.vals.every((v) => v <= 0)) {
+        rotulos.push({ y: Y(10 ** lo), texto: `${g.membros.map((sr) => sr.curto).join(" = ")}: nada`, cor: g.membros[0].cor });
+        continue;
+      }
       g.membros.forEach((sr, k) => {
         const larg = 2 + 4 * (g.membros.length - 1 - k);
         s.append(svg("polyline", { points: pts.map((p) => p.join(",")).join(" "), fill: "none", stroke: sr.cor, "stroke-width": larg }));
@@ -200,6 +204,7 @@
     V: { nome: "V", f: (n) => n },
     "2n": { nome: "2n", f: (n) => 2 * n },
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
+    "log₂ n + 1": { nome: "log₂ n + 1", f: (n) => Math.log2(n) + 1 },
   };
   const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9"];
 
@@ -215,12 +220,70 @@
       dados: t.crescimento,
       val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : d[caso].pico),
       series,
-      refs: tempo ? (t.refs || []).map((r) => REFS[r]) : [],
+      refs: (tempo ? t.refs || [] : t.refs_memoria || []).map((r) => REFS[r]),
       banda: tempo && t.banda ? { min: (d) => d[t.banda].min, max: (d) => d[t.banda].max } : null,
       todas: "todos os casos",
       aria: `${tempo ? t.unidade : "memória extra no pico"} por tamanho n, um traço por caso de entrada`,
       eixo: t.eixo,
     });
+  }
+
+  // Welford: o erro relativo da variância de cada conta quando se soma uma
+  // constante aos dados (de 1 a 10¹⁰), as duas escalas em log. Erro zero vai
+  // para o chão do gráfico; a linha tracejada em 1 é o erro do tamanho da
+  // própria variância.
+  function graficoErro(caixa, a) {
+    const e = a.medido.tempo.erro, ds = e.deslocamentos;
+    // as mesmas cores do gráfico de leituras (graficoCasos), série por série
+    const series = a.medido.tempo.series.map((sr, i) => ({ ...sr, cor: CORES_CASOS[i % CORES_CASOS.length] }));
+    caixa.replaceChildren();
+    const W = Math.max(300, caixa.clientWidth), H = 300, estreito = W < 480;
+    const m = { l: 74, r: estreito ? 16 : 150, t: 18, b: 44 };
+    const CHAO = -17;   // 10⁻¹⁷: abaixo do arredondamento de um double; o erro zero cai aqui
+    const lg = (v) => (v > 0 ? Math.max(CHAO, Math.log10(v)) : CHAO);
+    const hi = Math.ceil(Math.max(0, ...series.flatMap((sr) => e[sr.caso].map(lg))));
+    const X = (i) => m.l + i / (ds.length - 1) * (W - m.l - m.r);
+    const Y = (l) => m.t + (1 - (l - CHAO) / (hi - CHAO)) * (H - m.t - m.b);
+    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
+      "aria-label": "Erro relativo da variância de cada conta conforme a constante somada aos dados" });
+    const pot = (k) => (k === 0 ? "1" : `10${String(k).split("").map((d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d] || "⁻").join("")}`);
+    for (let k = CHAO; k <= hi; k += 4) {
+      s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(k), y2: Y(k), stroke: "#eceef1" }));
+      s.append(svg("text", { x: m.l - 10, y: Y(k) + 4, "text-anchor": "end", "font-size": 12, fill: "#686c73" }, k === CHAO ? "0" : pot(k)));
+    }
+    s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0), stroke: "#b4b7bd", "stroke-dasharray": "4 4" }));
+    ds.forEach((d, i) => { if (i % (estreito ? 2 : 1) === 0) s.append(svg("text", { x: X(i), y: H - m.b + 20, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, pot(Math.round(Math.log10(d))))); });
+    const rotulos = [];
+    for (const sr of series) {
+      const pts = e[sr.caso].map((v, i) => [X(i), Y(lg(v))]);
+      s.append(svg("polyline", { points: pts.map((p) => p.join(",")).join(" "), fill: "none", stroke: sr.cor, "stroke-width": 2 }));
+      pts.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 3.6, fill: sr.cor })));
+      rotulos.push({ y: pts.at(-1)[1], texto: sr.nome, cor: sr.cor });
+    }
+    rotulos.push({ y: Y(0), texto: "erro = 100%", cor: "#8a8e95" });
+    if (!estreito) {
+      rotulos.sort((p, q) => p.y - q.y);
+      for (let i = 1; i < rotulos.length; i++) rotulos[i].y = Math.max(rotulos[i].y, rotulos[i - 1].y + 14);
+      for (const r of rotulos) s.append(svg("text", { x: X(ds.length - 1) + 12, y: r.y + 4, "font-size": 12, fill: r.cor }, r.texto));
+    } else {
+      const leg = svg("g"), lh = 17;
+      let lx = 0, ly = 0;
+      for (const r of rotulos) {
+        const larg = 26 + r.texto.length * 7.3;
+        if (lx + larg > W - 8) { lx = 0; ly += lh; }
+        const ref = r.cor === "#8a8e95";
+        leg.append(svg("line", { x1: lx + 4, x2: lx + 20, y1: ly + 8, y2: ly + 8, stroke: ref ? "#b4b7bd" : r.cor, "stroke-width": ref ? 1.5 : 3, "stroke-dasharray": ref ? "4 3" : "none" }));
+        leg.append(svg("text", { x: lx + 25, y: ly + 12, "font-size": 12, fill: ref ? "#686c73" : r.cor }, r.texto));
+        lx += larg;
+      }
+      const alt = ly + lh + 10;
+      s.setAttribute("height", H + alt);
+      s.setAttribute("viewBox", `0 ${-alt} ${W} ${H + alt}`);
+      leg.setAttribute("transform", `translate(4, ${-alt + 2})`);
+      s.append(leg);
+    }
+    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, "constante somada aos dados (pés)"));
+    caixa.replaceChildren(s);
   }
 
   function blocoMemoria(a) {
@@ -305,5 +368,5 @@
   }
 
 
-  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, graficoCasos, blocoMemoria, blocoCodigo, el, svg, mil, esc };
+  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, graficoCasos, graficoErro, blocoMemoria, blocoCodigo, el, svg, mil, esc };
 })();

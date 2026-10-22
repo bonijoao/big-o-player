@@ -42,7 +42,7 @@ function confereLinhas(pasta, eventos) {
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
-    atribui: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    atribui: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -81,6 +81,12 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "atribui" || e.v === undefined || e.vars["dist[v]"] === e.d) && (e.t !== "enfileira" || e.vars["tamanho da fila"] >= 1),
     profundidade: (e) => (e.t !== "topo" || e.vars.u === e.u + 1) && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1 && e.vars["próximo[u]"] <= e.vars["grau(u)"]))
       && (e.t !== "atribui" || e.v === undefined || (e.vars.k === e.k && e.vars["ordem[v]"] === e.k)) && (e.t !== "desempilha" || e.vars.u === e.u + 1),
+    mediana: (e) => (e.t !== "compara" || (e.linha === 8 ? e.vars.j === e.j + 1 && e.vars["pivô"] === v[e.i] : e.vars.m === e.i + 1 && e.vars.j === e.j + 1))
+      && (e.t !== "corta" || (e.vars.a === e.a + 1 && e.vars.b === e.b + 1)) && (e.t !== "menor" || e.vars.m === e.m + 1)
+      && (e.t !== "troca" || e.linha !== 9 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
+    welford: (e) => e.t !== "le" || e.vars.n === e.i,
+    histograma: (e) => (e.t !== "le" || e.vars.i === e.i + 1) && (e.t !== "conta" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1))
+      && (e.t !== "classes" || e.vars.c > 0),
     kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
   }[pasta];
   let erros = 0;
@@ -179,6 +185,47 @@ for (const pasta of ["largura", "profundidade"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} grafos)`);
 }
 
+// ---------- estatística ----------
+
+{
+  const d = ler("algoritmos/mediana/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ mediana: r.mediana, comparacoes: r.comparacoes, trocas: r.trocas });
+  const casos = [{ caso: "encarte", vetor: ex.vetor, mediana: ex.mediana, comparacoes: ex.ops, trocas: ex.trocas }, ...d.conferir];
+  let ok = confere("mediana pico", A.mediana(ex.vetor).pico, d.memoria.pico);
+  for (const c of casos) ok = confere(`mediana ${c.caso}`, medidas(A.mediana(c.vetor)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("mediana", A.mediana(c.vetor).eventos) && ok;
+  for (const c of casos) ok = confereVars("mediana", c.vetor, A.mediana(c.vetor).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: mediana (${casos.length} vetores)`);
+}
+
+{
+  const d = ler("algoritmos/welford/dados.json"), ex = d.exemplo;
+  const par = (r) => [r.media, r.variancia];
+  let ok = confere("welford pico", A.welford(ex.x).pico, d.memoria.pico) && confere("welford leituras", A.welford(ex.x).leituras, ex.ops);
+  for (const c of d.conferir) {
+    ok = confere(`welford ${c.caso}`, { welford: par(A.welford(c.x)), soma: par(A.somaDosQuadrados(c.x)), duas: par(A.duasPassadas(c.x)) },
+      { welford: c.welford, soma: c.soma, duas: c.duas }) && ok;
+  }
+  for (const m of ex.menu) {   // o palco soma o deslocamento aos anos do encarte, como o Python
+    const y = ex.x.map((v) => v + m.deslocamento);
+    ok = confere(`welford menu +${m.deslocamento}`, [A.welford(y).variancia, A.somaDosQuadrados(y).variancia, A.duasPassadas(y).variancia],
+      [m.welford.variancia, m.soma.variancia, m.duas.variancia]) && ok;
+  }
+  for (const c of d.conferir) ok = confereLinhas("welford", A.welford(c.x).eventos) && confereVars("welford", null, A.welford(c.x).eventos) && ok;
+  for (const t of d.tempo.crescimento) ok = confere(`welford leituras n=${t.n}`, [t.welford.ops, t.soma.ops, t.duas.ops, t.duas.pico], [t.n, t.n, 2 * t.n, t.n]) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: welford (${d.conferir.length} vetores, ${ex.menu.length} deslocamentos)`);
+}
+
+{
+  const d = ler("algoritmos/histograma/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ contagens: r.contagens, a: r.a, h: r.h, ops: r.ops, pico: r.pico });
+  const casos = [{ caso: "encarte", x: ex.x, contagens: ex.contagens, a: ex.a, h: ex.h, ops: ex.ops, pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`histograma ${c.caso}`, medidas(A.histograma(c.x)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("histograma", A.histograma(c.x).eventos) && confereVars("histograma", null, A.histograma(c.x).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: histograma (${casos.length} vetores)`);
+}
+
 // os geradores de entrada do palco (o menu "sortear"): cada caso tem de dar o que promete
 {
   let ok = true;
@@ -205,6 +252,16 @@ for (const pasta of ["largura", "profundidade"]) {
       const V = k * k, E = (caso) => A.grafoGrade(k, caso, semente).length;
       const visitou = A.largura(V, A.grafoGrade(k, "sorteado", semente)).visitas.length;
       ok = confere(`grafo k=${k} s=${semente}`, [E("grade"), E("caminho"), E("sorteado") >= V - 1, visitou], [2 * k * (k - 1), V - 1, true, V]) && ok;
+    }
+  }
+  // as amostras do histograma: n valores com uma casa decimal, e as contagens somam n
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [50, 100, 200, 272, 400]) {
+      for (const forma of ["normal", "uniforme", "bimodal"]) {
+        const x = A.amostra(n, forma, semente), r = A.histograma(x);
+        ok = confere(`amostra ${forma} n=${n} s=${semente}`, [x.length, x.every((v) => Math.abs(v * 10 - Math.round(v * 10)) < 1e-6), r.contagens.reduce((s, q) => s + q, 0), r.c >= 1],
+          [n, true, n, true]) && ok;
+      }
     }
   }
   console.log(`${ok ? "ok" : "FALHOU"}: geradores de entrada do palco`);

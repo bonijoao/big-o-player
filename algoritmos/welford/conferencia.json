@@ -1,0 +1,7 @@
+{
+  "referencia": "var() e mean(); a soma dos quadrados refeita num laço em R",
+  "versao_r": "4.6.0",
+  "vetores": 7,
+  "tudo_ok": true,
+  "resumo": "No R 4.6.0, o var(LakeHuron) dá 1,737911004. Em 7 vetores (o LakeHuron com cada deslocamento do palco e normais sorteadas), o Welford fica a menos de 1 parte em um milhão do var() (no pior caso, 1,4e-07) e as duas passadas, a menos de 1 em um trilhão. A soma dos quadrados refeita num laço em R dá exatamente os números do Python, inclusive a variância de -1182,35 com +10⁹."
+}
