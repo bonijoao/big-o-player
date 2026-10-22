@@ -749,7 +749,7 @@
 
     // estática: o vetor na ordem física; arcos por cima seguem os próx da lista, tracejados por baixo os dos livres
     function vistaEstatica(q) {
-      const C = q.valor.length, P = 40, S = 36, X0 = 46, YV = 76, W = X0 + Math.max(C, 4) * P + 30;
+      const C = q.valor.length, P = 40, S = 36, X0 = 46, YV = 76, W = Math.max(350, X0 + Math.max(C, 4) * P + 30);
       const usadas = corrente(q.inicio, (p) => q.prox[p], -1), livres = corrente(q.livre, (p) => q.prox[p], -1);
       const H = YV + 26 + 4 + 22 + 74;
       const s = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",

@@ -20,15 +20,15 @@ class _Lista:
         """Do início, segue i próx: o nó da posição i."""
         p = self.inicio
         for _ in range(i):
-            p = self._le_prox(p)
+            p = self.le_prox(p)
         return p
 
     def ler(self, i):
-        return self._le_valor(self._anda(i))
+        return self.le_valor(self._anda(i))
 
     def inserir_inicio(self, x):
         c = self._nova(x)
-        self._escreve_prox(c, self.inicio)
+        self.escreve_prox(c, self.inicio)
         if self.n == 0:
             self.fim = c
         self.inicio = c
@@ -36,11 +36,11 @@ class _Lista:
 
     def inserir_fim(self, x):
         c = self._nova(x)
-        self._escreve_prox(c, self.NULO)
+        self.escreve_prox(c, self.NULO)
         if self.n == 0:
             self.inicio = c
         else:
-            self._escreve_prox(self.fim, c)
+            self.escreve_prox(self.fim, c)
         self.fim = c
         self.n += 1
 
@@ -52,14 +52,14 @@ class _Lista:
             return self.inserir_fim(x)
         p = self._anda(i - 1)
         c = self._nova(x)
-        self._escreve_prox(c, self._le_prox(p))
-        self._escreve_prox(p, c)
+        self.escreve_prox(c, self.le_prox(p))
+        self.escreve_prox(p, c)
         self.n += 1
 
     def remover_inicio(self):
         c = self.inicio
-        x = self._le_valor(c)
-        self.inicio = self._le_prox(c)
+        x = self.le_valor(c)
+        self.inicio = self.le_prox(c)
         self._devolve(c)
         self.n -= 1
         if self.n == 0:
@@ -71,9 +71,9 @@ class _Lista:
         if i == 0:
             return self.remover_inicio()
         p = self._anda(i - 1)
-        c = self._le_prox(p)
-        x = self._le_valor(c)
-        self._escreve_prox(p, self._le_prox(c))
+        c = self.le_prox(p)
+        x = self.le_valor(c)
+        self.escreve_prox(p, self.le_prox(c))
         if c == self.fim:
             self.fim = p
         self._devolve(c)
@@ -84,9 +84,9 @@ class _Lista:
         """Segue os próx desde o início: a posição do primeiro x, ou -1."""
         p, k = self.inicio, 0
         while not self._nulo(p):
-            if self._le_valor(p) == x:
+            if self.le_valor(p) == x:
                 return k
-            p = self._le_prox(p)
+            p = self.le_prox(p)
             k += 1
         return -1
 
@@ -105,19 +105,19 @@ class ListaEstatica(_Lista):
     def _nulo(self, p):
         return p == -1
 
-    def _le_valor(self, i):
+    def le_valor(self, i):
         self.conta.op("leituras")
         return self.valor[i]
 
-    def _le_prox(self, i):
+    def le_prox(self, i):
         self.conta.op("leituras")
         return self.prox[i]
 
-    def _escreve_valor(self, i, x):
+    def escreve_valor(self, i, x):
         self.conta.op("escritas")
         self.valor[i] = x
 
-    def _escreve_prox(self, i, j):
+    def escreve_prox(self, i, j):
         self.conta.op("escritas")
         self.prox[i] = j
 
@@ -127,13 +127,13 @@ class ListaEstatica(_Lista):
         velho = len(self.valor)
         valor, prox = [None] * capacidade, [-1] * capacidade
         for k in range(velho):
-            valor[k] = self._le_valor(k)
+            valor[k] = self.le_valor(k)
             self.conta.op("escritas")
-            prox[k] = self._le_prox(k)
+            prox[k] = self.le_prox(k)
             self.conta.op("escritas")
         self.valor, self.prox = valor, prox
         for k in range(velho, capacidade):
-            self._escreve_prox(k, k + 1 if k + 1 < capacidade else -1)
+            self.escreve_prox(k, k + 1 if k + 1 < capacidade else -1)
         self.livre = velho
 
     def _nova(self, x):
@@ -141,13 +141,13 @@ class ListaEstatica(_Lista):
         if self.livre == -1:
             self._realoca(2 * len(self.valor))
         c = self.livre
-        self.livre = self._le_prox(c)
-        self._escreve_valor(c, x)
+        self.livre = self.le_prox(c)
+        self.escreve_valor(c, x)
         return c
 
     def _devolve(self, c):
         """A casa volta para o começo da lista de livres."""
-        self._escreve_prox(c, self.livre)
+        self.escreve_prox(c, self.livre)
         self.valor[c] = None            # a casa volta a ficar livre (não conta)
         self.livre = c
 
@@ -182,26 +182,26 @@ class ListaDinamica(_Lista):
     def _nulo(self, p):
         return p is None
 
-    def _le_valor(self, p):
+    def le_valor(self, p):
         self.conta.op("leituras")
         return p.valor
 
-    def _le_prox(self, p):
+    def le_prox(self, p):
         self.conta.op("leituras")
         return p.prox
 
-    def _escreve_valor(self, p, x):
+    def escreve_valor(self, p, x):
         self.conta.op("escritas")
         p.valor = x
 
-    def _escreve_prox(self, p, q):
+    def escreve_prox(self, p, q):
         self.conta.op("escritas")
         p.prox = q
 
     def _nova(self, x):
         """Aloca um nó sozinho (pedir memória não conta) e escreve o valor nele."""
         c = No()
-        self._escreve_valor(c, x)
+        self.escreve_valor(c, x)
         return c
 
     def _devolve(self, c):

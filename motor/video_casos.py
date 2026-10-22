@@ -190,3 +190,94 @@ def montar_grafo(pasta):
         rich(d, [("visitou os ", ""), (f"{V} vértices", "b"), (": ", ""), (f"{ex['ops']} operações", "bg"), (fim, "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+def _seta(d, x0, y0, x1, y1, cor, w=2):
+    """Uma seta reta de (x0, y0) até (x1, y1), com a ponta no fim."""
+    import math
+    line(d, (x0, y0), (x1, y1), cor, w=w)
+    a = math.atan2(y1 - y0, x1 - x0)
+    for da in (-0.45, 0.45):
+        line(d, (x1, y1), (x1 - 9 * math.cos(a + da), y1 - 9 * math.sin(a + da)), cor, w=w)
+
+
+def montar_inverter(pasta):
+    """Inverter lista encadeada: os nós no meio da inversão. Os da esquerda já
+    apontam para trás (setas por baixo); os da direita, ainda para a frente."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    v, N = ex["valores"], ex["n"]
+    meio = N // 2                       # os nós 0 … meio − 1 já viraram; o atual é o meio
+    NW, G = 64, 6
+    x0 = BX0 + (BX1 - BX0 - N * NW - (N - 1) * G) / 2
+    xs = [x0 + k * (NW + G) for k in range(N)]
+    Y = 200
+
+    def cena(d, t, im):
+        for k, x in enumerate(xs):
+            d.rectangle((x, Y, x + 34, Y + 40), fill="white", outline=INK, width=2)
+            d.rectangle((x + 34, Y, x + NW, Y + 40), fill=CLARO, outline=INK, width=2)
+            texto(d, str(v[k]), x + 17, Y + 10, 16, INK, b=True, align="c")
+            texto(d, str(k + 1), x + NW / 2, Y - 24, 11, GRAY, align="c")
+        for k in range(N - 1):
+            if k + 1 < meio:            # já virado: o nó k + 1 aponta para o k, por baixo (fundos alternados, para não encavalar)
+                fundo = Y + 58 + (k % 2) * 16
+                line(d, (xs[k + 1] + 49, Y + 40), (xs[k + 1] + 49, fundo), INK, w=2)
+                line(d, (xs[k + 1] + 49, fundo), (xs[k] + 17, fundo), INK, w=2)
+                _seta(d, xs[k] + 17, fundo, xs[k] + 17, Y + 42, INK)
+            elif k >= meio:             # ainda não: o nó k aponta para o k + 1
+                _seta(d, xs[k] + NW - 4, Y + 20, xs[k + 1] - 1, Y + 20, INK)
+        for nome, k in [("anterior", meio - 1), ("atual", meio), ("próximo", meio + 1)]:
+            cor = MEXEU if nome == "atual" else INK
+            x = xs[k] + NW / 2
+            d.polygon([(x, Y + 92), (x - 6, Y + 102), (x + 6, Y + 102)], fill=cor)
+            texto(d, nome, x, Y + 106, 13, cor, b=True, align="c")
+        _painel(d, [("ponteiros trocados", f"{meio} de {N}", 40, False), ("memória extra", "3 ponteiros", 20, False)])
+        rich(d, [("guarda o próximo, ", ""), ("vira o ponteiro", "b"), (", anda: ", ""), (f"{N} trocas no total", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_janela(pasta):
+    """Máximo em janela deslizante: o vetor com a janela de agora, o deque de
+    posições embaixo e, mais abaixo, os máximos já achados, em verde."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    v, N, k = ex["vetor"], ex["n"], ex["k"]
+    # refaz o deque até a janela que termina em `ate`, sem contar nada
+    ate, dq = min(N - 1, k + N // 2), []
+    for i in range(ate + 1):
+        if i >= k and dq[0] == i - k:
+            dq.pop(0)
+        while dq and v[dq[-1]] <= v[i]:
+            dq.pop()
+        dq.append(i)
+    achados = ex["maximos"][:ate - k + 2]
+    cw = min(34, (BX1 - BX0) / N)
+
+    def cena(d, t, im):
+        texto(d, "vetor", BX0, 96, 11, GRAY)
+        for i, x in enumerate(v):
+            xx = BX0 + i * cw
+            dentro = ate - k < i <= ate
+            d.rectangle((xx + 1, 116, xx + cw - 1, 150), fill=MEXEU if i == ate else (CLARO if dentro else "white"),
+                        outline=INK if dentro else PALIDO, width=1)
+            texto(d, str(x), xx + cw / 2, 124, int(min(15, cw * 0.45)), (255, 255, 255) if i == ate else INK, b=True, align="c")
+        xa, xb = BX0 + (ate - k + 1) * cw, BX0 + (ate + 1) * cw
+        line(d, (xa, 108), (xb, 108), INK, w=3)
+        texto(d, f"janela de {k}", (xa + xb) / 2, 84, 11, INK, align="c")
+        texto(d, "deque (frente → fundo)", BX0, 196, 11, GRAY)
+        for j, p in enumerate(dq):
+            xx = BX0 + j * 58
+            d.rectangle((xx, 216, xx + 52, 262), fill=CLARO, outline=INK, width=2)
+            texto(d, str(v[p]), xx + 26, 222, 16, INK, b=True, align="c")
+            texto(d, f"pos {p + 1}", xx + 26, 244, 10, GRAY, align="c")
+        texto(d, "máximos", BX0, 306, 11, GRAY)
+        for j, m in enumerate(achados):
+            xx = BX0 + (j + k - 1) * cw
+            texto(d, str(m), xx + cw / 2, 326, int(min(15, cw * 0.45)), GREEN, b=True, align="c")
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("o ingênuo faria", str(ex["ingenuo"]), 26, False),
+                    ("deque mais cheio", f"{ex['pico']} posições", 20, False)])
+        rich(d, [("n = ", ""), (str(N), "b"), (f", k = {k}: ", ""), (f"{ex['ops']} comparações", "bg"), (f" (ingênuo: {ex['ingenuo']})", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5

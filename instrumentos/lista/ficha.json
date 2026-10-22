@@ -101,11 +101,11 @@
   },
   {
    "id": "inserir-fim-media-estatica",
-   "rotulo": "inserir no fim, média, estática"
+   "rotulo": "média, estática"
   },
   {
    "id": "inserir-fim-media-dinamica",
-   "rotulo": "inserir no fim, média, dinâmica"
+   "rotulo": "média, dinâmica"
   },
   {
    "id": "inserir-inicio-dinamica",

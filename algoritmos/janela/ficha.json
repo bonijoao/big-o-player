@@ -1,0 +1,46 @@
+{
+ "id": "janela-deslizante",
+ "nome": "Máximo em janela deslizante",
+ "variante": "com um deque de posições; o ingênuo ao lado, para comparar",
+ "familia": "estruturas lineares",
+ "resumo": "Para cada trecho de k casas seguidas do vetor, o maior valor. O ingênuo olha as k casas de cada janela. Com o deque, cada valor entra uma vez e sai no máximo uma vez: o deque guarda posições cujos valores só diminuem da frente para o fundo. Quem chega tira de trás todos os que não são maiores que ele, porque esses nunca mais serão o máximo; a frente sai quando fica para trás da janela. O máximo de cada janela é sempre o da frente.",
+ "instrumentos": [
+  {
+   "id": "deque",
+   "papel": "as posições que ainda podem ser o máximo: entram por trás e saem pelas duas pontas"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada posição é posta no deque uma vez e tirada no máximo uma vez. Cada comparação ou tira alguém de trás ou encerra a vez de quem chega, então são menos de 2n comparações, seja qual for o k. O ingênuo compara k − 1 vezes em cada uma das n − k + 1 janelas: O(n·k).",
+  "nota": "Com k = 2, os dois empatam; daí em diante, o ingênuo cresce com k, e o deque não."
+ },
+ "memoria": {
+  "notacao": "O(k)",
+  "porque": "O deque só guarda posições de dentro da janela, então nunca passa de k. Num vetor crescente, cada valor que chega esvazia o deque, e fica 1; num decrescente, ninguém sai por trás, e ele chega a k. A lista dos máximos é a resposta e não conta.",
+  "nomes": {
+   "posicoes": "posições no deque"
+  },
+  "cresce_com_n": [],
+  "variavel": "k",
+  "vazados": "dependem de k, não de n"
+ },
+ "video": {
+  "ideia": [
+   "quem chega tira de trás os que não são maiores",
+   "o máximo da janela é sempre o da frente"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce com n, e com o tamanho da janela",
+  "texto": "As mesmas contas para vetores cada vez maiores e para janelas cada vez maiores, nos três tipos de vetor, e o ingênuo ao lado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Comparações para n de {n0} a {n1}, com k = {k}. {dados}; a faixa cinza vai do menor ao maior dos sorteados. O ingênuo compara (n − k + 1)(k − 1) vezes, em qualquer vetor.",
+  "por_k": "Comparações para k de {k0} a {k1}, com n = {nk}. O ingênuo sobe com k; o deque fica abaixo de 2n em qualquer janela.",
+  "memoria": "Deque mais cheio para k de {k0} a {k1}, com n = {nk}. No decrescente, ele chega a k; no crescente, fica em 1; nos sorteados (o maior pico entre eles), fica bem abaixo de k."
+ },
+ "pseudocodigo": "procedimento janela_maxima(v, k):\n    d ← deque vazio\n    para i de 1 até n:\n        se i > k e a frente de d = i − k:\n            tire da frente de d\n        enquanto d não está vazio e v[fundo de d] ≤ v[i]:\n            tire de trás de d\n        ponha i atrás de d\n        se i ≥ k:\n            máximo[i − k + 1] ← v[frente de d]\n    devolva máximo\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

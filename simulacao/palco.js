@@ -18,7 +18,7 @@
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, grafo: 6 };          // accelerando: unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6 };          // accelerando: unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -712,6 +712,205 @@
     };
   }
 
+  // ---------- inverter lista encadeada ----------
+
+  function simInverter(faixa, valores, accelerando) {
+    const r = Algoritmos.inverter(valores);
+    const N = valores.length, ideia = faixa.video.ideia;
+    // o próx de cada nó (pela posição na lista de entrada); virar é apontar para o vizinho da esquerda
+    const prox = valores.map((_, i) => (i + 1 < N ? i + 1 : null));
+    let ops = 0, lido = null, virou = null, inicio = N ? 0 : null;
+    const id = (p) => (p === null ? null : p - 1);
+    const est = r.eventos.map((e) => {
+      lido = null; virou = null;
+      if (e.t === "proximo") lido = e.i;
+      else if (e.t === "vira") { prox[e.i] = e.de; virou = e.i; ops++; }
+      else if (e.fim) inicio = id(e.vars.anterior);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, prox: prox.slice(), ops, lido, virou, inicio,
+        anterior: id(e.vars.anterior), atual: id(e.vars.atual), proximo: id(e.vars["próximo"]), fim: !!e.fim };
+    });
+    if (ops !== r.ops) throw new Error("reprodução da inversão não bate");
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { atribui: 0.5, testa: 0.4, proximo: 1, vira: 1.6 }, (t) => t === "vira", 2, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const X0 = 60, X1 = 620, passo = Math.min(84, (X1 - X0) / Math.max(1, N)), NW = Math.min(64, passo - 16), VW = NW / 2, NY = 190, NH = 40;
+    const nx = (i) => X0 + i * passo + (passo - NW) / 2;
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { prox: valores.map((_, i) => (i + 1 < N ? i + 1 : null)), ops: 0, lido: null, virou: null, inicio: N ? 0 : null, anterior: null, atual: null, proximo: null, fim: false };
+      for (let i = 0; i < N; i++) {
+        const x = nx(i);
+        texto(ctx, `nó ${i + 1}`, x + NW / 2, NY - 22, 11, COR.cinza, 400, "center");
+        ctx.fillStyle = "#fff"; ctx.fillRect(x, NY, VW, NH);
+        ctx.fillStyle = s.virou === i ? COR.mexeu : s.lido === i ? COR.claro : "#fff"; ctx.fillRect(x + VW, NY, VW, NH);
+        ctx.strokeStyle = COR.tinta; ctx.lineWidth = 1.5; ctx.strokeRect(x, NY, VW, NH); ctx.strokeRect(x + VW, NY, VW, NH);
+        if (s.lido === i) { ctx.strokeStyle = COR.album; ctx.lineWidth = 2.5; ctx.strokeRect(x + VW + 1, NY + 1, VW - 2, NH - 2); }
+        texto(ctx, String(valores[i]), x + VW / 2, NY + NH / 2 - 9, Math.min(17, VW * 0.55), fim ? COR.verde : COR.tinta, 600, "center");
+        if (s.prox[i] === null) texto(ctx, "∅", x + VW * 1.5, NY + NH / 2 - 9, 16, s.virou === i ? "#fff" : COR.cinza, 600, "center");
+        // a seta do próx: para a direita por cima do vão; para trás, por baixo, em cotovelo
+        const cor = s.virou === i ? COR.mexeu : COR.tinta;
+        if (s.prox[i] === i + 1) {
+          linha(ctx, x + NW - VW / 2, NY + NH / 2, nx(i + 1) - 2, NY + NH / 2, cor, 2);
+          pontaSeta(ctx, nx(i + 1) - 2, NY + NH / 2, 0, cor);
+        } else if (s.prox[i] === i - 1) {
+          const fundo = NY + NH + 16 + (i % 2) * 12, xa = x + VW * 1.5, xb = nx(i - 1) + VW / 2;
+          ctx.strokeStyle = cor; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(xa, NY + NH / 2); ctx.lineTo(xa, fundo); ctx.lineTo(xb, fundo); ctx.lineTo(xb, NY + NH + 3); ctx.stroke();
+          pontaSeta(ctx, xb, NY + NH + 3, -Math.PI / 2, cor);
+        }
+      }
+      // o início da lista, por cima; os três ponteiros, por baixo (nulo: fora da lista, à esquerda ou à direita)
+      if (s.inicio !== null) {
+        const x = nx(s.inicio) + VW / 2, cor = fim ? COR.verde : COR.tinta;
+        texto(ctx, "início", x, NY - 78, 12, cor, 600, "center");
+        linha(ctx, x, NY - 62, x, NY - 26, cor, 2); pontaSeta(ctx, x, NY - 26, Math.PI / 2, cor);
+      }
+      if (!fim && k >= 0) {
+        const marcas = [["anterior", s.anterior, COR.tinta], ["atual", s.atual, COR.mexeu], ["próximo", s.proximo, COR.cinza]];
+        const y = NY + NH + 54;
+        marcas.filter(([, p]) => p !== null).forEach(([nome, p, cor], j, vivas) => {
+          const x = nx(p) + NW / 2, dy = vivas.slice(0, j).filter((m) => m[1] === p).length * 34;   // dois ponteiros no mesmo nó: um embaixo do outro
+          ctx.fillStyle = cor; ctx.beginPath(); ctx.moveTo(x, y + dy); ctx.lineTo(x - 6, y + dy + 10); ctx.lineTo(x + 6, y + dy + 10); ctx.fill();
+          texto(ctx, nome, x, y + dy + 13, 12, cor, 600, "center");
+        });
+        const nulos = marcas.filter(([, p]) => p === null).map(([nome]) => nome);   // fora da lista: só dizer
+        if (nulos.length) texto(ctx, `${nulos.join(" e ")} ${nulos.length === 1 ? "aponta" : "apontam"} para nulo`, X0, y + 86, 12, COR.cinza);
+      }
+      if (fim) {
+        texto(ctx, "a lista agora, do início ao fim:", X0, 360, 13, COR.cinza);
+        texto(ctx, r.invertida.join(" → "), X0, 382, Math.min(18, 900 / Math.max(1, N * 5)), COR.verde, 600);
+      }
+
+      const x = 680;
+      texto(ctx, "ponteiros trocados", x, 90, 13, COR.cinza);
+      texto(ctx, `${s.ops}`, x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "casas lidas e escritas", x, 174, 13, COR.cinza);
+      texto(ctx, String(2 * s.ops), x, 190, 26, COR.tinta, 700);
+      texto(ctx, "memória extra", x, 244, 13, COR.cinza);
+      texto(ctx, "3 ponteiros", x, 260, 20, COR.tinta, 700);
+      texto(ctx, "nenhum valor copiado", x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N} nós`, x, 330, 13, COR.cinza);
+      legendaCores(ctx, [[COR.claro, "próx lido agora", COR.album, 2], [COR.mexeu, "próx virado agora"]], 480);
+
+      if (fim) legenda(ctx, [["invertida: ", ""], [`${r.ops} ponteiros trocados`, "g"], [", nenhum valor saiu do lugar", ""]]);
+      else if (s.ops < 2) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].ops : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.inverter, accelerando),
+      resumo: { ops: r.ops, pico: 0, n: N }, contagemEm,
+      medidor: () => `${r.ops} ponteiros trocados, n = ${N}<br>3 ponteiros, nenhum valor`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} nós, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} ponteiros trocados, sem memória extra além de três ponteiros.`,
+    };
+  }
+
+  function pontaSeta(ctx, x, y, ang, cor) {
+    ctx.fillStyle = cor;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - 9 * Math.cos(ang - 0.45), y - 9 * Math.sin(ang - 0.45));
+    ctx.lineTo(x - 9 * Math.cos(ang + 0.45), y - 9 * Math.sin(ang + 0.45));
+    ctx.fill();
+  }
+
+  // ---------- máximo em janela deslizante ----------
+
+  function simJanela(faixa, v, K, accelerando) {
+    const r = Algoritmos.janela(v, K);
+    const N = v.length, ideia = faixa.video.ideia;
+    const dq = [], achados = [];
+    let i = -1, foco = null, comps = 0, pico = 0;
+    const est = r.eventos.map((e) => {
+      foco = null;
+      if (e.t === "le") i = e.i;
+      else if (e.t === "compara") { comps++; foco = e.j; }
+      else if (e.t === "tira") { if (e.ponta === "frente") dq.shift(); else dq.pop(); foco = e.j; }
+      else if (e.t === "poe") dq.push(e.i);
+      else if (e.t === "maximo") achados.push(e.m);
+      pico = Math.max(pico, dq.length);
+      const ing = achados.length ? r.ingenuoAte[achados.length - 1] : 0;   // o ingênuo, até a última janela já fechada
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i, foco, dq: dq.slice(), nAchados: achados.length, comps, pico, ing, ponta: e.ponta };
+    });
+    if (comps !== r.ops || pico !== r.pico) throw new Error("reprodução da janela não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { le: 0.4, testa: 0.3, compara: 1, tira: 1.2, poe: 1, maximo: 1.2, atribui: 0.4, devolva: 2 }, (t) => t === "maximo", 3, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const X0 = 70, X1 = 610, cw = Math.min(40, (X1 - X0) / N), VY = 120, SW = Math.min(58, (X1 - X0) / Math.max(K, 1)), DY = 236, MY = 350;
+    const tam = Math.min(15, cw * 0.5);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { i: -1, foco: null, dq: [], nAchados: 0, comps: 0, pico: 0, ing: 0 };
+      // o vetor, com a janela que termina no da vez
+      texto(ctx, "vetor", X0, VY - 46, 11, COR.cinza);
+      const a = Math.max(0, s.i - K + 1);
+      for (let p = 0; p < N; p++) {
+        const x = X0 + p * cw, dentro = s.i >= 0 && p >= a && p <= s.i && !fim;
+        ctx.fillStyle = p === s.i && !fim ? COR.mexeu : dentro ? COR.claro : "#fff";
+        ctx.fillRect(x + 1, VY, cw - 2, 34);
+        ctx.strokeStyle = s.foco === p && !fim ? COR.album : dentro ? COR.tinta : COR.borda;
+        ctx.lineWidth = s.foco === p && !fim ? 2.5 : 1;
+        ctx.strokeRect(x + 1, VY, cw - 2, 34);
+        texto(ctx, String(v[p]), x + cw / 2, VY + 17 - tam * 0.6, tam, p === s.i && !fim ? "#fff" : COR.tinta, 600, "center");
+        if (cw >= 22 || p % 2 === 0) texto(ctx, String(p + 1), x + cw / 2, VY + 38, 9, COR.cinza, 400, "center");
+      }
+      if (s.i >= 0 && !fim) {
+        const xa = X0 + a * cw, xb = X0 + (s.i + 1) * cw;
+        linha(ctx, xa + 1, VY - 10, xb - 1, VY - 10, COR.tinta, 3);
+        texto(ctx, s.i >= K - 1 ? `janela de ${K}` : `janela enchendo (${s.i + 1} de ${K})`, (xa + xb) / 2, VY - 30, 11, COR.tinta, 400, "center");
+      }
+      // o deque: posições da frente para o fundo, cada uma com o seu valor
+      texto(ctx, "deque de posições (frente → fundo)", X0, DY - 24, 11, COR.cinza);
+      for (let j = 0; j < Math.max(K, s.dq.length); j++) {
+        const x = X0 + j * SW, p = s.dq[j];
+        ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.setLineDash(p === undefined ? [3, 3] : []);
+        ctx.strokeRect(x + 2, DY, SW - 6, 46); ctx.setLineDash([]);
+        if (p === undefined) continue;
+        const novo = k >= 0 && est[k].t === "poe" && j === s.dq.length - 1, comparado = s.foco === p && est[k].t === "compara";
+        ctx.fillStyle = novo ? COR.mexeu : COR.claro; ctx.fillRect(x + 3, DY + 1, SW - 8, 44);
+        if (comparado) { ctx.strokeStyle = COR.album; ctx.lineWidth = 2.5; ctx.strokeRect(x + 3, DY + 1, SW - 8, 44); }
+        texto(ctx, String(v[p]), x + SW / 2 - 1, DY + 6, Math.min(17, SW * 0.32), novo ? "#fff" : COR.tinta, 600, "center");
+        texto(ctx, `pos ${p + 1}`, x + SW / 2 - 1, DY + 28, 10, novo ? "#fff" : COR.cinza, 400, "center");
+      }
+      if (s.dq.length) {
+        texto(ctx, "frente", X0 + SW / 2 - 1, DY + 52, 11, COR.tinta, 600, "center");
+        if (s.dq.length > 1) texto(ctx, "fundo", X0 + (s.dq.length - 0.5) * SW - 1, DY + 52, 11, COR.tinta, 600, "center");
+      }
+      // os máximos já achados, embaixo da casa em que cada janela termina: são o resultado
+      texto(ctx, "máximo de cada janela", X0, MY - 22, 11, COR.cinza);
+      for (let j = 0; j < s.nAchados; j++) {
+        const x = X0 + (j + K - 1) * cw;
+        texto(ctx, String(r.maximos[j]), x + cw / 2, MY, tam, COR.verde, 600, "center");
+      }
+
+      const x = 680;
+      texto(ctx, "comparações", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "o ingênuo, até aqui", x, 174, 13, COR.cinza);
+      texto(ctx, String(fim ? r.ingenuo : s.ing), x, 190, 26, COR.tinta, 700);
+      texto(ctx, `de ${r.ingenuo} no total`, x, 222, 12, COR.cinza);
+      texto(ctx, "memória extra agora", x, 256, 13, COR.cinza);
+      texto(ctx, `${s.dq.length} ${s.dq.length === 1 ? "posição" : "posições"}`, x, 272, 20, COR.tinta, 700);
+      texto(ctx, `deque mais cheio: ${s.pico}`, x, 300, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N}, k = ${K}`, x, 342, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "o da vez"], [COR.claro, "na janela, ou no deque"], ["#fff", "comparado", COR.album, 2.5]], 480);
+
+      if (fim) legenda(ctx, [[`n = ${N}, k = ${K}: `, ""], [`${r.ops} comparações`, "g"], [` (o ingênuo: ${r.ingenuo})`, ""]]);
+      else if (s.nAchados < 2) legenda(ctx, [[ideia[0], ""]]);
+      else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.janela, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} comparações (ingênuo: ${r.ingenuo}), n = ${N}, k = ${K}<br>deque de até ${r.pico}`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, k = ${K}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} comparações (o ingênuo faria ${r.ingenuo}), deque de até ${r.pico} ${r.pico === 1 ? "posição" : "posições"}.`,
+    };
+  }
+
   // ---------- busca em largura e em profundidade ----------
 
   function simGrafo(faixa, k, arestas, accelerando) {
@@ -843,6 +1042,8 @@
       const e = padrao ? ex : Algoritmos.clientes(cfg.n, ex.movimentos[cfg.tipo], cfg.semente);
       return simAtendimento(faixa, e.chegada, e.duracao, accelerando);
     }
+    if (tipo === "inverter") return simInverter(faixa, padrao ? ex.valores : Algoritmos.valoresSorteados(cfg.n, "sorteada", cfg.semente), accelerando);
+    if (tipo === "janela") return simJanela(faixa, padrao ? ex.vetor : Algoritmos.valoresSorteados(cfg.n, cfg.tipo, cfg.semente), cfg.k || ex.k, accelerando);
     if (tipo === "grafo") {
       const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));
       return simGrafo(faixa, k, padrao ? ex.arestas : Algoritmos.grafoGrade(k, cfg.tipo, cfg.semente), accelerando);

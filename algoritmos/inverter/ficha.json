@@ -1,0 +1,39 @@
+{
+ "id": "inverter-lista",
+ "nome": "Inverter lista encadeada",
+ "variante": "com três ponteiros, sem lista auxiliar",
+ "familia": "estruturas lineares",
+ "resumo": "Anda pela lista uma vez, do primeiro ao último nó, e vira o próx de cada um para o nó anterior. Antes de virar, guarda quem vem depois, senão o resto da lista se perde. No fim, o último nó vira o início. Ninguém muda de lugar e nenhum valor é copiado: só os ponteiros trocam de direção.",
+ "instrumentos": [
+  {
+   "id": "lista",
+   "papel": "a lista dinâmica, de nós e ponteiros, que é invertida no lugar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada nó é visitado uma vez e tem um ponteiro trocado: uma leitura do próx (para guardar o próximo) e uma escrita (o anterior no lugar dele). São exatamente n trocas, em qualquer lista de n nós.",
+  "nota": "Não há melhor nem pior caso: os valores não importam, só quantos nós a lista tem."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Só guarda três ponteiros, o anterior, o atual e o próximo, sejam 8 nós ou um milhão. Inverter copiando os valores para uma pilha também daria O(n) de tempo, mas guardaria n valores.",
+  "vazio": "vira os ponteiros dentro da própria lista"
+ },
+ "video": {
+  "ideia": [
+   "guarda o próximo, vira o ponteiro, anda",
+   "nenhum valor sai do lugar: só as setas mudam de direção"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce",
+  "texto": "As mesmas contas para listas cada vez maiores. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1; aqui a medida cai em cima da referência, porque é exatamente n.",
+  "crescimento": "Ponteiros trocados para n de {n0} a {n1}. {dados}; todas trocam o mesmo número. Tracejada: n, de referência."
+ },
+ "pseudocodigo": "procedimento inverter(lista):\n    anterior ← nulo\n    atual ← início da lista\n    enquanto atual ≠ nulo:\n        próximo ← atual.próx\n        atual.próx ← anterior\n        anterior ← atual\n        atual ← próximo\n    início da lista ← anterior\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

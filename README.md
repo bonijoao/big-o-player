@@ -20,9 +20,9 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 grafos por busca em grafo) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
-Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, na fila de atendimento e nas buscas em grafo, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
+Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, na fila de atendimento, na inversão da lista, na janela deslizante e nas buscas em grafo, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
 
 Requisitos: Python 3 com Pillow, Node, ffmpeg (só para exportar clipes), R com jsonlite e igraph, IBM Plex Mono instalada e a skill `explainer-videos` em `~/.claude/skills/` (o motor `engine.py` é importado de lá, sem cópia).
 
@@ -37,7 +37,7 @@ motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens 
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 motor/busca.py         molde das buscas: os ajudantes que contam (igual, menor), as entradas e a medição padrão
 motor/busca.R          as buscas reescritas em R, para conferir posição e comparações
-motor/video_casos.py   pôsteres das buscas, dos parênteses, da fila de atendimento e das buscas em grafo
+motor/video_casos.py   pôsteres das buscas, dos parênteses, da fila de atendimento, da inversão da lista, da janela deslizante e das buscas em grafo
 motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, grade cheia, caminho) e a medição delas
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
 motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
@@ -58,11 +58,13 @@ Cada estrutura de dados é um instrumento, com página própria (`#instrumentos/
 
 Para acrescentar um instrumento: a estrutura em `instrumentos/<nome>/<nome>.py` (leituras e escritas por `conta.op()`), o `medir.py` com `ESTRUTURAS`, `ENCHER`, `OPERACOES` e `sortear` (veja `motor/instrumento.py`; o `ENCHER` pode ser uma função que monta a estrutura pronta, como o anel de medição do Grafo), a `ficha.json` (texto das operações e quais vão para o gráfico), a mesma estrutura em `simulacao/instrumentos.js`, e o nome em `INSTRUMENTOS` no `gerar.py` e no `testes/conferir_js.mjs`. A demo de um tipo novo de estrutura é desenhada em `instrumentos.js`.
 
+A Fila e a Lista encadeada têm duas versões lado a lado (ingênua × circular; estática × dinâmica): cada operação da demo roda nas duas, e a tabela mede as duas. Na estática, as casas livres formam a lista de livres, encadeada pelo próprio próx, e o vetor dobra quando enche; na dinâmica, cada nó é pedido à memória (sem custo) e tem duas casas, valor e próx. O Deque é a fila circular com as duas pontas abertas.
+
 O Grafo tem três vistas lado a lado (matriz de adjacência, lista de adjacência e matriz de incidência): cada operação da demo roda nas três ao mesmo tempo, e a tabela mede as três num grafo de medição fixo, com V vértices e E = 3V arestas.
 
 ## Faixas que usam um instrumento por dentro
 
-Os parênteses balanceados e a fila de atendimento rodam sobre as classes dos instrumentos, a `Pilha` e a `FilaCircular`, em Python (`instrumentos/*/`) e em JS (`simulacao/instrumentos.js`). O tempo conta as operações na estrutura (empilhar e desempilhar; enfileirar e desenfileirar); a memória é quantos valores ela guarda no pico (`conta.ocupa()`), sem a folga do vetor que dobra. O teste confere também as casas lidas e escritas por dentro da estrutura.
+Os parênteses balanceados, a fila de atendimento, a inversão da lista e a janela deslizante rodam sobre as classes dos instrumentos, a `Pilha`, a `FilaCircular`, a `ListaDinamica` e o `Deque`, em Python (`instrumentos/*/`) e em JS (`simulacao/instrumentos.js`). O tempo conta as operações na estrutura (empilhar e desempilhar; enfileirar e desenfileirar); a memória é quantos valores ela guarda no pico (`conta.ocupa()`), sem a folga do vetor que dobra. O teste confere também as casas lidas e escritas por dentro da estrutura. A inversão conta os ponteiros trocados e não guarda nada além de três ponteiros. A janela deslizante conta as comparações entre valores, as suas e as do ingênuo (k − 1 por janela), e tem um segundo eixo nos gráficos: `tempo.por_k`, as mesmas contas com n fixo e k dobrando; o palco usa o seletor de k do K-means.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
 

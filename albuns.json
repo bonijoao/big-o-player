@@ -67,18 +67,7 @@
   "titulo": "Estruturas lineares",
   "familia": "estruturas lineares",
   "frase": "Pilhas, filas e listas trabalhando: quem entra, quem sai e quanto custa.",
-  "em_producao": [
-   {
-    "nome": "Inverter lista encadeada",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Máximo em janela deslizante",
-    "tempo": "O(n) (ingênuo O(n·k))",
-    "memoria": "O(k)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "arvores-e-heaps",
