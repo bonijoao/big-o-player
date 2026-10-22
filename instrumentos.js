@@ -1201,7 +1201,7 @@
           ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
         const g = giros[1], hs = es.map((e) => e.altura());
         const n = es[0].n, indiana = n >= 3 && hs[0] === n;
-        aviso.textContent = (g.length ? `A AVL girou ${g.length === 1 ? "uma vez" : `${g.length} vezes`}: ${g.slice(0, 4).join("; ")}${g.length > 4 ? "; …" : ""}. ` : "")
+        aviso.textContent = (g.length ? `A AVL girou ${g.length === 1 ? "uma vez" : `${g.length} vezes`}: ${g.slice(0, 4).join("; ")}${g.length > 4 ? `; e mais ${g.length - 4}` : ""}. ` : "")
           + (indiana ? `A comum virou uma fila indiana: ${n} níveis para ${n} valores, e buscar nela é olhar um por um; a AVL tem ${hs[1]}.`
             : `Altura: a comum tem ${plural(hs[0], "nível", "níveis")}, a AVL ${hs[1]}.`);
         log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
