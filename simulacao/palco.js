@@ -2165,7 +2165,8 @@
         }
       } else {
         texto(ctx, "a e b", x, 174, 13, COR.cinza);
-        texto(ctx, `${milhar(s.a)} e ${milhar(s.b)}`, x, 190, Math.min(22, 400 / (String(s.a).length + String(s.b).length + 3)), COR.tinta, 700);
+        const ab = `${milhar(s.a)} e ${milhar(s.b)}`;
+        texto(ctx, ab, x, 190, Math.min(22, 270 / (0.6 * ab.length)), COR.tinta, 700);
         texto(ctx, "memória extra: 2 variáveis", x, 236, 13, COR.cinza);
       }
       texto(ctx, `n = ${n}`, x, versao === "memoria" ? 352 : 340, 13, COR.cinza);
@@ -2247,7 +2248,7 @@
       texto(ctx, `${s.i + 1} de ${N - M + 1}`, x, 190, 22, COR.tinta, 700);
       texto(ctx, "achou em", x, 236, 13, COR.cinza);
       const ach = s.achou.length ? s.achou.map((q) => q + 1).join(", ") : "—";
-      texto(ctx, ach, x, 252, Math.min(20, 520 / Math.max(1, ach.length)), s.achou.length ? COR.verde : COR.tinta, 700);
+      texto(ctx, ach, x, 252, Math.min(20, 270 / (0.6 * Math.max(1, ach.length))), s.achou.length ? COR.verde : COR.tinta, 700);   // cabe até a borda (960)
       texto(ctx, `n = ${N}, m = ${M}`, x, 298, 13, COR.cinza);
       texto(ctx, `pior caso: (n − m + 1)·m = ${milhar((N - M + 1) * M)}`, x, 320, 11, COR.cinza);
       texto(ctx, "memória extra: 0 valores", x, 342, 11, COR.cinza);
@@ -2310,7 +2311,7 @@
     }
     // o fatorial e os Fibonacci só têm o n: o do encarte, ou o escolhido no menu
     if (tipo === "fatorial") return simFatorial(faixa, cfg.n, accelerando);
-    if (tipo.startsWith("fib_")) return simFibonacci(faixa, cfg.n, accelerando);
+    if ((tipo || "").startsWith("fib_")) return simFibonacci(faixa, cfg.n, accelerando);   // o K-means não tem tipo
     if (tipo === "busca_padrao") {
       const m = cfg.k || ex.m;
       const e = padrao ? { texto: ex.texto, padrao: ex.padrao.slice(0, m) } : Algoritmos.textoPadrao(cfg.n, m, cfg.tipo, cfg.semente);

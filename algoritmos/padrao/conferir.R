@@ -17,7 +17,7 @@ busca_r <- function(t, p) {
 }
 
 posicoes <- function(t, p) {   # base 1, como no pseudocódigo
-  g <- gregexpr(paste0("(?=", p, ")"), t, perl = TRUE)[[1]]
+  g <- gregexpr(paste0("(?=\\Q", p, "\\E)"), t, perl = TRUE)[[1]]   # \Q…\E: o padrão literal, sem metacaracteres
   if (g[1] == -1) integer(0) else as.integer(g)
 }
 

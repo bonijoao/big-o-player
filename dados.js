@@ -2010,7 +2010,7 @@ window.GALERIA = [
   ],
   "tempo": {
    "notacao": "O(n)",
-   "porque": "Uma chamada para cada número de n até 1, e uma multiplicação em cada uma, menos na última: n − 1 multiplicações.",
+   "porque": "Uma chamada para cada número de n até 1, e uma multiplicação em cada uma, menos na última: n − 1 multiplicações (para n ≥ 1; 0! e 1! saem direto, sem multiplicar).",
    "nota": "O número cresce depressa: 19! já passa de 2⁵³, até onde um double guarda todos os inteiros exatos, por isso o palco usa inteiros grandes. Aqui, multiplicar conta 1, seja qual for o tamanho; com números enormes, cada multiplicação também fica mais cara."
   },
   "memoria": {
