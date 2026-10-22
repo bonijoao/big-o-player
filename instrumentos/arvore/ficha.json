@@ -1,0 +1,116 @@
+{
+ "id": "arvore",
+ "nome": "Árvore de busca",
+ "variante": "duas versões: comum (a ABB, que cresce como os valores chegam) e AVL (que gira para ficar baixa)",
+ "frase": "À esquerda, os menores; à direita, os maiores.",
+ "resumo": "Cada nó guarda um valor e dois ponteiros: à esquerda dele só moram valores menores, à direita só maiores. Buscar é descer da raiz comparando, um nível por vez, e cada comparação descarta um lado inteiro, como na busca binária. O preço depende da altura. A comum pendura cada valor novo onde a descida acaba: com os valores embaralhados ela fica baixa (em média, cada valor mora a pouco mais de log₂ n níveis da raiz), mas com os valores em ordem vira uma fila indiana de n níveis. A AVL guarda também a altura de cada nó e, na volta de cada inserção ou remoção, gira os nós onde um lado ficou dois níveis mais alto que o outro. Assim nunca passa de 1,44 log₂(n + 2) níveis.",
+ "placa": {
+  "autor": "a árvore de busca: vários, quase ao mesmo tempo (Windley, Booth e Colin, Hibbard); a AVL: Georgy Adelson-Velsky e Evgenii Landis",
+  "ano": "1960 (a árvore de busca); 1962 (a AVL)"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Um nó por valor, pedido à memória na hora e solto ao remover, como na lista dinâmica: nunca há folga. A comum guarda três casas por nó (o valor e os dois ponteiros); a AVL guarda quatro, porque cada nó lembra a altura da sua subárvore. É essa casa a mais que deixa a AVL saber onde girar sem medir a árvore de novo."
+ },
+ "variantes": {
+  "comum": "comum",
+  "avl": "AVL"
+ },
+ "operacoes": [
+  {
+   "id": "buscar-maior-comum",
+   "nome": "buscar o maior",
+   "notacao": "O(h), aqui O(n)",
+   "porque": "Desce da raiz comparando: igual, achou; menor, vai para a esquerda; maior, para a direita. Lê o valor e um ponteiro por nível. Montada em ordem, a comum é uma fila indiana, e o maior está no fundo, a n níveis."
+  },
+  {
+   "id": "buscar-maior-avl",
+   "nome": "buscar o maior",
+   "notacao": "O(log n)",
+   "porque": "A mesma descida, mas a AVL tem no máximo 1,44 log₂(n + 2) níveis: com mil valores, uns 10 a 14."
+  },
+  {
+   "id": "inserir-comum",
+   "nome": "inserir um valor novo (o maior)",
+   "notacao": "O(h), aqui O(n)",
+   "porque": "Desce como na busca até achar um ponteiro nulo e pendura ali o nó novo: escreve as três casas dele e o ponteiro do pai. Não mexe em mais nada."
+  },
+  {
+   "id": "inserir-avl",
+   "nome": "inserir um valor novo (o maior)",
+   "notacao": "O(log n)",
+   "porque": "Desce e pendura como a comum, mas na volta, em cada nó do caminho, lê as alturas dos dois filhos e reescreve a sua. Se um lado ficou dois níveis mais alto, gira. Custa mais por nível que a comum, mas são poucos níveis."
+  },
+  {
+   "id": "remover-maior-comum",
+   "nome": "remover o maior",
+   "notacao": "O(h), aqui O(n)",
+   "porque": "Acha o nó e o pai dele. Sem um dos filhos, o outro sobe para o lugar dele; com os dois, o sucessor (o menor da direita) dá o valor e sai no lugar dele."
+  },
+  {
+   "id": "remover-maior-avl",
+   "nome": "remover o maior",
+   "notacao": "O(log n)",
+   "porque": "Os mesmos três casos, e na volta as mesmas contas de altura e rotações da inserção. A remoção pode girar em mais de um nível do caminho."
+  },
+  {
+   "id": "menor-comum",
+   "nome": "ver o menor",
+   "notacao": "O(h), aqui O(1)",
+   "porque": "Desce sempre pela esquerda. Montada em ordem, a comum não tem nenhum filho esquerdo: o menor é a raiz. É o único caso em que a fila indiana ganha."
+  },
+  {
+   "id": "menor-avl",
+   "nome": "ver o menor",
+   "notacao": "O(log n)",
+   "porque": "Desce pela esquerda até o fim: na AVL, sempre uns log₂ n níveis."
+  },
+  {
+   "id": "montar-ordem-comum",
+   "nome": "montar com n valores em ordem",
+   "notacao": "O(n²)",
+   "porque": "Cada valor novo é o maior e desce a fila indiana inteira: 1 + 2 + … + n níveis. É o pior caso da árvore comum."
+  },
+  {
+   "id": "montar-ordem-avl",
+   "nome": "montar com n valores em ordem",
+   "notacao": "O(n log n)",
+   "porque": "Os mesmos valores em ordem fariam a fila indiana, mas a AVL gira a cada vez que um lado fica alto demais: cada inserção desce uns log₂ n níveis."
+  },
+  {
+   "id": "montar-embaralhado-comum",
+   "nome": "montar com n valores embaralhados",
+   "notacao": "O(n log n) em média",
+   "porque": "Embaralhados, os valores se espalham pelos dois lados, e cada inserção desce, em média, pouco mais de log₂ n níveis. Sem girar, sai mais barata que a AVL; o risco é a entrada vir em ordem."
+  },
+  {
+   "id": "montar-embaralhado-avl",
+   "nome": "montar com n valores embaralhados",
+   "notacao": "O(n log n)",
+   "porque": "Com n grande, quase o mesmo custo que em ordem: a AVL não depende da ordem de chegada."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "buscar-maior-comum",
+   "rotulo": "buscar o maior, comum"
+  },
+  {
+   "id": "buscar-maior-avl",
+   "rotulo": "buscar o maior, AVL"
+  },
+  {
+   "id": "montar-ordem-comum",
+   "rotulo": "montar em ordem, comum"
+  },
+  {
+   "id": "montar-ordem-avl",
+   "rotulo": "montar em ordem, AVL"
+  }
+ ],
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas (o valor, o esq, o dir e, na AVL, a altura de um nó), contadas rodando as duas árvores em Python. Buscar, inserir, remover e ver o menor rodam numa árvore já montada com 0, 1, …, n − 1 em ordem, para n = {ns}: a comum vira uma fila indiana, a AVL fica com uns log₂ n níveis. As montagens partem da árvore vazia; nelas, a tabela traz o total e o custo por valor. A raiz e o tamanho, guardados à parte, não contam; pedir e soltar um nó também não.",
+  "custo": "O custo com n valores já guardados em ordem, para n de {v0} a {v1}, medido uma vez por n. Na comum, buscar o maior sobe em linha reta: desce a fila indiana inteira. Na AVL, quase não sai do chão. Tracejadas: as montagens com os valores em ordem, em custo por valor. A da comum sobe junto com a busca; a da AVL, que paga as alturas e as rotações, começa mais cara e cresce devagar, como log n: perto de n = 20 já fica abaixo da busca na comum.",
+  "casas": "Casas guardadas com n valores, para n de {v0} a {v1}: a comum guarda exatamente 3n, a AVL 4n. Nenhuma das duas tem folga: cada nó é pedido e solto sozinho."
+ }
+}

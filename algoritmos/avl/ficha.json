@@ -1,0 +1,47 @@
+{
+ "id": "arvore-equilibrada-avl",
+ "nome": "Árvore equilibrada (AVL)",
+ "variante": "insere e gira na volta da recursão",
+ "familia": "árvores e heaps",
+ "resumo": "Insere como a árvore de busca comum: desce comparando e pendura o nó novo onde a descida acaba. A diferença está na volta da recursão. Cada nó do caminho lê a altura dos dois filhos e, se um lado ficou dois níveis mais alto que o outro, gira: o filho do lado pesado sobe e o nó desce para o lado leve (rotação simples). Se o neto pesado está do lado de dentro, ele sobe primeiro (rotação dupla). A árvore nunca passa de 1,44 log₂(n + 2) níveis, chegue a entrada na ordem que chegar.",
+ "instrumentos": [
+  {
+   "id": "arvore",
+   "papel": "a versão AVL, que guarda a altura de cada nó e sabe girar; a comum entra para comparar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(log n) por operação",
+  "porque": "A descida compara até duas vezes por nível (diferente? menor?), e a AVL tem no máximo 1,44 log₂(n + 2) níveis. Na volta, cada nível lê duas alturas e escreve uma, e gira no máximo uma ou duas vezes numa inserção. Inserir n valores custa O(n log n), em qualquer ordem.",
+  "nota": "Por nível, a AVL custa mais que a comum (as alturas e as rotações). Com a entrada embaralhada, a AVL ainda compara um pouco menos (fica mais baixa), mas lê e escreve mais casas que a comum; em ordem, a comum desce n níveis e a AVL, log₂ n."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Quatro casas por valor: o valor, os dois ponteiros e a altura, a casa a mais que deixa a AVL saber onde girar. A recursão guarda ainda um nível por nó do caminho, mais a chamada com p nulo: uns log₂ n.",
+  "nomes": {
+   "arvore": "casas da árvore (4 por nó; o nó novo já conta)",
+   "pilha": "níveis da pilha de chamadas"
+  },
+  "cresce_com_n": [
+   "arvore"
+  ],
+  "vazados": "são níveis da pilha, que crescem com log n"
+ },
+ "video": {
+  "ideia": [
+   "desce comparando e, na volta, confere as alturas",
+   "um lado alto demais? gira"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: a AVL contra a comum",
+  "texto": "Os mesmos valores inseridos nas duas árvores, em ordem crescente e embaralhados. Em escala logarítmica, a comum em ordem sobe reta com n; as outras três deitam como log n. Em ordem, a AVL compara um pouco mais que embaralhada, mas termina com a árvore mais baixa possível (veja a altura ao lado).",
+  "crescimento": "Comparações por inserção, em média, para n de {n0} a {n1}. {dados}; a faixa cinza vai da menor à maior média da AVL embaralhada. Tracejadas: n e log₂ n, de referência.",
+  "altura": "A altura das mesmas árvores no fim. A AVL fica entre log₂(n + 1) e 1,44 log₂(n + 2) em qualquer ordem; a comum em ordem tem n níveis. Tracejadas: n e log₂ n."
+ },
+ "pseudocodigo": "procedimento inserir(p, x):\n    se p = nulo:\n        p ← novo nó com x\n    senão se x ≠ p.valor:\n        se x < p.valor:\n            f ← inserir(p.esq, x)\n            se f ≠ p.esq:\n                p.esq ← f\n        senão:\n            f ← inserir(p.dir, x)\n            se f ≠ p.dir:\n                p.dir ← f\n        p ← equilibra(p)\n    devolva p\n",
+ "placa": {
+  "autor": "Georgy Adelson-Velsky e Evgenii Landis (o nome AVL são as iniciais dos dois)",
+  "ano": "1962"
+ }
+}

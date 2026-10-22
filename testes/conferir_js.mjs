@@ -31,7 +31,7 @@ function tipos(pasta) {
     const t = l.trim();
     if (/^(se|enquanto|senão se) /.test(t)) return "decisao";
     if (/^para /.test(t)) return "laco";
-    if (t.startsWith(nome + "(") || t.startsWith("procedimento") || new RegExp(`← .*\\b${nome}\\(`).test(t)) return "chamada";   // r ← n · fatorial(n − 1) também chama
+    if (t.startsWith(nome + "(") || t.startsWith("procedimento") || new RegExp(`← .*\\b${nome}\\(`).test(t)) return "chamada";   // f ← inserir(p.esq, x) e r ← n · fatorial(n − 1) também chamam
     return "passo";
   });
 }
@@ -45,6 +45,7 @@ function confereLinhas(pasta, eventos) {
     atribui: "passo", insere: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo",
     proximo: "passo", vira: "passo", tira: "passo", poe: "passo", maximo: "passo",
     busca: "decisao", dispersa: "passo", inicio: "passo", sonda: "decisao", liga: "passo",
+    desce: "passo", novo: "passo", gira: "passo", girou: "passo", equilibra: "passo",
     multiplica: ["passo", "chamada"], soma: ["passo", "chamada"], lembra: "passo", guarda: "passo", encosta: "laco" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
@@ -102,6 +103,9 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "corta" || (e.vars.a === e.a + 1 && e.vars.b === e.b + 1)) && (e.t !== "menor" || e.vars.m === e.m + 1)
       && (e.t !== "troca" || e.linha !== 9 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
     welford: (e) => e.t !== "le" || e.vars.n === e.i,
+    percursos: (e) => (e.t !== "visita" || e.ordem === "largura" || e.vars["p.valor"] !== null) && (e.t !== "entra" || (e.a === null) === (e.vars["p.valor"] === null)),
+    abb: (e) => (e.t !== "compara" || (e.vars["p.valor"] !== null && e.vars.x !== null && e.vars["comparações"] >= 1)) && (e.t !== "achou" || e.vars.x === e.vars["p.valor"]),
+    avl: (e) => (e.t !== "compara" || (e.vars["p.valor"] !== null && e.vars.x !== e.vars["p.valor"] || e.linha === 4)) && (e.t !== "entra" || (e.a === null) === (e.vars["p.valor"] === null)),
     histograma: (e) => (e.t !== "le" || e.vars.i === e.i + 1) && (e.t !== "conta" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1))
       && (e.t !== "classes" || e.vars.c > 0),
     kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
@@ -351,6 +355,22 @@ for (const [pasta, f] of [["fibrecursivo", A.fibRecursivo], ["fibmemoria", A.fib
   console.log(`${ok ? "ok" : "FALHOU"}: padrao (${casos.length} buscas)`);
 }
 
+// ---------- árvores ----------
+
+for (const [pasta, roda, chaves] of [
+  ["percursos", (c) => A.percursos(c.valores), ["pre", "em", "pos", "largura", "visitas", "pilha", "fila", "casas", "altura"]],
+  ["abb", (c) => A.buscaArvore(c.valores, c.alvos), ["comparacoes", "achou", "ops", "altura", "pico", "casas"]],
+  ["avl", (c) => A.avl(c.valores), ["comparacoes", "ops", "rotacoes", "altura", "comum", "altura_comum", "casas", "pico"]],
+]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
+  const medidas = (r, ref) => Object.fromEntries(chaves.filter((k) => k in ref).map((k) => [k, r[k]]));   // o que o Python gravou
+  const casos = [{ ...ex, caso: "encarte", ...(pasta === "percursos" ? { visitas: ex.ops } : {}) }, ...d.conferir];
+  let ok = confere(`${pasta} pico`, roda(ex).pico, d.memoria.pico);
+  for (const c of casos) ok = confere(`${pasta} ${c.caso} n=${c.valores.length}`, medidas(roda(c), c), medidas(c, c)) && ok;
+  for (const c of casos) ok = confereLinhas(pasta, roda(c).eventos) && confereVars(pasta, null, roda(c).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} árvores)`);
+}
+
 // ---------- estatística ----------
 
 {
@@ -448,6 +468,16 @@ for (const [pasta, f] of [["fibrecursivo", A.fibRecursivo], ["fibmemoria", A.fib
       const casas = new Set(mc.map((k) => I.casaDe(k, 4)));
       ok = confere(`chaves n=${n} s=${semente}`, [new Set(so).size, so.every((k) => k >= 100 && k <= 999), new Set(mc).size, casas.size],
         [n, true, n, 1]) && ok;
+    }
+  }
+  // árvores: n valores distintos de 10 a 99; a crescente sobe; a cheia monta a árvore mais baixa
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [7, 15, 23, 31]) {
+      const [cr, de, em, ch] = ["crescente", "decrescente", "embaralhada", "cheia"].map((caso) => A.valoresArvore(n, caso, semente));
+      const certos = [cr, de, em, ch].every((v) => v.length === n && new Set(v).size === n && v.every((x) => Number.isInteger(x) && x >= 10 && x <= 99));
+      const mesmos = [de, em, ch].every((v) => JSON.stringify([...v].sort((a, b) => a - b)) === JSON.stringify(cr));
+      ok = confere(`valores de árvore n=${n} s=${semente}`, [certos, mesmos, cr.every((x, i) => !i || x > cr[i - 1]), A.percursos(ch).altura, [cr, de, em].every((v) => A.avl(v).altura <= 1.4405 * Math.log2(n + 2))],
+        [true, true, true, Math.ceil(Math.log2(n + 1)), true]) && ok;
     }
   }
   // as amostras do histograma: n valores com uma casa decimal, e as contagens somam n

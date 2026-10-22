@@ -1,0 +1,45 @@
+{
+ "id": "busca-em-arvore",
+ "nome": "Busca em árvore",
+ "variante": "na árvore de busca comum, montada em ordem × embaralhada",
+ "familia": "árvores e heaps",
+ "resumo": "Desce da raiz comparando o valor procurado com o de cada nó. Igual, achou; menor, só pode estar à esquerda; maior, só à direita. Cada nível descarta um lado inteiro, como a busca binária corta o vetor, e a busca custa no máximo a altura da árvore. Só que a altura depende da ordem em que os valores chegaram: embaralhados, a árvore fica baixa, e cada valor mora, em média, a pouco mais de log₂ n níveis da raiz; em ordem, vira uma fila indiana, e buscar volta a ser olhar um por um.",
+ "instrumentos": [
+  {
+   "id": "arvore",
+   "papel": "a árvore comum, montada com os valores na ordem de chegada: é essa ordem que decide a altura"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(h), h de log n a n",
+  "porque": "A cada nível, compara o valor procurado com o do nó até duas vezes (igual? menor?) e desce um nível. A busca para no valor ou num ponteiro nulo, então nunca passa da altura h. Embaralhada, h cresce como log n; em ordem, h = n.",
+  "nota": "O mesmo código, os mesmos valores: só a ordem de chegada muda, e o custo vai de log n a n. A AVL, a próxima faixa, tira esse risco."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "A árvore guarda três casas por valor: o valor e os dois ponteiros. A busca em si só guarda o nó da vez.",
+  "nomes": {
+   "arvore": "casas da árvore (valor, esq e dir de cada nó)"
+  },
+  "cresce_com_n": [
+   "arvore"
+  ]
+ },
+ "video": {
+  "ideia": [
+   "igual, achou; menor, esquerda; maior, direita",
+   "a ordem de chegada decide a altura"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: a ordem de chegada decide",
+  "texto": "As mesmas buscas em árvores cada vez maiores, montadas com os valores em ordem crescente e embaralhados. Em escala logarítmica, a fila indiana sobe reta com n; a embaralhada quase deita, como log n.",
+  "crescimento": "Comparações por busca, em média, buscando cada um dos n valores, para n de {n0} a {n1}. {dados}; a faixa cinza vai da menor à maior média das embaralhadas. Tracejadas: n e log₂ n, de referência.",
+  "altura": "A altura das mesmas árvores (níveis da raiz à folha mais funda). Em ordem crescente, h = n; embaralhada, h cresce como log n (nesses tamanhos, perto de 2 log₂ n), e a profundidade média de um valor fica pouco acima de log₂ n. Tracejadas: n e log₂ n."
+ },
+ "pseudocodigo": "procedimento buscar(raiz, x):\n    p ← raiz;  achou ← falso\n    enquanto p ≠ nulo:\n        se x = p.valor:\n            achou ← verdadeiro\n            pare\n        se x < p.valor:\n            p ← p.esq\n        senão:\n            p ← p.dir\n    devolva achou\n",
+ "placa": {
+  "autor": "vários, quase ao mesmo tempo: P. F. Windley, A. D. Booth e A. J. T. Colin, T. N. Hibbard",
+  "ano": "1960–1962"
+ }
+}

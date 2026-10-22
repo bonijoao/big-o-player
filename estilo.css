@@ -154,7 +154,8 @@ main:focus { outline: none; }
 .faixas .faixa a { font-weight: 600; text-decoration: none; }
 .faixas .faixa a:hover { text-decoration: underline; }
 .faixas .faixa small { display: block; color: var(--cinza); font-size: 0.78rem; }
-.faixas .o { color: var(--verde-texto); font-weight: 600; white-space: nowrap; }
+.faixas .o { color: var(--verde-texto); font-weight: 600; }
+.faixas .o span { white-space: nowrap; }
 .faixas .dur { color: var(--cinza); font-variant-numeric: tabular-nums; text-align: right; }
 .faixas tr.producao td { color: var(--cinza-claro); }
 .faixas tr.producao .o { color: var(--cinza-claro); font-weight: 400; }
@@ -509,6 +510,7 @@ svg text { font-family: var(--mono); }
   .toca-em small { padding-left: 0; }
   .faixas .esconde-estreito { display: none; }
   .faixas .o { white-space: normal; }
+  .faixas .o span { white-space: normal; }
   .faixas td, .faixas th { padding-left: 6px; padding-right: 6px; }
   .tocador { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 0 12px; }
   .agora-capa { width: 44px; height: 44px; }
@@ -534,4 +536,8 @@ svg text { font-family: var(--mono); }
 .demo-vista svg { display: block; height: auto; }
 .demo-listas { flex-direction: column; align-items: stretch; width: 100%; }
 .demo-listas .demo-vista svg { max-width: 100%; }
+.demo-arvores { flex-direction: column; align-items: center; width: 100%; }
+.demo-arvores.juntas { flex-direction: row; align-items: flex-start; }
+.demo-arvores .demo-vista svg { max-width: 100%; }
+.demo-vista .giro { color: #8c50b9; font-weight: 600; }
 .custo-vista { display: block; }

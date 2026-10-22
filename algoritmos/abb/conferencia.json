@@ -1,0 +1,7 @@
+{
+  "referencia": "busca_r() sobre vetores valor/esq/dir em motor/arvore.R",
+  "versao_r": "4.6.0",
+  "casos": 42,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 42 árvores (vazias e com até 20 nós): comparações e resultados encontrados batem caso a caso com o Python; altura, pico da árvore e casas lidas também."
+}

@@ -19,7 +19,9 @@
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
   const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20, palavras: 8, repetidos: 6, colisao: 5,
+    percursos: 6, abb: 8, avl: 8,
     matrizes: 8, fatorial: 4, fibonacci: 10, padrao: 8 };          // accelerando: unidades por segundo a 1×
+  const CALMO = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;   // sem deslizar
 
   // ---------- utilidades de desenho ----------
 
@@ -965,6 +967,356 @@
     ctx.lineTo(x - 9 * Math.cos(ang - 0.45), y - 9 * Math.sin(ang - 0.45));
     ctx.lineTo(x - 9 * Math.cos(ang + 0.45), y - 9 * Math.sin(ang + 0.45));
     ctx.fill();
+  }
+
+  // ---------- árvores: percursos, busca em árvore e AVL ----------
+  // Cada nó fica na coluna da sua ordem (o k-ésimo menor na coluna k) e na
+  // linha da sua profundidade: nenhum nó encosta noutro. No meio de uma
+  // rotação da AVL a árvore fica quebrada (um nó sem pai); o arranjo congela
+  // até ela se religar, e então os nós deslizam até o lugar novo.
+
+  function arranjoArvore(nos, raiz, antes) {
+    const L = new Map(), vistos = new Set();
+    let col = 0, ok = true;
+    const anda = (id, prof) => {
+      if (id === null || id === undefined || !ok) return;
+      if (vistos.has(id) || !nos.has(id)) { ok = false; return; }
+      vistos.add(id);
+      const no = nos.get(id);
+      anda(no.esq, prof + 1);
+      L.set(id, [col++, prof]);
+      anda(no.dir, prof + 1);
+    };
+    anda(raiz, 0);
+    if (antes) for (const id of antes.keys()) if (!L.has(id) && nos.has(id)) ok = false;
+    return ok ? L : null;
+  }
+  const mapaNos = (foto) => new Map(foto.nos.map((no) => [no.id, no]));
+  const mesmoArranjo = (a, b) => a && b && a.size === b.size && [...a].every(([id, [c, l]]) => b.has(id) && b.get(id)[0] === c && b.get(id)[1] === l);
+  const suave = (k) => k * k * (3 - 2 * k);
+
+  // a árvore na caixa [x0, y0, x1, y1], com `cols` colunas e `linhas` linhas fixas
+  // (a escala não muda durante a faixa); P: id → [coluna, linha], pode ser fracionário
+  function escalaArvore(caixa, cols, linhas) {
+    const [x0, y0, x1, y1] = caixa;
+    const DX = Math.min(56, (x1 - x0) / Math.max(1, cols)), DY = Math.min(72, linhas > 1 ? (y1 - y0) / (linhas - 1) : 72);
+    const R = Math.max(8, Math.min(17, DX * 0.42, DY * 0.45));
+    const xa = x0 + (x1 - x0 - cols * DX) / 2;
+    const esc = { R, DX, DY, centro: 0, px: ([c, l]) => [xa + (c + esc.centro) * DX + DX / 2, y0 + l * DY] };
+    // a árvore de agora, com `n` colunas, fica no meio da caixa
+    esc.centrar = (n) => { esc.centro = (cols - n) / 2; return esc; };
+    return esc;
+  }
+
+  function desenhaArvore(ctx, nos, P, esc, o = {}) {
+    const { R, px } = esc, arestas = o.arestas || {}, cheio = o.cheio || {}, contorno = o.contorno || {};
+    for (const [id, no] of nos) {
+      const a = P.get(id);
+      if (!a) continue;
+      const [x, y] = px(a);
+      for (const lado of ["esq", "dir"]) {
+        const f = no[lado];
+        if (f === null || f === undefined || !P.has(f)) continue;
+        const [x2, y2] = px(P.get(f)), cor = arestas[`${id},${lado}`];
+        linha(ctx, x, y + R * 0.7, x2, y2 - R * 0.7, cor || COR.palido, cor ? 3 : 1.5);
+      }
+    }
+    for (const [id, no] of nos) {
+      const a = P.get(id);
+      if (!a) continue;
+      const [x, y] = px(a), w = R * 2.1, h = R * 1.5, f = cheio[id], c = contorno[id];
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x - w / 2, y - h / 2, w, h, 5); else ctx.rect(x - w / 2, y - h / 2, w, h);
+      ctx.fillStyle = f || "#fff"; ctx.fill();
+      ctx.strokeStyle = c ? c[0] : COR.tinta; ctx.lineWidth = c ? c[1] : 1.5; ctx.stroke();
+      texto(ctx, String(no.valor), x, y - R * 0.5, Math.round(R * 0.95), f ? "#fff" : o.verde ? COR.verde : COR.tinta, 600, "center");
+      if (o.altura) texto(ctx, String(no.altura), x + w / 2 + 2, y - h / 2 - 9, Math.max(9, Math.round(R * 0.62)), (o.alturaCor || {})[id] || COR.cinza, 600);
+    }
+  }
+
+  // uma fileira de valores pequenos (as ordens dos percursos, as entradas)
+  function fileiraValores(ctx, vals, x0, y, larg, cor = () => COR.tinta, tam = 15) {
+    const passo = Math.min(42, larg / Math.max(1, vals.length));
+    vals.forEach((v, i) => texto(ctx, String(v), x0 + i * passo, y, Math.min(tam, passo * 0.55), cor(i), 600));
+  }
+
+  // ---------- percursos ----------
+
+  function simPercursos(faixa, valores, accelerando) {
+    const r = Algoritmos.percursos(valores);
+    const N = valores.length, ideia = faixa.video.ideia, nos = mapaNos(r.nos), P = arranjoArvore(nos, r.nos.raiz) || new Map();
+    const linhas = Math.max(1, ...[...P.values()].map(([, l]) => l + 1));
+    const ESC = escalaArvore([40, 92, 600, 318], N, linhas);
+    const pilha = [], ordens = { pre: [], em: [], pos: [], largura: [] };
+    let fila = [], visitas = 0, largura = false, atual = null, ultimo = null;
+    const est = r.eventos.map((e) => {
+      ultimo = null;
+      if (e.t === "entra") { pilha.push(e.a); atual = e.a; }
+      else if (e.t === "sai") { pilha.pop(); atual = pilha.length ? pilha.at(-1) : null; }
+      else if (e.t === "visita") {
+        ordens[e.ordem].push(nos.get(e.no).valor);
+        ultimo = { no: e.no, ordem: e.ordem };
+        if (e.ordem === "pre") visitas++;
+        if (e.ordem === "largura") { largura = true; fila = e.fila; atual = e.no; }
+      } else if (e.t === "enfileira") { largura = true; fila = e.fila; }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, pilha: pilha.slice(), fila: fila.slice(),
+        ordens: { pre: ordens.pre.length, em: ordens.em.length, pos: ordens.pos.length, largura: ordens.largura.length }, visitas, largura, atual, ultimo };
+    });
+    if (visitas !== r.visitas || ordens.largura.join() !== r.largura.join()) throw new Error("reprodução dos percursos não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { entra: 0.35, testa: 0.2, visita: 1, sai: 0.2, enfileira: 0.5 }, (t) => t === "visita", 4, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const NOMES = [["pre", "pré-ordem"], ["em", "em ordem"], ["pos", "pós-ordem"], ["largura", "em largura"]];
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { pilha: [], fila: [], ordens: { pre: 0, em: 0, pos: 0, largura: 0 }, visitas: 0, largura: false, atual: null, ultimo: null };
+      const cheio = {}, contorno = {};
+      if (!fim) {
+        if (!s.largura) s.pilha.forEach((id) => { if (id !== null) contorno[id] = [COR.album, 2.5]; });
+        else s.fila.forEach((id) => { contorno[id] = [COR.menor, 2.5]; });
+        if (s.atual !== null && s.atual !== undefined) contorno[s.atual] = [COR.album, 4];
+        if (s.ultimo) cheio[s.ultimo.no] = COR.mexeu;
+      }
+      desenhaArvore(ctx, nos, P, ESC, { cheio, contorno, verde: fim });
+      // as quatro ordens, embaixo; o valor anotado agora em coral, tudo verde no fim
+      NOMES.forEach(([ch, nome], j) => {
+        const y = 352 + j * 34, m = s.ordens[ch], vals = (ch === "largura" ? r.largura : r[ch]).slice(0, m);
+        texto(ctx, nome, 40, y + 2, 13, COR.cinza);
+        fileiraValores(ctx, vals, 150, y, 470, (i) => (fim ? COR.verde : s.ultimo && s.ultimo.ordem === ch && i === m - 1 ? COR.mexeu : COR.tinta));
+      });
+
+      const x = 660;
+      texto(ctx, "nós visitados", x, 74, 13, COR.cinza);
+      texto(ctx, `${s.visitas}`, x, 90, 36, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, `de ${N}, cada um uma vez`, x + 70, 106, 13, COR.cinza);
+      // a pilha de chamadas (um nível por chamada, com o p dela) ou, na em largura, a fila
+      const coluna = !s.largura ? s.pilha : s.fila, nome = !s.largura ? "pilha de chamadas" : "fila (a frente em cima)";
+      const pico = !s.largura ? r.pilha : r.fila;
+      texto(ctx, `${nome}: ${coluna.length}`, x, 150, 13, COR.tinta, 600);
+      texto(ctx, `pico ${pico}`, x + 250, 150, 12, COR.cinza, 400, "right");
+      const caixas = !s.largura ? coluna.slice().reverse() : coluna, cabe = 11, BH = 22;
+      caixas.slice(0, cabe).forEach((id, j) => {
+        const y = 172 + j * (BH + 3), topo = j === 0;
+        ctx.fillStyle = topo && !fim ? (s.largura ? COR.claro : COR.claro) : "#fff"; ctx.fillRect(x, y, 250, BH);
+        ctx.strokeStyle = topo ? (s.largura ? COR.menor : COR.album) : COR.borda; ctx.lineWidth = topo ? 2 : 1; ctx.strokeRect(x + 0.5, y + 0.5, 249, BH - 1);
+        texto(ctx, s.largura ? `nó ${nos.get(id).valor}` : id === null ? "percorrer(nulo)" : `percorrer(nó ${nos.get(id).valor})`, x + 8, y + BH / 2 - 7, 12, COR.tinta);
+      });
+      if (caixas.length > cabe) texto(ctx, `… mais ${caixas.length - cabe} ${s.largura ? "na fila" : "níveis embaixo"}`, x, 172 + cabe * (BH + 3) + 2, 12, COR.cinza);
+      texto(ctx, `n = ${N} nós, altura ${r.altura}`, x, 474, 12, COR.cinza);
+      legendaCores(ctx, [["#fff", "na pilha", COR.album, 2.5], ["#fff", "na fila", COR.menor, 2.5], [COR.mexeu, "anotado agora"]], 498);
+
+      if (fim) legenda(ctx, [["quatro ordens, ", ""], [`${N} visitas cada`, "g"], ["; a em ordem saiu ordenada", ""]]);
+      else if (s.largura) legenda(ctx, [["em largura: tira o primeiro da fila e põe os filhos no fim", ""]]);
+      else legenda(ctx, [[s.visitas < 3 ? ideia[0] : ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].visitas : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.percursos, accelerando),
+      resumo: { ops: r.visitas, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${N} nós visitados em cada percurso<br>pilha de ${r.pilha} níveis, fila de ${r.fila} nós`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} nós, ${cfg.rotulo}; ${contagemEm(u)} de ${N} visitados na descida, a pilha chega a ${r.pilha} níveis e a fila da em largura a ${r.fila} nós.`,
+    };
+  }
+
+  // ---------- busca em árvore ----------
+
+  function simAbb(faixa, valores, accelerando) {
+    const r = Algoritmos.buscaArvore(valores);
+    const N = valores.length, ideia = faixa.video.ideia;
+    const ESC = escalaArvore([40, 92, 610, 380], N, Math.max(1, r.altura));
+    let nos = new Map(), P = new Map(), k = -1, x = null, caminho = [], atual = null, achou = null, comps = 0, total = 0, montando = true;
+    const feitas = [];
+    const est = r.eventos.map((e) => {
+      achou = null;
+      if (e.t === "monta") { nos = mapaNos(e); P = arranjoArvore(nos, e.raiz) || P; atual = e.raiz === null ? null : [...nos.values()].find((no) => no.valor === e.x).id; }
+      else {
+        if (montando) { montando = false; atual = null; }
+        if (e.k !== k) { k = e.k; x = valores[k]; caminho = []; comps = 0; }
+        if (e.t === "compara") { comps++; total++; if (caminho.at(-1) !== e.no) caminho.push(e.no); atual = e.no; }
+        else if (e.t === "achou") achou = e.no;
+        else if (e.t === "desce" || e.t === "atribui") atual = e.no;
+        else if (e.t === "devolva") feitas[k] = comps;
+      }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, nos, P, k, x, caminho: caminho.slice(), atual, achou, comps, total, montando, feitas: feitas.slice() };
+    });
+    if (total !== r.ops) throw new Error("reprodução da busca em árvore não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { monta: 0.6, atribui: 0.3, testa: 0.2, compara: 1, achou: 1, pare: 0.3, desce: 0.6, devolva: 0.5 }, (t) => t === "compara", 6, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const media = r.ops / Math.max(1, N), pior = Math.max(0, ...r.comparacoes);
+
+    function desenhar(ctx, u) {
+      const kk = tl.eventoEm(u), fim = u >= tl.total;
+      const s = kk >= 0 ? est[kk] : { nos: new Map(), P: new Map(), k: -1, caminho: [], atual: null, achou: null, comps: 0, total: 0, montando: true, feitas: [] };
+      const cheio = {}, contorno = {};
+      if (!fim) {
+        s.caminho.forEach((id) => { contorno[id] = [COR.album, 2.5]; });
+        if (s.atual !== null) { if (s.montando) cheio[s.atual] = COR.mexeu; else contorno[s.atual] = [COR.album, 4]; }
+        if (s.t === "compara") cheio[s.atual] = COR.album;
+        if (s.achou !== null) cheio[s.achou] = COR.verde;
+      }
+      desenhaArvore(ctx, s.nos, s.P, ESC.centrar(s.P.size), { cheio, contorno, verde: fim });
+      // as buscas, embaixo: cada valor com o que a busca dele custou
+      const passo = Math.min(40, 570 / Math.max(1, N));
+      texto(ctx, s.montando ? "chegam, nesta ordem:" : "buscas (comparações embaixo):", 40, 418, 12, COR.cinza);
+      valores.forEach((v, i) => {
+        const xx = 40 + i * passo, agora = !s.montando && i === s.k && !fim;
+        texto(ctx, String(v), xx, 438, Math.min(15, passo * 0.5), agora ? COR.album : fim ? COR.tinta : COR.tinta, agora ? 700 : 600);
+        if (s.feitas[i] !== undefined) texto(ctx, String(s.feitas[i]), xx, 460, Math.min(13, passo * 0.45), fim ? COR.verde : COR.cinza, 600);
+      });
+
+      const xp = 660;
+      if (s.montando) {
+        texto(ctx, "montando a árvore", xp, 74, 13, COR.cinza);
+        texto(ctx, `${s.nos.size} de ${N}`, xp, 90, 30, COR.tinta, 700);
+        texto(ctx, "a montagem não conta: a faixa mede as buscas", xp, 136, 12, COR.cinza);
+      } else {
+        texto(ctx, fim ? "buscas feitas" : `busca ${s.k + 1} de ${N}: x = ${s.x}`, xp, 74, 13, COR.cinza);
+        texto(ctx, "comparações nesta busca", xp, 100, 13, COR.cinza);
+        texto(ctx, fim ? "—" : String(s.comps), xp, 116, 30, COR.tinta, 700);
+        texto(ctx, "comparações no total", xp, 166, 13, COR.cinza);
+        texto(ctx, String(s.total), xp, 182, 30, fim ? COR.verde : COR.tinta, 700);
+      }
+      texto(ctx, "altura da árvore", xp, 240, 13, COR.cinza);
+      texto(ctx, `${r.altura} ${r.altura === 1 ? "nível" : "níveis"}`, xp, 256, 20, COR.tinta, 700);
+      texto(ctx, `de ${Math.ceil(Math.log2(N + 1))} (cheia) a ${N} (fila indiana)`, xp, 284, 12, COR.cinza);
+      if (fim) {
+        texto(ctx, "média por busca", xp, 320, 13, COR.cinza);
+        texto(ctx, decimalPt(media), xp, 336, 30, COR.verde, 700);
+        texto(ctx, `a mais cara: ${pior}`, xp, 378, 13, COR.verde, 600);
+      }
+      legendaCores(ctx, [[COR.album, "comparando agora"], ["#fff", "caminho da busca", COR.album, 2.5], [COR.verde, "achou"]], 498);
+
+      if (fim) legenda(ctx, [["média de ", ""], [`${decimalPt(media)} comparações por busca`, "g"], [`, altura ${r.altura}`, ""]]);
+      else if (s.montando) legenda(ctx, [["a ordem de chegada decide a forma da árvore", ""]]);
+      else legenda(ctx, [[ideia[0], ""]]);
+    }
+
+    const contagemEm = (u) => { const k2 = tl.eventoEm(u); return k2 >= 0 ? est[k2].total : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.abb, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} comparações em ${N} buscas, altura ${r.altura}<br>${r.pico} casas na árvore`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} valores, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} comparações, ${decimalPt(media)} por busca, numa árvore de altura ${r.altura}.`,
+    };
+  }
+
+  const decimalPt = (x) => (Math.round(x * 10) / 10).toFixed(1).replace(".", ",");
+
+  // ---------- AVL ----------
+
+  function simAvl(faixa, valores, accelerando) {
+    const r = Algoritmos.avl(valores);
+    const N = valores.length, ideia = faixa.video.ideia;
+    // a comum com os mesmos valores, para o placar: a profundidade de cada nó novo é metade das comparações
+    const alturaComum = [];
+    r.porComum.reduce((h, c, i) => (alturaComum[i] = Math.max(h, c / 2 + 1)), 0);
+    let nos = new Map(), raiz = null, L = new Map(), pilha = [], rot = null, k = -1, comps = 0, rotacoes = 0, arestas = {}, novoEm = null, antesGiro = null;
+    let linhasMax = 1;
+    const est = r.eventos.map((e) => {
+      let de = null;
+      arestas = e.t === "girou" || e.t === "liga" || e.t === "equilibra" || e.t === "inseriu" ? arestas : {};
+      if (e.t === "entra") pilha.push(e.a);
+      else if (e.t === "sai") pilha.pop();
+      else if (e.t === "compara") { comps++; rot = null; }
+      if (e.nos) {
+        const fotoNos = mapaNos(e);
+        if (e.t === "gira") {
+          const p = fotoNos.get(e.no), f = fotoNos.get(e.sobe), neto = e.lado === "dir" ? f.dir : f.esq;
+          rot = { lado: e.lado, valor: p.valor, nos: [e.no, e.sobe, neto].filter((id) => id !== null) };
+          antesGiro = fotoNos;
+        } else if (e.t === "girou" && antesGiro) {
+          // os ponteiros que a rotação reescreveu
+          arestas = {};
+          for (const [id, no] of fotoNos) for (const lado of ["esq", "dir"]) if (antesGiro.has(id) && antesGiro.get(id)[lado] !== no[lado]) arestas[`${id},${lado}`] = COR.mexeu;
+          rotacoes++;
+        } else if (e.t === "liga") arestas = { ...arestas, [`${e.no},${e.lado}`]: COR.mexeu };
+        else if (e.t === "novo") {
+          // o nó novo aparece embaixo do pai, do lado em que vai ficar, antes de se ligar
+          const pai = pilha.length >= 2 ? pilha[pilha.length - 2] : null, x = fotoNos.get(e.no).valor;
+          novoEm = pai !== null && L.has(pai) ? [L.get(pai)[0] + (x < fotoNos.get(pai).valor ? -0.5 : 0.5), L.get(pai)[1] + 1] : [L.size ? L.size / 2 : 0, 0];
+        }
+        nos = fotoNos; raiz = e.raiz;
+        const novo = arranjoArvore(nos, raiz, L);
+        if (novo && !mesmoArranjo(novo, L)) { de = L; L = novo; }
+      }
+      // a rotação na raiz só se religa aqui (a raiz fica à parte): o deslizar ainda leva o nome dela
+      if (e.t === "inseriu") { k = e.k; if (!de) rot = null; }
+      for (const [, l] of L.values()) linhasMax = Math.max(linhasMax, l + 1);
+      const solto = [...nos.keys()].find((id) => !L.has(id));
+      const estado = { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, nos, L, de, novoEm: solto !== undefined ? [solto, novoEm] : null,
+        pilha: pilha.slice(), rot, k, comps, rotacoes, arestas: { ...arestas }, compara: e.t === "compara" ? e.no : null, novo: e.t === "novo" ? e.no : null };
+      if (e.t === "inseriu") rot = null;
+      return estado;
+    });
+    if (comps !== r.ops || rotacoes !== r.rotacoes) throw new Error("reprodução da AVL não bate");
+    // o deslizar dura 3 unidades nos dois ritmos (meio segundo a 1×); o resto, como nas outras faixas
+    const pesos = (!accelerando ? est.map(() => 1)
+      : pesosLentos(est, { entra: 0.3, testa: 0.2, compara: 0.8, novo: 1, liga: 0.8, gira: 1.2, girou: 0.6, equilibra: 0.3, devolva: 0.2, sai: 0.15, inseriu: 0.6 }, (t) => t === "compara", 6, 2.5))
+      .map((p, i) => (est[i].de && est[i].de.size ? 3 : p));
+    const tl = linhaDoTempo(pesos);
+    const ESC = escalaArvore([40, 96, 600, 372], N, linhasMax);
+
+    function posicoes(s, u, kk) {
+      if (!s.de || !s.de.size || CALMO) return s.L;
+      const f = suave(Math.max(0, Math.min(1, (u - tl.inicio[kk]) / pesos[kk])));
+      const m = new Map();
+      for (const [id, [c, l]] of s.L) {
+        const [c0, l0] = s.de.get(id) || (s.novoEm === null && est[kk - 1] && est[kk - 1].novoEm && est[kk - 1].novoEm[0] === id ? est[kk - 1].novoEm[1] : [c, l]);
+        m.set(id, [c0 + (c - c0) * f, l0 + (l - l0) * f]);
+      }
+      return m;
+    }
+
+    function desenhar(ctx, u) {
+      const kk = tl.eventoEm(u), fim = u >= tl.total;
+      const s = kk >= 0 ? est[kk] : { nos: new Map(), L: new Map(), de: null, novoEm: null, pilha: [], rot: null, k: -1, comps: 0, rotacoes: 0, arestas: {}, compara: null, novo: null };
+      const P = new Map(posicoes(s, u, kk));
+      if (s.novoEm) P.set(s.novoEm[0], s.novoEm[1]);
+      const cheio = {}, contorno = {};
+      if (!fim) {
+        s.pilha.forEach((id) => { if (id !== null) contorno[id] = [COR.album, 2.5]; });
+        if (s.rot) s.rot.nos.forEach((id) => { contorno[id] = [COR.maior, 4]; });
+        if (s.compara !== null) cheio[s.compara] = COR.album;
+        if (s.novo !== null) cheio[s.novo] = COR.mexeu;
+      }
+      desenhaArvore(ctx, s.nos, P, ESC.centrar(s.L.size), { cheio, contorno, arestas: fim ? {} : s.arestas, verde: fim, altura: true });
+
+      // os valores, embaixo: os já inseridos em tinta, o da vez em azul, os que faltam em cinza
+      const atualK = s.t === "inseriu" ? s.k : s.k + 1;
+      texto(ctx, "chegam, nesta ordem:", 40, 418, 12, COR.cinza);
+      fileiraValores(ctx, valores, 40, 438, 570, (i) => (fim ? COR.verde : i < atualK ? COR.tinta : i === atualK ? COR.album : COR.palido));
+
+      const xp = 660, feitos = Math.max(0, s.k + 1), comumComp = r.porComum.slice(0, feitos).reduce((a, b) => a + b, 0);
+      const h = Math.max(0, ...[...s.L.values()].map(([, l]) => l + 1));
+      texto(ctx, "comparações", xp, 74, 13, COR.cinza);
+      texto(ctx, String(s.comps), xp, 90, 32, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "rotações", xp, 140, 13, COR.cinza);
+      texto(ctx, String(s.rotacoes), xp, 156, 24, COR.tinta, 700);
+      texto(ctx, "altura", xp, 196, 13, COR.cinza);
+      texto(ctx, String(h), xp, 212, 24, fim ? COR.verde : COR.tinta, 700);
+      // o placar da comum, com os mesmos valores até aqui
+      ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(xp - 10.5, 262.5, 270, 104);
+      texto(ctx, "a comum, com os mesmos valores", xp, 274, 12, COR.cinza);
+      texto(ctx, `${comumComp} comparações`, xp, 296, 18, COR.tinta, 700);
+      texto(ctx, `altura ${feitos ? alturaComum[feitos - 1] : 0}`, xp, 324, 18, COR.tinta, 700);
+      texto(ctx, `inseridos: ${feitos} de ${N}`, xp, 380, 12, COR.cinza);
+      legendaCores(ctx, [["#fff", "caminho da inserção", COR.album, 2.5], ["#fff", "nós da rotação", COR.maior, 4], [COR.mexeu, "nó novo; ponteiro reescrito"]], 498);
+
+      if (fim) legenda(ctx, [[`${N} valores, `, ""], [`altura ${r.altura}`, "g"], [`; a comum ficaria com ${r.altura_comum}`, ""]]);
+      else if (s.rot) legenda(ctx, [["rotação ", ""], [`à ${s.rot.lado === "dir" ? "direita" : "esquerda"} em ${s.rot.valor}`, "b"], [": o filho do lado alto sobe", ""]]);
+      else legenda(ctx, [[s.rotacoes < 1 ? ideia[0] : ideia[ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const kk = tl.eventoEm(u); return kk >= 0 ? est[kk].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.avl, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} comparações, ${r.rotacoes} rotações, altura ${r.altura}<br>${r.pico} valores (casas e pilha)`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} valores, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} comparações e ${r.rotacoes} rotações; altura ${r.altura} no fim, contra ${r.altura_comum} da árvore comum.`,
+    };
   }
 
   // ---------- máximo em janela deslizante ----------
@@ -2283,6 +2635,9 @@
       return simPrioridade(faixa, e.chegada, e.duracao, e.gravidade, accelerando);
     }
     if (tipo === "inverter") return simInverter(faixa, padrao ? ex.valores : Algoritmos.valoresSorteados(cfg.n, "sorteada", cfg.semente), accelerando);
+    if (tipo === "percursos") return simPercursos(faixa, padrao ? ex.valores : Algoritmos.valoresArvore(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "abb") return simAbb(faixa, padrao ? ex.valores : Algoritmos.valoresArvore(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "avl") return simAvl(faixa, padrao ? ex.valores : Algoritmos.valoresArvore(cfg.n, cfg.tipo, cfg.semente), accelerando);
     if (tipo === "janela") return simJanela(faixa, padrao ? ex.vetor : Algoritmos.valoresSorteados(cfg.n, cfg.tipo, cfg.semente), cfg.k || ex.k, accelerando);
     if (tipo === "grafo") {
       const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));
