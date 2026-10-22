@@ -54,13 +54,7 @@
   "titulo": "Ordenação",
   "familia": "ordenação",
   "frase": "Jeitos de pôr números em ordem. Tocado na sequência, o álbum vai do O(n²) ao O(n log n).",
-  "em_producao": [
-   {
-    "nome": "Heapsort",
-    "tempo": "O(n log n)",
-    "memoria": "O(1)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "estruturas-lineares",

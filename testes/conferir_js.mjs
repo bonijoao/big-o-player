@@ -69,6 +69,9 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "troca" || e.linha !== 7 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
     selecao: (e) => (e.t !== "compara" || (e.vars.m === e.i + 1 && e.vars.j === e.j + 1 && e.vars["v[m]"] === v[e.i] && e.vars["v[j]"] === v[e.j]))
       && (e.t !== "menor" || e.vars.m === e.m + 1),
+    heapsort: (e) => (e.t !== "compara" || (e.linha === 14 ? e.vars.f === e.i + 1 && e.vars.p === e.j + 1 && e.vars["v[f]"] === v[e.i] && e.vars["v[p]"] === v[e.j]
+      : e.vars.f === e.j + 1 && e.vars["v[f]"] === v[e.j] && e.i === e.j + 1 && e.i < e.vars.fim))
+      && (e.t !== "troca" || e.linha !== 7 || (e.i === 0 && e.j === e.vars.fim - 1)),
     sequencial: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i])) && (e.t !== "achou" || e.vars.achou === e.i + 1),
     binaria: (e) => (e.t !== "compara" || (e.vars.m === e.i + 1 && e.vars["v[m]"] === v[e.i])) && (e.t !== "meio" || e.vars.m === e.m + 1)
       && (e.t !== "corta" || (e.vars.a === e.a + 1 && e.vars.b === e.b + 1)) && (e.t !== "achou" || e.vars.achou === e.i + 1),
@@ -98,7 +101,7 @@ function confereVars(pasta, vetor, eventos) {
   return erros === 0;
 }
 
-for (const pasta of ["bolha", "insercao", "selecao", "intercalacao", "rapida"]) {
+for (const pasta of ["bolha", "insercao", "selecao", "intercalacao", "rapida", "heapsort"]) {
   const d = ler(`algoritmos/${pasta}/dados.json`);
   const casos = [{ nome: "vídeo", vetor: d.exemplo.vetor, comparacoes: d.exemplo.ops, movimentos: d.exemplo.movimentos, pico: d.memoria.pico },
     ...d.conferir.map((c, i) => ({ nome: `conferir ${i + 1}`, ...c }))];

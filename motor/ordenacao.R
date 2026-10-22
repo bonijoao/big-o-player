@@ -85,6 +85,34 @@ rapida_r <- function(v) {
   list(v = e$v, comparacoes = e$comp, movimentos = e$mov)
 }
 
+heapsort_r <- function(v) {
+  # heap de máximo em v[1..fim]: os filhos de p são 2p e 2p + 1
+  n <- length(v); comp <- 0; mov <- 0
+  fim <- n; i <- n %/% 2 + 1
+  while (fim > 1) {
+    if (i > 1) {
+      i <- i - 1
+    } else {
+      v[c(1, fim)] <- v[c(fim, 1)]; mov <- mov + 1; fim <- fim - 1
+    }
+    p <- i
+    while (2 * p <= fim) {
+      f <- 2 * p
+      if (f < fim) {
+        comp <- comp + 1
+        if (v[f + 1] > v[f]) f <- f + 1
+      }
+      comp <- comp + 1
+      if (v[f] > v[p]) {
+        v[c(p, f)] <- v[c(f, p)]; mov <- mov + 1; p <- f
+      } else {
+        break
+      }
+    }
+  }
+  list(v = v, comparacoes = comp, movimentos = mov)
+}
+
 # Roda a versão R em cada vetor guardado pelo medir.py e compara.
 conferir_ordenacao <- function(pasta, funcao, nome_r) {
   py <- jsonlite::read_json(file.path(pasta, "dados.json"))

@@ -4660,6 +4660,847 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "heapsort",
+  "id": "heapsort",
+  "nome": "Heapsort",
+  "variante": "heap de máximo no próprio vetor, montado de baixo para cima",
+  "familia": "ordenação",
+  "resumo": "Arruma o vetor num heap de máximo, em que todo pai é maior que os filhos e o maior fica na casa 1. Depois troca a raiz com o último do heap: o maior vai para o lugar final, o heap encolhe uma casa, e a raiz nova desce até achar o lugar dela. Repete até o heap ter um número só.",
+  "instrumentos": [
+   {
+    "id": "vetor",
+    "papel": "a entrada, ordenada no próprio vetor"
+   },
+   {
+    "id": "heap",
+    "papel": "o heap mora no começo do vetor; montar de uma vez e descer são os do Heap, com a comparação invertida (de máximo)"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n log n)",
+   "porque": "Montar o heap de baixo para cima custa O(n). Depois, cada uma das n − 1 trocas da raiz faz a nova raiz descer no máximo a altura do heap, log₂ n níveis, com duas comparações por nível. Isso vale para qualquer entrada: não existe vetor ruim para o heapsort.",
+   "nota": "Já ordenado não ajuda, e ajuda até menos: o vetor crescente é o pior para montar um heap de máximo, porque todo pai é menor que os filhos. O quick sort costuma comparar menos no aleatório, mas chega a n²/2 no vetor já ordenado."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "O heap e a parte já ordenada dividem o mesmo vetor: o heap no começo, os maiores no fim. Só guarda os índices fim, i, p e f."
+  },
+  "video": {
+   "ideia": [
+    "monta um heap de máximo: cada pai desce até ficar maior que os filhos",
+    "o maior do heap vai para o fim; o heap encolhe uma casa e a raiz nova desce"
+   ]
+  },
+  "placa": {
+   "autor": "J. W. J. Williams; Robert W. Floyd (montar de baixo para cima)",
+   "ano": "1964"
+  },
+  "poster": "algoritmos/heapsort/heapsort.png",
+  "exemplo": {
+   "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
+   "n": 24,
+   "semente": 11,
+   "vetor": [
+    13,
+    19,
+    20,
+    3,
+    22,
+    8,
+    0,
+    11,
+    4,
+    7,
+    1,
+    2,
+    12,
+    9,
+    10,
+    15,
+    5,
+    6,
+    18,
+    16,
+    21,
+    23,
+    17,
+    14
+   ],
+   "ops": 148,
+   "movimentos": 91,
+   "movimento": "trocas"
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "ordenacao",
+    "crescimento": [
+     {
+      "n": 16,
+      "aleatorio": {
+       "media": 81,
+       "min": 79,
+       "max": 84,
+       "movimentos": 52.1,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 85,
+       "movimentos": 58,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 72,
+       "movimentos": 42,
+       "pico": 0
+      }
+     },
+     {
+      "n": 32,
+      "aleatorio": {
+       "media": 221.4,
+       "min": 217,
+       "max": 226,
+       "movimentos": 134.3,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 231,
+       "movimentos": 146,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 202,
+       "movimentos": 112,
+       "pico": 0
+      }
+     },
+     {
+      "n": 64,
+      "aleatorio": {
+       "media": 573.5,
+       "min": 557,
+       "max": 583,
+       "movimentos": 329.4,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 593,
+       "movimentos": 362,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 525,
+       "movimentos": 288,
+       "pico": 0
+      }
+     },
+     {
+      "n": 128,
+      "aleatorio": {
+       "media": 1400.5,
+       "min": 1393,
+       "max": 1421,
+       "movimentos": 786.4,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 1459,
+       "movimentos": 850,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 1294,
+       "movimentos": 702,
+       "pico": 0
+      }
+     },
+     {
+      "n": 256,
+      "aleatorio": {
+       "media": 3306.7,
+       "min": 3292,
+       "max": 3323,
+       "movimentos": 1823.9,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 3452,
+       "movimentos": 1972,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 3106,
+       "movimentos": 1642,
+       "pico": 0
+      }
+     },
+     {
+      "n": 512,
+      "aleatorio": {
+       "media": 7645.3,
+       "min": 7622,
+       "max": 7683,
+       "movimentos": 4162.4,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 7958,
+       "movimentos": 4464,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 7203,
+       "movimentos": 3772,
+       "pico": 0
+      }
+     },
+     {
+      "n": 1024,
+      "aleatorio": {
+       "media": 17304.3,
+       "min": 17273,
+       "max": 17354,
+       "movimentos": 9325,
+       "pico": 0
+      },
+      "ordenado": {
+       "comparacoes": 18060,
+       "movimentos": 9968,
+       "pico": 0
+      },
+      "invertido": {
+       "comparacoes": 16407,
+       "movimentos": 8542,
+       "pico": 0
+      }
+     }
+    ],
+    "crescimento_dados": "Aleatório: média de 10 vetores embaralhados por tamanho; ordenado e invertido: um vetor cada",
+    "distribuicao": {
+     "n": 24,
+     "vetores": 200,
+     "comparacoes": [
+      146,
+      153,
+      148,
+      143,
+      148,
+      143,
+      149,
+      155,
+      150,
+      150,
+      148,
+      152,
+      147,
+      144,
+      151,
+      147,
+      152,
+      153,
+      157,
+      149,
+      157,
+      143,
+      148,
+      149,
+      145,
+      155,
+      141,
+      151,
+      157,
+      151,
+      150,
+      145,
+      150,
+      158,
+      152,
+      151,
+      148,
+      150,
+      149,
+      141,
+      153,
+      149,
+      147,
+      141,
+      155,
+      156,
+      144,
+      146,
+      151,
+      153,
+      149,
+      148,
+      150,
+      148,
+      154,
+      155,
+      148,
+      156,
+      152,
+      150,
+      151,
+      149,
+      154,
+      150,
+      149,
+      143,
+      148,
+      145,
+      148,
+      148,
+      141,
+      147,
+      146,
+      147,
+      150,
+      145,
+      148,
+      151,
+      144,
+      155,
+      148,
+      150,
+      149,
+      147,
+      155,
+      148,
+      151,
+      153,
+      154,
+      146,
+      152,
+      150,
+      151,
+      147,
+      151,
+      149,
+      148,
+      146,
+      148,
+      145,
+      155,
+      146,
+      148,
+      149,
+      156,
+      141,
+      140,
+      150,
+      154,
+      149,
+      150,
+      145,
+      150,
+      149,
+      152,
+      148,
+      150,
+      153,
+      144,
+      154,
+      148,
+      153,
+      153,
+      154,
+      148,
+      153,
+      148,
+      149,
+      145,
+      151,
+      143,
+      148,
+      151,
+      149,
+      153,
+      144,
+      141,
+      153,
+      155,
+      151,
+      146,
+      151,
+      150,
+      154,
+      151,
+      156,
+      152,
+      152,
+      152,
+      147,
+      152,
+      151,
+      151,
+      150,
+      146,
+      149,
+      151,
+      148,
+      143,
+      149,
+      150,
+      147,
+      149,
+      144,
+      151,
+      149,
+      147,
+      149,
+      155,
+      149,
+      152,
+      151,
+      148,
+      142,
+      145,
+      149,
+      142,
+      146,
+      143,
+      146,
+      154,
+      150,
+      155,
+      153,
+      155,
+      146,
+      145,
+      157,
+      148,
+      149,
+      148,
+      156,
+      148,
+      151,
+      154,
+      139,
+      146,
+      150,
+      151,
+      146
+     ]
+    }
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 7,
+    "nos": 19,
+    "arestas": 24,
+    "decisoes": [
+     {
+      "linha": 4,
+      "tipo": "while"
+     },
+     {
+      "linha": 5,
+      "tipo": "if"
+     },
+     {
+      "linha": 11,
+      "tipo": "while"
+     },
+     {
+      "linha": 13,
+      "tipo": "and/or"
+     },
+     {
+      "linha": 13,
+      "tipo": "if"
+     },
+     {
+      "linha": 15,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "while"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "if"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 6,
+       "linha": 8,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 7,
+       "linha": 9,
+       "rotulo": "expr"
+      },
+      {
+       "id": 8,
+       "linha": 10,
+       "rotulo": "assign"
+      },
+      {
+       "id": 9,
+       "linha": 11,
+       "rotulo": "while"
+      },
+      {
+       "id": 10,
+       "linha": 12,
+       "rotulo": "assign"
+      },
+      {
+       "id": 11,
+       "linha": 13,
+       "rotulo": "if"
+      },
+      {
+       "id": 12,
+       "linha": 13,
+       "rotulo": "e"
+      },
+      {
+       "id": 13,
+       "linha": 14,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 14,
+       "linha": 15,
+       "rotulo": "if"
+      },
+      {
+       "id": 15,
+       "linha": 16,
+       "rotulo": "expr"
+      },
+      {
+       "id": 16,
+       "linha": 17,
+       "rotulo": "assign"
+      },
+      {
+       "id": 17,
+       "linha": 19,
+       "rotulo": "break"
+      },
+      {
+       "id": 18,
+       "linha": 20,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 14,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 15,
+       "para": 16,
+       "tipo": "segue"
+      },
+      {
+       "de": 14,
+       "para": 17,
+       "tipo": "segue"
+      },
+      {
+       "de": 16,
+       "para": 9,
+       "tipo": "volta"
+      },
+      {
+       "de": 9,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 17,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 3,
+       "para": 18,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def heapsort(v, conta):\n    n = len(v)\n    fim, i = n, n // 2\n    while fim > 1:\n        if i > 0:\n            i -= 1\n        else:\n            fim -= 1\n            troca(v, 0, fim, conta)\n        p = i\n        while 2 * p + 1 < fim:\n            f = 2 * p + 1\n            if f + 1 < fim and maior(v, f + 1, f, conta):\n                f += 1\n            if maior(v, f, p, conta):\n                troca(v, p, f, conta)\n                p = f\n            else:\n                break\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "heapsort_r() (reimplementação em R) e sort()",
+   "versao_r": "4.6.0",
+   "vetores": 7,
+   "tudo_ok": true,
+   "resumo": "Reescrito em R 4.6.0 e rodado em 7 vetores de 50 números (5 embaralhados, 1 ordenado, 1 invertido): a ordem final bate com sort() e as comparações e os movimentos batem um a um com o Python."
+  },
+  "pseudocodigo": {
+   "assinatura": "heapsort(v)",
+   "nome": "heapsort",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "fim ← n;  i ← ⌊n/2⌋ + 1",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "enquanto",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "fim > 1"
+     ],
+     "corpo": [
+      {
+       "tipo": "se",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "i > 1"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "i ← i − 1",
+         "chamada": false
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "acao",
+         "linha": 7,
+         "texto": "troque v[1] com v[fim]",
+         "chamada": false
+        },
+        {
+         "tipo": "acao",
+         "linha": 8,
+         "texto": "fim ← fim − 1",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "acao",
+       "linha": 9,
+       "texto": "p ← i",
+       "chamada": false
+      },
+      {
+       "tipo": "laco",
+       "rotulo": "enquanto",
+       "linha": 10,
+       "op": "e",
+       "conds": [
+        "2p ≤ fim"
+       ],
+       "corpo": [
+        {
+         "tipo": "acao",
+         "linha": 11,
+         "texto": "f ← 2p",
+         "chamada": false
+        },
+        {
+         "tipo": "se",
+         "linha": 12,
+         "op": "e",
+         "conds": [
+          "f < fim",
+          "v[f + 1] > v[f]"
+         ],
+         "entao": [
+          {
+           "tipo": "acao",
+           "linha": 13,
+           "texto": "f ← f + 1",
+           "chamada": false
+          }
+         ],
+         "senao": null
+        },
+        {
+         "tipo": "se",
+         "linha": 14,
+         "op": "e",
+         "conds": [
+          "v[f] > v[p]"
+         ],
+         "entao": [
+          {
+           "tipo": "acao",
+           "linha": 15,
+           "texto": "troque v[p] com v[f];  p ← f",
+           "chamada": false
+          }
+         ],
+         "senao": [
+          {
+           "tipo": "pare",
+           "linha": 17
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "linhas": [
+    "procedimento heapsort(v):",
+    "    fim ← n;  i ← ⌊n/2⌋ + 1",
+    "    enquanto fim > 1:",
+    "        se i > 1:",
+    "            i ← i − 1",
+    "        senão:",
+    "            troque v[1] com v[fim]",
+    "            fim ← fim − 1",
+    "        p ← i",
+    "        enquanto 2p ≤ fim:",
+    "            f ← 2p",
+    "            se f < fim e v[f + 1] > v[f]:",
+    "                f ← f + 1",
+    "            se v[f] > v[p]:",
+    "                troque v[p] com v[f];  p ← f",
+    "            senão:",
+    "                pare"
+   ],
+   "M": 7,
+   "nos": 17,
+   "arestas": 22,
+   "decisoes": [
+    3,
+    4,
+    10,
+    12,
+    12,
+    14
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "parenteses",
   "id": "parenteses-balanceados",
   "nome": "Parênteses balanceados",
@@ -10141,13 +10982,7 @@ window.ALBUNS = [
   "titulo": "Ordenação",
   "familia": "ordenação",
   "frase": "Jeitos de pôr números em ordem. Tocado na sequência, o álbum vai do O(n²) ao O(n log n).",
-  "em_producao": [
-   {
-    "nome": "Heapsort",
-    "tempo": "O(n log n)",
-    "memoria": "O(1)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "estruturas-lineares",

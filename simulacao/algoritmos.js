@@ -119,6 +119,38 @@
     }
   }
 
+  // heap de máximo em v[0, fim): os filhos de p são 2p + 1 e 2p + 2 (2p e 2p + 1 no pseudocódigo)
+  function heapsort(v, c) {
+    const n = v.length;
+    const V = c.vars = { fim: n, i: null, p: null, f: null, "v[p]": null, "v[f]": null };
+    let fim = n, i = n >> 1;
+    V.i = i + 1;
+    while (fim > 1) {
+      if (i > 0) { i--; V.i = i + 1; }
+      else {
+        fim--;
+        // o evento da troca já mostra os valores trocados; fim ainda é o de antes
+        Object.assign(V, { p: null, f: null, "v[p]": null, "v[f]": null });
+        troca(v, 0, fim, c, 7);
+        V.fim = fim;
+      }
+      let p = i;
+      Object.assign(V, { p: p + 1, f: null, "v[p]": v[p], "v[f]": null });
+      while (2 * p + 1 < fim) {
+        let f = 2 * p + 1;
+        Object.assign(V, { f: f + 1, "v[f]": v[f] });
+        testa(c, 12, 0);
+        if (f + 1 < fim && maior(v, f + 1, f, c, 12, "v", 1)) { f++; Object.assign(V, { f: f + 1, "v[f]": v[f] }); }
+        if (maior(v, f, p, c, 14)) {
+          Object.assign(V, { "v[p]": v[f], "v[f]": v[p] });
+          troca(v, p, f, c, 15);
+          p = f;
+          Object.assign(V, { p: p + 1, f: null, "v[p]": v[p], "v[f]": null });
+        } else { c.push({ t: "pare", linha: 17 }); break; }
+      }
+    }
+  }
+
   // trecho [a, b) do JS = de a + 1 até b no pseudocódigo; m é o mesmo nos dois
   function intercalacao(v, a, b, aux, c, linha) {
     const V = { a: a + 1, b, m: null, i: null, j: null, k: null };
@@ -181,6 +213,7 @@
       },
     },
     rapida: { movimento: "trocas", ordenar: (v, c) => rapida(v, 0, v.length, c, 1) },
+    heapsort: { movimento: "trocas", ordenar: (v, c) => heapsort(v, c) },
   };
 
   /** Roda uma ordenação numa cópia de `vetor` e devolve contagens e eventos. */

@@ -96,11 +96,13 @@
     const r = Algoritmos.ordenar(alg, vetor);
     const N = vetor.length, ev = r.eventos;
     const temAux = alg === "intercalacao", temPilha = alg === "intercalacao" || alg === "rapida", quick = alg === "rapida";
+    // heapsort: o heap mora em v[0, fim); com até 31 números, a árvore dele aparece acima das barras
+    const heap = alg === "heapsort", temArvore = heap && N <= 31;
     const ideia = faixa.video.ideia;
 
     // reprodução: um estado depois de cada evento
     const v = vetor.slice(), aux = new Array(N).fill(null), pilha = [], chamadas = [], abertas = [];
-    let part = null, comps = 0, movs = 0, pico = temAux ? N : 0, fimPart1 = -1, menor = null;
+    let part = null, comps = 0, movs = 0, pico = temAux ? N : 0, fimPart1 = -1, menor = null, fimHeap = N;
     const est = [];
     ev.forEach((e, k) => {
       let foco = null, mexeu = [];
@@ -135,7 +137,8 @@
       }
       pico = Math.max(pico, (temAux ? N : 0) + pilha.length);
       if (e.t === "troca" && alg === "selecao") menor = null;   // o menor foi para a frente
-      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, menor, t: e.t, linha: e.linha, parte: e.parte, vars: e.vars, nivel: e.nivel, chamada: e.chamada });
+      if (heap && e.t === "troca" && e.linha === 7) fimHeap--;  // a raiz foi para o fim: o heap encolhe
+      est.push({ v: v.slice(), aux: temAux ? aux.slice() : null, nPilha: pilha.length, part, foco, mexeu, comps, movs, pico, menor, t: e.t, linha: e.linha, parte: e.parte, vars: e.vars, nivel: e.nivel, chamada: e.chamada, fim: fimHeap });
     });
     if (comps !== r.comparacoes || movs !== r.movimentos || pico !== r.pico) throw new Error("reprodução não bate com a execução");
 
@@ -164,6 +167,7 @@
     const kLento = (() => { let n = 0; for (let k = 0; k < est.length; k++) if (visivel(est[k].t) && ++n === lentos) return k; return -1; })();
     // qual legenda do topo: 0 = a primeira ideia, 1 = a do quick depois da 1ª partição, 2 = a última
     function fase(u, k) {
+      if (heap) return k >= 0 && est[k].fim < N ? 2 : 0;    // montando o heap, depois tirando a raiz
       if (accelerando) return quick && u >= uPausa && u < uPausa + PAUSA ? 1 : u < (quick ? uPausa : uLentoFim) ? 0 : 2;
       if (quick && fimPart1 >= 0 && k >= fimPart1 && k < fimPart1 + 14) return 1;
       return k < (quick ? fimPart1 : kLento) ? 0 : 2;
@@ -171,12 +175,30 @@
     const nivelMax = Math.max(0, ...chamadas.map((c) => c.nivel));
 
     // geometria (a mesma dos vídeos)
-    const BX0 = 70, BX1 = 600, BTOPO = 96;
-    const BBASE = temAux || temPilha ? 316 : 410;
-    const LEG_Y = temAux ? 520 : 470, PILHA_Y = temAux ? 340 : 350;
+    const BX0 = 70, BX1 = 600, PTOPO = 96, BTOPO = temArvore ? 300 : 96;
+    const BBASE = temAux || temPilha ? 316 : temArvore ? 440 : 410;
+    const LEG_Y = temAux ? 520 : temArvore ? 484 : 470, PILHA_Y = temAux ? 340 : 350;
     const AUX_TOPO = 420, AUX_BASE = 492;
     const ROW = Math.min(8, ((temAux ? AUX_TOPO - 28 : LEG_Y - 14) - PILHA_Y - 20) / Math.max(1, nivelMax));
     const bw = (BX1 - BX0) / N, bx = (i) => BX0 + i * bw;
+
+    // a árvore do heap: o nó i é a barra i; só a parte que ainda é heap
+    function arvoreHeap(ctx, s, k, coral, fim) {
+      const L = Math.floor(Math.log2(N)) + 1, TY0 = 84, DY = (BTOPO - 60 - TY0) / Math.max(1, L - 1);
+      const R = Math.min(13, (BX1 - BX0) / 2 ** (L - 1) * 0.42);
+      const pos = (i) => { const d = Math.floor(Math.log2(i + 1)), j = i + 1 - 2 ** d; return [BX0 + (j + 0.5) * (BX1 - BX0) / 2 ** d, TY0 + d * DY]; };
+      const nos = fim ? 0 : s.fim;
+      for (let i = 1; i < nos; i++) { const [x0, y0] = pos((i - 1) >> 1), [x1, y1] = pos(i); linha(ctx, x0, y0, x1, y1, COR.palido, 1.5); }
+      const foco = !fim && k >= 0 && est[k].t === "compara" ? s.foco : null;
+      for (let i = 0; i < nos; i++) {
+        const [x, y] = pos(i), mexeu = coral.has(i), olhando = foco && (foco[0] === i || foco[1] === i);
+        ctx.beginPath(); ctx.arc(x, y, R, 0, 7);
+        ctx.fillStyle = mexeu ? COR.mexeu : "#fff"; ctx.fill();
+        ctx.strokeStyle = COR.tinta; ctx.lineWidth = olhando ? 3 : 1.5; ctx.stroke();
+        texto(ctx, String(s.v[i]), x, y - 7, 11, mexeu ? "#fff" : COR.tinta, 600, "center");
+      }
+      if (nos) texto(ctx, "o heap em árvore: o nó i é a barra i", BX0, TY0 - 34, 11, COR.cinza);
+    }
 
     function corBarra(i, x, k, s, coral) {
       const assentou = x === i && k >= ultimo[i];
@@ -207,11 +229,18 @@
     function desenhar(ctx, u) {
       const k = tl.eventoEm(u);
       const fim = u >= tl.total;
-      const s = k >= 0 ? est[k] : { v: vetor, aux: temAux ? new Array(N).fill(null) : null, nPilha: 0, part: null, foco: null, comps: 0, movs: 0, pico: temAux ? N : 0 };
+      const s = k >= 0 ? est[k] : { v: vetor, aux: temAux ? new Array(N).fill(null) : null, nPilha: 0, part: null, foco: null, comps: 0, movs: 0, pico: temAux ? N : 0, fim: N };
       const agoraVis = k >= 0 ? vis[k] : 0;
       const coral = new Set(), coralAux = new Set();
       if (!quick) for (let j = Math.max(0, k - 12); j <= k; j++) if (agoraVis - vis[j] < 3) est[j].mexeu.forEach(([o, i]) => (o === "v" ? coral : coralAux).add(i));
 
+      if (temArvore) arvoreHeap(ctx, s, k, coral, fim);
+      if (heap && !fim && s.fim < N) {   // a fronteira: o heap à esquerda, os já no lugar à direita
+        const xf = bx(s.fim);
+        ctx.setLineDash([4, 4]); linha(ctx, xf, BTOPO - 14, xf, BBASE + 1, COR.cinza); ctx.setLineDash([]);
+        texto(ctx, "heap ←", xf - 6, BTOPO - 26, 11, COR.cinza, 400, "right");
+        texto(ctx, "→ no lugar", xf + 6, BTOPO - 26, 11, COR.cinza);
+      }
       linha(ctx, BX0, BBASE + 1, BX1, BBASE + 1, COR.palido);
       barras(ctx, s.v, BTOPO, BBASE, (i, x) => corBarra(i, x, k, s, coral));
       const foco = !fim && k >= 0 && est[k].t === "compara" ? s.foco : null;
@@ -238,15 +267,16 @@
 
       // painel
       const x = 650;
-      texto(ctx, "comparações", x, BTOPO - 6, 13, COR.cinza);
-      texto(ctx, String(s.comps), x, BTOPO + 10, 40, fim ? COR.verde : COR.tinta, 700);
-      texto(ctx, r.movimento, x, BTOPO + 84, 13, COR.cinza);
-      texto(ctx, String(s.movs), x, BTOPO + 100, 26, COR.tinta, 700);
+      texto(ctx, "comparações", x, PTOPO - 6, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, PTOPO + 10, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, r.movimento, x, PTOPO + 84, 13, COR.cinza);
+      texto(ctx, String(s.movs), x, PTOPO + 100, 26, COR.tinta, 700);
       const extra = (temAux ? N : 0) + s.nPilha;
-      texto(ctx, "memória extra agora", x, BTOPO + 154, 13, COR.cinza);
-      texto(ctx, `${extra} ${extra === 1 ? "valor" : "valores"}`, x, BTOPO + 170, 20, COR.tinta, 700);
-      if (temAux || temPilha) texto(ctx, `pico até aqui: ${s.pico}`, x, BTOPO + 198, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
-      texto(ctx, `n = ${N} números`, x, Math.max(BBASE - 14, BTOPO + 228), 13, COR.cinza);
+      texto(ctx, "memória extra agora", x, PTOPO + 154, 13, COR.cinza);
+      texto(ctx, `${extra} ${extra === 1 ? "valor" : "valores"}`, x, PTOPO + 170, 20, COR.tinta, 700);
+      if (temAux || temPilha) texto(ctx, `pico até aqui: ${s.pico}`, x, PTOPO + 198, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `n = ${N} números`, x, temArvore ? PTOPO + 228 : Math.max(BBASE - 14, PTOPO + 228), 13, COR.cinza);
+      if (heap && !fim) texto(ctx, s.fim < N ? `no heap: ${s.fim}; no lugar: ${N - s.fim}` : "montando o heap", x, PTOPO + 252, 13, COR.cinza);
 
       // legenda das cores
       const itens = quick

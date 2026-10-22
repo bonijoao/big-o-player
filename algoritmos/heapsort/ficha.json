@@ -1,0 +1,37 @@
+{
+ "id": "heapsort",
+ "nome": "Heapsort",
+ "variante": "heap de máximo no próprio vetor, montado de baixo para cima",
+ "familia": "ordenação",
+ "resumo": "Arruma o vetor num heap de máximo, em que todo pai é maior que os filhos e o maior fica na casa 1. Depois troca a raiz com o último do heap: o maior vai para o lugar final, o heap encolhe uma casa, e a raiz nova desce até achar o lugar dela. Repete até o heap ter um número só.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, ordenada no próprio vetor"
+  },
+  {
+   "id": "heap",
+   "papel": "o heap mora no começo do vetor; montar de uma vez e descer são os do Heap, com a comparação invertida (de máximo)"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n log n)",
+  "porque": "Montar o heap de baixo para cima custa O(n). Depois, cada uma das n − 1 trocas da raiz faz a nova raiz descer no máximo a altura do heap, log₂ n níveis, com duas comparações por nível. Isso vale para qualquer entrada: não existe vetor ruim para o heapsort.",
+  "nota": "Já ordenado não ajuda, e ajuda até menos: o vetor crescente é o pior para montar um heap de máximo, porque todo pai é menor que os filhos. O quick sort costuma comparar menos no aleatório, mas chega a n²/2 no vetor já ordenado."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "O heap e a parte já ordenada dividem o mesmo vetor: o heap no começo, os maiores no fim. Só guarda os índices fim, i, p e f."
+ },
+ "video": {
+  "ideia": [
+   "monta um heap de máximo: cada pai desce até ficar maior que os filhos",
+   "o maior do heap vai para o fim; o heap encolhe uma casa e a raiz nova desce"
+  ]
+ },
+ "pseudocodigo": "procedimento heapsort(v):\n    fim ← n;  i ← ⌊n/2⌋ + 1\n    enquanto fim > 1:\n        se i > 1:\n            i ← i − 1\n        senão:\n            troque v[1] com v[fim]\n            fim ← fim − 1\n        p ← i\n        enquanto 2p ≤ fim:\n            f ← 2p\n            se f < fim e v[f + 1] > v[f]:\n                f ← f + 1\n            se v[f] > v[p]:\n                troque v[p] com v[f];  p ← f\n            senão:\n                pare\n",
+ "placa": {
+  "autor": "J. W. J. Williams; Robert W. Floyd (montar de baixo para cima)",
+  "ano": "1964"
+ }
+}
