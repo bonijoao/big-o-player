@@ -1,0 +1,13 @@
+{
+  "referencia": "fórmulas de Knuth e uma tabela com encadeamento refeita em R, com casas sorteadas por sample.int()",
+  "versao_r": "4.6.0",
+  "alfas": 20,
+  "tudo_ok": true,
+  "pior": {
+    "media_r": 0.1245,
+    "media_py": 0.0905,
+    "ultima_r": 0.8473,
+    "ultima_py": 0.983
+  },
+  "resumo": "Rodado em R 4.6.0: a tabela com encadeamento refeita em R, com 20 tabelas de 65.536 casas e a casa de cada chave sorteada por sample.int(), e as 20 tabelas do Python (com a dispersão de Knuth) dão, para α de 0,1 a 2, a média de sondagens por chave a no máximo 0,1% da fórmula (R) e 0,1% (Python), e o custo de pôr com a ocupação α a 0,8% e 1%; a tolerância é 5% na média e 10% no custo de pôr, que oscila mais."
+}

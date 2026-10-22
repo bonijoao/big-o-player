@@ -98,28 +98,7 @@
   "titulo": "Dispersão",
   "familia": "dispersão",
   "frase": "Tabelas de dispersão: achar pela chave sem procurar, até as chaves colidirem.",
-  "em_producao": [
-   {
-    "nome": "Contar palavras",
-    "tempo": "O(n) médio",
-    "memoria": "O(d)"
-   },
-   {
-    "nome": "Achar repetidos (vetor × dicionário)",
-    "tempo": "O(n²) × O(n) médio",
-    "memoria": "O(1) × O(n)"
-   },
-   {
-    "nome": "Colisão por encadeamento",
-    "tempo": "O(1 + α) médio",
-    "memoria": "O(m + n)"
-   },
-   {
-    "nome": "Colisão por sondagem linear",
-    "tempo": "O(1/(1 − α)) médio",
-    "memoria": "O(m)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "estatistica",

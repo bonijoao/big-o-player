@@ -454,3 +454,127 @@ def montar_histograma(pasta):
         rich(d, [(f"{ex['n']} erupções em ", ""), (f"{c} classes", "bg"), (f": {ex['ops']} leituras", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+def _grade(d, chaves, valores, x0, y0, larg, alto, col=8):
+    """A tabela de dispersão numa grade de `col` casas por linha: a chave e, se houver, o valor."""
+    m = len(chaves)
+    cw, ch = larg / col, min(44, alto / -(-m // col))
+    sz = int(max(9, min(13, ch * 0.42)))
+    for i, k in enumerate(chaves):
+        x, y = x0 + (i % col) * cw, y0 + (i // col) * ch
+        d.rectangle((x + 1, y + 1, x + cw - 1, y + ch - 1), fill=(255, 255, 255) if k is not None else CLARO, outline=PALIDO, width=1)
+        if k is not None:
+            texto(d, str(k), x + 6, y + ch / 2 - sz * 0.6, sz, INK, b=True)
+            if valores is not None and isinstance(valores[i], int) and not isinstance(valores[i], bool):
+                texto(d, str(valores[i]), x + cw - 6, y + ch / 2 - sz * 0.6, sz, GREEN, b=True, align="r")
+
+
+def _tabela_sondagem(m, pares):
+    """Refaz a tabela com sondagem a partir dos pares guardados no dados.json (sem contar nada)."""
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "instrumentos", "dicionario"))
+    from dicionario import casa_de
+    bits = m.bit_length() - 1
+    chaves, valores = [None] * m, [None] * m
+    for k, v in pares:
+        i = casa_de(k, bits)
+        while chaves[i] is not None:
+            i = (i + 1) % m
+        chaves[i], valores[i] = k, v
+    return chaves, valores
+
+
+def montar_palavras(pasta):
+    """Contar palavras: a tabela do fim, com as palavras da Canção do Exílio e as
+    contagens em verde (o resultado)."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    chaves, valores = _tabela_sondagem(ex["m"], ex["contagens"])
+
+    def cena(d, t, im):
+        texto(d, f"dicionário: m = {ex['m']} casas", BX0, 96, 11, GRAY)
+        _grade(d, chaves, valores, BX0 - 30, 116, 600, 380)
+        _painel(d, [("casas lidas e escritas", f"{ex['ops']:,}".replace(",", "."), 40, True), ("palavras distintas", str(ex["d"]), 26, False),
+                    ("a mais frequente", f"{ex['contagens'][0][0]} {ex['contagens'][0][1]}", 20, False)])
+        rich(d, [(f"{ex['n']} palavras, {ex['d']} distintas: ", ""), (f"{ex['ops']} casas", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_repetidos(pasta):
+    """Achar repetidos: o vetor do encarte com a resposta embaixo (verde nos
+    repetidos) e o dicionário dos valores já vistos."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    v, N = ex["vetor"], ex["n"]
+    distintos = []
+    for x in v:
+        if x not in distintos:
+            distintos.append(x)
+    m = 8
+    while 4 * len(distintos) > 3 * m:
+        m *= 2
+    chaves, _ = _tabela_sondagem(m, [[x, True] for x in distintos])
+    cw = min(36, 560 / N)
+
+    def cena(d, t, im):
+        texto(d, "vetor", BX0, 84, 11, GRAY)
+        for i, x in enumerate(v):
+            xx = BX0 + i * cw
+            d.rectangle((xx + 1, 102, xx + cw - 1, 136), fill=(255, 255, 255), outline=PALIDO, width=1)
+            texto(d, str(x), xx + cw / 2, 110, int(min(15, cw * 0.42)), INK, b=True, align="c")
+            texto(d, "sim" if ex["repetido"][i] else "não", xx + cw / 2, 142, 10, GREEN if ex["repetido"][i] else GRAY, b=ex["repetido"][i], align="c")
+        texto(d, f"dicionário: m = {m} casas", BX0, 196, 11, GRAY)
+        _grade(d, chaves, None, BX0, 216, 540, 240)
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("o vetor faria", str(ex["ops_vetor"]), 26, False),
+                    ("repetidos", str(sum(ex["repetido"])), 20, False)])
+        rich(d, [(f"n = {N}: ", ""), (f"{ex['ops']} comparações", "bg"), (f" (o vetor: {ex['ops_vetor']})", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_colisao(pasta):
+    """Colisões: a tabela de m casas fixas do encarte no fim (com as correntes,
+    no encadeamento) e as sondagens de cada chave."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    enc = "encadeamento" in os.path.basename(pasta)
+    m, cw, Y = ex["m"], 560 / ex["m"], 130
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "instrumentos", "dicionario"))
+    from dicionario import casa_de
+    correntes = [[] for _ in range(m)]
+    casas = [None] * m
+    for k in ex["chaves"]:
+        i = casa_de(k, ex["bits"])
+        if enc:
+            correntes[i].insert(0, k)
+        else:
+            while casas[i] is not None:
+                i = (i + 1) % m
+            casas[i] = k
+
+    def cena(d, t, im):
+        texto(d, f"tabela de m = {m} casas fixas", BX0, Y - 34, 11, GRAY)
+        for i in range(m):
+            x = BX0 + i * cw
+            cheia = correntes[i] if enc else casas[i] is not None
+            d.rectangle((x + 1, Y, x + cw - 1, Y + (24 if enc else 34)), fill=(255, 255, 255) if cheia else CLARO, outline=PALIDO, width=1)
+            texto(d, str(i + 1), x + cw / 2, Y - 16, 9, GRAY, align="c")
+            if enc:
+                if correntes[i]:                  # a fonte do pôster não tem ∅: a casa vazia fica só cinza
+                    texto(d, "•", x + cw / 2, Y + 4, 13, INK, b=True, align="c")
+                for j, k in enumerate(correntes[i]):
+                    y = Y + 32 + j * 30
+                    line(d, (x + cw / 2, y - 8), (x + cw / 2, y), PALIDO, w=1)
+                    d.rectangle((x + 2, y, x + cw - 2, y + 22), fill=(255, 255, 255), outline=INK, width=1)
+                    texto(d, str(k), x + cw / 2, y + 4, int(min(12, cw * 0.34)), INK, b=True, align="c")
+            elif casas[i] is not None:
+                texto(d, str(casas[i]), x + cw / 2, Y + 9, int(min(13, cw * 0.36)), INK, b=True, align="c")
+        texto(d, "sondagens de cada chave", BX0, 400, 11, GRAY)
+        texto(d, "  ".join(str(s) for s in ex["sondagens"]), BX0, 420, 16, INK, b=True)
+        _painel(d, [("sondagens", str(ex["ops"]), 40, True), ("ocupação (n/m)", f"{ex['n']}/{m}", 22, False)])
+        rich(d, [(f"{ex['n']} chaves em {m} casas: ", ""), (f"{ex['ops']} sondagens", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5

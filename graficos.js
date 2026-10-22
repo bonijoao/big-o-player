@@ -206,6 +206,7 @@
     "2n": { nome: "2n", f: (n) => 2 * n },
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
     "log₂ n + 1": { nome: "log₂ n + 1", f: (n) => Math.log2(n) + 1 },
+    m: { nome: "m", f: (n) => n },
   };
   const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9"];
 
@@ -229,6 +230,75 @@
       aria: `${tempo ? t.unidade : "memória extra no pico"} por ${porK ? "tamanho da janela k" : "tamanho n"}, um traço por caso de entrada`,
       eixo: porK ? t.eixo_k : t.eixo,
     });
+  }
+
+  // Colisões: sondagens × ocupação α, medidas (a média por chave, pondo até α,
+  // e o custo de pôr com α ocupado) e previstas pelas fórmulas de Knuth,
+  // tracejadas. Na sondagem linear, o eixo das sondagens é logarítmico (perto
+  // de α = 1 elas explodem); no encadeamento, linear.
+  const FORMULAS = {
+    encadeamento: { media: (a) => 1 + a / 2, ultima: (a) => 1 + a, nomes: ["1 + α/2", "1 + α"] },
+    sondagem: { media: (a) => (1 + 1 / (1 - a)) / 2, ultima: (a) => (1 + 1 / (1 - a) ** 2) / 2, nomes: ["½(1 + 1/(1 − α))", "½(1 + 1/(1 − α)²)"] },
+  };
+
+  function graficoAlfa(caixa, a) {
+    const t = a.medido.tempo, al = t.alfa, F = FORMULAS[t.tipo], log = t.tipo === "sondagem";
+    const pts = al.pontos, amax = pts.at(-1).alfa;
+    caixa.replaceChildren();
+    const W = Math.max(300, caixa.clientWidth), H = 300, estreito = W < 480;
+    const m = { l: 56, r: estreito ? 16 : 170, t: 18, b: 44 };
+    const ymax = Math.max(...pts.flatMap((p) => [p.media, p.ultima, p.formula_ultima]));
+    const lo = log ? 0 : 0, hi = log ? Math.ceil(Math.log10(ymax) * 2) / 2 : Math.ceil(ymax);
+    const X = (x) => m.l + x / amax * (W - m.l - m.r);
+    const Y = (v) => m.t + (1 - (log ? Math.log10(Math.max(v, 1)) - lo : v - lo) / (hi - lo)) * (H - m.t - m.b);
+    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img",
+      "aria-label": `Sondagens por chave conforme a ocupação α, de ${pts[0].alfa} a ${amax}, medidas e previstas` });
+    const marcas = log ? ROTULOS_LOG.concat([2, 5, 20, 50, 200].map((v) => [v, String(v)])).filter(([v]) => Math.log10(v) <= hi)
+      : Array.from({ length: hi + 1 }, (_, v) => [v, String(v)]);
+    for (const [v, r] of marcas) {
+      s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: "#eceef1" }));
+      s.append(svg("text", { x: m.l - 10, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: "#686c73" }, r));
+    }
+    const passo = amax > 1 ? 0.5 : estreito ? 0.25 : 0.1;
+    for (let x = 0; x <= amax + 1e-9; x += passo) {
+      s.append(svg("text", { x: X(x), y: H - m.b + 20, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, String(Math.round(x * 100) / 100).replace(".", ",")));
+    }
+    // as fórmulas, numa curva contínua até o último α medido
+    const rotulos = [];
+    ["media", "ultima"].forEach((c, k) => {
+      const curva = Array.from({ length: 121 }, (_, j) => amax * j / 120).map((x) => `${X(x)},${Y(F[c](x))}`);
+      s.append(svg("polyline", { points: curva.join(" "), fill: "none", stroke: "#b4b7bd", "stroke-width": 1.2, "stroke-dasharray": "4 4" }));
+      rotulos.push({ y: Y(F[c](amax)), texto: F.nomes[k], cor: "#8a8e95" });
+    });
+    const series = [{ c: "media", nome: "média por chave", cor: "#1e1e1e", cheio: true }, { c: "ultima", nome: "pôr com α ocupado", cor: "#2869c3", cheio: false }];
+    for (const se of series) {
+      s.append(svg("polyline", { points: pts.map((p) => `${X(p.alfa)},${Y(p[se.c])}`).join(" "), fill: "none", stroke: se.cor, "stroke-width": 2 }));
+      pts.forEach((p) => s.append(svg("circle", { cx: X(p.alfa), cy: Y(p[se.c]), r: 3.6, fill: se.cheio ? se.cor : "#fff", stroke: se.cor, "stroke-width": 1.8 })));
+      rotulos.push({ y: Y(pts.at(-1)[se.c]), texto: se.nome, cor: se.cor });
+    }
+    if (!estreito) {
+      rotulos.sort((p, q) => p.y - q.y);
+      for (let i = 1; i < rotulos.length; i++) rotulos[i].y = Math.max(rotulos[i].y, rotulos[i - 1].y + 14);
+      for (const r of rotulos) s.append(svg("text", { x: X(amax) + 12, y: r.y + 4, "font-size": 12, fill: r.cor }, r.texto));
+    } else {
+      const leg = svg("g"), lh = 17;
+      let lx = 0, ly = 0;
+      for (const r of rotulos) {
+        const larg = 26 + r.texto.length * 7.3;
+        if (lx + larg > W - 8) { lx = 0; ly += lh; }
+        const ref = r.cor === "#8a8e95";
+        leg.append(svg("line", { x1: lx + 4, x2: lx + 20, y1: ly + 8, y2: ly + 8, stroke: ref ? "#b4b7bd" : r.cor, "stroke-width": ref ? 1.5 : 3, "stroke-dasharray": ref ? "4 3" : "none" }));
+        leg.append(svg("text", { x: lx + 25, y: ly + 12, "font-size": 12, fill: ref ? "#686c73" : r.cor }, r.texto));
+        lx += larg;
+      }
+      const alt = ly + lh + 10;
+      s.setAttribute("height", H + alt);
+      s.setAttribute("viewBox", `0 ${-alt} ${W} ${H + alt}`);
+      leg.setAttribute("transform", `translate(4, ${-alt + 2})`);
+      s.append(leg);
+    }
+    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: "#686c73" }, "α = n/m (ocupação da tabela)"));
+    caixa.replaceChildren(s);
   }
 
   // Welford: o erro relativo da variância de cada conta quando se soma uma
@@ -371,5 +441,5 @@
   }
 
 
-  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, graficoCasos, graficoErro, blocoMemoria, blocoCodigo, el, svg, mil, esc };
+  window.Graficos = { graficoCrescimento, graficoHistograma, graficoOrdenacao, graficoCasos, graficoErro, graficoAlfa, blocoMemoria, blocoCodigo, el, svg, mil, esc };
 })();

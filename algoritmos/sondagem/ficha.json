@@ -1,0 +1,45 @@
+{
+ "id": "colisao-sondagem",
+ "nome": "Colisão por sondagem linear",
+ "variante": "tabela de m casas fixas; ocupada, tenta a seguinte",
+ "familia": "dispersão",
+ "resumo": "Pôr chaves numa tabela de m casas que não cresce, uma chave por casa. A chave olha a sua casa; se está ocupada por outra, olha a seguinte, dando a volta no fim, até achar uma vazia. Sem ponteiros e sem nós, tudo mora na própria tabela. O preço aparece quando ela enche: as chaves ocupadas formam blocos, quem cai num bloco anda até o fim dele e o deixa maior, e perto de α = 1 os blocos se juntam.",
+ "instrumentos": [
+  {
+   "id": "dicionario",
+   "papel": "as casas da versão com sondagem linear, com m fixo, sem dobrar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(1/(1 − α)) médio",
+  "porque": "Pondo n chaves desde a tabela vazia, a média por chave é ½(1 + 1/(1 − α)) sondagens (Knuth), contando a casa vazia onde cada uma entra: 1,5 com a tabela pela metade, 5,5 com 90%. Pôr uma chave nova com α ocupado custa ½(1 + 1/(1 − α)²), que explode perto do fim. Com a tabela que dobra, como no instrumento, α fica abaixo de 3/4 e cada operação vira O(1).",
+  "nota": "Com a tabela cheia (α = 1), não há casa vazia: o pôr dá a volta inteira e falha. O pior caso é todas as chaves caírem na mesma casa: a k-ésima anda k casas, O(n) por chave. O menu do palco tem esse caso."
+ },
+ "memoria": {
+  "notacao": "O(m)",
+  "porque": "A tabela reserva as m casas (chave e valor) de uma vez, e as chaves moram nelas: a memória não muda com n, mas n nunca passa de m. Comparada ao encadeamento, não paga próx nem nó, só a folga das casas vazias.",
+  "nomes": {
+   "tabela": "casas da tabela (chave e valor)"
+  },
+  "cresce_com_n": [],
+  "vazados": "dependem de m, não de n"
+ },
+ "video": {
+  "ideia": [
+   "ocupada: tenta a casa seguinte",
+   "os blocos crescem e se juntam perto de α = 1"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: as sondagens conforme a tabela enche",
+  "texto": "Primeiro, o custo por chave em função da ocupação α, medido e previsto. Depois, o total de sondagens para tabelas cada vez maiores, com α fixo: em escala logarítmica, quem cresce como m sobe com inclinação 1.",
+  "alfa": "Sondagens para α de {a0} a {a1}, média de {sementes} tabelas de {m} casas, em escala logarítmica. Pontos cheios: a média por chave, pondo as chaves até α. Pontos vazados: pôr uma chave nova com α ocupado (a média das inserções entre α − 0,005 e α + 0,005). Tracejadas: as fórmulas de Knuth, ½(1 + 1/(1 − α)) e ½(1 + 1/(1 − α)²).",
+  "crescimento": "Sondagens no total, pondo α·m chaves, para m de {n0} a {n1}. {dados}. Com α fixo, a média por chave não muda: o total acompanha m, mais alto quanto mais cheia a tabela.",
+  "memoria": "Casas guardadas no pico para os mesmos tamanhos: 2m, as mesmas para qualquer α."
+ },
+ "pseudocodigo": "procedimento inserir_sondagem(t, k):\n    i ← dispersão(k)\n    enquanto a casa t[i] está ocupada:\n        se t[i] = k:\n            pare\n        i ← i mod m + 1\n    se a casa t[i] está vazia:\n        t[i] ← k\n    devolva i\n",
+ "placa": {
+  "autor": "Gene Amdahl, Elaine McGraw, Nathaniel Rochester e Arthur Samuel; a conta do custo é de Donald Knuth (1963)",
+  "ano": "1954"
+ }
+}

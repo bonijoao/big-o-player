@@ -1,0 +1,7 @@
+{
+  "referencia": "table() do R sobre as palavras separadas por regmatches(tolower(x), gregexpr(\"[[:alpha:]]+\", ...))",
+  "versao_r": "4.6.0",
+  "textos": 9,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 9 textos (a Canção do Exílio, os começos dela usados no palco, trechos do Dom Casmurro e o livro inteiro, com 66.710 palavras e 8.825 distintas): o R separa as mesmas palavras, e a contagem de cada uma bate com o table() do R. No livro, as mais frequentes são \"que\" (2.659 vezes), \"a\" e \"e\"."
+}

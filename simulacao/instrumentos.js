@@ -440,8 +440,204 @@
     return arestas;
   }
 
+  // ---------- dicionários (instrumentos/dicionario/dicionario.py) ----------
+  // A casa de uma chave: os bits de cima de numero(chave) × 2654435769 (mod 2³²),
+  // a dispersão multiplicativa de Knuth; numa palavra, numero() é o polinômio de
+  // base 31 sobre os códigos das letras. Calcular a casa não conta, mas vira o
+  // evento "dispersa" para a demo. Fora as leituras e escritas, o registro conta
+  // `sondagens` (casas olhadas numa busca) e `comparacoes` (chaves comparadas).
+  // A dobra (realoca … trocou) não é animada casa a casa: o "trocou" leva a foto
+  // da tabela nova.
+
+  function numero(chave) {
+    if (typeof chave === "string") {
+      let h = 0;
+      for (const l of chave) h = (Math.imul(h, 31) + l.codePointAt(0)) >>> 0;
+      return h;
+    }
+    return chave >>> 0;
+  }
+  const casaDe = (chave, bits) => (Math.imul(numero(chave), 0x9e3779b9) >>> 0) >>> (32 - bits);
+
+  /** A i-ésima chave da medição: i embaralhado (o fmix32 do MurmurHash3, que não repete). */
+  function chaveMedida(i) {
+    let h = i >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+    h = Math.imul(h, 0x85ebca6b) >>> 0;
+    h = (h ^ (h >>> 13)) >>> 0;
+    h = Math.imul(h, 0xc2b2ae35) >>> 0;
+    return (h ^ (h >>> 16)) >>> 0;
+  }
+
+  function registroDic() { return { leituras: 0, escritas: 0, sondagens: 0, comparacoes: 0, eventos: [] }; }
+
+  // o que as duas versões têm em comum: crescer quando α passaria de 3/4, ler, ter, encher
+  function operacoesDic(d) {
+    return Object.assign(d, {
+      cheia: () => !d.fixa && 4 * (d.usadas + 1) > 3 * d.m,
+      tem: (chave) => d.acha(chave) !== null,
+      ler(chave) { const p = d.acha(chave); return p === null ? null : d.leValor(p); },
+      encher(i) { d.por(chaveMedida(i), i); },
+      dispersa(chave) { const i = casaDe(chave, d.bits); d.reg.eventos.push({ t: "dispersa", chave, i, m: d.m }); return i; },
+    });
+  }
+
+  function DicEncadeamento(reg = registroDic(), bits = 3, fixa = false) {
+    let criados = 0, cabeca = new Array(2 ** bits).fill(null);
+    const ev = (o) => reg.eventos.push(o);
+    const d = {
+      reg, bits, fixa, n: 0,
+      get m() { return 2 ** d.bits; },
+      get usadas() { return d.n; },
+      leCabeca(i) { reg.leituras++; ev({ t: "le", onde: "cabeca", i }); return cabeca[i]; },
+      escreveCabeca(i, p) { reg.escritas++; ev({ t: "escreve", onde: "cabeca", i, x: p && p.id }); cabeca[i] = p; },
+      leChave(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "chave" }); return p.chave; },
+      leValor(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "valor" }); return p.valor; },
+      leProx(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "prox" }); return p.prox; },
+      escreve(p, campo, x) { reg.escritas++; ev({ t: "escreve", no: p.id, campo, x: campo === "prox" ? x && x.id : x }); p[campo] = x; },
+      acha(chave) {
+        reg.sondagens++;
+        let p = d.leCabeca(d.dispersa(chave));
+        while (p !== null) {
+          reg.sondagens++; reg.comparacoes++;
+          if (d.leChave(p) === chave) return p;
+          p = d.leProx(p);
+        }
+        return null;
+      },
+      por(chave, valor = chave) {
+        const p = d.acha(chave);
+        if (p !== null) { d.escreve(p, "valor", valor); return; }
+        if (d.cheia()) d.crescer();
+        const i = d.dispersa(chave);
+        const c = { id: criados++, chave: null, valor: null, prox: null };   // pedir o nó à memória não conta
+        ev({ t: "aloca", no: c.id });
+        d.escreve(c, "chave", chave);
+        d.escreve(c, "valor", valor);
+        d.escreve(c, "prox", d.leCabeca(i));
+        d.escreveCabeca(i, c);
+        d.n++;
+      },
+      remover(chave) {
+        const i = d.dispersa(chave);
+        reg.sondagens++;
+        let ant = null, p = d.leCabeca(i);
+        while (p !== null) {
+          reg.sondagens++; reg.comparacoes++;
+          if (d.leChave(p) === chave) {
+            const seg = d.leProx(p);
+            if (ant === null) d.escreveCabeca(i, seg); else d.escreve(ant, "prox", seg);
+            ev({ t: "solta", no: p.id });
+            d.n--;
+            return true;
+          }
+          ant = p; p = d.leProx(p);
+        }
+        return false;
+      },
+      crescer() {
+        const velha = cabeca;
+        ev({ t: "realoca", de: velha.length, para: 2 * velha.length });
+        d.bits++;
+        cabeca = new Array(d.m).fill(null);
+        for (let i = 0; i < velha.length; i++) {
+          reg.leituras++;
+          let p = velha[i];
+          while (p !== null) {
+            const seg = d.leProx(p);
+            const j = casaDe(d.leChave(p), d.bits);
+            d.escreve(p, "prox", d.leCabeca(j));
+            d.escreveCabeca(j, p);
+            p = seg;
+          }
+        }
+        ev({ t: "trocou", foto: d.foto() });
+      },
+      valores() { const v = []; for (let p of cabeca) for (; p !== null; p = p.prox) v.push([p.chave, p.valor]); return v; },
+      // a tabela como a demo desenha: os inícios (ids) e cada nó {chave, valor, prox (id)}
+      foto() {
+        const nos = new Map();
+        for (let p of cabeca) for (; p !== null; p = p.prox) nos.set(p.id, { chave: p.chave, valor: p.valor, prox: p.prox && p.prox.id });
+        return { m: d.m, cabecas: cabeca.map((p) => p && p.id), nos };
+      },
+      get capacidade() { return d.m + 3 * d.n; },
+    };
+    return operacoesDic(d);
+  }
+
+  const LAPIDE = Object.freeze({ lapide: true });   // a casa de uma chave removida, na sondagem
+
+  function DicSondagem(reg = registroDic(), bits = 3, fixa = false) {
+    let chaves = new Array(2 ** bits).fill(null), valores = new Array(2 ** bits).fill(null);
+    const ev = (o) => reg.eventos.push(o);
+    const d = {
+      reg, bits, fixa, n: 0, lapides: 0,
+      get m() { return 2 ** d.bits; },
+      get usadas() { return d.n + d.lapides; },
+      leChave(i) { reg.leituras++; ev({ t: "le", i, campo: "chave" }); return chaves[i]; },
+      leValor(i) { reg.leituras++; ev({ t: "le", i, campo: "valor" }); return valores[i]; },
+      escreveChave(i, x) { reg.escritas++; ev({ t: "escreve", i, campo: "chave", x }); chaves[i] = x; },
+      escreveValor(i, x) { reg.escritas++; ev({ t: "escreve", i, campo: "valor", x }); valores[i] = x; },
+      // [a casa da chave ou -1, a casa onde ela entraria: a primeira lápide do caminho ou a vazia que encerrou]
+      procura(chave) {
+        let i = d.dispersa(chave), livre = -1;
+        for (let k = 0; k < d.m; k++) {
+          reg.sondagens++;
+          const x = d.leChave(i);
+          if (x === null) return [-1, livre < 0 ? i : livre];
+          if (x === LAPIDE) { if (livre < 0) livre = i; }
+          else { reg.comparacoes++; if (x === chave) return [i, livre]; }
+          i = (i + 1) % d.m;
+        }
+        return [-1, livre];
+      },
+      acha(chave) { const i = d.procura(chave)[0]; return i < 0 ? null : i; },
+      vaga(chave) { let i = casaDe(chave, d.bits); while (d.leChave(i) !== null) i = (i + 1) % d.m; return i; },
+      por(chave, valor = chave) {
+        let [i, livre] = d.procura(chave);
+        if (i >= 0) { d.escreveValor(i, valor); return; }
+        const reusa = livre >= 0 && chaves[livre] === LAPIDE;
+        if (!reusa && d.cheia()) { d.crescer(); livre = d.vaga(chave); }
+        if (livre < 0) throw new Error("a tabela fixa está cheia");
+        d.escreveChave(livre, chave);
+        d.escreveValor(livre, valor);
+        if (reusa) d.lapides--;
+        d.n++;
+      },
+      remover(chave) {
+        const i = d.procura(chave)[0];
+        if (i < 0) return false;
+        d.escreveChave(i, LAPIDE);
+        valores[i] = null;                       // o valor vai embora junto (não conta)
+        d.n--; d.lapides++;
+        return true;
+      },
+      crescer() {
+        const ks = chaves, vs = valores;
+        ev({ t: "realoca", de: ks.length, para: 2 * ks.length });
+        d.bits++;
+        chaves = new Array(d.m).fill(null); valores = new Array(d.m).fill(null);
+        d.lapides = 0;
+        for (let i = 0; i < ks.length; i++) {
+          reg.leituras++;
+          if (ks[i] === null || ks[i] === LAPIDE) continue;
+          reg.leituras++;
+          const j = d.vaga(ks[i]);
+          d.escreveChave(j, ks[i]);
+          d.escreveValor(j, vs[i]);
+        }
+        ev({ t: "trocou", foto: d.foto() });
+      },
+      valores() { const v = []; chaves.forEach((k, i) => { if (k !== null && k !== LAPIDE) v.push([k, valores[i]]); }); return v; },
+      foto: () => ({ m: d.m, chaves: chaves.slice(), valores: valores.slice() }),
+      get capacidade() { return 2 * d.m; },
+    };
+    return operacoesDic(d);
+  }
+
   const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, deque: Deque, heap: Heap,
-    estatica: ListaEstatica, dinamica: ListaDinamica, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
+    estatica: ListaEstatica, dinamica: ListaDinamica, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia,
+    encadeamento: DicEncadeamento, sondagem: DicSondagem };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
   function operar(e, chamada, args = []) {
@@ -464,7 +660,8 @@
     return e;
   }
 
-  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
+  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel,
+    DicEncadeamento, DicSondagem, LAPIDE, casaDe, chaveMedida, registroDic, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);

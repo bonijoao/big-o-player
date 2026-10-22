@@ -1,0 +1,13 @@
+{
+  "referencia": "fórmulas de Knuth e uma tabela com sondagem linear refeita em R, com casas sorteadas por sample.int()",
+  "versao_r": "4.6.0",
+  "alfas": 19,
+  "tudo_ok": true,
+  "pior": {
+    "media_r": 2.1936,
+    "media_py": 0.5181,
+    "ultima_r": 2.6544,
+    "ultima_py": 5.731
+  },
+  "resumo": "Rodado em R 4.6.0: a tabela com sondagem linear refeita em R, com 20 tabelas de 65.536 casas e a casa de cada chave sorteada por sample.int(), e as 20 tabelas do Python (com a dispersão de Knuth) dão, para α de 0,05 a 0,95, a média de sondagens por chave a no máximo 2,2% da fórmula (R) e 0,5% (Python), e o custo de pôr com a ocupação α a 2,7% e 5,7%; a tolerância é 5% na média e 10% no custo de pôr, que oscila mais."
+}

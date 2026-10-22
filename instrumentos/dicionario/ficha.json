@@ -1,0 +1,126 @@
+{
+ "id": "dicionario",
+ "nome": "Dicionário",
+ "variante": "tabela de dispersão em duas versões: encadeamento (uma corrente por casa) e sondagem linear (a casa seguinte)",
+ "frase": "Acha pela chave sem procurar, até as chaves colidirem.",
+ "resumo": "Em vez de procurar a chave casa por casa, o dicionário calcula onde ela mora: uma função de dispersão transforma a chave num número de casa. Ler, pôr e tirar viram uma conta e uma visita, sem depender de quantas chaves já existem. O problema é que duas chaves podem cair na mesma casa, uma colisão. No encadeamento, cada casa guarda o início de uma corrente de nós, e as chaves que colidem entram na mesma corrente. Na sondagem linear, a chave que encontra a casa ocupada tenta a seguinte, até achar uma vazia. As duas mantêm a ocupação α = n/m abaixo de 3/4: quando ia passar, a tabela dobra e cada chave é redistribuída. A dispersão aqui é a multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits); uma palavra vira número antes, pelo polinômio de base 31 sobre as letras.",
+ "placa": {
+  "autor": "Hans Peter Luhn (a ideia, num memorando da IBM); Gene Amdahl, Elaine McGraw, Nathaniel Rochester e Arthur Samuel (a sondagem linear, no montador do IBM 701)",
+  "ano": "1953–1954"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "A tabela reserva m casas e dobra quando α passaria de 3/4, então, passadas as primeiras chaves, m fica entre 4n/3 e 8n/3: sempre proporcional a n. O encadeamento guarda m inícios de corrente e mais três casas por chave (chave, valor e próx). A sondagem guarda só as m casas de chave e valor, sem ponteiro, mas sempre com folga: um quarto delas, no mínimo, fica vazio."
+ },
+ "variantes": {
+  "encadeamento": "encadeamento",
+  "sondagem": "sondagem"
+ },
+ "operacoes": [
+  {
+   "id": "ler-sondagem",
+   "nome": "ler uma chave que está",
+   "notacao": "O(1) médio",
+   "porque": "Calcula a casa e lê a chave guardada lá; se for outra, tenta a seguinte, até achar a chave. Com α ≤ 3/4, olha poucas casas em média, mas cair num bloco comprido de casas ocupadas custa mais. Depois lê o valor."
+  },
+  {
+   "id": "ler-encadeamento",
+   "nome": "ler uma chave que está",
+   "notacao": "O(1 + α) médio",
+   "porque": "Calcula a casa, lê o início da corrente e segue os próx comparando as chaves. A corrente tem α nós em média."
+  },
+  {
+   "id": "ler-ausente-sondagem",
+   "nome": "ler uma chave que não está",
+   "notacao": "O(1) médio",
+   "porque": "Só pode parar numa casa vazia: atravessa o bloco de casas ocupadas que começa na casa da chave. Com a tabela quase cheia, esses blocos crescem depressa."
+  },
+  {
+   "id": "ler-ausente-encadeamento",
+   "nome": "ler uma chave que não está",
+   "notacao": "O(1 + α) médio",
+   "porque": "Percorre a corrente inteira da casa até o próx nulo. Uma corrente vazia custa só a leitura do início."
+  },
+  {
+   "id": "por-novo-sondagem",
+   "nome": "pôr uma chave nova, com folga",
+   "notacao": "O(1) médio",
+   "porque": "Procura a chave até uma casa vazia (é preciso saber que ela não está) e escreve a chave e o valor nessa casa."
+  },
+  {
+   "id": "por-novo-encadeamento",
+   "nome": "pôr uma chave nova, com folga",
+   "notacao": "O(1 + α) médio",
+   "porque": "Procura a chave na corrente inteira e, sem achar, cria um nó com a chave, o valor e o próx apontando para o antigo início, que passa a ser o nó novo."
+  },
+  {
+   "id": "por-pior-sondagem",
+   "nome": "pôr, o mais caro de n seguidas",
+   "notacao": "O(n)",
+   "porque": "Quando α passaria de 3/4, a tabela dobra: lê cada casa velha e põe cada chave na primeira casa vazia a partir da sua casa nova."
+  },
+  {
+   "id": "por-pior-encadeamento",
+   "nome": "pôr, o mais caro de n seguidas",
+   "notacao": "O(n)",
+   "porque": "Na dobra, cada nó sai da corrente velha e entra no começo da corrente da sua casa nova. Os nós não são copiados, só religados."
+  },
+  {
+   "id": "por-media-sondagem",
+   "nome": "pôr, média de n seguidas",
+   "notacao": "O(1) amortizado",
+   "porque": "As dobras ficam cada vez mais raras, como no Vetor: o custo médio não cresce com n."
+  },
+  {
+   "id": "por-media-encadeamento",
+   "nome": "pôr, média de n seguidas",
+   "notacao": "O(1) amortizado",
+   "porque": "O mesmo: cada dobra custa proporcional a n, mas acontece só quando n dobra."
+  },
+  {
+   "id": "por-existente-sondagem",
+   "nome": "pôr numa chave que já está",
+   "notacao": "O(1) médio",
+   "porque": "Acha a chave e troca só o valor. No encadeamento, o mesmo, depois de seguir a corrente até ela."
+  },
+  {
+   "id": "remover-sondagem",
+   "nome": "remover uma chave",
+   "notacao": "O(1) médio",
+   "porque": "Acha a casa e escreve uma lápide no lugar da chave. Esvaziar a casa quebraria a busca de quem passou por ela para chegar mais adiante; a lápide é pulada na busca e reaproveitada pelo próximo pôr."
+  },
+  {
+   "id": "remover-encadeamento",
+   "nome": "remover uma chave",
+   "notacao": "O(1 + α) médio",
+   "porque": "Segue a corrente guardando o nó anterior e faz o anterior (ou o início) apontar para o seguinte. O nó é solto, sem lápide."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "por-media-encadeamento",
+   "rotulo": "pôr, média, encad."
+  },
+  {
+   "id": "por-media-sondagem",
+   "rotulo": "pôr, média, sondagem"
+  },
+  {
+   "id": "ler-encadeamento",
+   "rotulo": "ler, encadeamento"
+  },
+  {
+   "id": "ler-sondagem",
+   "rotulo": "ler, sondagem"
+  },
+  {
+   "id": "ler-ausente-sondagem",
+   "rotulo": "ler ausente, sondagem"
+  }
+ ],
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas (a chave, o valor, o próx de um nó ou o início de uma corrente), contadas rodando as duas versões em Python com n chaves já guardadas, para n = {ns}. Calcular a casa da chave não conta. As chaves são 0, 1, …, n − 1 embaralhados (de outro jeito, a dispersão as espalharia sem nenhuma colisão); a chave lida e a removida são a do meio.",
+  "custo": "O custo de cada operação com n chaves já guardadas, para n de {v0} a {v1}, medido uma vez por n, numa chave só: sobe e desce com a colisão da vez, mas não cresce com n. Tracejadas: a média de n chaves postas uma a uma a partir da tabela vazia, que paga as dobras.",
+  "casas": "Casas guardadas depois de pôr n chaves, a partir da tabela vazia, para n de {v0} a {v1}. As duas dobram juntas, quando α passaria de 3/4. A sondagem guarda 2m (chave e valor em cada casa); o encadeamento, m inícios de corrente e três casas por chave."
+ }
+}

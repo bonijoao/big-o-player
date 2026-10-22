@@ -20,7 +20,7 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo e no Dijkstra) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo e no Dijkstra, 8 textos da contagem de palavras, 76 vetores de achar repetidos e 56 tabelas por colisão) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
 Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas buscas em grafo e no Dijkstra, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
 
@@ -40,6 +40,8 @@ motor/busca.R          as buscas reescritas em R, para conferir posição e comp
 motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, da inversão da lista, da janela deslizante, das buscas em grafo, do Dijkstra e do álbum Estatística
 motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, grade cheia, caminho), a medição delas e os pesos do Dijkstra
 motor/heap.R           o heap do instrumento reescrito em R, contando casas, para conferir a fila de prioridade e o Dijkstra
+motor/colisao.py       a medição comum das duas faixas de colisão: o exemplo, as sondagens × α e o total × m
+motor/colisao.R        as duas colisões refeitas em R com casas sorteadas, conferidas contra as fórmulas de Knuth
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
 motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
 instrumentos/<nome>/   estrutura instrumentada (cada leitura e escrita de casa conta 1), medir.py, ficha.json
@@ -63,6 +65,8 @@ A Fila e a Lista encadeada têm duas versões lado a lado (ingênua × circular;
 
 O Heap (de mínimo, sobre o Vetor) mostra a árvore e o vetor ao mesmo tempo: são as mesmas casas, e cada operação acende a casa nas duas vistas; apontar um nó acende o pai e os filhos. A tabela compara as duas montagens (de uma vez, O(n), e um por um, O(n log n)), que partem do heap vazio: no `medir.py`, uma operação com `vazia` recebe os n valores nos argumentos.
 
+O Dicionário (tabela de dispersão) tem duas versões lado a lado: encadeamento (cada casa guarda o início de uma corrente de nós com chave, valor e próx) e sondagem linear (ocupada, tenta a casa seguinte; remover deixa uma lápide). A casa sai da dispersão multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits; uma palavra vira número pelo polinômio de base 31), igual em Python, JS e R. As duas dobram m quando α = n/m passaria de 3/4; com `fixa`, m não muda. A medição põe chaves embaralhadas (`chave_medida`), porque chaves seguidas não colidem nessa dispersão. Fora as leituras e escritas, o registro conta `sondagens` e `comparacoes`.
+
 O Grafo tem três vistas lado a lado (matriz de adjacência, lista de adjacência e matriz de incidência): cada operação da demo roda nas três ao mesmo tempo, e a tabela mede as três num grafo de medição fixo, com V vértices e E = 3V arestas.
 
 ## Faixas que usam um instrumento por dentro
@@ -74,6 +78,14 @@ A fila de prioridade (o pronto-socorro) é a fila de atendimento com o `Heap` no
 O Dijkstra roda na mesma grade das buscas, com um peso de 1 a 9 sorteado por aresta; cada casa da lista de adjacência guarda o par (vizinho, peso). O heap reinsere o par quando a distância melhora e descarta o par vencido quando ele sai. O `conferir.R` usa o `distances()` do igraph e o heap de `motor/heap.R`.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
+
+## O álbum Dispersão
+
+As quatro faixas rodam sobre o Dicionário (`instrumentos/dicionario/dicionario.py` e `Instrumentos.DicSondagem`/`DicEncadeamento` em JS):
+
+- **Contar palavras** (`algoritmos/palavras/`): a Canção do Exílio no palco e trechos do Dom Casmurro (Projeto Gutenberg, na pasta da faixa) nas curvas. O tempo conta as casas lidas e escritas no dicionário; a memória, as palavras distintas e as contagens. O `conferir.R` separa as palavras do seu jeito e confere cada contagem com o `table()`.
+- **Achar repetidos** (`algoritmos/repetidos/`): o dicionário anima, e a versão com o vetor só conta, como o ingênuo da janela. O tempo conta as comparações entre valores nas duas. O `conferir.R` usa o `duplicated()`.
+- **Colisão por encadeamento e por sondagem linear** (`algoritmos/encadeamento/`, `algoritmos/sondagem/`): m fixo; o tempo conta as sondagens (casas olhadas). O encarte tem o gráfico × α (`tempo.alfa`, `graficoAlfa` em `graficos.js`) com as fórmulas de Knuth, e o total × m com α fixo. O `conferir.R` refaz as tabelas em R com casas sorteadas (`motor/colisao.R`) e confere as médias do R e do Python contra as fórmulas, com tolerância.
 
 ## O álbum Estatística
 
