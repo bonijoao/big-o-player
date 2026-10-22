@@ -37,7 +37,7 @@
   "crescimento": "Leituras para n de {n0} a {n1}, nas três formas. {dados}. Tracejada: 2n.",
   "distribuicao": "{vezes} amostras normais de {nd} valores: de {min} a {max} classes, conforme onde caem o menor e o maior. A barra preta é o faithful.",
   "rotulo": "classes (n = {nd})",
-  "memoria": "Classes (a memória) para cada n, nas três formas (a maior entre os sorteios). Tracejada: log₂ n + 1, a regra de Sturges sem arredondar. Na uniforme de 0 a 100, os limites redondos travam em 10 classes de 10."
+  "memoria": "Classes (a memória) para cada n, nas três formas (a maior entre os sorteios). Tracejada: log₂ n + 1, a regra de Sturges sem arredondar. Os limites redondos fazem o número de classes andar aos saltos, e às vezes parar."
  },
  "pseudocodigo": "procedimento histograma(x):\n    menor ← x[1];  maior ← x[1]\n    para i de 2 até n:\n        se x[i] < menor:\n            menor ← x[i]\n        senão se x[i] > maior:\n            maior ← x[i]\n    c, a, h ← classes de Sturges, de menor a maior\n    contagens ← c zeros\n    para i de 1 até n:\n        j ← teto((x[i] − a) / h)\n        se j < 1:\n            j ← 1\n        contagens[j] ← contagens[j] + 1\n    devolva contagens\n",
  "placa": {

@@ -619,9 +619,10 @@
     const contagens = new Array(nc).fill(0);
     c.aloca("contagens", nc);
     c.push({ t: "atribui", linha: 9 });
+    const folga = FOLGA * (nc <= 2 ? (maior - menor) / h : 1);   // o diddle do hist(): com até 2 classes, vale a amplitude dos dados
     for (let i = 0; i < n; i++) {
       c.op("leituras");
-      let j = Math.ceil((x[i] - a) / h - FOLGA);
+      let j = Math.ceil((x[i] - a) / h - folga);
       Object.assign(V, { i: i + 1, "x[i]": x[i], j, "contagens[j]": j >= 1 ? contagens[j - 1] : null });
       c.push({ t: "classe", i, linha: 11 });
       if (j < 1) { j = 1; Object.assign(V, { j, "contagens[j]": contagens[0] }); c.push({ t: "atribui", i, linha: 13 }); }

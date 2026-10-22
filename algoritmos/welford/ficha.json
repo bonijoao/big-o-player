@@ -3,11 +3,11 @@
  "nome": "Média e variância em uma passada",
  "variante": "algoritmo de Welford",
  "familia": "estatística",
- "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e não perde precisão quando os números são grandes e a variação é pequena, que é onde a fórmula da soma dos quadrados desanda.",
+ "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e, quando os números são grandes e a variação é pequena, perde muito menos precisão que a fórmula da soma dos quadrados, que desanda.",
  "tempo": {
   "notacao": "O(n)",
   "porque": "Cada valor é lido uma vez e atualiza três números (n, média e M2) com meia dúzia de contas. São n leituras. As duas passadas leem tudo duas vezes: 2n.",
-  "nota": "A soma dos quadrados também lê n valores, mas calcula Σx² − (Σx)²/n: dois números enormes e quase iguais. A subtração joga fora os algarismos que sobram, e a variância pode sair até negativa. O Welford só soma desvios pequenos, e o erro fica no tamanho do arredondamento."
+  "nota": "A soma dos quadrados também lê n valores, mas calcula Σx² − (Σx)²/n: dois números enormes e quase iguais. A subtração joga fora os algarismos que sobram, e a variância pode sair até negativa. O Welford só soma desvios pequenos: o erro dele cresce com a razão média/dp, e o da soma dos quadrados, com o quadrado dela. A conta mais precisa continua sendo a de duas passadas, que paga com a memória."
  },
  "memoria": {
   "notacao": "O(1)",
@@ -19,7 +19,8 @@
   "cresce_com_n": [
    "guardados"
   ],
-  "vazio": "não guarda nenhum dos valores lidos"
+  "vazio": "não guarda nenhum dos valores lidos",
+  "soltos": "só guarda n, a média e M2"
  },
  "video": {
   "ideia": [

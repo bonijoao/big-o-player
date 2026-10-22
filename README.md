@@ -70,7 +70,7 @@ As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de ad
 
 Cada faixa usa um conjunto embutido no R, exportado para CSV por um script na própria pasta (`trees.R`, `lakehuron.R`, `faithful.R`), e o `conferir.R` confere o resultado contra a função do R:
 
-- **Mediana por quickselect** (`algoritmos/mediana/`): a partição do quick sort sem recursão, sobre o `trees$Volume` na ordem do R (quase ordenado: perto do pior caso do pivô no último). Confere com o `median()` e com uma reimplementação em R que conta comparações e trocas.
+- **Mediana por quickselect** (`algoritmos/mediana/`): a partição do quick sort sem recursão, sobre o `trees$Volume` na ordem do R (quase ordenado: com o pivô no último, mais cara que quase todos os embaralhamentos). Confere com o `median()` e com uma reimplementação em R que conta comparações e trocas.
 - **Média e variância em uma passada** (`algoritmos/welford/`): o Welford comparado com a soma dos quadrados e as duas passadas, sobre o `LakeHuron` com uma constante somada (o menu do palco). O erro de cada conta é medido contra a variância exata em frações (`fractions.Fraction`). Confere com o `var()`; a soma dos quadrados é refeita num laço em R, porque o `sum()` acumula em precisão estendida e não reproduziria o erro. O gráfico do erro × constante é o `graficoErro` em `graficos.js` (`tempo.erro` no `dados.json`).
 - **Histograma** (`algoritmos/histograma/`): as classes do `hist()` (Sturges e o `R_pretty` do R, reescrito em Python e em JS) sobre o `faithful$eruptions`. Confere `$breaks` e `$counts` classe por classe.
 

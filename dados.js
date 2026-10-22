@@ -8542,11 +8542,11 @@ window.GALERIA = [
   "nome": "Média e variância em uma passada",
   "variante": "algoritmo de Welford",
   "familia": "estatística",
-  "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e não perde precisão quando os números são grandes e a variação é pequena, que é onde a fórmula da soma dos quadrados desanda.",
+  "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e, quando os números são grandes e a variação é pequena, perde muito menos precisão que a fórmula da soma dos quadrados, que desanda.",
   "tempo": {
    "notacao": "O(n)",
    "porque": "Cada valor é lido uma vez e atualiza três números (n, média e M2) com meia dúzia de contas. São n leituras. As duas passadas leem tudo duas vezes: 2n.",
-   "nota": "A soma dos quadrados também lê n valores, mas calcula Σx² − (Σx)²/n: dois números enormes e quase iguais. A subtração joga fora os algarismos que sobram, e a variância pode sair até negativa. O Welford só soma desvios pequenos, e o erro fica no tamanho do arredondamento."
+   "nota": "A soma dos quadrados também lê n valores, mas calcula Σx² − (Σx)²/n: dois números enormes e quase iguais. A subtração joga fora os algarismos que sobram, e a variância pode sair até negativa. O Welford só soma desvios pequenos: o erro dele cresce com a razão média/dp, e o da soma dos quadrados, com o quadrado dela. A conta mais precisa continua sendo a de duas passadas, que paga com a memória."
   },
   "memoria": {
    "notacao": "O(1)",
@@ -8558,7 +8558,8 @@ window.GALERIA = [
    "cresce_com_n": [
     "guardados"
    ],
-   "vazio": "não guarda nenhum dos valores lidos"
+   "vazio": "não guarda nenhum dos valores lidos",
+   "soltos": "só guarda n, a média e M2"
   },
   "video": {
    "ideia": [
@@ -9274,8 +9275,8 @@ window.GALERIA = [
   ],
   "tempo": {
    "notacao": "O(n) médio",
-   "porque": "Cada partição compara o trecho inteiro com o pivô, mas o laço segue só um dos lados. Com o pivô caindo num lugar qualquer, o lado que sobra tem em média uns três quartos do trecho, e a soma n + 3n/4 + … fica perto de 3,4n comparações, 2(1 + ln 2)·n. O quick sort, que segue os dois lados, paga n log₂ n.",
-   "nota": "Pior caso: entrada já ordenada ou invertida, com o pivô no último. Cada partição só tira uma casa do trecho, e a conta vira O(n²). O trees vem do R ordenado pelo diâmetro, e o volume acompanha o diâmetro: a ordem do R está perto do pior caso, e custa mais que quase todos os embaralhamentos dos mesmos 31 números. Sortear o pivô resolve isso na prática."
+   "porque": "Cada partição compara o trecho inteiro com o pivô, mas o laço segue só o lado onde está o meio. Com o pivô caindo num lugar qualquer, esse lado tem em média três quartos do trecho, e a soma n + 3n/4 + (3/4)²n + … fica abaixo de 4n. A conta exata dá 2(1 + ln 2)·n, cerca de 3,4n comparações; com n par, achar o outro do meio custa mais n/2 − 1, e o total vai para perto de 3,9n. O quick sort, que segue os dois lados, paga cerca de 1,39 n log₂ n.",
+   "nota": "Pior caso: entrada já ordenada ou invertida, com o pivô no último. Cada partição só tira uma casa do trecho, e a conta vira O(n²). O trees vem do R ordenado pelo diâmetro, e o volume acompanha o diâmetro: com o pivô no último, a ordem do R cai do lado caro e custa mais que quase todos os embaralhamentos dos mesmos números (veja a distribuição abaixo), embora longe do pior caso. Sortear o pivô resolve isso na prática."
   },
   "memoria": {
    "notacao": "O(1)",
@@ -10319,7 +10320,7 @@ window.GALERIA = [
    "crescimento": "Leituras para n de {n0} a {n1}, nas três formas. {dados}. Tracejada: 2n.",
    "distribuicao": "{vezes} amostras normais de {nd} valores: de {min} a {max} classes, conforme onde caem o menor e o maior. A barra preta é o faithful.",
    "rotulo": "classes (n = {nd})",
-   "memoria": "Classes (a memória) para cada n, nas três formas (a maior entre os sorteios). Tracejada: log₂ n + 1, a regra de Sturges sem arredondar. Na uniforme de 0 a 100, os limites redondos travam em 10 classes de 10."
+   "memoria": "Classes (a memória) para cada n, nas três formas (a maior entre os sorteios). Tracejada: log₂ n + 1, a regra de Sturges sem arredondar. Os limites redondos fazem o número de classes andar aos saltos, e às vezes parar."
   },
   "placa": {
    "autor": "Karl Pearson (o nome); Herbert Sturges (o número de classes)",
@@ -11060,8 +11061,8 @@ window.GALERIA = [
    },
    "ciclomatica": {
     "M": 6,
-    "nos": 23,
-    "arestas": 27,
+    "nos": 24,
+    "arestas": 28,
     "decisoes": [
      {
       "linha": 5,
@@ -11076,11 +11077,11 @@ window.GALERIA = [
       "tipo": "if"
      },
      {
-      "linha": 15,
+      "linha": 16,
       "tipo": "for"
      },
      {
-      "linha": 18,
+      "linha": 19,
       "tipo": "if"
      }
     ],
@@ -11159,46 +11160,51 @@ window.GALERIA = [
       {
        "id": 14,
        "linha": 15,
-       "rotulo": "for"
+       "rotulo": "assign"
       },
       {
        "id": 15,
        "linha": 16,
-       "rotulo": "expr"
+       "rotulo": "for"
       },
       {
        "id": 16,
        "linha": 17,
-       "rotulo": "assign"
+       "rotulo": "expr"
       },
       {
        "id": 17,
        "linha": 18,
-       "rotulo": "if"
+       "rotulo": "assign"
       },
       {
        "id": 18,
        "linha": 19,
-       "rotulo": "assign"
+       "rotulo": "if"
       },
       {
        "id": 19,
        "linha": 20,
-       "rotulo": "augassign"
+       "rotulo": "assign"
       },
       {
        "id": 20,
        "linha": 21,
-       "rotulo": "expr"
+       "rotulo": "augassign"
       },
       {
        "id": 21,
        "linha": 22,
-       "rotulo": "return"
+       "rotulo": "expr"
       },
       {
        "id": 22,
        "linha": 23,
+       "rotulo": "return"
+      },
+      {
+       "id": 23,
+       "linha": 24,
        "rotulo": "fim"
       }
      ],
@@ -11314,33 +11320,38 @@ window.GALERIA = [
        "tipo": "segue"
       },
       {
-       "de": 17,
-       "para": 19,
-       "tipo": "segue"
-      },
-      {
        "de": 19,
        "para": 20,
        "tipo": "segue"
       },
       {
-       "de": 20,
-       "para": 14,
-       "tipo": "volta"
+       "de": 18,
+       "para": 20,
+       "tipo": "segue"
       },
       {
-       "de": 14,
+       "de": 20,
        "para": 21,
        "tipo": "segue"
       },
       {
        "de": 21,
+       "para": 15,
+       "tipo": "volta"
+      },
+      {
+       "de": 15,
        "para": 22,
+       "tipo": "segue"
+      },
+      {
+       "de": 22,
+       "para": 23,
        "tipo": "segue"
       }
      ]
     },
-    "codigo": "def histograma(x, conta):\n    n = len(x)\n    conta.op(\"leituras\")\n    menor = maior = x[0]\n    for i in range(1, n):\n        conta.op(\"leituras\")\n        valor = x[i]\n        if valor < menor:\n            menor = valor\n        elif valor > maior:\n            maior = valor\n    conta.evento(\"faixa\", menor, maior)\n    c, a, h = classes(menor, maior, n)\n    contagens = conta.aloca(\"contagens\", [0] * c)\n    for i in range(n):\n        conta.op(\"leituras\")\n        j = math.ceil((x[i] - a) / h - FOLGA)\n        if j < 1:\n            j = 1\n        contagens[j - 1] += 1\n        conta.evento(\"conta\", i, j - 1)\n    return contagens, a, h\n"
+    "codigo": "def histograma(x, conta):\n    n = len(x)\n    conta.op(\"leituras\")\n    menor = maior = x[0]\n    for i in range(1, n):\n        conta.op(\"leituras\")\n        valor = x[i]\n        if valor < menor:\n            menor = valor\n        elif valor > maior:\n            maior = valor\n    conta.evento(\"faixa\", menor, maior)\n    c, a, h = classes(menor, maior, n)\n    contagens = conta.aloca(\"contagens\", [0] * c)\n    folga = deslize(c, menor, maior, h)\n    for i in range(n):\n        conta.op(\"leituras\")\n        j = math.ceil((x[i] - a) / h - folga)\n        if j < 1:\n            j = 1\n        contagens[j - 1] += 1\n        conta.evento(\"conta\", i, j - 1)\n    return contagens, a, h\n"
    }
   },
   "conferencia": {

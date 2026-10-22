@@ -12,8 +12,8 @@
  ],
  "tempo": {
   "notacao": "O(n) médio",
-  "porque": "Cada partição compara o trecho inteiro com o pivô, mas o laço segue só um dos lados. Com o pivô caindo num lugar qualquer, o lado que sobra tem em média uns três quartos do trecho, e a soma n + 3n/4 + … fica perto de 3,4n comparações, 2(1 + ln 2)·n. O quick sort, que segue os dois lados, paga n log₂ n.",
-  "nota": "Pior caso: entrada já ordenada ou invertida, com o pivô no último. Cada partição só tira uma casa do trecho, e a conta vira O(n²). O trees vem do R ordenado pelo diâmetro, e o volume acompanha o diâmetro: a ordem do R está perto do pior caso, e custa mais que quase todos os embaralhamentos dos mesmos 31 números. Sortear o pivô resolve isso na prática."
+  "porque": "Cada partição compara o trecho inteiro com o pivô, mas o laço segue só o lado onde está o meio. Com o pivô caindo num lugar qualquer, esse lado tem em média três quartos do trecho, e a soma n + 3n/4 + (3/4)²n + … fica abaixo de 4n. A conta exata dá 2(1 + ln 2)·n, cerca de 3,4n comparações; com n par, achar o outro do meio custa mais n/2 − 1, e o total vai para perto de 3,9n. O quick sort, que segue os dois lados, paga cerca de 1,39 n log₂ n.",
+  "nota": "Pior caso: entrada já ordenada ou invertida, com o pivô no último. Cada partição só tira uma casa do trecho, e a conta vira O(n²). O trees vem do R ordenado pelo diâmetro, e o volume acompanha o diâmetro: com o pivô no último, a ordem do R cai do lado caro e custa mais que quase todos os embaralhamentos dos mesmos números (veja a distribuição abaixo), embora longe do pior caso. Sortear o pivô resolve isso na prática."
  },
  "memoria": {
   "notacao": "O(1)",

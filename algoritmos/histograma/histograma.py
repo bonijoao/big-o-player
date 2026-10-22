@@ -10,7 +10,7 @@ import math
 import sys
 
 EPS = sys.float_info.epsilon
-FOLGA = 1e-7      # o hist() do R desloca os limites em 1e-7 × h: um valor a um fio do limite fica na classe de baixo
+FOLGA = 1e-7      # o hist() do R desloca os limites em 1e-7 × h (com até 2 classes, × a amplitude dos dados): um valor a um fio do limite fica na classe de baixo
 
 
 def sturges(n):
@@ -70,6 +70,11 @@ def classes(menor, maior, n):
     return round((b - a) / h), a, h
 
 
+def deslize(c, menor, maior, h):
+    """A folga na conta da classe, em unidades de h: o diddle do hist()."""
+    return FOLGA * ((maior - menor) / h if c <= 2 else 1)
+
+
 def histograma(x, conta):
     n = len(x)
     conta.op("leituras")
@@ -84,9 +89,10 @@ def histograma(x, conta):
     conta.evento("faixa", menor, maior)
     c, a, h = classes(menor, maior, n)
     contagens = conta.aloca("contagens", [0] * c)
+    folga = deslize(c, menor, maior, h)
     for i in range(n):
         conta.op("leituras")
-        j = math.ceil((x[i] - a) / h - FOLGA)
+        j = math.ceil((x[i] - a) / h - folga)
         if j < 1:
             j = 1
         contagens[j - 1] += 1
