@@ -51,6 +51,10 @@
       [[0, 1], [0, 2]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
       P.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 4.5, fill: COR.tinta })));
       [0, 1, 2].forEach((k) => casa(6 + k * 10, 34, 8, 8, true)); casa(36, 34, 8, 8, false);
+    } else if (id === "arvore") {
+      const P = [[24, 8], [12, 24], [36, 24], [28, 40], [44, 40]];
+      [[0, 1], [0, 2], [2, 3], [2, 4]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
+      P.forEach(([x, y]) => s.append(svg("rect", { x: x - 4.5, y: y - 3.5, width: 9, height: 7, rx: 1.5, fill: COR.tinta })));
     } else { [0, 1, 2].forEach((k) => casa(4 + k * 10, 20, 8, 8, true)); casa(34, 20, 8, 8, false); }
     return el("span", { class: `capa capa-instrumento ${extra}` }, s);
   }
@@ -1062,6 +1066,288 @@
     return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
   }
 
+  // ---------- a demo da Árvore de busca: a comum e a AVL, na mesma escala ----------
+  // Cada nó fica na coluna da sua ordem (o k-ésimo menor na coluna k) e na
+  // linha da sua profundidade, então nenhum nó encosta noutro. No meio de uma
+  // rotação a árvore fica "quebrada" (um nó sem pai): o desenho congela, os
+  // ponteiros reescritos ficam coral, e quando tudo volta a se ligar os nós
+  // deslizam até o lugar novo.
+
+  const MAXA = 15;                       // a demo vai até 15 valores
+  const DESLIZA = 480;                   // milissegundos do deslizar
+
+  function demoArvore(inst) {
+    const VARS = ["comum", "avl"], nomeVar = inst.variantes;
+    let es = [], qs = [], log = [];
+    const pos = [null, null], tween = [null, null];   // a posição de cada nó (coluna, linha) e o deslizar em curso
+    let quadroAnim = null;
+    const anim = animador();
+    const vistas = VARS.map(() => el("figure", { class: "demo-vista demo-vista-arvore" }));
+    const caixaVistas = el("div", { class: "demo-vistas demo-arvores" }, vistas);
+    const custou = el("p", { class: "demo-custou", "aria-live": "polite" });
+    const lista = el("ol", { class: "demo-log" });
+    const aviso = el("p", { class: "demo-aviso" });
+    const entX = el("input", { type: "number", id: "x-arvore", min: 0, max: 99, value: String(sorteia()), inputmode: "numeric" });
+
+    // o que cada árvore mostra num instante: os nós (com os campos), a raiz, as cores e a rotação em curso
+    function quadroArvore(e) {
+      return { nos: new Map(e.nos().map((no) => [no.id, { valor: no.valor, esq: no.esq, dir: no.dir, altura: no.altura }])),
+        raiz: e.raiz ? e.raiz.id : null, soltos: new Set(), cores: {}, gira: null, giros: [] };
+    }
+
+    function aplicarArvore(j, ev) {
+      const q = qs[j];
+      q.cores = {};
+      if (ev.t === "aloca") q.nos.set(ev.no, { valor: null, esq: null, dir: null, altura: 0 });
+      else if (ev.t === "le") q.cores[`${ev.no},${ev.campo}`] = "le";
+      else if (ev.t === "escreve") { q.nos.get(ev.no)[ev.campo] = ev.x; q.cores[`${ev.no},${ev.campo}`] = "escreve"; }
+      else if (ev.t === "solta") q.soltos.add(ev.no);
+      else if (ev.t === "marca") q.raiz = ev.raiz;
+      else if (ev.t === "gira") {
+        // os três nós da rotação: o que desce, o filho que sobe e o neto que troca de pai
+        const p = q.nos.get(ev.no), f = q.nos.get(ev.sobe), neto = ev.lado === "dir" ? f.dir : f.esq;
+        q.gira = { ...ev, valor: p.valor, nos: [ev.no, ev.sobe, neto].filter((x) => x !== null) };
+        q.giros.push(`à ${ev.lado === "dir" ? "direita" : "esquerda"} em ${p.valor}`);
+      } else if (ev.t === "girou") q.gira = { ...q.gira, feita: true };
+      // os nós da rotação ficam acesos até a árvore se religar e a descida seguir (a próxima leitura)
+      if (ev.t === "le" && q.gira && q.gira.feita) q.gira = null;
+    }
+
+    // coluna (ordem) e linha (profundidade) de cada nó alcançável; null se a árvore está quebrada agora
+    function arranjo(q, antes) {
+      const L = new Map(), vistos = new Set();
+      let col = 0, ok = true;
+      const anda = (id, prof) => {
+        if (id === null || !ok) return;
+        if (vistos.has(id) || q.soltos.has(id)) { ok = false; return; }
+        vistos.add(id);
+        const no = q.nos.get(id);
+        anda(no.esq, prof + 1);
+        L.set(id, [col++, prof]);
+        anda(no.dir, prof + 1);
+      };
+      anda(q.raiz, 0);
+      // quebrada: algum nó que já tinha lugar (e não foi solto) ficou sem pai
+      if (antes) for (const id of antes.keys()) if (!L.has(id) && q.nos.has(id) && !q.soltos.has(id)) ok = false;
+      return ok ? L : null;
+    }
+
+    const igual = (a, b) => a && b && a.size === b.size && [...a].every(([id, [c, l]]) => b.has(id) && b.get(id)[0] === c && b.get(id)[1] === l);
+    const agora = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+
+    // a posição mostrada agora: no meio do deslizar, entre a de antes e a nova
+    function mostrada(j) {
+      const t = tween[j];
+      if (!t) return pos[j] || new Map();
+      const k = Math.min(1, (agora() - t.t0) / DESLIZA), s = k * k * (3 - 2 * k);
+      const m = new Map();
+      for (const [id, [c, l]] of t.para) {
+        const [c0, l0] = t.de.get(id) || [c, l];       // o nó novo aparece direto no lugar
+        m.set(id, [c0 + (c - c0) * s, l0 + (l - l0) * s]);
+      }
+      for (const [id, p] of t.de) if (!m.has(id)) m.set(id, p);   // solto: fica onde estava até sumir
+      if (k >= 1) tween[j] = null;
+      return m;
+    }
+
+    function acompanhar() {
+      qs.forEach((q, j) => {
+        const L = arranjo(q, pos[j]);
+        if (!L || igual(L, pos[j])) return;
+        if (pos[j] && !calmo) tween[j] = { de: mostrada(j), para: L, t0: agora() };
+        pos[j] = L;
+      });
+      if (tween.some(Boolean) && !quadroAnim) quadroAnim = requestAnimationFrame(function passo() {
+        quadroAnim = null;
+        desenhar(false);
+        if (tween.some(Boolean)) quadroAnim = requestAnimationFrame(passo);
+      });
+    }
+
+    function recomecar() {
+      anim.parar();
+      es = VARS.map((v) => I.ESTRUTURAS[v]());
+      // sete valores distintos, embaralhados: as duas começam parecidas
+      const vals = [];
+      while (vals.length < 7) { const x = sorteia(); if (!vals.includes(x)) vals.push(x); }
+      for (const x of vals) es.forEach((e) => e.inserir(x));
+      qs = es.map(quadroArvore);
+      pos[0] = pos[1] = null; tween[0] = tween[1] = null;
+      log = [];
+      custou.textContent = `${es[0].n} valores postos para começar; clique numa operação.`;
+      aviso.textContent = "";
+      acompanhar(); desenhar(); listar(); habilitar();
+    }
+
+    function nomeOp(chamada, args) {
+      return { inserir: `inserir ${args[0]}`, buscar: `buscar ${args[0]}`, remover: `remover ${args[0]}`, menor: "ver o menor",
+        montar: `montar com ${args[0].length} valores ${args[1]}` }[chamada];
+    }
+
+    function fazer(chamada, args, rotulo) {
+      anim.terminar();
+      qs = es.map(quadroArvore);
+      const rs = es.map((e) => I.operar(e, chamada, args));
+      habilitar();
+      const nome = nomeOp(chamada, [...args, rotulo]);
+      const fim = () => {
+        const giros = qs.map((q) => q.giros);
+        qs = es.map(quadroArvore);
+        acompanhar(); desenhar(); habilitar();
+        const volta = rs[0].volta;
+        const devolveu = chamada === "buscar" ? (volta ? " → está" : " → não está") : chamada === "menor" ? ` → ${volta}`
+          : chamada === "montar" ? "" : volta ? "" : chamada === "inserir" ? " → já estava" : " → não estava";
+        custou.replaceChildren(el("b", { text: `${nome}${devolveu}` }), el("span", { text: " custou:" }),
+          ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
+        const g = giros[1], hs = es.map((e) => e.altura());
+        aviso.textContent = (g.length ? `A AVL girou ${g.length === 1 ? "uma vez" : `${g.length} vezes`}: ${g.slice(0, 4).join("; ")}${g.length > 4 ? "; …" : ""}. ` : "")
+          + `Altura: a comum tem ${plural(hs[0], "nível", "níveis")}, a AVL ${hs[1]}.`;
+        log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
+        log = log.slice(0, 6);
+        listar();
+      };
+      fim.quadro = () => desenhar();
+      anim.tocar(rs.map((r) => r.eventos), aplicarArvore, fim, chamada === "montar" ? 120 : 260);
+    }
+
+    function listar() {
+      lista.replaceChildren(...log.map((l) => el("li", {}, [el("span", { text: l.nome }),
+        el("b", { text: l.custos.map((c) => mil(c)).join(" · ") })])));
+    }
+
+    // ---------- desenho ----------
+
+    const NW = 30, NH = 22, DX = 36, X0 = 6, Y0 = 50;
+    const fill = (papel) => (papel === "le" ? COR.le : papel === "escreve" ? COR.escreve : "#fff");
+
+    // a altura de cada linha: encolhe quando a árvore é funda (a fila indiana)
+    const passoY = (linhas) => (linhas <= 7 ? 50 : Math.max(30, 340 / linhas));
+
+    function vista(q, j, P, colunas, linhas) {
+      const avl = VARS[j] === "avl", DY = passoY(linhas);
+      const W = X0 * 2 + Math.max(colunas, 7) * DX, H = Y0 + Math.max(0, linhas - 1) * DY + NH + 22;
+      const px = ([c, l]) => [X0 + c * DX + DX / 2, Y0 + l * DY];
+      const s = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
+        "aria-label": `Árvore ${nomeVar[VARS[j]]}: ${[...q.nos.keys()].filter((id) => !q.soltos.has(id)).length} nós` });
+      const vivos = [...q.nos.keys()].filter((id) => !q.soltos.has(id) || P.has(id));
+      // as arestas primeiro, por baixo dos nós; o ponteiro lido fica azul, o escrito coral
+      for (const id of vivos) {
+        const no = q.nos.get(id), a = P.get(id);
+        if (!a) continue;
+        const [x, y] = px(a);
+        for (const lado of ["esq", "dir"]) {
+          const papel = q.cores[`${id},${lado}`], cor = papel ? fill(papel) : COR.tinta, larg = papel ? 3 : 1.5;
+          const f = no[lado];
+          if (f !== null && P.has(f)) {
+            const [x2, y2] = px(P.get(f));
+            s.append(svg("line", { x1: x, y1: y + NH / 2, x2, y2: y2 - NH / 2, stroke: cor, "stroke-width": larg }));
+          } else if (f === null && papel) {   // um ponteiro nulo lido ou escrito: um toco com ∅
+            const dx = lado === "esq" ? -12 : 12;
+            s.append(svg("line", { x1: x + dx / 2, y1: y + NH / 2, x2: x + dx, y2: y + NH / 2 + 12, stroke: cor, "stroke-width": 2 }));
+            s.append(svg("text", { x: x + dx * 1.2, y: y + NH / 2 + 22, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: cor }, "∅"));
+          }
+        }
+      }
+      for (const id of vivos) {
+        const no = q.nos.get(id), a = P.get(id);
+        const [x, y] = a ? px(a) : [W - NW / 2 - 6, 20], papel = q.cores[`${id},valor`], solto = q.soltos.has(id), novo = !P.has(id);
+        const gira = q.gira && q.gira.nos.includes(id);
+        s.append(svg("rect", { x: x - NW / 2, y: y - NH / 2, width: NW, height: NH, rx: 5, fill: solto ? COR.fundo : fill(papel),
+          stroke: gira ? FAMILIA : papel ? fill(papel) : solto ? COR.palido : COR.tinta, "stroke-width": gira ? 3 : 1.5, "stroke-dasharray": solto ? "3 3" : "" }));
+        if (no.valor !== null) s.append(svg("text", { x, y: y + 5, "text-anchor": "middle", "font-size": 13, "font-weight": 600,
+          fill: papel ? "#fff" : solto ? COR.cinza : COR.tinta }, String(no.valor)));
+        if (avl && !novo) {   // a quarta casa da AVL: a altura, pequena ao lado
+          const ph = q.cores[`${id},altura`];
+          s.append(svg("text", { x: x + NW / 2 + 2, y: y - NH / 2 + 3, "font-size": 10, "font-weight": ph ? 700 : 400,
+            fill: ph ? fill(ph) : COR.cinza }, String(no.altura)));
+        }
+        if (novo || solto) s.append(svg("text", { x, y: y - NH / 2 - 4, "text-anchor": "middle", "font-size": 10, "font-weight": 600,
+          fill: solto ? COR.cinza : COR.escreve }, solto ? "solto" : "novo"));
+      }
+      if (q.raiz !== null && P.has(q.raiz)) {
+        const [x, y] = px(P.get(q.raiz));
+        s.append(svg("text", { x, y: y - NH / 2 - 5, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: COR.tinta }, "raiz"));
+      }
+      return s;
+    }
+
+    function desenhar(seguir = true) {
+      if (seguir !== false) acompanhar();
+      const Ps = [0, 1].map(mostrada);
+      const larg = caixaVistas.clientWidth || 0;
+      const dims = Ps.map((P, j) => {
+        let c = 0, l = 1;
+        for (const [cc, ll] of (pos[j] || P).values()) { c = Math.max(c, cc + 1); l = Math.max(l, ll + 1); }
+        for (const [cc, ll] of P.values()) { c = Math.max(c, Math.ceil(cc) + 1); l = Math.max(l, Math.ceil(ll) + 1); }
+        return [Math.max(c, qs[j].nos.size), l];
+      });
+      const ss = Ps.map((P, j) => vista(qs[j], j, P, ...dims[j]));
+      // na mesma escala: lado a lado quando as duas cabem, uma embaixo da outra quando não
+      const ws = ss.map((s) => Number(s.getAttribute("width"))), juntas = larg >= ws[0] + ws[1] + 32;
+      const escala = larg > 0 ? Math.min(1.4, juntas ? (larg - 32) / (ws[0] + ws[1]) : larg / Math.max(...ws)) : 1;
+      caixaVistas.classList.toggle("juntas", juntas);
+      ss.forEach((s) => { s.style.width = `${Number(s.getAttribute("width")) * escala}px`; s.style.height = `${Number(s.getAttribute("height")) * escala}px`; });
+      VARS.forEach((v, j) => {
+        const q = qs[j], giro = j === 1 && q.gira ? ` · rotação ${q.giros.at(-1)}` : "";
+        vistas[j].replaceChildren(el("figcaption", { html: `<b>${esc(nomeVar[v])}</b>${v === "avl" ? ": guarda a altura de cada nó (o número pequeno)" : ": pendura onde a descida acaba"}${giro ? `<span class="giro">${esc(giro)}</span>` : ""}` }), ss[j]);
+      });
+    }
+
+    // ---------- controles ----------
+
+    const botoes = [];
+    const botao = (rot, acao, cond) => {
+      const b = el("button", { type: "button", class: "botao-passo", text: rot });
+      b.addEventListener("click", () => { if (cond()) acao(); });
+      botoes.push({ b, cond });
+      return b;
+    };
+    const n0 = () => es[0].n;
+    const lerX = () => {
+      const x = Number(entX.value);
+      if (entX.value === "" || !Number.isInteger(x) || x < 0 || x > 99) { aviso.textContent = "O valor vai de 0 a 99."; return null; }
+      return x;
+    };
+    const trocaX = () => { entX.value = String(sorteia()); };
+    const comValor = (faz) => { const x = lerX(); if (x !== null) { faz(x); trocaX(); } };
+    const K = 10;
+    const montagem = (ordem) => {
+      const v = [];
+      while (v.length < K) { const x = sorteia(); if (!v.includes(x)) v.push(x); }
+      if (ordem) v.sort((a, b) => a - b);
+      anim.terminar();
+      es = VARS.map((vr) => I.ESTRUTURAS[vr]());   // as montagens partem da árvore vazia
+      pos[0] = pos[1] = null; tween[0] = tween[1] = null;
+      fazer("montar", [v], ordem ? "em ordem" : "embaralhados");
+    };
+    const ops = [
+      botao("inserir x", () => comValor((x) => fazer("inserir", [x])), () => n0() < MAXA),
+      botao("buscar x", () => { const x = lerX(); if (x !== null) fazer("buscar", [x]); }, () => true),
+      botao("remover x", () => { const x = lerX(); if (x !== null) fazer("remover", [x]); }, () => n0() > 0),
+      botao("ver o menor", () => fazer("menor", []), () => n0() > 0),
+      botao(`montar com ${K} em ordem`, () => montagem(true), () => true),
+      botao(`montar com ${K} embaralhados`, () => montagem(false), () => true),
+    ];
+    function habilitar() { for (const { b, cond } of botoes) b.disabled = !cond(); }
+    const recomeca = el("button", { type: "button", class: "botao-passo", text: "recomeçar" });
+    recomeca.addEventListener("click", () => recomecar());
+
+    const legenda = el("p", { class: "demo-legenda", html:
+      `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita (a seta: o ponteiro) <i class="contorno" style="box-shadow: inset 0 0 0 2px ${FAMILIA}"></i>nós da rotação` });
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [el("label", { for: "x-arvore", text: "valor" }), entX])]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [el("p", { class: "demo-aviso", text: "custo na comum · na AVL" }), lista], "historico"),
+    ]);
+    const tela = el("div", { class: "demo-tela" }, [el("div", { class: "demo-figura demo-grafo" }, caixaVistas),
+      legenda, el("p", { class: "demo-dica", text: tipoTexto("arvore") })]);
+    const raiz = el("div", { class: "demo" }, [tela, painel]);
+    recomecar();
+    return { el: raiz, redesenhar: () => desenhar(), parar() { anim.parar(); if (quadroAnim) cancelAnimationFrame(quadroAnim); quadroAnim = null; } };
+  }
+
   // ---------- gráficos: custo × n e casas × n ----------
 
   // o menor n medido nas séries (o Grafo começa em V = 8, onde o anel de medição já é ele mesmo)
@@ -1192,7 +1478,7 @@
   /** Monta a página; devolve { el, redesenhar, parar }. ctx: { faixas, rotaFaixa, tocar, feat } */
   function pagina(inst, ctx) {
     const usam = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === inst.id));
-    const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "lista" ? demoLista(inst) : inst.id === "heap" ? demoHeap() : demo(inst, ctx);
+    const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "lista" ? demoLista(inst) : inst.id === "heap" ? demoHeap() : inst.id === "arvore" ? demoArvore(inst) : demo(inst, ctx);
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos, nome = inst.n || "n";
     // legendas próprias da ficha (o Grafo), com os números do dados.json
@@ -1263,6 +1549,7 @@
       deque: "Ponha e tire pelas duas pontas: ninguém anda, só os marcadores da frente e do fundo. Ponha na frente com a frente na casa 0 e veja a frente dar a volta para o fim do vetor.",
       lista: "Cada clique roda a mesma operação nas duas listas. Na estática, os arcos de cima seguem os próx pelo vetor, e os tracejados de baixo são a lista de livres. Na dinâmica, cada nó tem um endereço, e o próx guarda o endereço do seguinte. Compare inserir no início com ler a última: um troca um ponteiro, o outro segue todos.",
       heap: "Insira e tire o menor: a casa que se mexe acende ao mesmo tempo na árvore e no vetor, porque são a mesma casa. Repare que inserir sobe e tirar desce, no máximo a altura da árvore. Depois compare as duas montagens com os mesmos valores: de uma vez, de baixo para cima, sai mais barato que um por um.",
+      arvore: "Cada clique roda a mesma operação nas duas árvores, com os mesmos valores. A seta acesa é o ponteiro lido ou escrito; na AVL, o número pequeno ao lado de cada nó é a altura dele. Monte com os valores em ordem: a comum vira uma fila indiana, e a AVL gira (os nós da rotação ficam contornados, e depois deslizam para o lugar novo).",
       grafo: "Escolha u e v e clique numa operação: ela roda nas três vistas ao mesmo tempo, sobre as mesmas arestas, e cada vista mostra as casas que leu e escreveu. A letra de cada aresta no desenho é a coluna dela na matriz de incidência. Compare os vizinhos de u: a lista lê só eles, a matriz de adjacência lê a linha inteira.",
     }[id];
   }

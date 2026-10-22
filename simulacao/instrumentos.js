@@ -344,6 +344,218 @@
     return operacoesLista(e);
   }
 
+  // ---------- árvores de busca (instrumentos/arvore/arvore.py) ----------
+  // Os nós têm um id de criação (o nome deles na demo). Os eventos dizem o nó
+  // e o campo (valor, esq, dir, altura); no esq e no dir, o x é o id do filho.
+  // "marca" avisa quando a raiz muda (guardada à parte, sem custo); "gira" e
+  // "girou" cercam uma rotação da AVL, sem custo, para a animação.
+
+  function operacoesArvore(e) {
+    return Object.assign(e, {
+      buscar(x) {
+        let p = e.raiz;
+        while (p !== null) {
+          const v = e.leValor(p);
+          if (x === v) return true;
+          p = x < v ? e.leEsq(p) : e.leDir(p);
+        }
+        return false;
+      },
+      menor() {
+        let p = e.raiz;
+        if (p === null) return null;
+        for (;;) {
+          const f = e.leEsq(p);
+          if (f === null) return e.leValor(p);
+          p = f;
+        }
+      },
+      montar(valores) { for (const x of valores) e.inserir(x); },
+      valores() {
+        const v = [], pilha = [];
+        let p = e.raiz;
+        while (pilha.length || p !== null) {
+          while (p !== null) { pilha.push(p); p = p.esq; }
+          p = pilha.pop(); v.push(p.valor); p = p.dir;
+        }
+        return v;
+      },
+      altura() {
+        let h = 0, nivel = e.raiz ? [e.raiz] : [];
+        while (nivel.length) { h++; nivel = nivel.flatMap((p) => [p.esq, p.dir]).filter((f) => f !== null); }
+        return h;
+      },
+      // os nós alcançáveis da raiz: {id, valor, esq, dir, altura} (esq e dir: ids ou null)
+      nos() {
+        const v = [], pilha = e.raiz ? [e.raiz] : [];
+        while (pilha.length) {
+          const p = pilha.pop();
+          v.push({ id: p.id, valor: p.valor, esq: p.esq && p.esq.id, dir: p.dir && p.dir.id, altura: p.altura });
+          if (p.dir) pilha.push(p.dir);
+          if (p.esq) pilha.push(p.esq);
+        }
+        return v;
+      },
+    });
+  }
+
+  function arvoreBase(reg, CASAS) {
+    let criados = 0;
+    const ev = (o) => reg.eventos.push(o);
+    const id = (q) => (q === null ? null : q.id);
+    const e = {
+      reg, n: 0, raiz: null, CASAS,
+      leValor(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "valor" }); return p.valor; },
+      leEsq(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "esq" }); return p.esq; },
+      leDir(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "dir" }); return p.dir; },
+      leAltura(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "altura" }); return p.altura; },
+      escreveValor(p, x) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "valor", x }); p.valor = x; },
+      escreveEsq(p, q) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "esq", x: id(q) }); p.esq = q; },
+      escreveDir(p, q) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "dir", x: id(q) }); p.dir = q; },
+      escreveAltura(p, h) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "altura", x: h }); p.altura = h; },
+      // pede um nó (não conta) e escreve as casas dele: o valor, dois nulos e, na AVL, a altura 1
+      nova(x) {
+        const c = { id: criados++, valor: null, esq: null, dir: null, altura: 0 };
+        ev({ t: "aloca", no: c.id });
+        e.escreveValor(c, x); e.escreveEsq(c, null); e.escreveDir(c, null);
+        if (CASAS === 4) e.escreveAltura(c, 1);
+        return c;
+      },
+      solta(p) { ev({ t: "solta", no: p.id }); },
+      poeRaiz(p) { e.raiz = p; ev({ t: "marca", raiz: id(p) }); },   // a raiz fica à parte: não conta
+      get capacidade() { return CASAS * e.n; },
+    };
+    return e;
+  }
+
+  function ArvoreComum(reg = registro()) {
+    const e = arvoreBase(reg, 3);
+    const liga = (pai, lado, filho) => {
+      if (pai === null) e.poeRaiz(filho);
+      else if (lado === "esq") e.escreveEsq(pai, filho);
+      else e.escreveDir(pai, filho);
+    };
+    Object.assign(e, {
+      inserir(x) {
+        if (e.raiz === null) { e.poeRaiz(e.nova(x)); e.n++; return true; }
+        let p = e.raiz;
+        for (;;) {
+          const v = e.leValor(p);
+          if (x === v) return false;
+          let f;
+          if (x < v) {
+            f = e.leEsq(p);
+            if (f === null) { e.escreveEsq(p, e.nova(x)); break; }
+          } else {
+            f = e.leDir(p);
+            if (f === null) { e.escreveDir(p, e.nova(x)); break; }
+          }
+          p = f;
+        }
+        e.n++;
+        return true;
+      },
+      remover(x) {
+        let pai = null, lado = null, p = e.raiz;
+        while (p !== null) {
+          const v = e.leValor(p);
+          if (x === v) break;
+          pai = p; lado = x < v ? "esq" : "dir";
+          p = x < v ? e.leEsq(p) : e.leDir(p);
+        }
+        if (p === null) return false;
+        const fe = e.leEsq(p), fd = e.leDir(p);
+        if (fe !== null && fd !== null) {
+          let paiS = p, s = fd;
+          for (;;) {
+            const f = e.leEsq(s);
+            if (f === null) break;
+            paiS = s; s = f;
+          }
+          e.escreveValor(p, e.leValor(s));
+          const r = e.leDir(s);
+          if (paiS === p) e.escreveDir(p, r); else e.escreveEsq(paiS, r);
+          e.solta(s);
+        } else {
+          liga(pai, lado, fe !== null ? fe : fd);
+          e.solta(p);
+        }
+        e.n--;
+        return true;
+      },
+    });
+    return operacoesArvore(e);
+  }
+
+  function ArvoreAVL(reg = registro()) {
+    const e = arvoreBase(reg, 4);
+    const h = (p) => (p === null ? 0 : e.leAltura(p));
+    const atualiza = (p) => { const he = h(e.leEsq(p)), hd = h(e.leDir(p)); e.escreveAltura(p, 1 + Math.max(he, hd)); };
+    const girou = (lado, p, sobe) => reg.eventos.push({ t: "girou", lado, no: p.id, sobe: sobe.id });
+    const giraDir = (p) => {
+      const f = e.leEsq(p);
+      reg.eventos.push({ t: "gira", lado: "dir", no: p.id, sobe: f.id });
+      e.escreveEsq(p, e.leDir(f));
+      e.escreveDir(f, p);
+      atualiza(p); atualiza(f);
+      girou("dir", p, f);
+      return f;
+    };
+    const giraEsq = (p) => {
+      const f = e.leDir(p);
+      reg.eventos.push({ t: "gira", lado: "esq", no: p.id, sobe: f.id });
+      e.escreveDir(p, e.leEsq(f));
+      e.escreveEsq(f, p);
+      atualiza(p); atualiza(f);
+      girou("esq", p, f);
+      return f;
+    };
+    const ins = (p, x) => {
+      if (p === null) { e.n++; return e.nova(x); }
+      const v = e.leValor(p);
+      if (x === v) return p;
+      if (x < v) { const fe = e.leEsq(p), f = ins(fe, x); if (f !== fe) e.escreveEsq(p, f); }
+      else { const fd = e.leDir(p), f = ins(fd, x); if (f !== fd) e.escreveDir(p, f); }
+      return e.equilibra(p);
+    };
+    const rem = (p, x) => {
+      if (p === null) return null;
+      const v = e.leValor(p);
+      if (x === v) {
+        const fe = e.leEsq(p), fd = e.leDir(p);
+        if (fe === null || fd === null) { e.n--; e.solta(p); return fe === null ? fd : fe; }
+        let s = fd;
+        for (;;) { const f = e.leEsq(s); if (f === null) break; s = f; }
+        const y = e.leValor(s);
+        e.escreveValor(p, y);
+        const f = rem(fd, y);
+        if (f !== fd) e.escreveDir(p, f);
+      } else if (x < v) { const fe = e.leEsq(p), f = rem(fe, x); if (f !== fe) e.escreveEsq(p, f); }
+      else { const fd = e.leDir(p), f = rem(fd, x); if (f !== fd) e.escreveDir(p, f); }
+      return e.equilibra(p);
+    };
+    Object.assign(e, {
+      h,
+      // na volta: um lado 2 níveis mais alto gira (duas vezes, se o neto pesado está do lado de dentro)
+      equilibra(p) {
+        const fe = e.leEsq(p), fd = e.leDir(p), he = h(fe), hd = h(fd);
+        if (he > hd + 1) {
+          if (h(e.leEsq(fe)) < h(e.leDir(fe))) e.escreveEsq(p, giraEsq(fe));
+          return giraDir(p);
+        }
+        if (hd > he + 1) {
+          if (h(e.leDir(fd)) < h(e.leEsq(fd))) e.escreveDir(p, giraDir(fd));
+          return giraEsq(p);
+        }
+        e.escreveAltura(p, 1 + Math.max(he, hd));
+        return p;
+      },
+      inserir(x) { const antes = e.n, r = ins(e.raiz, x); if (r !== e.raiz) e.poeRaiz(r); return e.n > antes; },
+      remover(x) { const antes = e.n, r = rem(e.raiz, x); if (r !== e.raiz) e.poeRaiz(r); return e.n < antes; },
+    });
+    return operacoesArvore(e);
+  }
+
   // ---------- grafo em três vistas (instrumentos/grafo/grafo.py) ----------
   // Os eventos dizem a casa de cada vista: na matriz, (u, v); na lista, a
   // casa i do vetor do vértice `lista`; na incidência, a linha w da coluna j.
@@ -441,7 +653,7 @@
   }
 
   const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, deque: Deque, heap: Heap,
-    estatica: ListaEstatica, dinamica: ListaDinamica, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
+    estatica: ListaEstatica, dinamica: ListaDinamica, comum: ArvoreComum, avl: ArvoreAVL, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
   function operar(e, chamada, args = []) {
@@ -464,7 +676,7 @@
     return e;
   }
 
-  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
+  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, ArvoreComum, ArvoreAVL, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);

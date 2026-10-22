@@ -534,4 +534,8 @@ svg text { font-family: var(--mono); }
 .demo-vista svg { display: block; height: auto; }
 .demo-listas { flex-direction: column; align-items: stretch; width: 100%; }
 .demo-listas .demo-vista svg { max-width: 100%; }
+.demo-arvores { flex-direction: column; align-items: center; width: 100%; }
+.demo-arvores.juntas { flex-direction: row; align-items: flex-start; }
+.demo-arvores .demo-vista svg { max-width: 100%; }
+.demo-vista .giro { color: #8c50b9; font-weight: 600; }
 .custo-vista { display: block; }
