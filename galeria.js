@@ -124,13 +124,15 @@
 
   function album(a) {
     const total = a.faixas.reduce((t, f) => t + duracao(f), 0);
+    // uma notação longa ("O(h), h de log n a n") quebra só entre as partes, nunca dentro de um O(·)
+    const notacao = (t) => t.split(/(?<=,|·) | (?=por |·)/).flatMap((pedaco, i) => (i ? [" ", el("span", { text: pedaco })] : [el("span", { text: pedaco })]));
     const linhas = a.faixas.map((f, i) => {
       const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
         el("td", { class: "n", text: String(i + 1) }),
         el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
           el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), feat(f), el("small", { text: f.variante })])])),
-        el("td", { class: "o", text: f.tempo.notacao }),
-        el("td", { class: "o esconde-estreito", text: f.memoria.notacao }),
+        el("td", { class: "o" }, notacao(f.tempo.notacao)),
+        el("td", { class: "o esconde-estreito" }, notacao(f.memoria.notacao)),
         el("td", { class: "o esconde-estreito", text: `M = ${f.medido.ciclomatica.M}` }),
         el("td", { class: "dur", text: relogio(duracao(f)) }),
       ]);
@@ -140,8 +142,8 @@
     const prod = a.em_producao.map((p, i) => el("tr", { class: "producao" }, [
       el("td", { class: "n", text: String(a.faixas.length + i + 1) }),
       el("td", {}, el("div", { class: "faixa" }, [el("span", { class: "capa vazia mini-48" }), el("div", {}, [el("span", { text: p.nome }), el("small", { text: "em produção" })])])),
-      el("td", { class: "o", text: p.tempo }),
-      el("td", { class: "o esconde-estreito", text: p.memoria }),
+      el("td", { class: "o" }, notacao(p.tempo)),
+      el("td", { class: "o esconde-estreito" }, notacao(p.memoria)),
       el("td", { class: "o esconde-estreito", text: "—" }),
       el("td", { class: "dur", text: "—" }),
     ]));
