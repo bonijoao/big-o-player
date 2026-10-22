@@ -15,10 +15,13 @@
 <div class="app">
   <aside class="lateral">
     <a class="marca" href="#">É complexo, baby?<span class="cursor" aria-hidden="true"></span></a>
-    <p class="lateral-titulo" id="titulo-albuns">Álbuns</p>
-    <nav id="albuns" aria-labelledby="titulo-albuns"></nav>
-    <p class="lateral-titulo" id="titulo-instrumentos"><a href="#instrumentos">Instrumentos</a></p>
-    <nav id="instrumentos-nav" aria-labelledby="titulo-instrumentos"></nav>
+    <p class="lateral-titulo">Biblioteca</p>
+    <div class="chips" id="biblioteca" role="group" aria-label="Biblioteca">
+      <button type="button" class="chip" data-mostra="albuns" aria-pressed="true">Álbuns</button>
+      <button type="button" class="chip" data-mostra="instrumentos-nav" aria-pressed="false">Instrumentos</button>
+    </div>
+    <nav id="albuns" aria-label="Álbuns"></nav>
+    <nav id="instrumentos-nav" aria-label="Instrumentos" hidden></nav>
   </aside>
   <main id="conteudo" tabindex="-1"></main>
 </div>

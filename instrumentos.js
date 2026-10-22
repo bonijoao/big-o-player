@@ -196,7 +196,9 @@
       let s;
       if (tipo === "pilha") s = desenharPilha();
       else {
-        const W = 24 + col * 42;
+        // a largura acompanha as casas reservadas: o desenho enche o palco e "afasta" quando realoca
+        const largura = Math.max(4, ...qs.map((q) => Math.max(q.casas.length, q.novas ? q.novas.length : 0)));
+        const W = 24 + Math.min(col, largura) * 42 + 40;
         const g = svg("g");
         let y = 0;
         qs.forEach((q, j) => {
@@ -327,7 +329,7 @@
           habilitar();
         });
         extras.push(el("div", { class: "demo-repasse" }, [
-          el("span", { text: "repassar a pilha de chamadas:" }),
+          el("span", { text: "repassar a de uma faixa recursiva:" }),
           ...recursivas.map((f) => {
             const b = el("button", { type: "button", class: "botao-passo", text: f.nome });
             b.addEventListener("click", () => repassar(f));
@@ -368,13 +370,18 @@
 
     // ---------- montagem ----------
 
-    const controles = el("div", { class: "demo-controles" }, [
-      el("span", { class: "demo-campos" }, [rotX, entX, ...(tipo === "vetor" ? [rotI, entI] : [])]),
-      el("span", { class: "demo-botoes" }, [...ops, recomeca]),
-    ]);
+    // o visual ocupa o palco; as ferramentas ficam num painel ao lado (embaixo, no estreito)
     const legenda = el("p", { class: "demo-legenda", html:
       `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita <i class="livre"></i>casa reservada, livre` });
-    const raiz = el("div", { class: "demo" }, [controles, ...extras, figura, legenda, custou, aviso, el("p", { class: "demo-log-titulo", text: "últimas operações" }), lista]);
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [rotX, entX, ...(tipo === "vetor" ? [rotI, entI] : [])])]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      ...extras.map((x) => bloco("pilha de chamadas", [x])),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [lista], "historico"),
+    ]);
+    const raiz = el("div", { class: "demo" }, [el("div", { class: "demo-tela" }, [figura, legenda, el("p", { class: "demo-dica", text: tipoTexto(tipo) })]), painel]);
     recomecar();
     return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); if (repasse) { clearTimeout(repasse.timer); repasse = null; } } };
   }
@@ -472,64 +479,59 @@
   /** Monta a página; devolve { el, redesenhar, parar }. ctx: { faixas, rotaFaixa, tocar, feat } */
   function pagina(inst, ctx) {
     const usam = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === inst.id));
-    const papel = (f) => f.instrumentos.find((c) => c.id === inst.id).papel;
     const d = demo(inst, ctx);
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos;
-    const tocaEm = usam.length
-      ? usam.map((f) => `<a href="${ctx.rotaFaixa(f)}">${esc(f.nome)}</a>`).join(", ")
-      : "nenhuma faixa ainda";
+    // os detalhes ficam recolhidos; os gráficos só se desenham abertos (fechados, não têm largura)
+    const detalhe = (titulo, resumo, filhos) => {
+      const dt = el("details", { class: "detalhe" }, [el("summary", {}, [el("b", { text: titulo }), el("span", { text: resumo })]), el("div", { class: "detalhe-corpo" }, filhos)]);
+      dt.addEventListener("toggle", () => { if (dt.open) redesenhar(); });
+      return dt;
+    };
     const conteudo = el("div", { class: "pagina-instrumento" }, [
-      el("a", { class: "voltar", href: "#instrumentos", text: "instrumentos" }),
-      el("div", { class: "encarte-topo" }, [glifo(inst.id, "grande"), el("div", {}, [
-        el("div", { class: "placa" }, [
+      el("header", { class: "inst-cabeca" }, [
+        glifo(inst.id, "mini-48"),
+        el("div", {}, [
+          el("p", { class: "rotulo", html: '<a href="#instrumentos">instrumento</a>' }),
           el("h1", { text: inst.nome }),
-          el("p", { class: "variante", text: inst.variante }),
-          el("dl", { html: `
+          el("p", { class: "frase", text: inst.frase }),
+        ]),
+        el("dl", { class: "inst-fatos" }, [
+          el("dt", { text: "memória" }), el("dd", { class: "o", text: inst.memoria.notacao }),
+          el("dt", { text: "toca em" }), el("dd", { text: `${usam.length} ${usam.length === 1 ? "faixa" : "faixas"}` }),
+        ]),
+      ]),
+
+      d.el,
+
+      usam.length ? ctx.prateleira("Toca em", null, null, usam.map(ctx.cartao)) : null,
+
+      el("div", { class: "detalhes" }, [
+        detalhe("Quanto custa cada operação", `leituras + escritas, medidas em Python com n = ${ns.map(mil).join(", ")}`, [
+          el("p", { text: `Custo = leituras + escritas de casas, contadas rodando a estrutura em Python com n valores já guardados. Índices, o tamanho e a capacidade, guardados à parte, não contam.` }),
+          tabela(inst),
+          el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
+            `O custo de cada operação com n valores já guardados, para n de 0 a ${nMax(inst)}, medido uma vez por n. Os picos são as vezes em que as casas acabam (n = ${cheios(inst).join(", ")}). Tracejada: a média de n operações seguidas a partir da estrutura vazia, o custo amortizado.` })]),
+        ]),
+        detalhe("Memória", inst.memoria.notacao, [
+          el("p", { text: inst.memoria.porque }),
+          el("figure", { class: "figura" }, [fig2, el("figcaption", { text:
+            `Casas reservadas depois de pôr n valores, a partir da estrutura vazia.${mesmaCapacidade(inst) ? " As duas filas reservam igual." : ""} Tracejada: uma casa por valor.` })]),
+        ]),
+        detalhe("História e técnica", inst.variante, [
+          el("div", { class: "placa" }, el("dl", { html: `
             <dt>autoria</dt><dd>${esc(inst.placa ? inst.placa.autor : "—")}</dd>
             <dt>quando</dt><dd>${esc(inst.placa ? inst.placa.ano : "—")}</dd>
-            <dt>técnica</dt><dd>Python, contando cada leitura e cada escrita de uma casa; a demo roda o mesmo em JavaScript</dd>
-            <dt>memória</dt><dd><span class="o">${esc(inst.memoria.notacao)}</span></dd>
-            <dt>toca em</dt><dd>${tocaEm}</dd>` }),
+            <dt>técnica</dt><dd>Python, contando cada leitura e cada escrita de uma casa; a demo roda o mesmo em JavaScript</dd>` })),
+          el("p", { class: "resumo", text: inst.resumo }),
         ]),
-        el("p", { class: "frase", text: inst.frase }),
-        el("p", { class: "resumo", text: inst.resumo }),
-      ])]),
-
-      el("section", { class: "secao" }, [
-        el("h2", { text: "Ao vivo" }),
-        el("p", { text: tipoTexto(inst.id) }),
-        d.el,
-      ]),
-
-      el("section", { class: "secao" }, [
-        el("h2", { text: "Operações: quanto custa cada uma" }),
-        el("p", { text: `Custo = leituras + escritas de casas, contadas rodando a estrutura em Python com n valores já guardados (n = ${ns.map(mil).join(", ")}). Índices, o tamanho e a capacidade, guardados à parte, não contam.` }),
-        tabela(inst),
-        el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
-          `O custo de cada operação com n valores já guardados, para n de 0 a ${nMax(inst)}, medido uma vez por n. Os picos são as vezes em que as casas acabam (n = ${cheios(inst).join(", ")}). Tracejada: a média de n operações seguidas a partir da estrutura vazia, o custo amortizado.` })]),
-      ]),
-
-      el("section", { class: "secao" }, [
-        el("h2", { text: "Memória" }),
-        el("p", { class: "ordem-grande", text: inst.memoria.notacao }),
-        el("p", { text: inst.memoria.porque }),
-        el("figure", { class: "figura" }, [fig2, el("figcaption", { text:
-          `Casas reservadas depois de pôr n valores, a partir da estrutura vazia.${mesmaCapacidade(inst) ? " As duas filas reservam igual." : ""} Tracejada: uma casa por valor.` })]),
-      ]),
-
-      el("section", { class: "secao" }, [
-        el("h2", { text: "Toca em" }),
-        usam.length
-          ? el("ul", { class: "toca-em" }, usam.map((f) => {
-            const b = el("button", { type: "button", class: "icone", "aria-label": `Tocar ${f.nome}`, text: "▶" });
-            b.addEventListener("click", () => ctx.tocar(f));
-            return el("li", {}, [b, el("a", { href: ctx.rotaFaixa(f), text: f.nome }), ctx.feat(f), el("small", { text: papel(f) })]);
-          }))
-          : el("p", { text: "Nenhuma faixa credita este instrumento ainda." }),
       ]),
     ]);
-    const redesenhar = () => { graficoCusto(fig1, inst); graficoCasas(fig2, inst); d.redesenhar(); };
+    const redesenhar = () => {
+      d.redesenhar();
+      if (fig1.closest("details").open) graficoCusto(fig1, inst);
+      if (fig2.closest("details").open) graficoCasas(fig2, inst);
+    };
     return { el: conteudo, redesenhar, parar: d.parar };
   }
 
@@ -560,8 +562,10 @@
 
   function cartao(i, ctx) {
     const n = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === i.id)).length;
-    return el("a", { class: "disco", href: `#instrumentos/${i.id}` }, [
-      glifo(i.id), el("b", { text: i.nome }), el("small", { text: `${i.frase} Toca em ${n} ${n === 1 ? "faixa" : "faixas"}.` }),
+    return el("div", { class: "cartao" }, [
+      el("span", { class: "cartao-capa" }, glifo(i.id)),
+      el("a", { class: "cartao-link", href: `#instrumentos/${i.id}`, text: i.nome }),
+      el("small", { text: `${i.frase} Toca em ${n} ${n === 1 ? "faixa" : "faixas"}.` }),
     ]);
   }
 

@@ -51,22 +51,75 @@
       el("span", {}, [el("b", { text: a.titulo }),
         el("small", { text: a.faixas.length ? nFaixas(a.faixas.length) : `${a.em_producao.length} em produção` })]),
     ])));
+    if (instAtual) document.querySelector('#biblioteca [data-mostra="instrumentos-nav"]').click();   // na página de um instrumento, a lista dele
   }
 
   // ---------- páginas ----------
 
-  function inicio() {
-    return el("div", { class: "inicio" }, [
-      el("h1", { text: "É complexo, baby?" }),
-      el("p", { class: "lede", text: "Algoritmos como discos. Cada tema é um álbum, cada algoritmo uma faixa: a simulação mostra o algoritmo trabalhando, ao vivo, e o encarte traz quantas operações ele faz, quanta memória guarda e quantos caminhos tem, tudo contado rodando o código." }),
-      el("div", { class: "estante" }, ALBUNS.map((a) => el("a", { class: "disco", href: `#${a.id}` }, [
-        capaAlbum(a),
-        el("b", { text: a.titulo }),
-        el("small", { text: a.faixas.length ? `${nFaixas(a.faixas.length)}, ${relogio(a.faixas.reduce((t, f) => t + duracao(f), 0))}` : "em produção" }),
-      ]))),
-      INSTS.length && el("h2", { class: "estante-titulo", html: '<a href="#instrumentos">Instrumentos</a>' }),
-      INSTS.length && el("div", { class: "estante" }, INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
+  // ---------- cartões e prateleiras (a home e o "toca em" dos instrumentos) ----------
+
+  // a fileira curada do topo da home: um caminho curto para quem chega
+  const COMECE = ["busca-sequencial", "busca-binaria", "bubble-sort", "merge-sort", "k-means"];
+
+  function cartaoFaixa(f) {
+    const play = el("button", { type: "button", class: "cartao-play", "aria-label": `Tocar ${f.nome}`, text: "▶" });
+    play.addEventListener("click", () => tocar(f));
+    return el("div", { class: "cartao", "data-id": f.id }, [
+      el("span", { class: "cartao-capa" }, [capaFaixa(f), play]),
+      el("a", { class: "cartao-link", href: rotaFaixa(f), text: f.nome }),
+      el("small", {}, [el("span", { class: "o", text: f.tempo.notacao }), featTexto(f) ? ` · ${featTexto(f)}` : ""]),
     ]);
+  }
+
+  function cartaoProducao(p) {
+    return el("div", { class: "cartao producao" }, [
+      el("span", { class: "cartao-capa" }, el("span", { class: "capa vazia" })),
+      el("b", { text: p.nome }),
+      el("small", {}, [el("span", { class: "o", text: p.tempo }), " · em produção"]),
+    ]);
+  }
+
+  // uma prateleira: título (link), "Mostrar tudo" e a fileira, que rola na horizontal
+  function prateleira(titulo, href, frase, itens, extra = "") {
+    const fileira = el("ul", { class: "fileira", "aria-label": titulo }, itens.map((i) => el("li", {}, i)));
+    const seta = (dir, rot) => {
+      const b = el("button", { type: "button", class: "icone seta", "aria-label": rot, text: dir < 0 ? "‹" : "›" });
+      b.addEventListener("click", () => fileira.scrollBy({ left: dir * fileira.clientWidth * 0.8, behavior: calmo ? "auto" : "smooth" }));
+      return b;
+    };
+    return el("section", { class: `prateleira ${extra}` }, [
+      el("header", {}, [
+        el("div", {}, [el("h2", {}, href ? el("a", { href, text: titulo }) : titulo), frase ? el("p", { text: frase }) : null]),
+        el("div", { class: "prateleira-acoes" }, [seta(-1, `${titulo}: voltar`), seta(1, `${titulo}: avançar`),
+          href ? el("a", { class: "mostrar-tudo", href, text: "Mostrar tudo" }) : null]),
+      ]),
+      fileira,
+    ]);
+  }
+
+  let filtroHome = "tudo";               // vale só nesta visita
+
+  function inicio() {
+    const comece = COMECE.map((id) => G.find((f) => f.id === id)).filter(Boolean);
+    const raiz = el("div", { class: "inicio", "data-filtro": filtroHome });
+    const chips = [["tudo", "Tudo"], ["faixas", "Faixas"], ["instrumentos", "Instrumentos"]].map(([v, rot]) => {
+      const b = el("button", { type: "button", class: "chip", "aria-pressed": String(v === filtroHome), text: rot });
+      b.addEventListener("click", () => {
+        filtroHome = raiz.dataset.filtro = v;
+        chips.forEach((c) => c.setAttribute("aria-pressed", String(c === b)));
+      });
+      return b;
+    });
+    raiz.append(
+      el("h1", { class: "so-leitor", text: "É complexo, baby?" }),
+      el("div", { class: "chips", role: "group", "aria-label": "Mostrar" }, chips),
+      ...[
+        comece.length && prateleira("Comece por aqui", null, "Duas buscas, duas ordenações e um agrupamento: um caminho curto para pegar o jeito.", comece.map(cartaoFaixa), "de-faixas destaque"),
+        ...ALBUNS.map((a) => prateleira(a.titulo, `#${a.id}`, a.frase, [...a.faixas.map(cartaoFaixa), ...a.em_producao.map(cartaoProducao)], "de-faixas")),
+        INSTS.length && prateleira("Instrumentos", "#instrumentos", "As estruturas de dados que as faixas tocam.", INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento)), "de-instrumentos"),
+      ].filter(Boolean),
+    );
+    return raiz;
   }
 
   function album(a) {
@@ -283,7 +336,7 @@
   // ---------- rotas ----------
 
   let redesenhar = null, paginaInst = null;
-  const ctxInstrumento = { faixas: G, rotaFaixa, feat, tocar: (f) => tocar(f) };
+  const ctxInstrumento = { faixas: G, rotaFaixa, feat, tocar: (f) => tocar(f), cartao: cartaoFaixa, prateleira };
 
   function rota() {
     let h = "";
@@ -498,6 +551,7 @@
       tr.classList.toggle("tocando", sim_);
       tr.querySelector(".n").textContent = sim_ && tocando ? "▶" : String(i + 1);   // tocando: ▶; pausada: o número, em verde
     });
+    document.querySelectorAll(".cartao[data-id]").forEach((c) => c.classList.toggle("tocando", !!faixa && c.dataset.id === faixa.id));
   }
 
   // ---------- controles da faixa ----------
@@ -650,6 +704,15 @@
     espera = setTimeout(() => { if (redesenhar) redesenhar(); prenderMini(); pintar(); }, 120);
   });
   window.addEventListener("hashchange", rota);
+
+  // Biblioteca: alterna a lista de álbuns e a de instrumentos
+  const chipsBib = document.querySelectorAll("#biblioteca .chip");
+  chipsBib.forEach((b) => b.addEventListener("click", () => {
+    chipsBib.forEach((c) => {
+      c.setAttribute("aria-pressed", String(c === b));
+      $(`#${c.dataset.mostra}`).hidden = c !== b;
+    });
+  }));
 
   if (calmo) document.querySelector(".cursor").style.display = "none";
   habilitar();
