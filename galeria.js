@@ -176,6 +176,9 @@
     prioridade: { entrada: "pacientes", conta: (ex) => `${ex.n} pacientes, espera média de ${decimal(ex.soma / ex.n)} min (gravidade 1: ${decimal(ex.por_gravidade[0])} min), na entrada do encarte` },
     dijkstra: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas com pesos de ${ex.faixa_pesos[0]} a ${ex.faixa_pesos[1]}, heap de até ${ex.estrutura} pares, ${ex.descartados} descartados, no grafo do encarte` },
     inverter: { entrada: "nós", conta: (ex) => `${ex.n} nós, ${ex.casas} casas lidas e escritas, na lista do encarte` },
+    percursos: { entrada: "nós", conta: (ex) => `${ex.n} nós, cada um visitado uma vez; a pilha chega a ${ex.pilha} níveis e a fila a ${ex.fila} nós, na árvore do encarte` },
+    abb: { entrada: "valores", conta: (ex) => `${ex.n} buscas, ${decimal(ex.ops / ex.n)} comparações por busca em média e ${ex.pior} na mais cara; altura ${ex.altura}, na árvore do encarte` },
+    avl: { entrada: "valores", conta: (ex) => `${ex.n} valores em ordem crescente, ${ex.rotacoes} rotações, altura ${ex.altura}; a comum faria ${ex.comum} comparações e ficaria com altura ${ex.altura_comum}` },
     janela: { entrada: "números", conta: (ex) => `${ex.n} números, janela de ${ex.k}; o ingênuo faria ${ex.ingenuo}, no vetor do encarte` },
     grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
     mediana: { entrada: "números", conta: (ex) => `${ex.n} volumes, mediana ${num(ex.mediana, 1)} (a média é ${num(ex.media, 1)}), na entrada do encarte` },
@@ -219,7 +222,7 @@
     const porK = m.tempo.por_k;
     const temPicoCasos = casos && (porK || m.tempo.crescimento).some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
-    const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro;
+    const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro, altura = !!m.tempo.altura;
     const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div");
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
@@ -284,9 +287,9 @@
       casos ? el("section", { class: "secao" }, [
         el("h2", { text: gr.titulo }),
         el("p", { text: gr.texto }),
-        el("div", { class: temDist || porK || erro ? "dois" : "um" }, [
+        el("div", { class: temDist || porK || erro || altura ? "dois" : "um" }, [
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(gr.crescimento) })]),
-          (temDist || porK || erro) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : gr.distribuicao) })]),
+          (temDist || porK || erro || altura) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : altura ? gr.altura : gr.distribuicao) })]),
         ]),
       ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
@@ -345,6 +348,7 @@
         Gr.graficoCasos(fig1, f, "ops");
         if (porK) Gr.graficoCasos(fig2, f, "ops", "por_k");
         else if (erro) Gr.graficoErro(fig2, f);
+        else if (altura) Gr.graficoCasos(fig2, f, "altura");
         else if (temDist) Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
         if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico", porK ? "por_k" : "crescimento");
       } else if (ordena) {
@@ -441,6 +445,12 @@
       opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
     inverter: { rotulo: "lista", ns: [4, 6, 8, 10], sortear: "sortear lista", sorteado: "sorteada",
       opcoes: [["padrao", "a do encarte", "a lista do encarte"], ["sorteada", "sorteada", "lista sorteada"]] },
+    percursos: { rotulo: "árvore", ns: [7, 15, 23, 31], sortear: "sortear árvore", sorteado: "embaralhada",
+      opcoes: [["padrao", "a do encarte", "a árvore do encarte"], ["embaralhada", "embaralhada", "valores embaralhados"], ["crescente", "em ordem", "valores em ordem crescente"], ["cheia", "cheia", "árvore cheia"]] },
+    abb: { rotulo: "entrada", ns: [7, 11, 15, 23], sortear: "sortear valores", sorteado: "embaralhada",
+      opcoes: [["padrao", "a do encarte", "os valores do encarte"], ["embaralhada", "embaralhada", "valores embaralhados"], ["crescente", "em ordem", "valores em ordem crescente"], ["cheia", "cheia", "na ordem da árvore cheia"]] },
+    avl: { rotulo: "entrada", ns: [7, 15, 23, 31], sortear: "sortear valores", sorteado: "embaralhada",
+      opcoes: [["padrao", "a do encarte", "os valores do encarte, em ordem"], ["embaralhada", "embaralhada", "valores embaralhados"], ["crescente", "em ordem", "valores em ordem crescente"], ["decrescente", "decrescente", "valores em ordem decrescente"]] },
     janela: { rotulo: "vetor", ns: [8, 12, 16, 24, 32], ks: [3, 4, 6, 8], sortear: "sortear vetor", sorteado: "sorteada",
       opcoes: [["padrao", "o do encarte", "o vetor do encarte"], ["sorteada", "sorteado", "vetor sorteado"], ["crescente", "crescente", "vetor crescente"], ["decrescente", "decrescente", "vetor decrescente"]] },
     grafo: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado", fixos: ["grade", "caminho"],

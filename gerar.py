@@ -15,7 +15,7 @@ RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(RAIZ, "motor"))
 import pseudocodigo  # noqa: E402
 ALGORITMOS = ["sequencial", "binaria", "bolha", "insercao", "selecao", "intercalacao", "rapida", "heapsort",
-              "parenteses", "atendimento", "inverter", "janela", "prioridade", "largura", "profundidade", "dijkstra",
+              "parenteses", "atendimento", "inverter", "janela", "percursos", "abb", "avl", "prioridade", "largura", "profundidade", "dijkstra",
               "welford", "mediana", "histograma", "kmeans"]   # ordem da galeria (dentro de cada álbum)
 INSTRUMENTOS = ["vetor", "pilha", "fila", "deque", "lista", "grafo", "arvore", "heap"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)

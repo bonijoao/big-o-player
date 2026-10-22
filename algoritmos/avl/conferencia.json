@@ -1,0 +1,7 @@
+{
+  "referencia": "inserção AVL e árvore comum reimplementadas em motor/arvore.R sobre vetores valor/esq/dir/altura",
+  "versao_r": "4.6.0",
+  "casos": 48,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 48 inserções (vazias e com até 40 valores): comparações, rotações, alturas, casas lidas e escritas, pico da pilha e resultados da árvore comum batem com o Python caso a caso; todas as alturas AVL ficam entre log2(n + 1) e 1,44·log2(n + 2)."
+}

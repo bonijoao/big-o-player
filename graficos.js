@@ -207,26 +207,27 @@
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
     "log₂ n + 1": { nome: "log₂ n + 1", f: (n) => Math.log2(n) + 1 },
   };
-  const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9"];
+  const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9", "#008c96"];
 
   // As faixas que descrevem os próprios casos no dados.json (tempo.series):
   // a medida "ops" (a unidade da faixa, média nos sorteados) ou "pico".
   // `chave`: a série medida (crescimento, × n; na janela também por_k, × k com n fixo)
+  // medida: "ops" (o tempo), "pico" (a memória) ou "altura" (as árvores)
   function graficoCasos(caixa, a, medida, chave = "crescimento") {
-    const t = a.medido.tempo, tempo = medida === "ops", porK = chave === "por_k";
+    const t = a.medido.tempo, tempo = medida === "ops", alt = medida === "altura", porK = chave === "por_k";
     let k = 0;
     const series = t.series.map((sr) => ({ ...sr, curto: sr.nome.replace(/ \(.*\)$/, ""),
       cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }))
-      .filter((sr) => tempo || sr.memoria !== false);   // o ingênuo não guarda nada: fica fora da memória
+      .filter((sr) => (tempo || alt ? sr.tempo !== false : sr.memoria !== false));   // o ingênuo não guarda nada: fica fora da memória; a fila dos percursos, fora do tempo
     if (!tempo) series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
     desenharCasos(caixa, {
       dados: t[chave],
-      val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : d[caso].pico),
+      val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : alt ? d[caso].altura : d[caso].pico),
       series,
-      refs: (tempo ? t.refs || [] : t.refs_memoria || []).map((r) => REFS[r]),
+      refs: (tempo ? t.refs || [] : alt ? t.refs_altura || [] : t.refs_memoria || []).map((r) => REFS[r]),
       banda: tempo && t.banda ? { min: (d) => d[t.banda].min, max: (d) => d[t.banda].max } : null,
       todas: "todos os casos",
-      aria: `${tempo ? t.unidade : "memória extra no pico"} por ${porK ? "tamanho da janela k" : "tamanho n"}, um traço por caso de entrada`,
+      aria: `${tempo ? t.unidade : alt ? "altura da árvore (níveis)" : "memória extra no pico"} por ${porK ? "tamanho da janela k" : "tamanho n"}, um traço por caso de entrada`,
       eixo: porK ? t.eixo_k : t.eixo,
     });
   }

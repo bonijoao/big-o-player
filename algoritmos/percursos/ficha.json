@@ -1,0 +1,54 @@
+{
+ "id": "percursos-de-arvore",
+ "nome": "Percursos de árvore",
+ "variante": "pré, em e pós-ordem numa descida recursiva só; em largura com uma fila",
+ "familia": "árvores e heaps",
+ "resumo": "Visitar todos os nós de uma árvore, cada um uma vez. Uma única descida recursiva dá três ordens, que só diferem no momento de anotar o nó: antes de descer aos filhos (pré-ordem), entre o lado esquerdo e o direito (em ordem) e depois de voltar dos dois (pós-ordem). Numa árvore de busca, a em ordem sai ordenada. A em largura anota nível por nível: troca a pilha de chamadas por uma fila, tira o primeiro, anota e põe os filhos dele no fim.",
+ "instrumentos": [
+  {
+   "id": "arvore",
+   "papel": "a árvore comum, montada com os valores na ordem em que chegam; a forma dela decide a memória"
+  },
+  {
+   "id": "pilha",
+   "papel": "a pilha de chamadas da descida recursiva: um nível por nó do caminho até onde se está, mais a chamada com p nulo"
+  },
+  {
+   "id": "fila",
+   "papel": "a fila circular da em largura: os nós vistos que esperam a vez, nível por nível"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada nó é visitado uma vez: lê o valor e os dois ponteiros e anota o valor nas três ordens. As chamadas com p nulo (uma a mais que os nós) só testam e voltam. A em largura também visita cada nó uma vez, com uma entrada e uma saída da fila.",
+  "nota": "A forma da árvore não muda o tempo: fila indiana, embaralhada ou cheia, são sempre n visitas. Muda a memória."
+ },
+ "memoria": {
+  "notacao": "O(h) · largura O(n)",
+  "porque": "A descida guarda na pilha um nível por nó do caminho da raiz até onde está, mais a chamada com p nulo: no pico, a altura h + 1. Numa árvore cheia, h é log₂ n; na fila indiana, n. A em largura guarda na fila uma camada da árvore, que numa árvore cheia é a última, com metade dos nós: O(n). Na fila indiana, a fila nunca passa de 1. As três ordens anotadas são a resposta, como o vetor ordenado de uma ordenação, e não contam.",
+  "nomes": {
+   "pilha": "níveis da pilha de chamadas (a descida)",
+   "fila": "nós na fila (a em largura)"
+  },
+  "cresce_com_n": [],
+  "vazados": "crescem com a altura da árvore (a pilha) ou com a largura (a fila)",
+  "variavel": "n"
+ },
+ "video": {
+  "ideia": [
+   "antes de descer, entre os dois lados, depois de voltar",
+   "a mesma descida, três ordens; a em ordem sai ordenada"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo e memória: o que a forma da árvore muda",
+  "texto": "As mesmas contas para árvores cada vez maiores, montadas com os valores em ordem crescente (a fila indiana), embaralhados e na ordem que deixa a árvore cheia. O tempo é n nas três: as linhas caem uma em cima da outra. A memória é que se separa.",
+  "crescimento": "Nós visitados pela descida recursiva para n de {n0} a {n1}. {dados}. As três formas visitam exatamente n nós. Tracejada: n, de referência.",
+  "memoria": "O pico da pilha da descida (a altura + 1) e o da fila da em largura, para cada n e cada forma. Na fila indiana, a pilha cresce como n e a fila fica em 1; na cheia, a pilha cresce como log₂ n e a fila chega a n/2, a última camada inteira. Embaralhada: o maior pico entre as árvores sorteadas."
+ },
+ "pseudocodigo": "procedimento percorrer(p):\n    se p ≠ nulo:\n        pré-ordem ← pré-ordem + p.valor\n        percorrer(p.esq)\n        em-ordem ← em-ordem + p.valor\n        percorrer(p.dir)\n        pós-ordem ← pós-ordem + p.valor\n",
+ "placa": {
+  "autor": "sem autoria única; os nomes pré, em e pós-ordem vêm de Knuth, The Art of Computer Programming, vol. 1",
+  "ano": "1968 (os nomes)"
+ }
+}

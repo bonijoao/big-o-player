@@ -454,3 +454,107 @@ def montar_histograma(pasta):
         rich(d, [(f"{ex['n']} erupções em ", ""), (f"{c} classes", "bg"), (f": {ex['ops']} leituras", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+# ---------- árvores (percursos, busca em árvore, AVL) ----------
+
+def _arranjo(valores, avl=False):
+    """A árvore com os valores na ordem dada (comum, ou AVL se pedido): {valor: (coluna, linha)}
+    e as arestas (pai, filho), com a coluna na ordem dos valores e a linha na profundidade."""
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "instrumentos", "arvore"))
+    from arvore import ArvoreAVL, ArvoreComum
+    from conta import Contador
+    a = (ArvoreAVL if avl else ArvoreComum)(Contador())
+    for x in valores:
+        a.inserir(x)
+    col = {v: i for i, v in enumerate(sorted(valores))}
+    pos, arestas, pilha = {}, [], [(a.raiz, 0)] if a.raiz else []
+    while pilha:
+        p, l = pilha.pop()
+        pos[p.valor] = (col[p.valor], l)
+        for f in (p.esq, p.dir):
+            if f is not None:
+                arestas.append((p.valor, f.valor))
+                pilha.append((f, l + 1))
+    return pos, arestas, a.altura()
+
+
+def _desenha_arvore(d, pos, arestas, x0, x1, y0, y1, verde=False, contorno=(), cols=None, linhas=None, rmin=7):
+    cols = cols or max(1, len(pos))
+    linhas = linhas or max([l + 1 for _, l in pos.values()] or [1])
+    dx = min(56, (x1 - x0) / cols)
+    dy = min(72, (y1 - y0) / max(1, linhas - 1))
+    r = max(rmin, min(16, dx * 0.42, dy * 0.45))   # a fila indiana encolhe na largura, não na altura
+    xa = x0 + (x1 - x0 - cols * dx) / 2
+    px = lambda c, l: (xa + c * dx + dx / 2, y0 + l * dy)  # noqa: E731
+    for a, b in arestas:
+        line(d, px(*pos[a]), px(*pos[b]), PALIDO, w=2)
+    for v, (c, l) in pos.items():
+        x, y = px(c, l)
+        cor = (40, 105, 195) if v in contorno else INK
+        d.rounded_rectangle((x - r * 1.05, y - r * 0.75, x + r * 1.05, y + r * 0.75), radius=4, fill="white", outline=cor, width=3 if v in contorno else 2)
+        texto(d, str(v), x, y - r * 0.55, int(r * 0.95), GREEN if verde else INK, b=True, align="c")
+
+
+def montar_percursos(pasta):
+    """Percursos: a árvore do encarte e as quatro ordens embaixo; a em ordem, que sai ordenada, em verde."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    pos, arestas, h = _arranjo(ex["valores"])
+
+    def cena(d, t, im):
+        _desenha_arvore(d, pos, arestas, BX0 - 30, BX1, 96, 300)
+        for j, (nome, ch) in enumerate([("pré-ordem", "pre"), ("em ordem", "em"), ("pós-ordem", "pos"), ("em largura", "largura")]):
+            y = 340 + j * 34
+            texto(d, nome, BX0 - 30, y + 2, 13, GRAY)
+            texto(d, "  ".join(str(v) for v in ex[ch]), BX0 + 80, y, 15, GREEN if ch == "em" else INK, b=True)
+        _painel(d, [("nós visitados", str(ex["ops"]), 40, True), ("pilha de chamadas", f"{ex['pilha']} níveis", 20, False),
+                    ("fila da em largura", f"{ex['fila']} nós", 20, False)])
+        rich(d, [("a mesma descida, ", ""), ("três ordens", "b"), ("; a em ordem ", ""), ("sai ordenada", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_abb(pasta):
+    """Busca em árvore: a árvore do encarte com o caminho da busca mais cara contornado."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    vals = ex["valores"]
+    pos, arestas, h = _arranjo(vals)
+    alvo = vals[ex["comparacoes"].index(ex["pior"])]
+    pai = {b: a for a, b in arestas}
+    caminho, v = [], alvo
+    while v is not None:
+        caminho.append(v)
+        v = pai.get(v)
+    media = f"{ex['ops'] / ex['n']:.1f}".replace(".", ",")
+
+    def cena(d, t, im):
+        _desenha_arvore(d, pos, arestas, BX0 - 30, BX1, 110, 420, contorno=caminho)
+        texto(d, f"o caminho até o {alvo}: a busca mais cara, {ex['pior']} comparações", BX0 - 30, 450, 13, GRAY)
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("por busca", media, 26, False), ("altura", f"{h} níveis", 20, False)])
+        rich(d, [("igual, achou; menor, esquerda; maior, direita: ", ""), (f"{media} por busca", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_avl(pasta):
+    """AVL: os mesmos valores em ordem, à esquerda na árvore comum (a fila indiana)
+    e à direita na AVL, que girou até ficar baixa."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    vals = ex["valores"]
+    pc, ac, hc = _arranjo(vals)
+    pa, aa, ha = _arranjo(vals, avl=True)
+
+    def cena(d, t, im):
+        texto(d, f"comum: altura {hc}", BX0 - 40, 86, 13, GRAY)
+        _desenha_arvore(d, pc, ac, BX0 - 40, 230, 116, 470, rmin=10)
+        texto(d, f"AVL: altura {ha}", 270, 86, 13, GRAY)
+        _desenha_arvore(d, pa, aa, 250, BX1 + 20, 130, 330, verde=True, rmin=10)
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("rotações", str(ex["rotacoes"]), 26, False),
+                    ("a comum faria", f"{ex['comum']} comparações", 20, False)])
+        rich(d, [(f"{ex['n']} valores em ordem: ", ""), (f"altura {ha}", "bg"), (f", e não {hc}", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5

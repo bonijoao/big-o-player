@@ -554,6 +554,193 @@
     return { maximos, comparacoes, ate };
   }
 
+  // ---------- árvores (algoritmos/percursos, algoritmos/abb, algoritmos/avl) ----------
+  // Rodam sobre as árvores do instrumento (simulacao/instrumentos.js). Os nós
+  // têm id de criação; os eventos que mudam a forma levam um retrato da árvore
+  // (`nos`: todos os nós vivos, com esq e dir como ids, e a `raiz`), que o palco
+  // desenha. No meio de uma rotação o retrato pode estar "quebrado" (um nó sem pai).
+
+  // a árvore comum com os valores na ordem dada, montada fora da conta
+  function arvoreComum(valores) {
+    const a = instrumentos().ArvoreComum();
+    for (const x of valores) a.inserir(x);
+    a.reg.leituras = 0; a.reg.escritas = 0; a.reg.eventos = [];
+    return a;
+  }
+
+  // retrato de todos os nós guardados em `vivos` (Map id → nó)
+  const retrato = (vivos, raiz) => ({ raiz: raiz ? raiz.id : null,
+    nos: [...vivos.values()].map((p) => ({ id: p.id, valor: p.valor, esq: p.esq && p.esq.id, dir: p.dir && p.dir.id, altura: p.altura })) });
+  const nosDe = (a) => { const m = new Map(), pilha = a.raiz ? [a.raiz] : []; while (pilha.length) { const p = pilha.pop(); m.set(p.id, p); if (p.esq) pilha.push(p.esq); if (p.dir) pilha.push(p.dir); } return m; };
+
+  /** Percursos (algoritmos/percursos/percursos.py): a descida recursiva que dá
+   *  pré, em e pós-ordem; depois, a em largura com a Fila circular. */
+  function percursos(valores) {
+    const c = contador(), a = arvoreComum(valores), reg = a.reg;
+    const ordens = { pre: [], em: [], pos: [] }, nos = retrato(nosDe(a), a.raiz);
+    c.vars = {};
+    const percorrer = (p, linha) => {
+      const V = { "p.valor": p ? p.valor : null, "pré-ordem": ordens.pre.length, "em-ordem": ordens.em.length, "pós-ordem": ordens.pos.length };
+      c.entra(p ? p.id : null, null, linha, V);
+      c.push({ t: "testa", no: p ? p.id : null, linha: 2 });
+      if (p !== null) {
+        c.op("visitas");
+        const v = a.leValor(p);
+        const anota = (ordem, l) => { ordens[ordem].push(v); V[{ pre: "pré-ordem", em: "em-ordem", pos: "pós-ordem" }[ordem]] = ordens[ordem].length; c.push({ t: "visita", no: p.id, ordem, linha: l }); };
+        anota("pre", 3);
+        percorrer(a.leEsq(p), 4);
+        anota("em", 5);
+        percorrer(a.leDir(p), 6);
+        anota("pos", 7);
+      }
+      c.sai();
+    };
+    percorrer(a.raiz, 1);
+    const pilha = c.pico, casas = reg.leituras;
+    // a em largura: fora do pseudocódigo (sem linha), com a fila circular do instrumento Fila
+    const fila = instrumentos().FilaCircular(), largura = [];
+    let filaPico = 0;
+    const V = c.vars = { "p.valor": null, "tamanho da fila": 0 };
+    const poe = (p) => { fila.enfileirar(p); filaPico = Math.max(filaPico, fila.n); V["tamanho da fila"] = fila.n; c.push({ t: "enfileira", no: p.id, fila: fila.valores().map((q) => q.id) }); };
+    if (a.raiz !== null) poe(a.raiz);
+    while (fila.n > 0) {
+      const p = fila.desenfileirar();
+      V["tamanho da fila"] = fila.n;
+      largura.push(a.leValor(p));
+      V["p.valor"] = p.valor;
+      c.push({ t: "visita", no: p.id, ordem: "largura", fila: fila.valores().map((q) => q.id) });
+      for (const f of [a.leEsq(p), a.leDir(p)]) if (f !== null) poe(f);
+    }
+    return { valores, ...ordens, largura, visitas: c.ops.visitas || 0, pilha, fila: filaPico, casas, altura: a.altura(), nos, eventos: c.eventos, pico: Math.max(pilha, filaPico) };
+  }
+
+  /** Busca em árvore (algoritmos/abb/abb.py): monta a comum com os valores e busca cada alvo. */
+  function buscaArvore(valores, alvos = valores) {
+    const c = contador(), a = arvoreComum([]), reg = a.reg;
+    // a montagem não conta, mas o palco a mostra nó por nó
+    const vivos = new Map();
+    for (const x of valores) {
+      a.inserir(x);
+      for (const [id, p] of nosDe(a)) vivos.set(id, p);
+      c.push({ t: "monta", x, ...retrato(vivos, a.raiz) });
+    }
+    reg.leituras = 0; reg.escritas = 0; reg.eventos = [];
+    c.aloca("arvore", a.capacidade);
+    const comparacoes = [], achou = [];
+    const V = c.vars = { x: null, "p.valor": null, "comparações": 0 };
+    alvos.forEach((x, k) => {
+      const antes = c.ops.comparacoes || 0;
+      Object.assign(V, { x, "p.valor": null, "comparações": 0 });
+      const compara = (no, linha) => { c.op("comparacoes"); V["comparações"]++; c.push({ t: "compara", no, k, linha }); };
+      let p = a.raiz, r = false;
+      V["p.valor"] = p ? p.valor : null;
+      c.push({ t: "atribui", no: p ? p.id : null, k, linha: 2 });
+      for (;;) {
+        c.push({ t: "testa", no: p ? p.id : null, k, linha: 3 });
+        if (p === null) break;
+        const v = a.leValor(p);
+        compara(p.id, 4);
+        if (x === v) { r = true; c.push({ t: "achou", no: p.id, k, linha: 5 }); c.push({ t: "pare", no: p.id, k, linha: 6 }); break; }
+        compara(p.id, 7);
+        if (x < v) p = a.leEsq(p); else p = a.leDir(p);
+        V["p.valor"] = p ? p.valor : null;
+        c.push({ t: "desce", no: p ? p.id : null, k, linha: x < v ? 8 : 10 });
+      }
+      c.push({ t: "devolva", k, achou: r, linha: 11 });
+      comparacoes.push((c.ops.comparacoes || 0) - antes);
+      achou.push(r);
+    });
+    return { valores, alvos, comparacoes, achou, ops: c.ops.comparacoes || 0, altura: a.altura(), pico: c.pico, casas: reg.leituras, eventos: c.eventos };
+  }
+
+  /** AVL (algoritmos/avl/avl.py): insere um por um na AVL do instrumento, equilibrando na volta. */
+  function avl(valores) {
+    const c = contador(), I = instrumentos(), a = I.ArvoreAVL(), reg = a.reg;
+    const vivos = new Map();
+    const foto = (e) => c.push({ ...e, ...retrato(vivos, a.raiz) });
+    let rotacoes = 0;
+    const comparacoes = [];
+    const inserir = (p, x, linha) => {
+      const V = { x, "p.valor": p ? p.valor : null, "altura de p": p ? p.altura : null };
+      c.entra(p ? p.id : null, null, linha, V);
+      c.push({ t: "testa", no: p ? p.id : null, linha: 2 });
+      if (p === null) {
+        p = a.nova(x);
+        vivos.set(p.id, p);
+        Object.assign(V, { "p.valor": x, "altura de p": 1 });
+        foto({ t: "novo", no: p.id, linha: 3 });
+      } else {
+        const v = a.leValor(p);
+        c.op("comparacoes");
+        c.push({ t: "compara", no: p.id, linha: 4 });
+        if (x !== v) {
+          c.op("comparacoes");
+          c.push({ t: "compara", no: p.id, linha: 5 });
+          if (x < v) {
+            const e = a.leEsq(p), f = inserir(e, x, 6);
+            c.push({ t: "testa", no: p.id, linha: 7 });
+            if (f !== e) { a.escreveEsq(p, f); foto({ t: "liga", no: p.id, lado: "esq", linha: 8 }); }
+          } else {
+            const d = a.leDir(p), f = inserir(d, x, 10);
+            c.push({ t: "testa", no: p.id, linha: 11 });
+            if (f !== d) { a.escreveDir(p, f); foto({ t: "liga", no: p.id, lado: "dir", linha: 12 }); }
+          }
+          // equilibra(p): as alturas e, se precisar, as rotações; os eventos do instrumento dizem quais
+          const k0 = reg.eventos.length, q = p;
+          p = a.equilibra(p);
+          for (const ev of reg.eventos.slice(k0)) {
+            if (ev.t === "gira") foto({ t: "gira", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 });
+            else if (ev.t === "girou") { rotacoes++; foto({ t: "girou", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 }); }
+          }
+          Object.assign(V, { "p.valor": p.valor, "altura de p": p.altura });
+          foto({ t: "equilibra", no: q.id, sobe: p.id, linha: 13 });
+        }
+      }
+      c.push({ t: "devolva", no: p.id, linha: 14 });
+      c.sai();
+      return p;
+    };
+    valores.forEach((x, k) => {
+      c.aloca("arvore", 4 * (a.n + 1));      // o nó novo já conta
+      const antes = c.ops.comparacoes || 0;
+      const r = inserir(a.raiz, x, 1);
+      a.raiz = r;                            // a raiz fica à parte: não conta
+      a.n++;
+      comparacoes.push((c.ops.comparacoes || 0) - antes);
+      foto({ t: "inseriu", k, x });
+    });
+    // a árvore comum com os mesmos valores, contando as mesmas comparações (avl.py:inserir_comum)
+    const b = I.ArvoreComum();
+    let comum = 0;
+    const porComum = [];
+    for (const x of valores) {
+      const antes = comum;
+      let p = b.raiz;
+      while (p !== null) { comum++; if (x === p.valor) break; comum++; p = x < p.valor ? p.esq : p.dir; }
+      b.inserir(x);
+      porComum.push(comum - antes);
+    }
+    return { valores, comparacoes, ops: c.ops.comparacoes || 0, rotacoes, altura: a.altura(), comum, porComum, altura_comum: b.altura(),
+      casas: reg.leituras + reg.escritas, pico: c.pico, eventos: c.eventos };
+  }
+
+  /** n valores distintos (de 10 a 99), como motor/arvores.py:valores (com outro sorteador):
+   *  crescente, decrescente, embaralhada ou na ordem que monta a árvore cheia. */
+  function valoresArvore(n, caso, semente) {
+    const r = sorteador(semente), faixa = Array.from({ length: 90 }, (_, i) => 10 + i);
+    for (let i = faixa.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = faixa[i]; faixa[i] = faixa[j]; faixa[j] = x; }
+    const v = faixa.slice(0, n).sort((a, b) => a - b);
+    if (caso === "crescente") return v;
+    if (caso === "decrescente") return v.reverse();
+    if (caso === "cheia") {
+      const ordem = [], fila = n ? [[0, n - 1]] : [];
+      while (fila.length) { const [a, b] = fila.shift(); if (a > b) continue; const m = (a + b) >> 1; ordem.push(v[m]); fila.push([a, m - 1], [m + 1, b]); }
+      return ordem;
+    }
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = v[i]; v[i] = v[j]; v[j] = x; }
+    return v;
+  }
+
   // ---------- grafos (algoritmos/largura, algoritmos/profundidade) ----------
 
   // a lista de adjacência do instrumento Grafo, montada sem entrar na conta
@@ -1007,7 +1194,7 @@
       : forma === "uniforme" ? 100 * r() : r() < 0.5 ? normal(35, 6) : normal(65, 6)));
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, inverter, janela, janelaIngenua, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, inverter, janela, janelaIngenua, percursos, buscaArvore, avl, valoresArvore, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
     histograma, pretty, sturges, prioridade, dijkstra, entrada, valoresSorteados, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade,
     centrosIniciais, amostra, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;

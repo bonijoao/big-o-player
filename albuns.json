@@ -68,23 +68,7 @@
   "titulo": "Árvores e heaps",
   "familia": "árvores e heaps",
   "frase": "Guardar em galhos para achar descendo poucos níveis.",
-  "em_producao": [
-   {
-    "nome": "Percursos de árvore (pré, em, pós-ordem e em largura)",
-    "tempo": "O(n)",
-    "memoria": "O(h)"
-   },
-   {
-    "nome": "Busca em árvore (em ordem × embaralhado)",
-    "tempo": "O(h), h de log n a n",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Árvore equilibrada (AVL)",
-    "tempo": "O(log n) por operação",
-    "memoria": "O(n)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "grafos",

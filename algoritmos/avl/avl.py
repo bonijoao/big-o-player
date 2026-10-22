@@ -14,26 +14,25 @@ sys.path[:0] = [os.path.join(AQUI, "..", "..", "motor")]
 def inserir(arvore, p, x, conta):
     conta.entra()
     if p is None:
-        conta.sai()
-        return arvore.nova(x)
-    v = arvore.le_valor(p)
-    conta.op("comparacoes")
-    if x == v:
-        conta.sai()
-        return p
-    conta.op("comparacoes")
-    if x < v:
-        e = arvore.le_esq(p)
-        f = inserir(arvore, e, x, conta)
-        if f is not e:
-            arvore.escreve_esq(p, f)
+        p = arvore.nova(x)
     else:
-        d = arvore.le_dir(p)
-        f = inserir(arvore, d, x, conta)
-        if f is not d:
-            arvore.escreve_dir(p, f)
+        v = arvore.le_valor(p)
+        conta.op("comparacoes")
+        if x != v:
+            conta.op("comparacoes")
+            if x < v:
+                e = arvore.le_esq(p)
+                f = inserir(arvore, e, x, conta)
+                if f is not e:
+                    arvore.escreve_esq(p, f)
+            else:
+                d = arvore.le_dir(p)
+                f = inserir(arvore, d, x, conta)
+                if f is not d:
+                    arvore.escreve_dir(p, f)
+            p = arvore.equilibra(p)
     conta.sai()
-    return arvore.equilibra(p)
+    return p
 
 
 MEDIDA = inserir
