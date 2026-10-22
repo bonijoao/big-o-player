@@ -1,0 +1,48 @@
+{
+ "id": "contar-palavras",
+ "nome": "Contar palavras",
+ "variante": "com um dicionário (sondagem linear), palavra por palavra",
+ "familia": "dispersão",
+ "resumo": "Lê o texto uma vez, palavra por palavra, e guarda num dicionário quantas vezes cada uma apareceu. A palavra é a chave; a contagem, o valor. Se a palavra já está, a contagem sobe 1; se não está, entra com 1. Achar a palavra no dicionário não depende de quantas já estão lá: a dispersão calcula a casa dela. Sem o dicionário, cada palavra seria procurada numa lista que só cresce.",
+ "instrumentos": [
+  {
+   "id": "dicionario",
+   "papel": "a palavra é a chave e a contagem é o valor, na versão com sondagem linear, como o dict do Python"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n) médio",
+  "porque": "Cada uma das n palavras faz no máximo três idas ao dicionário (ver se tem, ler e pôr), e cada ida custa O(1) em média, porque a tabela dobra antes de α passar de 3/4. As dobras somam O(d) no total, como as cópias do Vetor.",
+  "nota": "O pior caso seria todas as palavras caírem na mesma casa: O(n·d). A dispersão espalha as palavras, e na prática isso não acontece; no livro inteiro, cada palavra custa poucas casas, e o custo por palavra até cai com n, porque quase todas já estão no dicionário."
+ },
+ "memoria": {
+  "notacao": "O(d)",
+  "porque": "O dicionário guarda cada palavra distinta uma vez, com a sua contagem: 2d valores, sem contar a folga da tabela, que é proporcional a d. O d cresce bem mais devagar que n: num texto de verdade, as palavras se repetem cada vez mais. No começo do Dom Casmurro, mais da metade das palavras ainda é nova; no livro inteiro, só uma pequena parte delas.",
+  "nomes": {
+   "palavras": "palavras distintas",
+   "contagens": "contagens"
+  },
+  "cresce_com_n": [
+   "palavras",
+   "contagens"
+  ],
+  "variavel": "d"
+ },
+ "video": {
+  "ideia": [
+   "cada palavra pergunta ao dicionário se já passou por ali",
+   "a palavra é a chave; quantas vezes, o valor"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce com o tamanho do texto",
+  "texto": "As mesmas contas para trechos cada vez maiores do Dom Casmurro, sempre a partir do começo do livro. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Casas lidas e escritas no dicionário para n de {n0} a {n1} palavras. {dados}. A linha acompanha a referência n: cada palavra custa poucas casas, seja o trecho curto ou o livro inteiro.",
+  "memoria": "Valores guardados no pico (as palavras distintas e as contagens, 2d) para os mesmos trechos. A referência 2n seria o dicionário com uma palavra nova a cada palavra lida; o d fica cada vez mais abaixo."
+ },
+ "pseudocodigo": "procedimento contar_palavras(p):\n    d ← dicionário vazio\n    para i de 1 até n:\n        se d tem p[i]:\n            d[p[i]] ← d[p[i]] + 1\n        senão:\n            d[p[i]] ← 1\n    devolva d\n",
+ "placa": {
+  "autor": "sem autoria única (as concordâncias de palavras, feitas à mão, são da Idade Média)",
+  "ano": "—"
+ }
+}

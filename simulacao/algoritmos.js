@@ -554,6 +554,155 @@
     return { maximos, comparacoes, ate };
   }
 
+  // ---------- dispersão (algoritmos/palavras, repetidos, encadeamento, sondagem) ----------
+
+  // os eventos do dicionário desde a última vez (o palco os aplica à sua cópia da tabela)
+  const eventosDic = (d) => { const ev = d.reg.eventos; d.reg.eventos = []; return ev; };
+  // em ordem: da maior contagem para a menor e, no empate, pela palavra (como o sorted do Python)
+  const porContagem = (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+
+  /** Contar palavras (algoritmos/palavras/palavras.py), sobre o Dicionário com sondagem linear. */
+  function palavras(p) {
+    const c = contador(), d = instrumentos().DicSondagem();
+    const V = c.vars = { i: null, "p[i]": null, "d[p[i]]": null, "palavras distintas": 0 };
+    c.push({ t: "atribui", linha: 2 });
+    for (let i = 0; i < p.length; i++) {
+      const x = p[i];
+      Object.assign(V, { i: i + 1, "p[i]": x, "d[p[i]]": null });
+      c.push({ t: "le", i, linha: 3 });
+      const tem = d.tem(x);
+      c.push({ t: "busca", i, achou: tem, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 4 });
+      if (tem) {
+        const k = d.ler(x) + 1;
+        d.por(x, k);
+        V["d[p[i]]"] = k;
+        c.push({ t: "conta", i, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 5 });
+      } else {
+        d.por(x, 1);
+        Object.assign(V, { "d[p[i]]": 1, "palavras distintas": d.n });
+        c.push({ t: "poe", i, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 7 });
+      }
+      c.aloca("palavras", d.n); c.aloca("contagens", d.n);
+    }
+    c.push({ t: "devolva", linha: 8 });
+    return { n: p.length, d: d.n, m: d.m, ops: d.reg.leituras + d.reg.escritas, comparacoes: d.reg.comparacoes, pico: c.pico,
+      contagens: d.valores().sort(porContagem), eventos: c.eventos };
+  }
+
+  /** Achar repetidos (algoritmos/repetidos/repetidos.py): o dicionário anima; a versão com o vetor só conta. */
+  function repetidos(v) {
+    const c = contador(), d = instrumentos().DicSondagem(), rep = [];
+    const V = c.vars = { i: null, "v[i]": null, "repetido[i]": null, "valores no dicionário": 0 };
+    c.push({ t: "atribui", linha: 2 });
+    for (let i = 0; i < v.length; i++) {
+      Object.assign(V, { i: i + 1, "v[i]": v[i], "repetido[i]": null });
+      c.push({ t: "le", i, linha: 3 });
+      const tem = d.tem(v[i]);
+      c.push({ t: "busca", i, achou: tem, dic: eventosDic(d), comps: d.reg.comparacoes, linha: 4 });
+      if (tem) {
+        rep.push(true); V["repetido[i]"] = true;
+        c.push({ t: "achou", i, linha: 5 });
+      } else {
+        rep.push(false); V["repetido[i]"] = false;
+        c.push({ t: "atribui", i, linha: 7 });
+        d.por(v[i], true);
+        V["valores no dicionário"] = d.n;
+        c.aloca("chaves", d.n);
+        c.push({ t: "poe", i, dic: eventosDic(d), comps: d.reg.comparacoes, linha: 8 });
+      }
+    }
+    c.push({ t: "devolva", linha: 9 });
+    const ve = repetidosVetor(v);
+    if (JSON.stringify(ve.repetido) !== JSON.stringify(rep)) throw new Error("o dicionário e o vetor discordam");
+    return { repetido: rep, ops: d.reg.comparacoes, ops_vetor: ve.comparacoes, vetorAte: ve.ate, pico: c.pico,
+      casas: d.reg.leituras + d.reg.escritas, eventos: c.eventos };
+  }
+
+  /** Sem dicionário: cada valor contra os anteriores, até achar um igual. `ate[i]`: as comparações até a posição i (inclusive). */
+  function repetidosVetor(v) {
+    const repetido = [], ate = [];
+    let comparacoes = 0;
+    for (let i = 0; i < v.length; i++) {
+      let achou = false;
+      for (let j = 0; j < i; j++) { comparacoes++; if (v[j] === v[i]) { achou = true; break; } }
+      repetido.push(achou); ate.push(comparacoes);
+    }
+    return { repetido, comparacoes, ate };
+  }
+
+  /** Colisão por encadeamento (algoritmos/encadeamento): as chaves, uma a uma, numa tabela de 2^bits casas fixas. */
+  function encadeamento(chaves, bits) {
+    const c = contador(), I_ = instrumentos(), t = I_.DicEncadeamento(undefined, bits, true), sondagens = [];
+    c.aloca("tabela", t.m);
+    const V = c.vars = { k: null, i: null, "sondagens desta chave": 0, n: 0 };
+    let id = 0;
+    for (const k of chaves) {
+      let s = 1;
+      const i = I_.casaDe(k, t.bits);
+      Object.assign(V, { k, i: i + 1, "sondagens desta chave": 0 });
+      c.push({ t: "dispersa", k, i, linha: 2 });
+      let p = t.leCabeca(i), pos = 0;
+      V["sondagens desta chave"] = s;
+      c.push({ t: "inicio", k, i, pos, linha: 3 });
+      for (;;) {
+        c.push({ t: "testa", linha: 4 });
+        if (p === null) break;
+        c.push({ t: "compara", k, i, pos, linha: 5 });
+        if (t.leChave(p) === k) { c.push({ t: "pare", linha: 6 }); break; }
+        p = t.leProx(p); s++; pos++;
+        V["sondagens desta chave"] = s;
+        c.push({ t: "avanca", k, i, pos, linha: 7 });
+      }
+      c.push({ t: "testa", linha: 8 });
+      if (p === null) {
+        p = { id: id++, chave: null, valor: null, prox: null };
+        t.escreve(p, "chave", k); t.escreve(p, "valor", k); t.escreve(p, "prox", t.leCabeca(i));
+        c.push({ t: "poe", k, i, linha: 9 });
+        t.escreveCabeca(i, p);
+        t.n++; V.n = t.n;
+        c.aloca("nos", 3 * t.n);
+        c.push({ t: "liga", k, i, linha: 10 });
+      }
+      c.push({ t: "devolva", k, i, linha: 11 });
+      sondagens.push(s);
+    }
+    return { sondagens, ops: sondagens.reduce((a, b) => a + b, 0), pico: c.pico, casas: t.reg.leituras + t.reg.escritas,
+      tabela: t.valores(), m: t.m, eventos: c.eventos };
+  }
+
+  /** Colisão por sondagem linear (algoritmos/sondagem): as chaves, uma a uma, numa tabela de 2^bits casas fixas. */
+  function sondagem(chaves, bits) {
+    const c = contador(), I_ = instrumentos(), t = I_.DicSondagem(undefined, bits, true), sondagens = [];
+    c.aloca("tabela", 2 * t.m);
+    const V = c.vars = { k: null, i: null, "sondagens desta chave": 0, n: 0 };
+    for (const k of chaves) {
+      let i = I_.casaDe(k, t.bits), s = 1;
+      Object.assign(V, { k, i: i + 1, "sondagens desta chave": 0 });
+      c.push({ t: "dispersa", k, i, linha: 2 });
+      let x = t.leChave(i);
+      V["sondagens desta chave"] = s;
+      c.push({ t: "sonda", k, i, ocupada: x !== null, linha: 3 });
+      while (x !== null) {
+        c.push({ t: "compara", k, i, linha: 4 });
+        if (x === k) { c.push({ t: "pare", linha: 5 }); break; }
+        i = (i + 1) % t.m; V.i = i + 1;
+        c.push({ t: "avanca", k, i, linha: 6 });
+        x = t.leChave(i); s++;
+        V["sondagens desta chave"] = s;
+        c.push({ t: "sonda", k, i, ocupada: x !== null, linha: 3 });
+      }
+      c.push({ t: "testa", linha: 7 });
+      if (x === null) {
+        t.escreveChave(i, k); t.escreveValor(i, k); t.n++; V.n = t.n;
+        c.push({ t: "poe", k, i, linha: 8 });
+      }
+      c.push({ t: "devolva", k, i, linha: 9 });
+      sondagens.push(s);
+    }
+    return { sondagens, ops: sondagens.reduce((a, b) => a + b, 0), pico: c.pico, casas: t.reg.leituras + t.reg.escritas,
+      tabela: t.valores(), m: t.m, eventos: c.eventos };
+  }
+
   // ---------- árvores (algoritmos/percursos, algoritmos/abb, algoritmos/avl) ----------
   // Rodam sobre as árvores do instrumento (simulacao/instrumentos.js). Os nós
   // têm id de criação; os eventos que mudam a forma levam um retrato da árvore
@@ -1166,6 +1315,25 @@
     return caso === "crescente" ? v : v.reverse();
   }
 
+  /** Valores para achar repetidos: sorteados de 10 a 99, todos diferentes, ou poucos (de 10 a 19). */
+  function valoresRepetidos(n, caso, semente) {
+    const r = sorteador(semente);
+    if (caso === "poucos") return Array.from({ length: n }, () => 10 + Math.floor(r() * 10));
+    if (caso !== "distintos") return Array.from({ length: n }, () => 10 + Math.floor(r() * 90));
+    const faixa = Array.from({ length: 90 }, (_, i) => 10 + i);
+    for (let i = faixa.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = faixa[i]; faixa[i] = faixa[j]; faixa[j] = x; }
+    return faixa.slice(0, n);
+  }
+
+  /** n chaves distintas de 100 a 999 para as colisões: sorteadas, ou todas caindo na mesma casa de 2^bits. */
+  function chavesColisao(n, caso, bits, semente) {
+    const r = sorteador(semente), casa = instrumentos().casaDe;
+    let todas = Array.from({ length: 900 }, (_, i) => 100 + i);
+    if (caso === "mesma_casa") { const alvo = casa(todas[Math.floor(r() * 900)], bits); todas = todas.filter((k) => casa(k, bits) === alvo); }
+    for (let i = todas.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = todas[i]; todas[i] = todas[j]; todas[j] = x; }
+    return todas.slice(0, n);
+  }
+
   /** As arestas de um grafo em grade k × k, como motor/grade.py:gerar (com outro sorteador):
    *  a grade cheia, um sorteado conexo (árvore que cobre a grade + cada aresta que sobra com chance 1/3)
    *  ou o caminho em serpentina que começa no vértice 0. */
@@ -1210,7 +1378,7 @@
 
   const api = { ordenar, kmeans, buscar, parenteses, atendimento, inverter, janela, janelaIngenua, percursos, buscaArvore, avl, valoresArvore, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
     histograma, pretty, sturges, prioridade, dijkstra, entrada, valoresSorteados, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade,
-    centrosIniciais, amostra, ORDENACOES };
+    centrosIniciais, amostra, palavras, repetidos, repetidosVetor, encadeamento, sondagem, valoresRepetidos, chavesColisao, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

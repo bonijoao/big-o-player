@@ -1,0 +1,48 @@
+{
+ "id": "colisao-encadeamento",
+ "nome": "Colisão por encadeamento",
+ "variante": "tabela de m casas fixas, uma corrente de nós por casa",
+ "familia": "dispersão",
+ "resumo": "Pôr chaves numa tabela de m casas que não cresce. Cada casa guarda o início de uma corrente de nós; as chaves que caem na mesma casa (colidem) entram na mesma corrente, a mais nova no começo. Antes de entrar, a chave percorre a corrente da sua casa, para não ficar duas vezes. Com n chaves, as correntes têm α = n/m nós em média, e α pode passar de 1: a tabela nunca enche, só fica mais lenta.",
+ "instrumentos": [
+  {
+   "id": "dicionario",
+   "papel": "as casas da versão com encadeamento, com m fixo, sem dobrar"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(1 + α) médio",
+  "porque": "Pôr uma chave nova olha o início da corrente e cada nó dela: 1 + α sondagens em média, com a ocupação α da hora. Pondo n chaves desde a tabela vazia, a média por chave é 1 + α/2 (as primeiras encontram correntes mais curtas). Com m fixo, isso cresce em linha reta com α; com a tabela que dobra, como no instrumento, α fica abaixo de 3/4 e cada operação vira O(1).",
+  "nota": "O pior caso é todas as chaves caírem na mesma casa: uma corrente só, e O(n) por chave. O menu do palco tem esse caso."
+ },
+ "memoria": {
+  "notacao": "O(m + n)",
+  "porque": "A tabela guarda os m inícios de corrente, ocupados ou não, e cada chave ganha um nó com três casas (chave, valor e próx). Por isso a memória cresce com n mesmo com a tabela fixa.",
+  "nomes": {
+   "tabela": "inícios de corrente (m)",
+   "nos": "casas dos nós (chave, valor e próx)"
+  },
+  "cresce_com_n": [
+   "nos"
+  ],
+  "vazados": "dependem de m, não de n"
+ },
+ "video": {
+  "ideia": [
+   "colidiu: entra na corrente da mesma casa",
+   "a corrente média tem α nós"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: as sondagens conforme a tabela enche",
+  "texto": "Primeiro, o custo por chave em função da ocupação α, medido e previsto. Depois, o total de sondagens para tabelas cada vez maiores, com α fixo: em escala logarítmica, quem cresce como m sobe com inclinação 1.",
+  "alfa": "Sondagens para α de {a0} a {a1}, média de {sementes} tabelas de {m} casas. Pontos cheios: a média por chave, pondo as chaves até α. Pontos vazados: pôr uma chave nova com α ocupado (a média das inserções entre α − 0,005 e α + 0,005). Tracejadas: as fórmulas, 1 + α/2 e 1 + α.",
+  "crescimento": "Sondagens no total, pondo α·m chaves, para m de {n0} a {n1}. {dados}. Com α fixo, a média por chave não muda: o total acompanha m.",
+  "memoria": "Casas guardadas no pico para os mesmos tamanhos: m inícios de corrente e três casas por chave, m + 3αm. Já com α acima de 1/3, os nós guardam mais casas que a tabela."
+ },
+ "pseudocodigo": "procedimento inserir_encadeamento(t, k):\n    i ← dispersão(k)\n    p ← início da corrente t[i]\n    enquanto p não é nulo:\n        se chave de p = k:\n            pare\n        p ← próximo de p\n    se p é nulo:\n        p ← nó com a chave k, apontando para o início de t[i]\n        início da corrente t[i] ← p\n    devolva p\n",
+ "placa": {
+  "autor": "Hans Peter Luhn, num memorando interno da IBM",
+  "ano": "1953"
+ }
+}

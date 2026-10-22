@@ -18,9 +18,9 @@
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20,
-    percursos: 6, abb: 8, avl: 8 };
-  const CALMO = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;   // sem deslizar          // accelerando: unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20, palavras: 8, repetidos: 6, colisao: 5,
+    percursos: 6, abb: 8, avl: 8 };          // accelerando: unidades por segundo a 1×
+  const CALMO = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;   // sem deslizar
 
   // ---------- utilidades de desenho ----------
 
@@ -1658,6 +1658,7 @@
   // número com vírgula decimal e separador de milhar
   const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
   // seis algarismos significativos, para variâncias que podem vir de 10⁻³ a 10³
+  const milhar = (x) => x.toLocaleString("pt-BR");   // separador de milhar, como na página
   const sig = (x) => (x === 0 ? "0" : num(x, Math.max(0, Math.min(10, 5 - Math.floor(Math.log10(Math.abs(x)))))));
 
   function simMediana(faixa, vetor, accelerando) {
@@ -1941,6 +1942,283 @@
     };
   }
 
+  // ---------- dispersão: a tabela do Dicionário (sondagem) numa grade ----------
+
+  // a cópia da tabela que o palco desenha: aplica os eventos do dicionário (simulacao/instrumentos.js)
+  function tabelaDic() {
+    const q = { m: 8, chaves: new Array(8).fill(null), valores: new Array(8).fill(null), lidas: [], escritas: [], alvo: null, dobrou: null };
+    q.aplicar = (evs) => {
+      q.lidas = []; q.escritas = []; q.alvo = null; q.dobrou = null;
+      for (const ev of evs) {
+        if (ev.t === "dispersa") q.alvo = ev.i;
+        else if (ev.t === "le") q.lidas.push(ev.i);
+        else if (ev.t === "escreve") { (ev.campo === "chave" ? q.chaves : q.valores)[ev.i] = ev.x; q.escritas.push(ev.i); }
+        else if (ev.t === "realoca") q.dobrou = [ev.de, ev.para];
+        else if (ev.t === "trocou") { q.m = ev.foto.m; q.chaves = ev.foto.chaves.slice(); q.valores = ev.foto.valores.slice(); q.lidas = []; q.escritas = []; q.alvo = null; }
+      }
+    };
+    q.foto = () => ({ m: q.m, chaves: q.chaves.slice(), valores: q.valores.slice(), lidas: q.lidas.slice(), escritas: q.escritas.slice(), alvo: q.alvo, dobrou: q.dobrou });
+    return q;
+  }
+
+  // a grade de m casas (8 por linha), cada uma com a chave e, se houver, o valor; altura total `alto`
+  function grade(ctx, t, x0, y0, larg, alto, rotulo, fim) {
+    const col = 8, linhas = Math.ceil(t.m / col), cw = larg / col, ch = Math.min(44, alto / linhas);
+    const tam = Math.max(8, Math.min(13, ch * 0.42));
+    texto(ctx, `${rotulo}: m = ${t.m} casas`, x0, y0 - 20, 11, COR.cinza);
+    for (let i = 0; i < t.m; i++) {
+      const x = x0 + (i % col) * cw, y = y0 + Math.floor(i / col) * ch, k = t.chaves[i];
+      const escrita = t.escritas.includes(i) && !fim, lida = t.lidas.includes(i) && !fim;
+      ctx.fillStyle = escrita ? COR.mexeu : k === null ? COR.claro : "#fff";
+      ctx.fillRect(x + 1, y + 1, cw - 2, ch - 2);
+      ctx.strokeStyle = lida ? COR.album : COR.borda; ctx.lineWidth = lida ? 2.5 : 1;
+      ctx.strokeRect(x + 1, y + 1, cw - 2, ch - 2);
+      if (t.alvo === i && !fim) { ctx.fillStyle = COR.tinta; ctx.beginPath(); ctx.moveTo(x + 1, y + 1); ctx.lineTo(x + 9, y + 1); ctx.lineTo(x + 1, y + 9); ctx.fill(); }
+      if (k !== null) {
+        const v = t.valores[i], w = String(k), tw = Math.min(tam, (cw - (typeof v === "number" ? 30 : 12)) / (w.length * 0.62));   // a palavra cabe na casa
+        texto(ctx, w, x + 6, y + ch / 2 - tw * 0.6, tw, escrita ? "#fff" : COR.tinta, 600);
+        if (typeof v === "number") texto(ctx, String(v), x + cw - 6, y + ch / 2 - tam * 0.6, tam, escrita ? "#fff" : COR.cinza, 600, "right");
+      }
+    }
+  }
+
+  function simPalavras(faixa, p, accelerando) {
+    const r = Algoritmos.palavras(p), N = p.length, ideia = faixa.video.ideia;
+    const t = tabelaDic();
+    let gasto = 0, distintas = 0, vez = -1;
+    const est = r.eventos.map((e) => {
+      if (e.i !== undefined) vez = e.i;                // a palavra da vez fica acesa até a próxima
+      t.aplicar(e.dic || []);                         // sem eventos do dicionário, nenhuma casa acesa
+      if (e.dic) gasto = e.gasto;
+      if (e.t === "poe") distintas++;
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i: vez, achou: e.achou, tab: t.foto(), gasto, distintas };
+    });
+    if (gasto !== r.ops || distintas !== r.d) throw new Error("reprodução da contagem de palavras não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { le: 0.5, busca: 1, conta: 1, poe: 1, atribui: 0.4, devolva: 2 }, (x) => x === "conta" || x === "poe", 6, 2.5);
+    const tl = linhaDoTempo(pesos);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { i: -1, tab: tabelaDic().foto(), gasto: 0, distintas: 0 };
+      const i = fim ? -1 : s.i;
+      // o texto: algumas palavras antes e depois da da vez
+      texto(ctx, "texto", 40, 68, 11, COR.cinza);
+      ctx.font = `400 15px ${MONO}`;
+      const a = Math.max(0, i - 4);
+      let x = 40;
+      for (let j = a; j < N; j++) {
+        const w = ctx.measureText(p[j]).width;
+        if (x + w > 640) break;                      // o placar da direita começa em 680
+        if (j === i) { ctx.fillStyle = COR.mexeu; ctx.fillRect(x - 4, 84, w + 8, 26); }
+        texto(ctx, p[j], x, 88, 15, j === i ? "#fff" : j < i || fim ? COR.cinza : COR.tinta, j === i ? 600 : 400);
+        x += w + 14;
+      }
+      grade(ctx, s.tab, 40, 156, 600, 330, "dicionário (palavra e contagem)", fim);
+
+      const X = 680;
+      texto(ctx, "casas lidas e escritas", X, 90, 13, COR.cinza);
+      texto(ctx, milhar(fim ? r.ops : s.gasto), X, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "palavras lidas", X, 174, 13, COR.cinza);
+      texto(ctx, `${fim ? N : i >= 0 ? i + 1 : 0} de ${N}`, X, 190, 22, COR.tinta, 700);
+      texto(ctx, "palavras distintas (d)", X, 236, 13, COR.cinza);
+      texto(ctx, String(fim ? r.d : s.distintas), X, 252, 22, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, `α = ${s.distintas}/${s.tab.m} = ${num(s.distintas / s.tab.m, 2)}`, X, 298, 13, COR.cinza);
+      if (fim) {
+        texto(ctx, "as mais frequentes", X, 332, 13, COR.cinza);
+        r.contagens.slice(0, 5).forEach(([w, c], j) => texto(ctx, `${w} ${c}`, X, 350 + j * 20, 14, COR.verde, 600));
+      }
+      legendaCores(ctx, [[COR.mexeu, "casa escrita"], ["#fff", "casa lida", COR.album, 2.5], [COR.claro, "vazia"], [COR.tinta, "a casa calculada"]], 500);
+
+      if (fim) legenda(ctx, [[`${N} palavras, ${r.d} distintas: `, ""], [`${milhar(r.ops)} casas`, "g"], [` (${num(r.ops / N, 1)} por palavra)`, ""]]);
+      else if (s.tab.dobrou) legenda(ctx, [["α ia passar de 3/4: a tabela dobra de ", ""], [`${s.tab.dobrou[0]} para ${s.tab.dobrou[1]}`, "b"], [" casas", ""]]);
+      else legenda(ctx, [[ideia[s.distintas < 6 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].gasto : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.palavras, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${milhar(r.ops)} casas, n = ${N} palavras<br>${r.d} distintas (${r.pico} valores)`,
+      aoVivo: (u, cfg) => `Tocando agora: ${cfg.rotulo}, ${N} palavras; ${milhar(contagemEm(u))} de ${milhar(r.ops)} casas lidas e escritas, ${r.d} palavras distintas numa tabela de ${r.m} casas.`,
+    };
+  }
+
+  function simRepetidos(faixa, v, accelerando) {
+    const r = Algoritmos.repetidos(v), N = v.length, ideia = faixa.video.ideia;
+    const t = tabelaDic();
+    let comps = 0, i = -1;
+    const est = r.eventos.map((e) => {
+      t.aplicar(e.dic || []);
+      if (e.dic) comps = e.comps;
+      if (e.i !== undefined) i = e.i;
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i, achou: e.achou, tab: t.foto(), comps };
+    });
+    if (comps !== r.ops) throw new Error("reprodução de achar repetidos não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { le: 0.5, busca: 1, achou: 1.2, poe: 1, atribui: 0.4, devolva: 2 }, (x) => x === "busca", 4, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const cw = Math.min(40, 600 / N), tam = Math.min(15, cw * 0.45);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { i: -1, tab: tabelaDic().foto(), comps: 0 };
+      // o vetor; embaixo de cada valor já visto, a resposta
+      texto(ctx, "vetor", 40, 62, 11, COR.cinza);
+      for (let p = 0; p < N; p++) {
+        const x = 40 + p * cw, vez = p === s.i && !fim;
+        ctx.fillStyle = vez ? COR.mexeu : "#fff"; ctx.fillRect(x + 1, 80, cw - 2, 34);
+        ctx.strokeStyle = vez ? COR.mexeu : COR.borda; ctx.lineWidth = 1; ctx.strokeRect(x + 1, 80, cw - 2, 34);
+        texto(ctx, String(v[p]), x + cw / 2, 97 - tam * 0.6, tam, vez ? "#fff" : COR.tinta, 600, "center");
+        const visto = fim || p < s.i || (p === s.i && (est[k].t === "achou" || est[k].t === "atribui" || est[k].t === "poe"));
+        if (visto) texto(ctx, r.repetido[p] ? "sim" : "não", x + cw / 2, 120, Math.min(11, cw * 0.32), r.repetido[p] ? COR.verde : COR.cinza, r.repetido[p] ? 600 : 400, "center");
+      }
+      texto(ctx, "repetido?", 40, 140, 11, COR.cinza);
+      grade(ctx, s.tab, 40, 200, 600, 280, "dicionário (os valores já vistos)", fim);
+
+      const X = 680, ate = s.i >= 0 ? r.vetorAte[s.i] : 0;
+      texto(ctx, "comparações", X, 90, 13, COR.cinza);
+      texto(ctx, String(fim ? r.ops : s.comps), X, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "o vetor, até aqui", X, 174, 13, COR.cinza);
+      texto(ctx, String(fim ? r.ops_vetor : ate), X, 190, 26, COR.tinta, 700);
+      texto(ctx, `de ${r.ops_vetor} no total`, X, 222, 12, COR.cinza);
+      texto(ctx, "memória extra agora", X, 256, 13, COR.cinza);
+      const n = s.tab.chaves.filter((x) => x !== null).length;
+      texto(ctx, `${n} ${n === 1 ? "valor" : "valores"}`, X, 272, 20, COR.tinta, 700);
+      texto(ctx, `o vetor não guarda nada`, X, 300, 13, COR.cinza);
+      texto(ctx, `${r.repetido.filter(Boolean).length} repetidos`, X, 342, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      legendaCores(ctx, [[COR.mexeu, "o da vez, ou casa escrita"], ["#fff", "casa lida", COR.album, 2.5], [COR.tinta, "a casa calculada"]], 500);
+
+      if (fim) legenda(ctx, [[`n = ${N}: `, ""], [`${r.ops} comparações`, "g"], [` (o vetor: ${r.ops_vetor})`, ""]]);
+      else if (s.tab.dobrou) legenda(ctx, [["α ia passar de 3/4: a tabela dobra de ", ""], [`${s.tab.dobrou[0]} para ${s.tab.dobrou[1]}`, "b"], [" casas", ""]]);
+      else legenda(ctx, [[ideia[s.i < N / 2 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.repetidos, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} comparações (vetor: ${r.ops_vetor}), n = ${N}<br>${r.pico} valores no dicionário`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} comparações (o vetor faria ${r.ops_vetor}), ${r.repetido.filter(Boolean).length} repetidos, até ${r.pico} valores no dicionário.`,
+    };
+  }
+
+  // ---------- colisão: encadeamento e sondagem linear, m fixo ----------
+
+  const FORMULA = { encadeamento: (a) => 1 + a, sondagem: (a) => (a < 1 ? (1 + 1 / (1 - a) ** 2) / 2 : Infinity) };
+
+  function simColisao(faixa, chaves, bits, accelerando) {
+    const alg = faixa.alg, enc = alg === "encadeamento";
+    const r = Algoritmos[alg](chaves, bits), N = chaves.length, m = r.m, ideia = faixa.video.ideia;
+    const casas = new Array(m).fill(null), correntes = Array.from({ length: m }, () => []);
+    // k: a chave da vez; h: a casa calculada; atual: a casa olhada (na sondagem); no: o nó olhado na corrente de h
+    let k = null, h = null, atual = null, no = 0, s = 0, total = 0, feitas = 0, olhadas = [], posta = false;
+    const pontos = [];                                  // [α antes de pôr, sondagens] de cada chave já posta
+    const est = r.eventos.map((e) => {
+      if (e.t === "dispersa") { k = e.k; h = e.i; atual = null; no = 0; s = 0; olhadas = []; posta = false; }
+      else if (e.t === "inicio" || e.t === "sonda") { s++; total++; atual = e.i; olhadas.push(e.i); }
+      else if (e.t === "avanca") { if (enc) { s++; total++; no++; } else atual = e.i; }
+      else if (e.t === "poe" && !enc) { casas[e.i] = e.k; posta = true; }
+      else if (e.t === "liga") { correntes[e.i].unshift(e.k); posta = true; }
+      else if (e.t === "devolva") { pontos.push([feitas / m, s]); feitas++; }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, k, h, atual, no, s, total, feitas, olhadas: olhadas.slice(), posta,
+        casas: casas.slice(), correntes: correntes.map((c) => c.slice()), npontos: pontos.length };
+    });
+    if (total !== r.ops) throw new Error("reprodução da colisão não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { dispersa: 0.6, inicio: 1, sonda: 1, compara: 0.5, avanca: 0.6, testa: 0.3, poe: 1, liga: 0.6, pare: 0.3, devolva: 0.8 },
+        (x) => x === "devolva", 3, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const amax = Math.max(enc ? 1 : 0.5, N / m), smax = Math.max(4, ...r.sondagens);
+    const vazio = { t: null, k: null, h: null, atual: null, no: 0, s: 0, total: 0, feitas: 0, olhadas: [], posta: false,
+      casas: new Array(m).fill(null), correntes: correntes.map(() => []), npontos: 0 };
+
+    function desenhar(ctx, u) {
+      const q = tl.eventoEm(u), fim = u >= tl.total, e = q >= 0 ? est[q] : vazio;
+      // as chaves, na ordem em que entram; a da vez em destaque
+      const kw = Math.min(46, 600 / Math.max(1, N));
+      texto(ctx, "chaves", 40, 58, 11, COR.cinza);
+      chaves.forEach((c, j) => {
+        const vez = !fim && e.k !== null && j === e.feitas;
+        texto(ctx, String(c), 40 + j * kw + kw / 2, 76, Math.min(13, kw * 0.36), vez ? COR.mexeu : j < e.feitas || fim ? COR.cinza : COR.tinta, vez ? 700 : 400, "center");
+      });
+      // a tabela: m casas numa fileira
+      const X0 = 40, cw = 600 / m, Y = 150, ch = enc ? 24 : 34;
+      texto(ctx, `tabela de m = ${m} casas fixas`, X0, Y - 40, 11, COR.cinza);
+      for (let i = 0; i < m; i++) {
+        const x = X0 + i * cw, chave = enc ? null : e.casas[i];
+        const nova = !fim && e.posta && !enc && chave === e.k;
+        const olhando = !fim && (enc ? e.t === "inicio" && e.h === i : e.atual === i && ["sonda", "compara", "avanca"].includes(e.t));
+        ctx.fillStyle = nova ? COR.mexeu : (enc ? e.correntes[i].length : chave !== null) ? "#fff" : COR.claro;
+        ctx.fillRect(x + 1, Y, cw - 2, ch);
+        ctx.strokeStyle = olhando ? COR.album : COR.borda; ctx.lineWidth = olhando ? 2.5 : 1;
+        ctx.strokeRect(x + 1, Y, cw - 2, ch);
+        if (enc) texto(ctx, e.correntes[i].length ? "•" : "∅", x + cw / 2, Y + 5, 13, COR.tinta, 600, "center");
+        else if (chave !== null) texto(ctx, String(chave), x + cw / 2, Y + 10, Math.min(13, cw * 0.36), nova ? "#fff" : COR.tinta, 600, "center");
+        texto(ctx, String(i + 1), x + cw / 2, Y - 14, 9, COR.cinza, 400, "center");
+        if (e.h === i && !fim) { ctx.fillStyle = COR.tinta; ctx.beginPath(); ctx.moveTo(x + cw / 2 - 5, Y - 24); ctx.lineTo(x + cw / 2 + 5, Y - 24); ctx.lineTo(x + cw / 2, Y - 17); ctx.fill(); }
+        // na sondagem, um ponto embaixo de cada casa que a chave da vez já olhou
+        if (!enc && !fim && e.olhadas.includes(i)) { ctx.fillStyle = COR.album; ctx.beginPath(); ctx.arc(x + cw / 2, Y + ch + 8, 3, 0, 2 * Math.PI); ctx.fill(); }
+      }
+      if (enc) {   // as correntes penduradas em cada casa; a mais nova em cima
+        const maior = Math.max(1, ...e.correntes.map((c) => c.length)), nh = Math.min(28, 300 / maior), bh = Math.max(4, nh - 5);
+        e.correntes.forEach((c, i) => {
+          const x = X0 + i * cw;
+          c.forEach((chave, j) => {
+            const y = Y + ch + 6 + j * nh;
+            const nova = !fim && e.posta && i === e.h && j === 0;
+            const olhado = !fim && i === e.h && j === e.no && !e.posta && (e.t === "compara" || e.t === "avanca" || e.t === "testa");
+            linha(ctx, x + cw / 2, y - (nh - bh), x + cw / 2, y, COR.borda, 1);
+            ctx.fillStyle = nova ? COR.mexeu : "#fff"; ctx.fillRect(x + 2, y, cw - 4, bh);
+            ctx.strokeStyle = olhado ? COR.album : COR.tinta; ctx.lineWidth = olhado ? 2.5 : 1; ctx.strokeRect(x + 2, y, cw - 4, bh);
+            if (bh >= 12) texto(ctx, String(chave), x + cw / 2, y + bh / 2 - 6, Math.min(12, cw * 0.34), nova ? "#fff" : COR.tinta, 600, "center");
+          });
+        });
+      }
+
+      const X = 680, n = fim ? N : e.feitas;
+      texto(ctx, "ocupação", X, 70, 13, COR.cinza);
+      texto(ctx, `α = ${n}/${m} = ${num(n / m, 2)}`, X, 86, 20, COR.tinta, 700);
+      texto(ctx, "sondagens desta chave", X, 124, 13, COR.cinza);
+      texto(ctx, fim || e.k === null ? "—" : String(e.s), X, 140, 22, COR.tinta, 700);
+      texto(ctx, "sondagens no total", X, 178, 13, COR.cinza);
+      texto(ctx, String(fim ? r.ops : e.total), X, 194, 30, fim ? COR.verde : COR.tinta, 700);
+      // o gráfico pequeno: um ponto por chave posta, sobre a curva da fórmula
+      const gx = X + 16, gy = 270, gw = 230, gh = 160;
+      const PX = (a) => gx + a / amax * gw, PY = (v) => gy + gh - Math.min(v, smax) / smax * gh;
+      texto(ctx, "sondagens de cada chave × α", X, gy - 26, 11, COR.cinza);
+      linha(ctx, gx, gy + gh, gx + gw, gy + gh, COR.borda); linha(ctx, gx, gy, gx, gy + gh, COR.borda);
+      texto(ctx, "0", gx, gy + gh + 4, 10, COR.cinza); texto(ctx, num(amax, 2), gx + gw, gy + gh + 4, 10, COR.cinza, 400, "right");
+      texto(ctx, String(smax), gx - 4, gy - 5, 10, COR.cinza, 400, "right"); texto(ctx, "1", gx - 4, PY(1) - 5, 10, COR.cinza, 400, "right");
+      ctx.strokeStyle = COR.cinza; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]); ctx.beginPath();
+      for (let j = 0; j <= 80; j++) {
+        const a = amax * j / 80, f = FORMULA[alg](a);
+        if (!isFinite(f) || f > smax) break;
+        if (j) ctx.lineTo(PX(a), PY(f)); else ctx.moveTo(PX(a), PY(f));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+      const np = fim ? pontos.length : e.npontos;
+      for (let j = 0; j < np; j++) {
+        const [a, v] = pontos[j];
+        ctx.fillStyle = j === np - 1 && !fim ? COR.mexeu : COR.tinta;
+        ctx.beginPath(); ctx.arc(PX(a), PY(v), 3.5, 0, 2 * Math.PI); ctx.fill();
+      }
+      texto(ctx, enc ? "tracejada: 1 + α" : "tracejada: ½(1 + 1/(1 − α)²)", X, gy + gh + 22, 11, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "a chave da vez, posta"], ["#fff", "olhada agora", COR.album, 2.5], [COR.claro, enc ? "corrente vazia" : "casa vazia"], [COR.tinta, "a casa calculada"]], 500);
+
+      if (fim) legenda(ctx, [[`${N} chaves em ${m} casas: `, ""], [`${r.ops} sondagens`, "g"], [` (${num(r.ops / Math.max(1, N), 2)} por chave)`, ""]]);
+      else legenda(ctx, [[ideia[n / m < (enc ? 1 : 0.6) ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const q = tl.eventoEm(u); return q >= 0 ? est[q].total : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.colisao, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: N }, contagemEm,
+      medidor: () => `${r.ops} sondagens, ${N} chaves em ${m} casas<br>α = ${num(N / m, 2)}, ${r.pico} casas`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} chaves em ${m} casas (α = ${num(N / m, 2)}), ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} sondagens, ${num(r.ops / Math.max(1, N), 2)} por chave.`,
+    };
+  }
+
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
@@ -1979,6 +2257,11 @@
       return simWelford(faixa, ex.x.map((v) => v + d), ex.anos, ex.menu.find((m) => m.deslocamento === d), accelerando);
     }
     if (tipo === "histograma") return simHistograma(faixa, padrao ? ex.x : Algoritmos.amostra(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "palavras") return simPalavras(faixa, padrao ? ex.palavras : ex.palavras.slice(0, cfg.n), accelerando);
+    if (tipo === "repetidos") return simRepetidos(faixa, padrao ? ex.vetor : Algoritmos.valoresRepetidos(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "encadeamento" || tipo === "sondagem") {
+      return simColisao(faixa, padrao ? ex.chaves : Algoritmos.chavesColisao(cfg.n, cfg.tipo, ex.bits, cfg.semente), ex.bits, accelerando);
+    }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;
       const iniciais = cfg.semente === null ? faixa.exemplo.iniciais : Algoritmos.centrosIniciais(pontos, cfg.k, cfg.semente);

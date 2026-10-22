@@ -20,7 +20,7 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 42 árvores dos percursos e da busca em árvore, 48 entradas da AVL, 15 grafos por busca em grafo e no Dijkstra) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 42 árvores dos percursos e da busca em árvore, 48 entradas da AVL, 15 grafos por busca em grafo e no Dijkstra, 8 textos da contagem de palavras, 76 vetores de achar repetidos e 56 tabelas por colisão) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
 Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas três faixas de árvore, nas buscas em grafo e no Dijkstra, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
 
@@ -42,6 +42,8 @@ motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, 
 motor/heap.R           o heap do instrumento reescrito em R, contando casas, para conferir a fila de prioridade e o Dijkstra
 motor/arvores.py       as entradas das faixas de árvore (crescente, decrescente, embaralhada, cheia) e a árvore comum montada fora da conta
 motor/arvore.R         a árvore de busca e a AVL reescritas em R (vetores valor/esq/dir/altura), para conferir as três faixas de árvore
+motor/colisao.py       a medição comum das duas faixas de colisão: o exemplo, as sondagens × α e o total × m
+motor/colisao.R        as duas colisões refeitas em R com casas sorteadas, conferidas contra as fórmulas de Knuth
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
 motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
 instrumentos/<nome>/   estrutura instrumentada (cada leitura e escrita de casa conta 1), medir.py, ficha.json
@@ -67,6 +69,8 @@ O Heap (de mínimo, sobre o Vetor) mostra a árvore e o vetor ao mesmo tempo: s�
 
 A Árvore de busca tem a comum e a AVL lado a lado, com os mesmos valores. Cada nó da comum tem três casas (valor, esq, dir); o da AVL tem quatro (mais a altura). A demo desenha cada nó na coluna da sua ordem e na linha da sua profundidade; no meio de uma rotação a árvore fica quebrada, e o desenho congela até ela se religar e então desliza (os eventos `gira` e `girou` cercam cada rotação, sem custo). A árvore medida é montada com 0, 1, …, n − 1 em ordem: a comum vira uma fila indiana, a AVL fica com uns log₂ n níveis.
 
+O Dicionário (tabela de dispersão) tem duas versões lado a lado: encadeamento (cada casa guarda o início de uma corrente de nós com chave, valor e próx) e sondagem linear (ocupada, tenta a casa seguinte; remover deixa uma lápide). A casa sai da dispersão multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits; uma palavra vira número pelo polinômio de base 31), igual em Python e JS (o R das colisões sorteia as casas com `sample.int()`). As duas dobram m quando α = n/m passaria de 3/4; com `fixa`, m não muda. A medição põe chaves embaralhadas (`chave_medida`), porque chaves seguidas quase não colidem nessa dispersão. Fora as leituras e escritas, o registro conta `sondagens` e `comparacoes`.
+
 O Grafo tem três vistas lado a lado (matriz de adjacência, lista de adjacência e matriz de incidência): cada operação da demo roda nas três ao mesmo tempo, e a tabela mede as três num grafo de medição fixo, com V vértices e E = 3V arestas.
 
 ## Faixas que usam um instrumento por dentro
@@ -80,6 +84,14 @@ O Dijkstra roda na mesma grade das buscas, com um peso de 1 a 9 sorteado por are
 As três faixas de árvore rodam sobre as árvores do instrumento. Os Percursos fazem uma descida recursiva só, que anota o nó em três momentos (pré, em e pós-ordem), e depois a em largura com a `FilaCircular`; a memória é o pico da pilha de chamadas (a altura + 1) ou o da fila. A Busca em árvore monta a comum com os valores na ordem de chegada (fora da conta) e busca cada um, contando até duas comparações por nó, como a busca binária. A AVL insere um por um e equilibra na volta; o palco mostra a comum com os mesmos valores num placar ao lado. As duas últimas trazem um segundo gráfico, a altura × n (`tempo.altura`). O `conferir.R` das três usa `motor/arvore.R`, e o dos Percursos confere as ordens com o `dfs()` e o `bfs()` do igraph.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
+
+## O álbum Dispersão
+
+As quatro faixas rodam sobre o Dicionário (`instrumentos/dicionario/dicionario.py` e `Instrumentos.DicSondagem`/`DicEncadeamento` em JS):
+
+- **Contar palavras** (`algoritmos/palavras/`): a Canção do Exílio no palco e trechos do Dom Casmurro (Projeto Gutenberg, na pasta da faixa) nas curvas. O tempo conta as casas lidas e escritas no dicionário; a memória, as palavras distintas e as contagens. O `conferir.R` separa as palavras do seu jeito e confere cada contagem com o `table()`.
+- **Achar repetidos** (`algoritmos/repetidos/`): o dicionário anima, e a versão com o vetor só conta, como o ingênuo da janela. O tempo conta as comparações entre valores nas duas. O `conferir.R` usa o `duplicated()`.
+- **Colisão por encadeamento e por sondagem linear** (`algoritmos/encadeamento/`, `algoritmos/sondagem/`): m fixo; o tempo conta as sondagens (casas olhadas). O encarte tem o gráfico × α (`tempo.alfa`, `graficoAlfa` em `graficos.js`) com as fórmulas de Knuth, e o total × m com α fixo. O `conferir.R` refaz as tabelas em R com casas sorteadas (`motor/colisao.R`) e confere as médias do R e do Python contra as fórmulas, com tolerância.
 
 ## O álbum Estatística
 

@@ -1,0 +1,49 @@
+{
+ "id": "achar-repetidos",
+ "nome": "Achar repetidos (vetor × dicionário)",
+ "variante": "com um dicionário (sondagem linear); a versão com o vetor ao lado, para comparar",
+ "familia": "dispersão",
+ "resumo": "Para cada posição do vetor, diz se o valor já apareceu antes. Sem estrutura nenhuma, cada valor é comparado com todos os anteriores até achar um igual: num vetor sem repetidos, são n(n − 1)/2 comparações. Com o dicionário, cada valor pergunta se já passou por ali e, se não passou, entra: uma ida ao dicionário por valor. Troca-se memória (os valores guardados) por tempo.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada; e a versão sem dicionário, que compara cada valor com os anteriores"
+  },
+  {
+   "id": "dicionario",
+   "papel": "os valores já vistos, cada um como chave, na versão com sondagem linear"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n) médio",
+  "porque": "Cada valor faz no máximo duas idas ao dicionário (ver se tem e pôr), e cada ida compara poucas chaves em média, porque a tabela dobra antes de α passar de 3/4. O vetor compara cada valor com os anteriores: O(n²) quando quase não há repetidos, e menos quando um igual aparece logo.",
+  "nota": "O tempo conta as comparações entre valores, a mesma unidade nas duas versões: no dicionário, cada chave comparada com a procurada; no vetor, cada par (v[j], v[i]). Com 16 valores, as duas ainda ficam perto; com dois mil, o vetor compara centenas de vezes mais."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "O dicionário guarda cada valor distinto uma vez, até n quando não há repetidos; num vetor com poucos valores diferentes, fica pequeno. A versão com o vetor não guarda nada além de dois índices: O(1). É essa a troca: n valores guardados para não comparar O(n²) vezes. A lista das respostas é a saída e não conta.",
+  "nomes": {
+   "chaves": "valores no dicionário"
+  },
+  "cresce_com_n": [
+   "chaves"
+  ]
+ },
+ "video": {
+  "ideia": [
+   "cada valor pergunta ao dicionário se já passou por ali",
+   "o vetor compararia com todos os anteriores"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: dicionário × vetor, conforme n cresce",
+  "texto": "As mesmas contas para vetores cada vez maiores, sorteados (com repetição, de 1 a n) e com todos os valores diferentes, nas duas versões. Em escala logarítmica, quem cresce como n sobe com inclinação 1, e quem cresce como n², com inclinação 2.",
+  "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos sorteados. Distintos é o pior caso do vetor: n(n − 1)/2.",
+  "memoria": "Valores guardados no dicionário no pico, nos mesmos vetores. Nos distintos, todos entram (n); nos sorteados, só os que não se repetem. A versão com o vetor não guarda nada."
+ },
+ "pseudocodigo": "procedimento achar_repetidos(v):\n    d ← dicionário vazio\n    para i de 1 até n:\n        se d tem v[i]:\n            repetido[i] ← verdadeiro\n        senão:\n            repetido[i] ← falso\n            d[v[i]] ← verdadeiro\n    devolva repetido\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

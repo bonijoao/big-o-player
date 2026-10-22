@@ -184,6 +184,10 @@
     mediana: { entrada: "números", conta: (ex) => `${ex.n} volumes, mediana ${num(ex.mediana, 1)} (a média é ${num(ex.media, 1)}), na entrada do encarte` },
     welford: { entrada: "valores", conta: (ex) => `${ex.n} anos lidos uma vez, variância de ${num(ex.variancia, 4)} pés², na entrada do encarte` },
     histograma: { entrada: "valores", conta: (ex) => `${ex.n} erupções em ${ex.c} classes de ${num(ex.h, 1)} min, na entrada do encarte` },
+    palavras: { entrada: "palavras", artigo: "das", conta: (ex) => `${ex.n} palavras, ${ex.d} distintas, numa tabela que terminou com ${ex.m} casas, na Canção do Exílio` },
+    repetidos: { entrada: "números", conta: (ex) => `${ex.n} números, ${ex.repetido.filter(Boolean).length} repetidos; o vetor faria ${ex.ops_vetor}, no vetor do encarte` },
+    encadeamento: { entrada: "chaves", artigo: "das", conta: (ex) => `${ex.n} chaves em ${ex.m} casas (α = ${num(ex.n / ex.m, 2)}), ${num(ex.ops / ex.n, 2)} por chave, na entrada do encarte` },
+    sondagem: { entrada: "chaves", artigo: "das", conta: (ex) => `${ex.n} chaves em ${ex.m} casas (α = ${num(ex.n / ex.m, 2)}), ${num(ex.ops / ex.n, 2)} por chave, na entrada do encarte` },
   };
   // número com vírgula decimal e um número fixo de casas
   const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
@@ -217,9 +221,12 @@
       ...(temDist ? { vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])),
         acima: (dist.valores || []).filter((x) => x < dist.destaque).length } : {}),
       ...(porK ? { k: m.tempo.k_fixo, nk: m.tempo.n_fixo, k0: porK[0].n, k1: porK.at(-1).n } : {}),
+      ...(alfa ? { m: mil(alfa.m), sementes: alfa.sementes, a0: num(alfa.pontos[0].alfa, 2), a1: num(alfa.pontos.at(-1).alfa, 2) } : {}),
     })[c] ?? `{${c}}`);
     // a janela tem um segundo eixo (k, com n fixo): o tempo × k no lugar da distribuição, e a memória × k
     const porK = m.tempo.por_k;
+    // as colisões têm o gráfico × α (sondagens contra as fórmulas) no lugar do primeiro, e o total × m ao lado
+    const alfa = m.tempo.alfa;
     const temPicoCasos = casos && (porK || m.tempo.crescimento).some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
     const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro, altura = !!m.tempo.altura;
@@ -268,7 +275,7 @@
           el("h2", { text: "Memória" }),
           el("p", { class: "ordem", text: f.memoria.notacao }),
           el("p", { class: "conta", html: m.memoria.pico
-            ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>além dos ${ex.n} ${entrada} de entrada</span>`
+            ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>além ${(ENCARTE[m.tempo.tipo] || {}).artigo || "dos"} ${ex.n} ${entrada} de entrada</span>`
             : `<b>nenhum</b> valor extra<span>${esc(f.memoria.vazio || "ordena dentro do próprio vetor")}</span>` }),
           el("p", { class: "porque", text: f.memoria.porque }),
           f.memoria.nota && el("p", { class: "nota", text: f.memoria.nota }),
@@ -287,9 +294,9 @@
       casos ? el("section", { class: "secao" }, [
         el("h2", { text: gr.titulo }),
         el("p", { text: gr.texto }),
-        el("div", { class: temDist || porK || erro || altura ? "dois" : "um" }, [
-          el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(gr.crescimento) })]),
-          (temDist || porK || erro || altura) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : altura ? gr.altura : gr.distribuicao) })]),
+        el("div", { class: temDist || porK || erro || alfa || altura ? "dois" : "um" }, [
+          el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(alfa ? gr.alfa : gr.crescimento) })]),
+          (temDist || porK || erro || alfa || altura) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : alfa ? gr.crescimento : altura ? gr.altura : gr.distribuicao) })]),
         ]),
       ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
@@ -344,7 +351,11 @@
 
     redesenhar = () => {
       const Gr = window.Graficos;
-      if (casos) {
+      if (casos && alfa) {
+        Gr.graficoAlfa(fig1, f);
+        Gr.graficoCasos(fig2, f, "ops");
+        if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico");
+      } else if (casos) {
         Gr.graficoCasos(fig1, f, "ops");
         if (porK) Gr.graficoCasos(fig2, f, "ops", "por_k");
         else if (erro) Gr.graficoErro(fig2, f);
@@ -462,6 +473,15 @@
       opcoes: [["padrao", "nada (o do encarte)", "o LakeHuron do encarte"], ["d6", "10⁶", "o LakeHuron + 10⁶"], ["d8", "10⁸", "o LakeHuron + 10⁸"], ["d9", "10⁹", "o LakeHuron + 10⁹"]] },
     histograma: { rotulo: "dados", ns: [50, 100, 200, 400], sortear: "sortear", sorteado: "normal",
       opcoes: [["padrao", "o do encarte", "o faithful do encarte"], ["normal", "normal", "amostra normal"], ["uniforme", "uniforme", "amostra uniforme"], ["bimodal", "bimodal", "amostra bimodal"]] },
+    // a contagem de palavras roda sempre sobre a Canção do Exílio: inteira, ou as n primeiras palavras
+    palavras: { rotulo: "texto", ns: [20, 40, 60, 80], semSorteio: true,
+      opcoes: [["padrao", "a canção inteira", "a Canção do Exílio inteira"], ["comeco", "o começo", "o começo da Canção do Exílio"]] },
+    repetidos: { rotulo: "vetor", ns: [8, 12, 16, 24, 32], sortear: "sortear vetor", sorteado: "sorteada",
+      opcoes: [["padrao", "o do encarte", "o vetor do encarte"], ["sorteada", "sorteado", "vetor sorteado"], ["distintos", "todos diferentes", "vetor sem repetidos"], ["poucos", "poucos valores", "vetor com poucos valores"]] },
+    encadeamento: { rotulo: "chaves", ns: [4, 8, 12, 16, 24, 32], sortear: "sortear chaves", sorteado: "sorteadas",
+      opcoes: [["padrao", "as do encarte", "as chaves do encarte"], ["sorteadas", "sorteadas", "chaves sorteadas"], ["mesma_casa", "na mesma casa", "todas na mesma casa"]] },
+    sondagem: { rotulo: "chaves", ns: [4, 8, 12, 14, 15], sortear: "sortear chaves", sorteado: "sorteadas",
+      opcoes: [["padrao", "as do encarte", "as chaves do encarte"], ["sorteadas", "sorteadas", "chaves sorteadas"], ["mesma_casa", "na mesma casa", "todas na mesma casa"]] },
   };
   const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
   const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];

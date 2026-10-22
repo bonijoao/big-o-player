@@ -1,0 +1,7 @@
+{
+  "referencia": "duplicated() do R e comparacoes_vetor() (laço em R)",
+  "versao_r": "4.6.0",
+  "vetores": 76,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 76 vetores (sorteados, todos distintos e com poucos valores, de 0 a 200 valores): as posições repetidas batem com o duplicated() do R, as comparações da versão com o vetor batem com um laço em R, e o dicionário guarda no pico exatamente os valores distintos (length(unique(v)))."
+}

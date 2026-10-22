@@ -44,7 +44,8 @@ function confereLinhas(pasta, eventos) {
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
     atribui: "passo", insere: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo",
     proximo: "passo", vira: "passo", tira: "passo", poe: "passo", maximo: "passo",
-    desce: "passo", novo: "passo", liga: "passo", gira: "passo", girou: "passo", equilibra: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    busca: "decisao", dispersa: "passo", inicio: "passo", sonda: "decisao", liga: "passo",
+    desce: "passo", novo: "passo", gira: "passo", girou: "passo", equilibra: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -107,6 +108,13 @@ function confereVars(pasta, vetor, eventos) {
     histograma: (e) => (e.t !== "le" || e.vars.i === e.i + 1) && (e.t !== "conta" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1))
       && (e.t !== "classes" || e.vars.c > 0),
     kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
+    palavras: (e) => e.t === "atribui" || e.t === "devolva" || (e.vars.i === e.i + 1 && typeof e.vars["p[i]"] === "string")
+      && (e.t !== "poe" || (e.vars["d[p[i]]"] === 1 && e.vars["palavras distintas"] >= 1)) && (e.t !== "conta" || e.vars["d[p[i]]"] >= 2),
+    repetidos: (e) => (e.t !== "le" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i])) && (e.t !== "achou" || e.vars["repetido[i]"] === true)
+      && (e.t !== "poe" || (e.vars["repetido[i]"] === false && e.vars["valores no dicionário"] >= 1)),
+    encadeamento: (e) => (e.t !== "dispersa" || (e.vars.k === e.k && e.vars.i === e.i + 1)) && (e.t !== "avanca" || e.vars["sondagens desta chave"] === e.pos + 1),
+    sondagem: (e) => (e.t !== "dispersa" && e.t !== "sonda" && e.t !== "avanca" || (e.vars.k === e.k && e.vars.i === e.i + 1))
+      && (e.t !== "poe" || e.vars.n >= 1),
   }[pasta];
   let erros = 0;
   const abertas = [];
@@ -114,7 +122,8 @@ function confereVars(pasta, vetor, eventos) {
     if (e.t === "entra") abertas.push(e.chamada);
     if (e.t === "sai") { abertas.pop(); if (e.nivel !== abertas.length || e.chamada !== (abertas.at(-1) ?? 0)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: retorno no nível ${e.nivel}, chamada ${e.chamada}`); } }
     // escalares: número, booleano, null ou um símbolo (os parênteses mostram o caractere lido)
-    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean" || (typeof x === "string" && x.length === 1));
+    // (contar palavras mostra a palavra da vez)
+    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean" || (typeof x === "string" && (x.length === 1 || pasta === "palavras")));
     if (!escalares || !regra(e)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: variáveis do evento ${e.t} ${JSON.stringify(e.vars)}`); }
     if (v && e.t === "troca") { const x = v[e.i]; v[e.i] = v[e.j]; v[e.j] = x; }
     if (v && e.t === "escreve" && e.onde === "v") v[e.k] = e.x;
@@ -250,6 +259,37 @@ for (const pasta of ["largura", "profundidade"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: dijkstra (${casos.length} grafos)`);
 }
 
+// ---------- dispersão ----------
+
+{
+  const d = ler("algoritmos/palavras/dados.json");
+  const medidas = (r) => ({ d: r.d, m: r.m, ops: r.ops, comparacoes: r.comparacoes, pico: r.pico, contagens: r.contagens });
+  let ok = confere("palavras pico", A.palavras(d.exemplo.palavras).pico, d.memoria.pico);
+  for (const c of d.conferir) ok = confere(`palavras ${c.texto}`, medidas(A.palavras(c.palavras)), medidas(c)) && ok;
+  for (const c of d.conferir) ok = confereLinhas("palavras", A.palavras(c.palavras).eventos) && confereVars("palavras", null, A.palavras(c.palavras).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: palavras (${d.conferir.length} textos)`);
+}
+
+{
+  const d = ler("algoritmos/repetidos/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ repetido: r.repetido, ops: r.ops, ops_vetor: r.ops_vetor, pico: r.pico, casas: r.casas });
+  const casos = [{ ...ex, caso: "encarte", pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`repetidos ${c.caso} n=${c.vetor.length}`, medidas(A.repetidos(c.vetor)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("repetidos", A.repetidos(c.vetor).eventos) && confereVars("repetidos", c.vetor, A.repetidos(c.vetor).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: repetidos (${casos.length} vetores)`);
+}
+
+for (const pasta of ["encadeamento", "sondagem"]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
+  const medidas = (r) => ({ sondagens: r.sondagens, ops: r.ops, pico: r.pico, casas: r.casas, tabela: r.tabela });
+  const casos = [{ ...ex, caso: "encarte", pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`${pasta} ${c.caso} n=${c.chaves.length}`, medidas(A[pasta](c.chaves, c.bits)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas(pasta, A[pasta](c.chaves, c.bits).eventos) && confereVars(pasta, null, A[pasta](c.chaves, c.bits).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} tabelas)`);
+}
+
 // ---------- árvores ----------
 
 for (const [pasta, roda, chaves] of [
@@ -349,6 +389,20 @@ for (const [pasta, roda, chaves] of [
       const dentro = [s, c, d].every((v) => v.length === n && v.every((x) => Number.isInteger(x) && x >= 10 && x <= 99));
       const picos = [3, 4, 6, 8].every((k) => A.janela(s, k).pico <= k && A.janela(d, k).pico === Math.min(k, n));
       ok = confere(`valores n=${n} s=${semente}`, [dentro, sobe(c), desce(d), picos], [true, true, true, true]) && ok;
+    }
+  }
+  // repetidos: valores de 10 a 99 (poucos: de 10 a 19), distintos sem repetir; colisões: chaves distintas de 100 a 999, e "mesma casa" numa casa só
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [8, 12, 16, 24, 32]) {
+      const [s, dd, p] = ["sorteada", "distintos", "poucos"].map((caso) => A.valoresRepetidos(n, caso, semente));
+      ok = confere(`repetidos n=${n} s=${semente}`, [s.every((x) => x >= 10 && x <= 99), new Set(dd).size, p.every((x) => x >= 10 && x <= 19), A.repetidos(dd).ops_vetor],
+        [true, n, true, n * (n - 1) / 2]) && ok;
+    }
+    for (const n of [4, 8, 12, 15, 32]) {
+      const so = A.chavesColisao(n, "sorteadas", 4, semente), mc = A.chavesColisao(n, "mesma_casa", 4, semente);
+      const casas = new Set(mc.map((k) => I.casaDe(k, 4)));
+      ok = confere(`chaves n=${n} s=${semente}`, [new Set(so).size, so.every((k) => k >= 100 && k <= 999), new Set(mc).size, casas.size],
+        [n, true, n, 1]) && ok;
     }
   }
   // árvores: n valores distintos de 10 a 99; a crescente sobe; a cheia monta a árvore mais baixa
