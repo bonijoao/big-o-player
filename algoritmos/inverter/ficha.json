@@ -19,7 +19,7 @@
   "notacao": "O(1)",
   "porque": "Só guarda três ponteiros, o anterior, o atual e o próximo, sejam 8 nós ou um milhão. Inverter copiando os valores para uma pilha também daria O(n) de tempo, mas guardaria n valores.",
   "vazio": "vira os ponteiros dentro da própria lista",
-  "soltos": "três ponteiros"
+  "soltos": "só guarda três ponteiros"
  },
  "video": {
   "ideia": [

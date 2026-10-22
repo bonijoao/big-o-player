@@ -1,0 +1,7 @@
+{
+  "referencia": "hist(plot = FALSE): $breaks e $counts",
+  "versao_r": "4.6.0",
+  "vetores": 10,
+  "tudo_ok": true,
+  "resumo": "No R 4.6.0, o hist(faithful$eruptions) dá 8 classes de 1,5 a 5,5, com as contagens 55, 37, 5, 9, 34, 75, 54, 3. Em 10 vetores (o faithful e amostras normais, uniformes e bimodais, 48 valores em cima de um limite de classe), os limites e as contagens batem classe por classe com o Python."
+}

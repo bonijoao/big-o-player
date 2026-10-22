@@ -1,0 +1,47 @@
+{
+ "id": "histograma",
+ "nome": "Histograma",
+ "variante": "classes de Sturges, como o hist() do R",
+ "familia": "estatística",
+ "resumo": "Conta quantos valores caem em cada classe. Uma passada acha o menor e o maior, as classes saem da regra de Sturges com limites redondos, e outra passada põe cada valor na sua classe com uma conta só, sem procurar.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "as contagens, uma casa por classe"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada valor é lido duas vezes: uma para achar o menor e o maior, outra para cair na sua classe. Com classes da mesma largura h, a classe de x sai de teto((x − a)/h), uma conta que não depende de quantas classes há. São 2n leituras, qualquer que seja a forma dos dados.",
+  "nota": "Com classes de larguras diferentes, a classe teria de ser procurada nos limites: uma busca binária custa log₂ c por valor, e o total vira O(n log c). As classes são fechadas à direita, como no hist() do R: um valor em cima de um limite fica na classe de baixo, e a primeira classe também fica com o próprio limite de baixo."
+ },
+ "memoria": {
+  "notacao": "O(c)",
+  "porque": "Guarda as contagens, uma casa por classe. Os valores são a entrada e não entram na conta.",
+  "nota": "Pela regra de Sturges, c ≈ log₂ n + 1: dobrar n acrescenta uma classe. O pretty() do R ainda arredonda os limites para números redondos, e o número de classes muda com onde caem o menor e o maior.",
+  "nomes": {
+   "contagens": "contagens (uma por classe)"
+  },
+  "cresce_com_n": [],
+  "vazados": "crescem como log₂ n"
+ },
+ "video": {
+  "ideia": [
+   "primeiro, uma passada para achar o menor e o maior",
+   "depois, cada valor cai na sua classe com uma conta só"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo e memória: o que cresce com n, e o que muda com os dados",
+  "texto": "As mesmas contas para cada vez mais valores e três formas de dados. Em escala logarítmica, quem cresce como n sobe em linha reta: as leituras não dependem da forma dos dados, só de n.",
+  "crescimento": "Leituras para n de {n0} a {n1}, nas três formas. {dados}. Tracejada: 2n.",
+  "distribuicao": "{vezes} amostras normais de {nd} valores: de {min} a {max} classes, conforme onde caem o menor e o maior. A barra preta é o faithful.",
+  "rotulo": "classes (n = {nd})",
+  "memoria": "Classes (a memória) para cada n, nas três formas (a maior entre os sorteios). Tracejada: log₂ n + 1, a regra de Sturges sem arredondar. Os limites redondos fazem o número de classes andar aos saltos, e às vezes parar."
+ },
+ "pseudocodigo": "procedimento histograma(x):\n    menor ← x[1];  maior ← x[1]\n    para i de 2 até n:\n        se x[i] < menor:\n            menor ← x[i]\n        senão se x[i] > maior:\n            maior ← x[i]\n    c, a, h ← classes de Sturges, de menor a maior\n    contagens ← c zeros\n    para i de 1 até n:\n        j ← teto((x[i] − a) / h)\n        se j < 1:\n            j ← 1\n        contagens[j] ← contagens[j] + 1\n    devolva contagens\n",
+ "placa": {
+  "autor": "Karl Pearson (o nome); Herbert Sturges (o número de classes)",
+  "ano": "1895; 1926"
+ }
+}

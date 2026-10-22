@@ -176,7 +176,13 @@
     inverter: { entrada: "nós", conta: (ex) => `${ex.n} nós, ${ex.casas} casas lidas e escritas, na lista do encarte` },
     janela: { entrada: "números", conta: (ex) => `${ex.n} números, janela de ${ex.k}; o ingênuo faria ${ex.ingenuo}, no vetor do encarte` },
     grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
+    mediana: { entrada: "números", conta: (ex) => `${ex.n} volumes, mediana ${num(ex.mediana, 1)} (a média é ${num(ex.media, 1)}), na entrada do encarte` },
+    welford: { entrada: "valores", conta: (ex) => `${ex.n} anos lidos uma vez, variância de ${num(ex.variancia, 4)} pés², na entrada do encarte` },
+    histograma: { entrada: "valores", conta: (ex) => `${ex.n} erupções em ${ex.c} classes de ${num(ex.h, 1)} min, na entrada do encarte` },
   };
+  // número com vírgula decimal e um número fixo de casas
+  const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+  const decisoes = (c) => (c.decisoes.length === 1 ? "decisão" : "decisões");
   const nomeEstrutura = (ex) => (ex.dist ? "fila" : "pilha");
 
   const PALAVRAS = /^(\s*)(procedimento|para|enquanto|senão se|senão|se|pare|devolva)\b/;
@@ -203,14 +209,15 @@
     // as legendas dos gráficos das faixas novas: texto da ficha, números do dados.json
     const preencher = (t) => (t || "").replace(/\{(\w+)\}/g, (_, c) => ({
       n0: mil(m.tempo.crescimento[0].n), n1: mil(m.tempo.crescimento.at(-1).n), dados: m.tempo.crescimento_dados[0].toUpperCase() + m.tempo.crescimento_dados.slice(1),
-      ...(dist ? { vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])) } : {}),
+      ...(temDist ? { vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])),
+        acima: (dist.valores || []).filter((x) => x < dist.destaque).length } : {}),
       ...(porK ? { k: m.tempo.k_fixo, nk: m.tempo.n_fixo, k0: porK[0].n, k1: porK.at(-1).n } : {}),
     })[c] ?? `{${c}}`);
     // a janela tem um segundo eixo (k, com n fixo): o tempo × k no lugar da distribuição, e a memória × k
     const porK = m.tempo.por_k;
     const temPicoCasos = casos && (porK || m.tempo.crescimento).some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
-    const dist = m.tempo.distribuicao;
+    const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro;
     const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div");
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
@@ -264,7 +271,7 @@
         el("section", {}, [
           el("h2", { text: "Caminhos" }),
           el("p", { class: "ordem", text: `M = ${c.M}` }),
-          el("p", { class: "conta", html: `<b>${c.decisoes.length}</b> ${c.decisoes.length === 1 ? "decisão" : "decisões"} + 1<span>complexidade ciclomática da função</span>` }),
+          el("p", { class: "conta", html: `<b>${c.decisoes.length}</b> ${decisoes(c)} + 1<span>complexidade ciclomática da função</span>` }),
           el("p", { class: "porque", text: f.ciclomatica.porque }),
           f.ciclomatica.regra && el("p", { class: "nota", text: f.ciclomatica.regra }),
         ]),
@@ -275,9 +282,9 @@
       casos ? el("section", { class: "secao" }, [
         el("h2", { text: gr.titulo }),
         el("p", { text: gr.texto }),
-        el("div", { class: dist || porK ? "dois" : "um" }, [
+        el("div", { class: temDist || porK || erro ? "dois" : "um" }, [
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(gr.crescimento) })]),
-          (dist || porK) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : gr.distribuicao) })]),
+          (temDist || porK || erro) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : gr.distribuicao) })]),
         ]),
       ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
@@ -312,7 +319,7 @@
         el("h2", { text: "Caminhos: onde o código se divide" }),
         el("p", { text: "O código abaixo é exatamente o que roda e é medido. Os pontos à esquerda são os comandos; as curvas, os saltos possíveis (tracejadas: de volta ao começo do laço). Os pontos verdes são as decisões." }),
         el("div", { class: "contas-m", html:
-          `<span>${c.decisoes.length} ${c.decisoes.length === 1 ? "decisão" : "decisões"} + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
+          `<span>${c.decisoes.length} ${decisoes(c)} + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
         codigo,
       ]),
       el("section", { class: "secao ficha" }, [
@@ -335,7 +342,8 @@
       if (casos) {
         Gr.graficoCasos(fig1, f, "ops");
         if (porK) Gr.graficoCasos(fig2, f, "ops", "por_k");
-        else if (dist) Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
+        else if (erro) Gr.graficoErro(fig2, f);
+        else if (temDist) Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
         if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico", porK ? "por_k" : "crescimento");
       } else if (ordena) {
         Gr.graficoOrdenacao(fig1, f, "comparacoes");
@@ -359,7 +367,7 @@
     $("#caixa-fluxo-titulo").replaceChildren(`${f.nome}: fluxograma`);
     $("#caixa-fluxo-corpo").replaceChildren(
       el("p", { class: "caixa-nota", text: "Gerado do pseudocódigo: losango para cada decisão (uma condição com \"e\" vira dois), hexágono para cada laço \"para\", e a seta da esquerda volta ao começo do laço." }),
-      el("p", { class: "contas-m", html: `<span>${p.decisoes.length} ${p.decisoes.length === 1 ? "decisão" : "decisões"} + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
+      el("p", { class: "contas-m", html: `<span>${p.decisoes.length} ${decisoes(p)} + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
       el("div", { class: "fluxo", "data-faixa": f.id }, window.Fluxograma(p)),
     );
     if (!caixaFluxo.open) caixaFluxo.showModal();
@@ -431,6 +439,13 @@
       opcoes: [["padrao", "o do encarte", "o vetor do encarte"], ["sorteada", "sorteado", "vetor sorteado"], ["crescente", "crescente", "vetor crescente"], ["decrescente", "decrescente", "vetor decrescente"]] },
     grafo: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado", fixos: ["grade", "caminho"],
       opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
+    mediana: { rotulo: "entrada", ns: [8, 16, 24, 32, 48, 64], sortear: "embaralhar", sorteado: "aleatorio", fixos: ["ordenado", "invertido"],
+      opcoes: [["padrao", "a do encarte", "o trees do encarte"], ["aleatorio", "aleatória", "entrada aleatória"], ["ordenado", "já ordenada", "entrada já ordenada"], ["invertido", "invertida", "entrada invertida"]] },
+    // o Welford roda sempre sobre os 98 anos do encarte; o menu só soma uma constante a todos
+    welford: { rotulo: "somar", ns: [98], nFixo: true, semSorteio: true,
+      opcoes: [["padrao", "nada (o do encarte)", "o LakeHuron do encarte"], ["d6", "10⁶", "o LakeHuron + 10⁶"], ["d8", "10⁸", "o LakeHuron + 10⁸"], ["d9", "10⁹", "o LakeHuron + 10⁹"]] },
+    histograma: { rotulo: "dados", ns: [50, 100, 200, 400], sortear: "sortear", sorteado: "normal",
+      opcoes: [["padrao", "o do encarte", "o faithful do encarte"], ["normal", "normal", "amostra normal"], ["uniforme", "uniforme", "amostra uniforme"], ["bimodal", "bimodal", "amostra bimodal"]] },
   };
   const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
   const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];
@@ -634,9 +649,10 @@
       $("#cfg-tipo").replaceChildren(...E.opcoes.map(([v, t]) => el("option", { value: v, text: t })));
       const ns = E.ns.includes(c.n) ? E.ns : [...E.ns, c.n].sort((p, q) => p - q);   // o n do encarte sempre aparece
       $("#cfg-n").replaceChildren(...ns.map((n) => el("option", { text: String(n) })));
-      $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao";
+      $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao" || !!E.nFixo;
     }
     $("#cfg-sortear").textContent = km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear;
+    $("#cfg-sortear").hidden = !km && !!ENTRADAS[tipoDe(faixa)].semSorteio;
   }
 
   function mudarCfg(muda) {

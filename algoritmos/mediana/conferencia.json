@@ -1,0 +1,7 @@
+{
+  "referencia": "median() e quickselect_r() (reimplementação em R)",
+  "versao_r": "4.6.0",
+  "vetores": 12,
+  "tudo_ok": true,
+  "resumo": "No R 4.6.0, o median(trees$Volume) dá 24,2, a mesma mediana do Python. Em 12 vetores (o trees, embaralhamentos dele, inteiros com empates, n par e ímpar, já ordenados e invertidos), a mediana bate com o median() e as comparações e as trocas batem uma a uma com uma reimplementação em R."
+}

@@ -281,3 +281,101 @@ def montar_janela(pasta):
         rich(d, [("n = ", ""), (str(N), "b"), (f", k = {k}: ", ""), (f"{ex['ops']} comparações", "bg"), (f" (ingênuo: {ex['ingenuo']})", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+def _num(x, casas=1):
+    """Número com vírgula decimal e separador de milhar, como na página."""
+    s = f"{x:,.{casas}f}".replace(",", " ").replace(".", ",").replace(" ", ".")
+    return s
+
+
+def montar_mediana(pasta):
+    """Mediana por quickselect: o vetor do encarte como o algoritmo o deixa,
+    com a casa do meio em verde (o resultado) e a média tracejada."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    v, N = list(ex["vetor"]), ex["n"]
+    for e in ex["eventos"]:              # refaz as trocas para chegar ao vetor final
+        if e[0] == "troca":
+            v[e[1]], v[e[2]] = v[e[2]], v[e[1]]
+    k = ex["k"] - 1
+    BTOPO, BBASE = 96, 410
+    bw = (BX1 - BX0) / N
+    topo = max(v)
+    altura = lambda x: x / topo * (BBASE - BTOPO)
+
+    def cena(d, t, im):
+        line(d, (BX0, BBASE + 1), (BX1, BBASE + 1), PALIDO, w=1)
+        for i, x in enumerate(v):
+            cor = GREEN if i == k else INK
+            d.rectangle((BX0 + i * bw + bw * 0.12, BBASE - altura(x), BX0 + i * bw + bw * 0.88, BBASE), fill=cor)
+        ym = BBASE - altura(ex["media"])
+        for x0 in range(BX0, BX1, 9):
+            line(d, (x0, ym), (min(x0 + 5, BX1), ym), GRAY, w=1)
+        texto(d, "média", BX0 - 6, ym - 8, 11, GRAY, align="r")
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("mediana", _num(ex["mediana"]), 26, False),
+                    ("média", _num(ex["media"]), 20, False)])
+        rich(d, [("mediana ", ""), (_num(ex["mediana"]), "bg"), (f": {ex['ops']} comparações, sem ordenar tudo", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_welford(pasta):
+    """Welford: a série do LakeHuron com a média corrente e a faixa de ±1 dp
+    que ela vai formando, e a variância final em verde."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    anos, x = ex["anos"], ex["x"]
+    medias, dps, n, media, m2 = [], [], 0, 0.0, 0.0
+    for valor in x:
+        n += 1
+        delta = valor - media
+        media += delta / n
+        m2 += delta * (valor - media)
+        medias.append(media)
+        dps.append((m2 / (n - 1)) ** 0.5 if n > 1 else 0.0)
+    lo, hi = min(x) - 0.3, max(x) + 0.3
+    GY0, GY1 = 110, 400
+    gx = lambda i: BX0 + i / (len(x) - 1) * (BX1 - BX0)
+    gy = lambda y: GY1 - (y - lo) / (hi - lo) * (GY1 - GY0)
+
+    def cena(d, t, im):
+        cima = [(gx(i), gy(medias[i] + dps[i])) for i in range(1, len(x))]
+        baixo = [(gx(i), gy(medias[i] - dps[i])) for i in range(len(x) - 1, 0, -1)]
+        d.polygon(cima + baixo, fill=CLARO)
+        d.line([(gx(i), gy(medias[i])) for i in range(len(x))], fill=INK, width=3)
+        for i, y in enumerate(x):
+            ponto(d, gx(i), gy(y), 2.6, GRAY)
+        line(d, (BX0, GY1 + 8), (BX1, GY1 + 8), PALIDO, w=1)
+        texto(d, str(anos[0]), BX0, GY1 + 14, 11, GRAY)
+        texto(d, str(anos[-1]), BX1, GY1 + 14, 11, GRAY, align="r")
+        _painel(d, [("leituras", str(ex["ops"]), 40, False), ("variância", _num(ex["variancia"], 4), 26, True),
+                    ("média", _num(ex["media"], 2), 20, False)])
+        rich(d, [("uma passada: variância ", ""), (_num(ex["variancia"], 4), "bg"), (f", sem guardar os {ex['n']} anos", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_histograma(pasta):
+    """Histograma: as contagens do faithful em verde (o resultado), com os
+    limites das classes embaixo."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    cont, a, h, c = ex["contagens"], ex["a"], ex["h"], ex["c"]
+    BTOPO, BBASE = 110, 400
+    bw = (BX1 - BX0) / c
+    topo = max(cont)
+
+    def cena(d, t, im):
+        line(d, (BX0, BBASE + 1), (BX1, BBASE + 1), PALIDO, w=1)
+        for j, q in enumerate(cont):
+            hh = q / topo * (BBASE - BTOPO)
+            d.rectangle((BX0 + j * bw + 2, BBASE - hh, BX0 + (j + 1) * bw - 2, BBASE), fill=GREEN)
+            texto(d, str(q), BX0 + (j + 0.5) * bw, BBASE - hh - 18, 12, INK, align="c")
+        for j in range(c + 1):
+            texto(d, _num(a + j * h), BX0 + j * bw, BBASE + 8, 11, GRAY, align="c")
+        _painel(d, [("leituras", str(ex["ops"]), 40, False), ("classes", str(c), 26, True),
+                    ("valores", str(ex["n"]), 20, False)])
+        rich(d, [(f"{ex['n']} erupções em ", ""), (f"{c} classes", "bg"), (f": {ex['ops']} leituras", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
