@@ -3,7 +3,7 @@
  "nome": "Árvore equilibrada (AVL)",
  "variante": "insere e gira na volta da recursão",
  "familia": "árvores e heaps",
- "resumo": "Insere como a árvore de busca comum: desce comparando e pendura o nó novo onde a descida acaba. A diferença está na volta da recursão. Cada nó do caminho lê a altura dos dois filhos e, se um lado ficou dois níveis mais alto que o outro, gira: o filho do lado pesado sobe e o nó desce para o lado leve (rotação simples). Se o neto pesado está do lado de dentro, ele sobe primeiro (rotação dupla). A árvore nunca passa de 1,44 log₂ n níveis, chegue a entrada na ordem que chegar.",
+ "resumo": "Insere como a árvore de busca comum: desce comparando e pendura o nó novo onde a descida acaba. A diferença está na volta da recursão. Cada nó do caminho lê a altura dos dois filhos e, se um lado ficou dois níveis mais alto que o outro, gira: o filho do lado pesado sobe e o nó desce para o lado leve (rotação simples). Se o neto pesado está do lado de dentro, ele sobe primeiro (rotação dupla). A árvore nunca passa de 1,44 log₂(n + 2) níveis, chegue a entrada na ordem que chegar.",
  "instrumentos": [
   {
    "id": "arvore",
@@ -12,8 +12,8 @@
  ],
  "tempo": {
   "notacao": "O(log n) por operação",
-  "porque": "A descida compara até duas vezes por nível (diferente? menor?), e a AVL tem no máximo 1,44 log₂ n níveis. Na volta, cada nível lê duas alturas e escreve uma, e gira no máximo uma ou duas vezes numa inserção. Inserir n valores custa O(n log n), em qualquer ordem.",
-  "nota": "Por nível, a AVL custa mais que a comum (as alturas e as rotações). Com a entrada embaralhada, as duas empatam; em ordem, a comum desce n níveis e a AVL, log₂ n."
+  "porque": "A descida compara até duas vezes por nível (diferente? menor?), e a AVL tem no máximo 1,44 log₂(n + 2) níveis. Na volta, cada nível lê duas alturas e escreve uma, e gira no máximo uma ou duas vezes numa inserção. Inserir n valores custa O(n log n), em qualquer ordem.",
+  "nota": "Por nível, a AVL custa mais que a comum (as alturas e as rotações). Com a entrada embaralhada, a AVL ainda compara um pouco menos (fica mais baixa), mas lê e escreve mais casas que a comum; em ordem, a comum desce n níveis e a AVL, log₂ n."
  },
  "memoria": {
   "notacao": "O(n)",
@@ -35,7 +35,7 @@
  },
  "graficos": {
   "titulo": "Tempo: a AVL contra a comum",
-  "texto": "Os mesmos valores inseridos nas duas árvores, em ordem crescente e embaralhados. Em escala logarítmica, a comum em ordem sobe reta com n; as outras três deitam como log n. A AVL em ordem fica até abaixo da embaralhada: girando, ela monta a árvore mais baixa possível.",
+  "texto": "Os mesmos valores inseridos nas duas árvores, em ordem crescente e embaralhados. Em escala logarítmica, a comum em ordem sobe reta com n; as outras três deitam como log n. Em ordem, a AVL compara um pouco mais que embaralhada, mas termina com a árvore mais baixa possível (veja a altura ao lado).",
   "crescimento": "Comparações por inserção, em média, para n de {n0} a {n1}. {dados}; a faixa cinza vai da menor à maior média da AVL embaralhada. Tracejadas: n e log₂ n, de referência.",
   "altura": "A altura das mesmas árvores no fim. A AVL fica entre log₂(n + 1) e 1,44 log₂(n + 2) em qualquer ordem; a comum em ordem tem n níveis. Tracejadas: n e log₂ n."
  },

@@ -4,7 +4,7 @@ distintos numa ordem de chegada, e a árvore comum montada com eles fora da cont
 A ordem de chegada é que decide a forma da árvore comum:
   crescente     cada valor é o maior até ali: a fila indiana, pendurada à direita
   decrescente   a fila indiana pendurada à esquerda
-  embaralhada   sorteada: em média, cada valor fica a uns 1,4 log₂ n níveis da raiz
+  embaralhada   sorteada: em média, cada valor fica a pouco mais de log₂ n níveis da raiz
   cheia         o do meio primeiro, depois os do meio de cada metade, nível por
                 nível: com n = 2ᵏ − 1, a árvore sai cheia, com k níveis
 """

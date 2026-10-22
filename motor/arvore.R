@@ -158,15 +158,19 @@ ordens_igraph_r <- function(a) {
        largura = a$valores[as.integer(bfs$order)])
 }
 
+# a descida recursiva dos percursos: o pico da pilha (a chamada com p nulo também
+# conta), os nós visitados e as casas lidas (o valor, o esq e o dir de cada nó)
 pilha_percurso_r <- function(a) {
-  pico <- 0L
+  pico <- 0L; visitas <- 0L; casas <- 0L
   visita <- function(p, nivel) {
     pico <<- max(pico, nivel)
     if (p == 0L) return(invisible(NULL))
-    visita(a$esq[p], nivel + 1L); visita(a$dir[p], nivel + 1L)
+    visitas <<- visitas + 1L; casas <<- casas + 1L      # lê o valor
+    casas <<- casas + 1L; visita(a$esq[p], nivel + 1L)  # lê o esq e desce
+    casas <<- casas + 1L; visita(a$dir[p], nivel + 1L)  # lê o dir e desce
   }
   visita(a$raiz, 1L)
-  pico
+  list(pico = pico, visitas = visitas, casas = casas)
 }
 
 fila_percurso_r <- function(a) {

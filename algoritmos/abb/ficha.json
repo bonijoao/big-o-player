@@ -3,7 +3,7 @@
  "nome": "Busca em árvore",
  "variante": "na árvore de busca comum, montada em ordem × embaralhada",
  "familia": "árvores e heaps",
- "resumo": "Desce da raiz comparando o valor procurado com o de cada nó. Igual, achou; menor, só pode estar à esquerda; maior, só à direita. Cada nível descarta um lado inteiro, como a busca binária corta o vetor, e a busca custa no máximo a altura da árvore. Só que a altura depende da ordem em que os valores chegaram: embaralhados, a árvore fica baixa, com uns 1,4 log₂ n níveis em média até cada valor; em ordem, vira uma fila indiana, e buscar volta a ser olhar um por um.",
+ "resumo": "Desce da raiz comparando o valor procurado com o de cada nó. Igual, achou; menor, só pode estar à esquerda; maior, só à direita. Cada nível descarta um lado inteiro, como a busca binária corta o vetor, e a busca custa no máximo a altura da árvore. Só que a altura depende da ordem em que os valores chegaram: embaralhados, a árvore fica baixa, e cada valor mora, em média, a pouco mais de log₂ n níveis da raiz; em ordem, vira uma fila indiana, e buscar volta a ser olhar um por um.",
  "instrumentos": [
   {
    "id": "arvore",
@@ -35,7 +35,7 @@
   "titulo": "Tempo: a ordem de chegada decide",
   "texto": "As mesmas buscas em árvores cada vez maiores, montadas com os valores em ordem crescente e embaralhados. Em escala logarítmica, a fila indiana sobe reta com n; a embaralhada quase deita, como log n.",
   "crescimento": "Comparações por busca, em média, buscando cada um dos n valores, para n de {n0} a {n1}. {dados}; a faixa cinza vai da menor à maior média das embaralhadas. Tracejadas: n e log₂ n, de referência.",
-  "altura": "A altura das mesmas árvores (níveis da raiz à folha mais funda). Em ordem crescente, h = n; embaralhada, h fica perto de 3 log₂ n, e a média até cada valor, perto de 1,4 log₂ n. Tracejadas: n e log₂ n."
+  "altura": "A altura das mesmas árvores (níveis da raiz à folha mais funda). Em ordem crescente, h = n; embaralhada, h cresce como log n (nesses tamanhos, perto de 2 log₂ n), e a profundidade média de um valor fica pouco acima de log₂ n. Tracejadas: n e log₂ n."
  },
  "pseudocodigo": "procedimento buscar(raiz, x):\n    p ← raiz;  achou ← falso\n    enquanto p ≠ nulo:\n        se x = p.valor:\n            achou ← verdadeiro\n            pare\n        se x < p.valor:\n            p ← p.esq\n        senão:\n            p ← p.dir\n    devolva achou\n",
  "placa": {

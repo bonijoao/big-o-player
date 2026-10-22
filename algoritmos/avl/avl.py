@@ -2,7 +2,7 @@
 comparando, mas na volta da recursão cada nó do caminho confere as alturas dos
 dois lados. Se um ficou dois níveis mais alto, gira: o filho do lado pesado
 sobe e o nó desce (rotação simples), ou o neto sobe primeiro (dupla). A árvore
-nunca passa de 1,44 log₂ n níveis, em qualquer ordem de chegada. Roda sobre a
+nunca passa de 1,44 log₂(n + 2) níveis, em qualquer ordem de chegada. Roda sobre a
 AVL do instrumento Árvore de busca, que guarda a altura de cada nó e sabe girar."""
 import os
 import sys

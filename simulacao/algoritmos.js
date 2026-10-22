@@ -658,8 +658,23 @@
     const c = contador(), I = instrumentos(), a = I.ArvoreAVL(), reg = a.reg;
     const vivos = new Map();
     const foto = (e) => c.push({ ...e, ...retrato(vivos, a.raiz) });
-    let rotacoes = 0;
+    let rotacoes = 0, naVolta = false, depoisDoGiro = false, ligaPendente = null;
     const comparacoes = [];
+    // os retratos da rotação saem na hora em que o instrumento avisa: "gira" antes de reescrever
+    // os ponteiros, "girou" depois; na dupla, a religação entre as duas rotações também
+    const eventos = [];
+    eventos.push = (ev) => {
+      Array.prototype.push.call(eventos, ev);
+      if (!naVolta) return;
+      if (ligaPendente) { foto(ligaPendente); ligaPendente = null; }   // o escreve avisa antes de gravar
+      if (ev.t === "gira") { depoisDoGiro = false; foto({ t: "gira", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 }); }
+      else if (ev.t === "girou") { rotacoes++; depoisDoGiro = true; foto({ t: "girou", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 }); }
+      else if (depoisDoGiro && ev.t === "escreve" && (ev.campo === "esq" || ev.campo === "dir")) {
+        depoisDoGiro = false;
+        ligaPendente = { t: "liga", no: ev.no, lado: ev.campo, linha: 13 };
+      }
+    };
+    reg.eventos = eventos;
     const inserir = (p, x, linha) => {
       const V = { x, "p.valor": p ? p.valor : null, "altura de p": p ? p.altura : null };
       c.entra(p ? p.id : null, null, linha, V);
@@ -686,12 +701,11 @@
             if (f !== d) { a.escreveDir(p, f); foto({ t: "liga", no: p.id, lado: "dir", linha: 12 }); }
           }
           // equilibra(p): as alturas e, se precisar, as rotações; os eventos do instrumento dizem quais
-          const k0 = reg.eventos.length, q = p;
+          const q = p;
+          naVolta = true;
           p = a.equilibra(p);
-          for (const ev of reg.eventos.slice(k0)) {
-            if (ev.t === "gira") foto({ t: "gira", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 });
-            else if (ev.t === "girou") { rotacoes++; foto({ t: "girou", lado: ev.lado, no: ev.no, sobe: ev.sobe, linha: 13 }); }
-          }
+          naVolta = false; depoisDoGiro = false;
+          if (ligaPendente) { foto(ligaPendente); ligaPendente = null; }
           Object.assign(V, { "p.valor": p.valor, "altura de p": p.altura });
           foto({ t: "equilibra", no: q.id, sobe: p.id, linha: 13 });
         }

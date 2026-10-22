@@ -8,12 +8,12 @@ eq_num <- function(a, b) identical(as.numeric(a), as.numeric(unlist(b)))
 linhas <- lapply(casos, function(caso) {
   v <- as.numeric(unlist(caso$valores)); a <- montar_comum_r(v)
   ord <- ordens_igraph_r(a)
-  pilha <- pilha_percurso_r(a); fila <- fila_percurso_r(a)
+  desc <- pilha_percurso_r(a); fila <- fila_percurso_r(a)
   data.frame(caso = caso$caso, n = length(v), pre = eq_num(ord$pre, caso$pre),
     em = eq_num(ord$em, caso$em), pos = eq_num(ord$pos, caso$pos),
-    largura = eq_num(ord$largura, caso$largura), visitas = length(v), visitas_py = caso$visitas,
-    pilha = pilha, pilha_py = caso$pilha, fila = fila, fila_py = caso$fila,
-    casas = 3L * length(v), casas_py = caso$casas, altura = altura_arvore_r(a), altura_py = caso$altura)
+    largura = eq_num(ord$largura, caso$largura), visitas = desc$visitas, visitas_py = caso$visitas,
+    pilha = desc$pico, pilha_py = caso$pilha, fila = fila, fila_py = caso$fila,
+    casas = desc$casas, casas_py = caso$casas, altura = altura_arvore_r(a), altura_py = caso$altura)
 })
 tab <- do.call(rbind, linhas)
 if (is.null(tab)) tab <- data.frame()

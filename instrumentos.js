@@ -1200,8 +1200,10 @@
         custou.replaceChildren(el("b", { text: `${nome}${devolveu}` }), el("span", { text: " custou:" }),
           ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
         const g = giros[1], hs = es.map((e) => e.altura());
+        const n = es[0].n, indiana = n >= 3 && hs[0] === n;
         aviso.textContent = (g.length ? `A AVL girou ${g.length === 1 ? "uma vez" : `${g.length} vezes`}: ${g.slice(0, 4).join("; ")}${g.length > 4 ? "; …" : ""}. ` : "")
-          + `Altura: a comum tem ${plural(hs[0], "nível", "níveis")}, a AVL ${hs[1]}.`;
+          + (indiana ? `A comum virou uma fila indiana: ${n} níveis para ${n} valores, e buscar nela é olhar um por um; a AVL tem ${hs[1]}.`
+            : `Altura: a comum tem ${plural(hs[0], "nível", "níveis")}, a AVL ${hs[1]}.`);
         log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
         log = log.slice(0, 6);
         listar();
@@ -1223,7 +1225,7 @@
     // a altura de cada linha: encolhe quando a árvore é funda (a fila indiana)
     const passoY = (linhas) => (linhas <= 7 ? 50 : Math.max(30, 340 / linhas));
 
-    function vista(q, j, P, colunas, linhas) {
+    function vista(q, j, P, colunas, linhas, fonteAltura = 10) {
       const avl = VARS[j] === "avl", DY = passoY(linhas);
       const W = X0 * 2 + Math.max(colunas, 7) * DX, H = Y0 + Math.max(0, linhas - 1) * DY + NH + 22;
       const px = ([c, l]) => [X0 + c * DX + DX / 2, Y0 + l * DY];
@@ -1258,7 +1260,7 @@
           fill: papel ? "#fff" : solto ? COR.cinza : COR.tinta }, String(no.valor)));
         if (avl && !novo) {   // a quarta casa da AVL: a altura, pequena ao lado
           const ph = q.cores[`${id},altura`];
-          s.append(svg("text", { x: x + NW / 2 + 2, y: y - NH / 2 + 3, "font-size": 10, "font-weight": ph ? 700 : 400,
+          s.append(svg("text", { x: x + NW / 2 + 2, y: y - NH / 2 + 3, "font-size": fonteAltura, "font-weight": ph ? 700 : 400,
             fill: ph ? fill(ph) : COR.cinza }, String(no.altura)));
         }
         if (novo || solto) s.append(svg("text", { x, y: y - NH / 2 - 4, "text-anchor": "middle", "font-size": 10, "font-weight": 600,
@@ -1281,10 +1283,11 @@
         for (const [cc, ll] of P.values()) { c = Math.max(c, Math.ceil(cc) + 1); l = Math.max(l, Math.ceil(ll) + 1); }
         return [Math.max(c, qs[j].nos.size), l];
       });
-      const ss = Ps.map((P, j) => vista(qs[j], j, P, ...dims[j]));
       // na mesma escala: lado a lado quando as duas cabem, uma embaixo da outra quando não
-      const ws = ss.map((s) => Number(s.getAttribute("width"))), juntas = larg >= ws[0] + ws[1] + 32;
+      const ws = dims.map(([c]) => X0 * 2 + Math.max(c, 7) * DX), juntas = larg >= ws[0] + ws[1] + 32;
       const escala = larg > 0 ? Math.min(1.4, juntas ? (larg - 32) / (ws[0] + ws[1]) : larg / Math.max(...ws)) : 1;
+      // a altura da AVL nunca fica menor que 9 px na tela, mesmo encolhida
+      const ss = Ps.map((P, j) => vista(qs[j], j, P, ...dims[j], Math.max(10, 9 / escala)));
       caixaVistas.classList.toggle("juntas", juntas);
       ss.forEach((s) => { s.style.width = `${Number(s.getAttribute("width")) * escala}px`; s.style.height = `${Number(s.getAttribute("height")) * escala}px`; });
       VARS.forEach((v, j) => {

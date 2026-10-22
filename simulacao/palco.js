@@ -1094,7 +1094,7 @@
       const pico = !s.largura ? r.pilha : r.fila;
       texto(ctx, `${nome}: ${coluna.length}`, x, 150, 13, COR.tinta, 600);
       texto(ctx, `pico ${pico}`, x + 250, 150, 12, COR.cinza, 400, "right");
-      const caixas = !s.largura ? coluna.slice().reverse() : coluna, cabe = 13, BH = Math.min(22, 300 / Math.max(cabe, 1));
+      const caixas = !s.largura ? coluna.slice().reverse() : coluna, cabe = 11, BH = 22;
       caixas.slice(0, cabe).forEach((id, j) => {
         const y = 172 + j * (BH + 3), topo = j === 0;
         ctx.fillStyle = topo && !fim ? (s.largura ? COR.claro : COR.claro) : "#fff"; ctx.fillRect(x, y, 250, BH);
@@ -1102,7 +1102,7 @@
         texto(ctx, s.largura ? `nó ${nos.get(id).valor}` : id === null ? "percorrer(nulo)" : `percorrer(nó ${nos.get(id).valor})`, x + 8, y + BH / 2 - 7, 12, COR.tinta);
       });
       if (caixas.length > cabe) texto(ctx, `… mais ${caixas.length - cabe} ${s.largura ? "na fila" : "níveis embaixo"}`, x, 172 + cabe * (BH + 3) + 2, 12, COR.cinza);
-      texto(ctx, `n = ${N} nós, altura ${r.altura}`, x, 500, 12, COR.cinza);
+      texto(ctx, `n = ${N} nós, altura ${r.altura}`, x, 474, 12, COR.cinza);
       legendaCores(ctx, [["#fff", "na pilha", COR.album, 2.5], ["#fff", "na fila", COR.menor, 2.5], [COR.mexeu, "anotado agora"]], 498);
 
       if (fim) legenda(ctx, [["quatro ordens, ", ""], [`${N} visitas cada`, "g"], ["; a em ordem saiu ordenada", ""]]);
@@ -1241,11 +1241,14 @@
         const novo = arranjoArvore(nos, raiz, L);
         if (novo && !mesmoArranjo(novo, L)) { de = L; L = novo; }
       }
-      if (e.t === "inseriu") { k = e.k; rot = null; }
+      // a rotação na raiz só se religa aqui (a raiz fica à parte): o deslizar ainda leva o nome dela
+      if (e.t === "inseriu") { k = e.k; if (!de) rot = null; }
       for (const [, l] of L.values()) linhasMax = Math.max(linhasMax, l + 1);
       const solto = [...nos.keys()].find((id) => !L.has(id));
-      return { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, nos, L, de, novoEm: solto !== undefined ? [solto, novoEm] : null,
+      const estado = { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, nos, L, de, novoEm: solto !== undefined ? [solto, novoEm] : null,
         pilha: pilha.slice(), rot, k, comps, rotacoes, arestas: { ...arestas }, compara: e.t === "compara" ? e.no : null, novo: e.t === "novo" ? e.no : null };
+      if (e.t === "inseriu") rot = null;
+      return estado;
     });
     if (comps !== r.ops || rotacoes !== r.rotacoes) throw new Error("reprodução da AVL não bate");
     // o deslizar dura 3 unidades nos dois ritmos (meio segundo a 1×); o resto, como nas outras faixas

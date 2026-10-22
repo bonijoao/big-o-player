@@ -357,7 +357,7 @@ for (const [pasta, roda, chaves] of [
       const [cr, de, em, ch] = ["crescente", "decrescente", "embaralhada", "cheia"].map((caso) => A.valoresArvore(n, caso, semente));
       const certos = [cr, de, em, ch].every((v) => v.length === n && new Set(v).size === n && v.every((x) => Number.isInteger(x) && x >= 10 && x <= 99));
       const mesmos = [de, em, ch].every((v) => JSON.stringify([...v].sort((a, b) => a - b)) === JSON.stringify(cr));
-      ok = confere(`valores de árvore n=${n} s=${semente}`, [certos, mesmos, cr.every((x, i) => !i || x > cr[i - 1]), A.percursos(ch).altura, A.avl(cr).altura <= 1.4405 * Math.log2(n + 2)],
+      ok = confere(`valores de árvore n=${n} s=${semente}`, [certos, mesmos, cr.every((x, i) => !i || x > cr[i - 1]), A.percursos(ch).altura, [cr, de, em].every((v) => A.avl(v).altura <= 1.4405 * Math.log2(n + 2))],
         [true, true, true, Math.ceil(Math.log2(n + 1)), true]) && ok;
     }
   }

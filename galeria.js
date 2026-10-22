@@ -178,7 +178,7 @@
     inverter: { entrada: "nós", conta: (ex) => `${ex.n} nós, ${ex.casas} casas lidas e escritas, na lista do encarte` },
     percursos: { entrada: "nós", conta: (ex) => `${ex.n} nós, cada um visitado uma vez; a pilha chega a ${ex.pilha} níveis e a fila a ${ex.fila} nós, na árvore do encarte` },
     abb: { entrada: "valores", conta: (ex) => `${ex.n} buscas, ${decimal(ex.ops / ex.n)} comparações por busca em média e ${ex.pior} na mais cara; altura ${ex.altura}, na árvore do encarte` },
-    avl: { entrada: "valores", conta: (ex) => `${ex.n} valores em ordem crescente, ${ex.rotacoes} rotações, altura ${ex.altura}; a comum faria ${ex.comum} comparações e ficaria com altura ${ex.altura_comum}` },
+    avl: { entrada: "valores", conta: (ex) => `${ex.n} valores ${ex.caso === "crescente" ? "em ordem crescente" : ex.caso === "decrescente" ? "em ordem decrescente" : "embaralhados"}, ${ex.rotacoes} rotações, altura ${ex.altura}; a comum faria ${ex.comum} comparações e ficaria com altura ${ex.altura_comum}` },
     janela: { entrada: "números", conta: (ex) => `${ex.n} números, janela de ${ex.k}; o ingênuo faria ${ex.ingenuo}, no vetor do encarte` },
     grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
     mediana: { entrada: "números", conta: (ex) => `${ex.n} volumes, mediana ${num(ex.mediana, 1)} (a média é ${num(ex.media, 1)}), na entrada do encarte` },

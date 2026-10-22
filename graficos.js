@@ -207,7 +207,7 @@
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
     "log₂ n + 1": { nome: "log₂ n + 1", f: (n) => Math.log2(n) + 1 },
   };
-  const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9", "#008c96"];
+  const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9", "#008c96", "#c8641e"];
 
   // As faixas que descrevem os próprios casos no dados.json (tempo.series):
   // a medida "ops" (a unidade da faixa, média nos sorteados) ou "pico".

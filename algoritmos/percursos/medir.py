@@ -60,8 +60,7 @@ if __name__ == "__main__":
         g = {"n": n}
         for caso in ["crescente", "embaralhada", "cheia"]:
             g[caso], fila = varios(n, caso)
-            if caso != "embaralhada":
-                g[f"fila_{caso}"] = {"pico": fila}
+            g[f"fila_{caso}"] = {"pico": fila}
         crescimento.append(g)
 
     conferir = []
@@ -84,6 +83,7 @@ if __name__ == "__main__":
                        {"caso": "embaralhada", "nome": "pilha, embaralhada (média)"},
                        {"caso": "cheia", "nome": "pilha, cheia"},
                        {"caso": "fila_cheia", "nome": "fila, cheia", "tempo": False},
+                       {"caso": "fila_embaralhada", "nome": "fila, embaralhada (média)", "tempo": False},
                        {"caso": "fila_crescente", "nome": "fila, em ordem crescente", "tempo": False}],
             "banda": "embaralhada",
             "crescimento": crescimento,
@@ -102,4 +102,4 @@ if __name__ == "__main__":
           f"altura {r['altura']}, memória {dados['memoria']}, M={dados['ciclomatica']['M']}")
     for g in crescimento:
         print(f"  n={g['n']:5d} pilha: cresc {g['crescente']['pico']}, emb {g['embaralhada']['pico']}, cheia {g['cheia']['pico']}"
-              f" | fila: cheia {g['fila_cheia']['pico']}, cresc {g['fila_crescente']['pico']}")
+              f" | fila: cheia {g['fila_cheia']['pico']}, emb {g['fila_embaralhada']['pico']}, cresc {g['fila_crescente']['pico']}")
