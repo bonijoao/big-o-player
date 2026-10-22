@@ -1,6 +1,7 @@
 {
  "id": "busca-de-padrao",
  "nome": "Busca de padrão ingênua",
+ "objetivo": "Achar onde uma palavra aparece dentro de um texto.",
  "variante": "força bruta, posição por posição",
  "familia": "primeiros passos",
  "resumo": "Procura uma palavra (o padrão, com m letras) dentro de um texto (n letras). Encosta o padrão em cada posição do texto e compara letra a letra, da esquerda para a direita, até errar ou casar todas. Errou, anda uma posição e recomeça. É o jeito ingênuo: não aproveita nada do que já comparou.",

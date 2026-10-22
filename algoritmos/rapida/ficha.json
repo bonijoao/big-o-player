@@ -1,6 +1,7 @@
 {
  "id": "quick-sort",
  "nome": "Quick sort",
+ "objetivo": "Pôr o vetor em ordem separando menores e maiores em volta de um pivô.",
  "variante": "partição de Lomuto, pivô = último",
  "familia": "ordenação",
  "resumo": "Escolhe um pivô, passa os menores para a esquerda e os maiores para a direita, põe o pivô entre os dois lados e repete em cada lado.",

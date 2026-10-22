@@ -1,6 +1,7 @@
 {
  "id": "fila",
  "nome": "Fila",
+ "objetivo": "Atender na ordem de chegada.",
  "variante": "duas versões: ingênua e circular",
  "frase": "O primeiro que entra é o primeiro que sai.",
  "resumo": "Entra-se pelo fim e sai-se pelo começo. Na fila ingênua, o primeiro mora na casa 0 do vetor, e cada saída puxa todos os outros uma casa para a frente. Na fila circular, ninguém anda: quem anda é o marcador do início, que dá a volta quando chega ao fim do vetor.",

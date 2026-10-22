@@ -1,6 +1,7 @@
 {
  "id": "pilha",
  "nome": "Pilha",
+ "objetivo": "Guardar o que precisa ser retomado na ordem inversa, como desfazer ou voltar de uma chamada.",
  "variante": "sobre um vetor dinâmico; o topo é o fim do vetor",
  "frase": "O último que entra é o primeiro que sai.",
  "resumo": "Só se mexe no topo: empilhar põe um valor em cima, desempilhar tira o de cima. Montada sobre o vetor, com o topo no fim dele, nenhum valor precisa andar. É a mesma ideia da pilha de chamadas: cada chamada recursiva empilha um nível, e cada retorno desempilha.",

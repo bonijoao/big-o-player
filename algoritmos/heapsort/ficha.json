@@ -1,6 +1,7 @@
 {
  "id": "heapsort",
  "nome": "Heapsort",
+ "objetivo": "Pôr o vetor em ordem tirando sempre o maior de um heap.",
  "variante": "heap de máximo no próprio vetor, montado de baixo para cima",
  "familia": "ordenação",
  "resumo": "Arruma o vetor num heap de máximo, em que todo pai é maior que os filhos e o maior fica na casa 1. Depois troca a raiz com o último do heap: o maior vai para o lugar final, o heap encolhe uma casa, e a raiz nova desce até achar o lugar dela. Repete até o heap ter um número só.",

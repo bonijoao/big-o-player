@@ -1,6 +1,7 @@
 {
  "id": "media-e-variancia",
  "nome": "Média e variância em uma passada",
+ "objetivo": "Calcular média e variância lendo os dados uma vez só, sem guardá-los.",
  "variante": "algoritmo de Welford",
  "familia": "estatística",
  "resumo": "Lê os valores uma vez só, na ordem em que chegam, e mantém a média e a soma dos quadrados dos desvios sempre atualizadas. Não guarda os valores e, quando os números são grandes e a variação é pequena, perde muito menos precisão que a fórmula da soma dos quadrados, que desanda.",

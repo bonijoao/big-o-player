@@ -1,6 +1,7 @@
 {
  "id": "selection-sort",
  "nome": "Selection sort",
+ "objetivo": "Pôr o vetor em ordem escolhendo, a cada passada, o menor que falta.",
  "variante": "uma troca por passada",
  "familia": "ordenação",
  "resumo": "Procura o menor número do que ainda falta e o troca com o primeiro do que falta. A cada passada, a frente do vetor ganha um número no lugar final.",

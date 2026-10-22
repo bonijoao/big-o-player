@@ -1,6 +1,7 @@
 {
  "id": "percursos-de-arvore",
  "nome": "Percursos de árvore",
+ "objetivo": "Visitar todos os nós de uma árvore, cada um uma vez.",
  "variante": "pré, em e pós-ordem numa descida recursiva só; em largura com uma fila",
  "familia": "árvores e heaps",
  "resumo": "Visitar todos os nós de uma árvore, cada um uma vez. Uma única descida recursiva dá três ordens, que só diferem no momento de anotar o nó: antes de descer aos filhos (pré-ordem), entre o lado esquerdo e o direito (em ordem) e depois de voltar dos dois (pós-ordem). Numa árvore de busca, a em ordem sai ordenada. A em largura anota nível por nível: troca a pilha de chamadas por uma fila, tira o primeiro, anota e põe os filhos dele no fim.",

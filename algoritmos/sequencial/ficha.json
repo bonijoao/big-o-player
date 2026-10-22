@@ -1,6 +1,7 @@
 {
  "id": "busca-sequencial",
  "nome": "Busca sequencial",
+ "objetivo": "Achar um valor num vetor qualquer, sem saber nada da ordem.",
  "variante": "da primeira casa à última",
  "familia": "busca",
  "resumo": "Olha casa por casa, da primeira à última, até achar o alvo. Funciona em qualquer vetor, ordenado ou não; quando o alvo não está lá, só descobre isso depois de olhar todas as casas.",

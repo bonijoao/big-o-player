@@ -1,6 +1,7 @@
 {
  "id": "achar-repetidos",
  "nome": "Achar repetidos (vetor × dicionário)",
+ "objetivo": "Dizer, para cada valor do vetor, se ele já tinha aparecido antes.",
  "variante": "com um dicionário (sondagem linear); a versão com o vetor ao lado, para comparar",
  "familia": "dispersão",
  "resumo": "Para cada posição do vetor, diz se o valor já apareceu antes. Sem estrutura nenhuma, cada valor é comparado com todos os anteriores até achar um igual: num vetor sem repetidos, são n(n − 1)/2 comparações. Com o dicionário, cada valor pergunta se já passou por ali e, se não passou, entra: uma ida ao dicionário por valor. Troca-se memória (os valores guardados) por tempo.",

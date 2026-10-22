@@ -1,6 +1,7 @@
 {
  "id": "colisao-sondagem",
  "nome": "Colisão por sondagem linear",
+ "objetivo": "Guardar chaves numa tabela quando duas caem na mesma casa: a segunda vai para a seguinte livre.",
  "variante": "tabela de m casas fixas; ocupada, tenta a seguinte",
  "familia": "dispersão",
  "resumo": "Pôr chaves numa tabela de m casas que não cresce, uma chave por casa. A chave olha a sua casa; se está ocupada por outra, olha a seguinte, dando a volta no fim, até achar uma vazia. Sem ponteiros e sem nós, tudo mora na própria tabela. O preço aparece quando ela enche: as chaves ocupadas formam blocos, quem cai num bloco anda até o fim dele e o deixa maior, e perto de α = 1 os blocos se juntam.",

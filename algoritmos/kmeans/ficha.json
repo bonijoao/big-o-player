@@ -1,6 +1,7 @@
 {
  "id": "k-means",
  "nome": "K-means",
+ "objetivo": "Separar pontos parecidos em k grupos, sem conhecer os grupos antes.",
  "variante": "algoritmo de Lloyd",
  "familia": "estatística",
  "resumo": "Separa pontos em k grupos. Cada ponto vai para o centro mais próximo, cada centro vai para a média do seu grupo, e o algoritmo repete até nenhum ponto mudar de grupo.",

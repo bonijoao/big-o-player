@@ -1,6 +1,7 @@
 {
  "id": "dijkstra",
  "nome": "Dijkstra",
+ "objetivo": "Achar o caminho mais curto quando cada ligação tem um custo diferente.",
  "variante": "grafo em grade com pesos, heap que reinsere e descarta",
  "familia": "grafos",
  "resumo": "Acha a distância mínima da origem a cada vértice, num grafo em que cada aresta tem um peso, o custo de atravessá-la. Um heap guarda pares (distância, vértice), e sai sempre o mais perto da origem: quando ele sai, a distância dele já é a menor possível. Então olha os vizinhos dele e, se passar por ele encurta o caminho até algum, anota a distância nova e põe o par no heap. O par antigo daquele vizinho continua lá dentro; quando sair, estará vencido e é jogado fora.",

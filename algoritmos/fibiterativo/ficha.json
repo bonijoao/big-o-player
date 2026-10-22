@@ -1,6 +1,7 @@
 {
  "id": "fibonacci-iterativo",
  "nome": "Fibonacci iterativo",
+ "objetivo": "Calcular o n-ésimo Fibonacci subindo do começo, com duas variáveis.",
  "variante": "de baixo para cima, guardando só os dois últimos",
  "familia": "primeiros passos",
  "resumo": "Em vez de descer de fib(n) até os casos pequenos, sobe: começa com 0 e 1 e, a cada volta, o par (a, b) vira (b, a + b). Depois de n voltas, a é fib(n). Nenhuma chamada, nenhuma lista: só duas variáveis andando pela sequência.",

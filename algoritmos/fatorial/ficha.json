@@ -1,6 +1,7 @@
 {
  "id": "fatorial-recursivo",
  "nome": "Fatorial recursivo",
+ "objetivo": "Calcular n! com uma função que chama a si mesma.",
  "variante": "n! = n · (n − 1)!",
  "familia": "primeiros passos",
  "resumo": "O fatorial de n é n vezes o fatorial de n − 1, e o de 1 é 1. A função chama a si mesma com um número menor até chegar ao caso que ela já sabe responder. Cada chamada espera a de baixo voltar para fazer a sua multiplicação: a pilha de chamadas desce n níveis e depois volta, multiplicando.",

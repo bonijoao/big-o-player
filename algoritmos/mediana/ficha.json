@@ -1,6 +1,7 @@
 {
  "id": "mediana-por-quickselect",
  "nome": "Mediana por quickselect",
+ "objetivo": "Achar o valor do meio sem ordenar o vetor inteiro.",
  "variante": "partição de Lomuto, pivô = último, sem recursão",
  "familia": "estatística",
  "resumo": "Acha o número do meio sem ordenar tudo. Particiona como o quick sort, vê de que lado do pivô ficou a casa do meio e continua só daquele lado. Com n par, o outro número do meio é o menor do lado direito.",

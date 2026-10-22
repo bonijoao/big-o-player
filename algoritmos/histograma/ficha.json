@@ -1,6 +1,7 @@
 {
  "id": "histograma",
  "nome": "Histograma",
+ "objetivo": "Contar quantos valores caem em cada faixa, para ver a forma dos dados.",
  "variante": "classes de Sturges, como o hist() do R",
  "familia": "estatística",
  "resumo": "Conta quantos valores caem em cada classe. Uma passada acha o menor e o maior, as classes saem da regra de Sturges com limites redondos, e outra passada põe cada valor na sua classe com uma conta só, sem procurar.",

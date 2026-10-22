@@ -38,7 +38,7 @@
   "id": "grafos",
   "titulo": "Grafos",
   "familia": "grafos",
-  "frase": "Caminhos, vizinhos e distâncias.",
+  "frase": "Achar caminhos e distâncias entre pontos ligados.",
   "em_producao": []
  },
  {
@@ -52,7 +52,7 @@
   "id": "estatistica",
   "titulo": "Estatística",
   "familia": "estatística",
-  "frase": "Algoritmos que rodam por trás de uma análise.",
+  "frase": "Resumir dados: média, variância, mediana, faixas e grupos.",
   "em_producao": []
  }
 ]

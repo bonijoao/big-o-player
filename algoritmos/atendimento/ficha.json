@@ -1,6 +1,7 @@
 {
  "id": "fila-de-atendimento",
  "nome": "Fila de atendimento",
+ "objetivo": "Prever quanto cada cliente espera numa fila de um caixa só.",
  "variante": "um caixa, minutos inteiros",
  "familia": "estruturas lineares",
  "resumo": "Clientes chegam a um caixa em minutos sorteados. Quem chega com o caixa ocupado entra no fim da fila; quando o caixa fica livre, chama o primeiro da fila. Ao fim, a conta dá a espera média e a maior fila que se formou.",

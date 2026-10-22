@@ -1,6 +1,7 @@
 {
  "id": "grafo",
  "nome": "Grafo",
+ "objetivo": "Representar ligações, como ruas ou amizades, para achar caminhos.",
  "variante": "três vistas: matriz de adjacência, lista de adjacência e matriz de incidência",
  "frase": "Pontos e as ligações entre eles, guardados de três jeitos.",
  "resumo": "Um grafo são vértices e arestas, cada aresta ligando dois vértices. Aqui ele não é dirigido: a aresta u–v vale nos dois sentidos. As mesmas arestas cabem em três vistas, e cada uma responde rápido a uma pergunta e devagar a outra. A matriz de adjacência diz na hora se u e v estão ligados, mas guarda V × V casas. A lista de adjacência guarda só os vizinhos de cada um e entrega os vizinhos de u sem procurar. A matriz de incidência guarda uma coluna por aresta: tudo começa varrendo a linha de u.",

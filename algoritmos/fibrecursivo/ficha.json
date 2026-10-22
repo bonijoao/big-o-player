@@ -1,6 +1,7 @@
 {
  "id": "fibonacci-recursivo",
  "nome": "Fibonacci recursivo",
+ "objetivo": "Calcular o n-ésimo Fibonacci direto da definição, e ver a conta explodir.",
  "variante": "direto da definição, sem guardar nada",
  "familia": "primeiros passos",
  "resumo": "Cada número de Fibonacci é a soma dos dois anteriores: fib(n) = fib(n − 1) + fib(n − 2). Escrita assim, a função se chama duas vezes, e cada uma dessas se chama mais duas. O mesmo valor é recalculado de novo e de novo: fib(15) pede fib(2) 377 vezes. É a explosão da árvore de chamadas.",

@@ -1,6 +1,7 @@
 {
  "id": "fila-de-prioridade",
  "nome": "Fila de prioridade",
+ "objetivo": "Atender primeiro o paciente mais grave, mesmo que ele tenha chegado depois.",
  "variante": "pronto-socorro: um médico, gravidade de 1 a 5",
  "familia": "árvores e heaps",
  "resumo": "Pacientes chegam ao pronto-socorro em minutos sorteados, cada um com uma gravidade de 1 (a mais urgente) a 5. Quem chega com o médico ocupado espera na fila de prioridade. Quando o médico fica livre, chama o mais urgente e, no empate, quem chegou primeiro. É a Fila de atendimento com outra regra: aqui, quem chega por último pode passar na frente.",

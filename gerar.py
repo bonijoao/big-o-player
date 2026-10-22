@@ -38,6 +38,8 @@ def ler(pasta, nome):
 def entrada(nome):
     pasta = os.path.join(RAIZ, "algoritmos", nome)
     ficha, dados = ler(pasta, "ficha.json"), ler(pasta, "dados.json")
+    if not ficha.get("objetivo"):
+        raise SystemExit(f"{nome}: a ficha precisa de \"objetivo\", a frase que diz o que a faixa resolve")
     ex = dados["exemplo"]
     pseudo = None
     if "pseudocodigo" in ficha:
@@ -66,6 +68,8 @@ def entrada(nome):
 def instrumento(nome):
     pasta = os.path.join(RAIZ, "instrumentos", nome)
     ficha, dados = ler(pasta, "ficha.json"), ler(pasta, "dados.json")
+    if not ficha.get("objetivo"):
+        raise SystemExit(f"{nome}: a ficha precisa de \"objetivo\", a frase que diz para que serve o instrumento")
     ops = dados["operacoes"]
     for o in ficha["operacoes"] + ficha["grafico"]:
         if o["id"] not in ops:

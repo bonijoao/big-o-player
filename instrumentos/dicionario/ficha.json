@@ -1,6 +1,7 @@
 {
  "id": "dicionario",
  "nome": "Dicionário",
+ "objetivo": "Achar um valor pela chave, quase sem procurar.",
  "variante": "tabela de dispersão em duas versões: encadeamento (uma corrente por casa) e sondagem linear (a casa seguinte)",
  "frase": "Acha pela chave sem procurar, até as chaves colidirem.",
  "resumo": "Em vez de procurar a chave casa por casa, o dicionário calcula onde ela mora: uma função de dispersão transforma a chave num número de casa. Ler, pôr e tirar viram uma conta e uma visita, sem depender de quantas chaves já existem. O problema é que duas chaves podem cair na mesma casa, uma colisão. No encadeamento, cada casa guarda o início de uma corrente de nós, e as chaves que colidem entram na mesma corrente. Na sondagem linear, a chave que encontra a casa ocupada tenta a seguinte, até achar uma vazia. As duas mantêm a ocupação α = n/m abaixo de 3/4: quando ia passar, a tabela dobra e cada chave é redistribuída. A dispersão aqui é a multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits); uma palavra vira número antes, pelo polinômio de base 31 sobre as letras.",

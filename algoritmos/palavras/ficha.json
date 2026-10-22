@@ -1,6 +1,7 @@
 {
  "id": "contar-palavras",
  "nome": "Contar palavras",
+ "objetivo": "Contar quantas vezes cada palavra aparece num texto.",
  "variante": "com um dicionário (sondagem linear), palavra por palavra",
  "familia": "dispersão",
  "resumo": "Lê o texto uma vez, palavra por palavra, e guarda num dicionário quantas vezes cada uma apareceu. A palavra é a chave; a contagem, o valor. Se a palavra já está, a contagem sobe 1; se não está, entra com 1. Achar a palavra no dicionário não depende de quantas já estão lá: a dispersão calcula a casa dela. Sem o dicionário, cada palavra seria procurada numa lista que só cresce.",

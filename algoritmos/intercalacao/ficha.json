@@ -1,6 +1,7 @@
 {
  "id": "merge-sort",
  "nome": "Merge sort",
+ "objetivo": "Pôr o vetor em ordem dividindo ao meio e juntando as metades ordenadas.",
  "variante": "de cima para baixo",
  "familia": "ordenação",
  "resumo": "Divide o vetor ao meio até sobrar um número por pedaço e depois intercala os pedaços dois a dois, comparando sempre a frente de cada um.",

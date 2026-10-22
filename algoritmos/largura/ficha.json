@@ -1,6 +1,7 @@
 {
  "id": "busca-em-largura",
  "nome": "Busca em largura",
+ "objetivo": "Achar o caminho com menos passos entre dois pontos de um grafo.",
  "variante": "grafo em grade, a partir de um canto",
  "familia": "grafos",
  "resumo": "Sai da origem e visita o grafo em camadas: primeiro os vizinhos dela, depois os vizinhos dos vizinhos. Quem é visto entra no fim da fila e espera a vez; quem sai da fila tem os vizinhos olhados um por um. A distância de cada vértice à origem, em arestas, sai de graça: é a do vértice que o descobriu mais um.",

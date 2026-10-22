@@ -1,6 +1,7 @@
 {
  "id": "janela-deslizante",
  "nome": "Máximo em janela deslizante",
+ "objetivo": "Achar o maior valor de cada trecho de k casas seguidas.",
  "variante": "com um deque de posições; o ingênuo ao lado, para comparar",
  "familia": "estruturas lineares",
  "resumo": "Para cada trecho de k casas seguidas do vetor, o maior valor. O ingênuo olha as k casas de cada janela. Com o deque, cada valor entra uma vez e sai no máximo uma vez: o deque guarda posições cujos valores só diminuem da frente para o fundo. Quem chega tira de trás todos os que não são maiores que ele, porque esses nunca mais serão o máximo; a frente sai quando fica para trás da janela. O máximo de cada janela é sempre o da frente.",

@@ -1,6 +1,7 @@
 {
  "id": "fibonacci-com-memoria",
  "nome": "Fibonacci com memória",
+ "objetivo": "Calcular o n-ésimo Fibonacci sem repetir conta, guardando cada resposta.",
  "variante": "a mesma recursão, guardando cada resposta num dicionário",
  "familia": "primeiros passos",
  "resumo": "A mesma função recursiva, com uma memória: antes de calcular fib(k), olha se a resposta já está guardada. Se está, devolve na hora; se não, calcula uma vez e guarda. A árvore de chamadas murcha: cada fib(k) é somado uma vez só, e os outros pedidos viram uma consulta ao dicionário.",

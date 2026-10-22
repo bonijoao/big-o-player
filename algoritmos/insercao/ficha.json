@@ -1,6 +1,7 @@
 {
  "id": "insertion-sort",
  "nome": "Insertion sort",
+ "objetivo": "Pôr o vetor em ordem encaixando cada número no trecho já ordenado.",
  "variante": "com trocas entre vizinhos",
  "familia": "ordenação",
  "resumo": "Pega o próximo número e o faz descer, trocando com o vizinho da esquerda, até encontrar alguém menor. A parte da esquerda fica sempre ordenada.",

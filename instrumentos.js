@@ -2110,7 +2110,7 @@
         el("div", {}, [
           el("p", { class: "rotulo", html: '<a href="#instrumentos">instrumento</a>' }),
           el("h1", { text: inst.nome }),
-          el("p", { class: "frase", text: inst.frase }),
+          el("p", { class: "frase", text: inst.objetivo }),
         ]),
         el("dl", { class: "inst-fatos" }, [
           el("dt", { text: "memória" }), el("dd", { class: "o", text: inst.memoria.notacao }),
@@ -2136,6 +2136,7 @@
         ]),
         detalhe("História e técnica", inst.variante, [
           el("div", { class: "placa" }, el("dl", { html: `
+            <dt>em uma frase</dt><dd>${esc(inst.frase)}</dd>
             <dt>autoria</dt><dd>${esc(inst.placa ? inst.placa.autor : "—")}</dd>
             <dt>quando</dt><dd>${esc(inst.placa ? inst.placa.ano : "—")}</dd>
             <dt>técnica</dt><dd>Python, contando cada leitura e cada escrita de uma casa; a demo roda o mesmo em JavaScript</dd>` })),

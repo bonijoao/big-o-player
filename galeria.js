@@ -130,7 +130,7 @@
       const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
         el("td", { class: "n", text: String(i + 1) }),
         el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
-          el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), feat(f), el("small", { text: f.variante })])])),
+          el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), feat(f), el("small", { text: f.objetivo })])])),
         el("td", { class: "o" }, notacao(f.tempo.notacao)),
         el("td", { class: "o esconde-estreito" }, notacao(f.memoria.notacao)),
         el("td", { class: "o esconde-estreito", text: `M = ${f.medido.ciclomatica.M}` }),
@@ -258,7 +258,7 @@
       el("div", { class: "encarte-topo" }, [capa, el("div", { class: "encarte-titulo" }, [
         el("h1", { text: f.nome }),
         creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
-        el("p", { class: "variante", html: `${esc(f.variante)} · <span class="o">${esc(f.tempo.notacao)}</span>` }),
+        el("p", { class: "objetivo", text: f.objetivo }),
         el("p", { class: "resumo", text: f.resumo }),
         el("p", { class: "ao-vivo", "data-ao-vivo": f.id }),
         el("div", { class: "acoes" }, [botao, el("span", { text: `faixa ${a.faixas.indexOf(f) + 1} de ${a.faixas.length}, ${relogio(duracao(f))}` })]),
@@ -347,6 +347,7 @@
       el("section", { class: "secao ficha" }, [
         el("h2", { text: "Ficha técnica" }),
         el("div", { class: "placa" }, el("dl", { html: `
+          <dt>versão</dt><dd>${esc(f.variante)}</dd>
           <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
           <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
           <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
@@ -444,6 +445,8 @@
 
   const palco = $("#palco"), fundo = $("#fundo"), tela = $("#tela");
   const botaoTocar = $("#tocar"), trilho = $("#trilho");
+  const objetivoPalco = $("#palco-objetivo");
+  let objetivoDe = null, objetivoAte = 0;
   let faixa = null, fila = [], sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
   let accelerando = false;              // o ritmo que acelera; vale para todas as faixas, só nesta visita
   let pos = null, arrasto = null, esperaProxima = null;
@@ -584,6 +587,9 @@
   function pintar() {
     if (!sim || palco.hidden) return atualizarTempo();
     window.Palco.pintar(tela, sim, u);
+    // o objetivo fica por cima nos primeiros segundos de cada faixa e sempre que ela está parada no começo
+    if (faixa && objetivoDe !== faixa.id) { objetivoDe = faixa.id; objetivoAte = performance.now() + 3500; }
+    objetivoPalco.hidden = !faixa || !faixa.objetivo || !(u === 0 || performance.now() < objetivoAte);
     atualizarTempo();
     pintarVariaveis();
     acenderLetra();
@@ -660,6 +666,7 @@
     $("#agora").href = rotaFaixa(faixa);
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     $("#palco-fluxo").hidden = !faixa.pseudocodigo;
+    objetivoPalco.textContent = faixa.objetivo || "";
     const r = sim.resumo;
     const med = sim.medidor && sim.medidor().split("<br>");
     $("#medidor").innerHTML = med

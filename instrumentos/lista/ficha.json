@@ -1,6 +1,7 @@
 {
  "id": "lista",
  "nome": "Lista encadeada",
+ "objetivo": "Inserir e remover no meio sem empurrar os outros valores.",
  "variante": "duas versões: estática (vetor + índice do próximo) e dinâmica (nós e ponteiros)",
  "frase": "Cada valor sabe quem vem depois dele.",
  "resumo": "Os valores não precisam morar em ordem: cada um guarda, ao lado de si, onde está o seguinte. Inserir ou tirar no começo é só trocar um ponteiro, sem ninguém andar. O preço é a posição: para chegar ao i-ésimo, é preciso seguir os ponteiros um por um desde o início. Na estática, tudo mora em dois vetores (valor e próx), e as casas vagas formam uma segunda lista, a dos livres. Na dinâmica, cada valor mora num nó pedido à memória na hora, e o próx guarda o endereço do nó seguinte.",

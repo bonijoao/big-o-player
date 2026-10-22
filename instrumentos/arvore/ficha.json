@@ -1,6 +1,7 @@
 {
  "id": "arvore",
  "nome": "Árvore de busca",
+ "objetivo": "Guardar em ordem e achar, inserir ou remover descendo poucos níveis.",
  "variante": "duas versões: comum (a ABB, que cresce como os valores chegam) e AVL (que gira para ficar baixa)",
  "frase": "À esquerda, os menores; à direita, os maiores.",
  "resumo": "Cada nó guarda um valor e dois ponteiros: à esquerda dele só moram valores menores, à direita só maiores. Buscar é descer da raiz comparando, um nível por vez, e cada comparação descarta um lado inteiro, como na busca binária. O preço depende da altura. A comum pendura cada valor novo onde a descida acaba: com os valores embaralhados ela fica baixa (em média, cada valor mora a pouco mais de log₂ n níveis da raiz), mas com os valores em ordem vira uma fila indiana de n níveis. A AVL guarda também a altura de cada nó e, na volta de cada inserção ou remoção, gira os nós onde um lado ficou dois níveis mais alto que o outro. Assim nunca passa de 1,44 log₂(n + 2) níveis.",

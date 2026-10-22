@@ -1,6 +1,7 @@
 {
  "id": "matriz",
  "nome": "Matriz",
+ "objetivo": "Guardar uma tabela de números, por linha e coluna.",
  "variante": "guardada linha a linha, num bloco só",
  "frase": "Uma tabela de casas, guardada como uma fileira só.",
  "resumo": "A memória do computador é uma fileira de casas numeradas, sem linhas nem colunas. A matriz cabe nela deitada: primeiro a linha 0 inteira, depois a linha 1, e assim por diante. Com colunas casas por linha, a casa (i, j) mora no endereço i·colunas + j. É só uma conta, então ler ou escrever qualquer casa custa 1, como no Vetor. Percorrer uma linha lê casas vizinhas; percorrer uma coluna pula colunas casas de uma para a outra, mas lê o mesmo tanto. Transpor troca linhas por colunas e precisa de um bloco novo, porque as casas mudam de endereço.",

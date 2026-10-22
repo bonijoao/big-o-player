@@ -1,6 +1,7 @@
 {
  "id": "heap",
  "nome": "Heap",
+ "objetivo": "Tirar sempre o menor, ou o mais urgente, sem ordenar tudo.",
  "variante": "de mínimo, sobre um vetor dinâmico; a árvore é o próprio vetor",
  "frase": "Uma árvore guardada num vetor: o menor sempre no topo.",
  "resumo": "Todo pai é menor ou igual aos filhos, então o menor de todos mora no topo. A árvore não tem ponteiros: ela é o vetor lido por uma conta. Os filhos da casa i estão nas casas 2i + 1 e 2i + 2, e o pai está na casa ⌊(i − 1)/2⌋. Inserir põe o valor no fim e o sobe; tirar o menor leva o último para o topo e o desce. Cada um anda no máximo a altura da árvore, uns log₂ n níveis. É a fila de prioridade das faixas, e o heapsort usa o mesmo descer, com a comparação invertida.",

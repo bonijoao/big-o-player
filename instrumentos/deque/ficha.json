@@ -1,6 +1,7 @@
 {
  "id": "deque",
  "nome": "Deque",
+ "objetivo": "Pôr e tirar valores pelas duas pontas.",
  "variante": "circular, com capacidade que dobra quando enche",
  "frase": "Uma fila que abre pelas duas pontas.",
  "resumo": "Põe-se e tira-se pela frente e por trás. É a fila circular com as duas pontas abertas: os valores moram em casas próprias, e ninguém anda; quem anda são os marcadores. Pôr na frente recua o início uma casa, dando a volta no começo do vetor; tirar de trás só lê a última casa. Serve de pilha e de fila ao mesmo tempo, e é o que a janela deslizante precisa: entra por trás, sai pelas duas pontas.",

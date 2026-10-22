@@ -1,6 +1,7 @@
 {
  "id": "busca-binaria",
  "nome": "Busca binária",
+ "objetivo": "Achar um valor num vetor já ordenado com poucas comparações.",
  "variante": "corta o trecho pela metade",
  "familia": "busca",
  "resumo": "Num vetor ordenado, compara o alvo com o número do meio do trecho que ainda pode contê-lo. Se o alvo é maior, descarta a metade da esquerda; se é menor, a da direita. Cada comparação joga fora metade do que sobrou.",

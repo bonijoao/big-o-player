@@ -283,8 +283,7 @@ main:focus { outline: none; }
 
 /* a letra: o pseudocódigo logo abaixo do título */
 .encarte-titulo h1 { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.8rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
-.encarte-titulo .variante { margin: 6px 0 0; color: var(--cinza); font-size: 0.88rem; }
-.encarte-titulo .variante .o { color: var(--verde-texto); font-weight: 600; }
+.encarte-titulo .objetivo { margin: 8px 0 0; font-size: 1.05rem; font-weight: 500; max-width: 52ch; }
 .encarte-titulo .resumo { margin: 14px 0 0; font-size: 0.92rem; }
 .botao-fluxo { font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--tinta); background: var(--papel); border: 1px solid var(--tinta); border-radius: 999px; padding: 7px 16px; cursor: pointer; }
 .botao-fluxo:hover { background: var(--fundo); }
@@ -541,3 +540,12 @@ svg text { font-family: var(--mono); }
 .demo-arvores .demo-vista svg { max-width: 100%; }
 .demo-vista .giro { color: #8c50b9; font-weight: 600; }
 .custo-vista { display: block; }
+
+/* o objetivo da faixa, por cima da animação, até o primeiro passo */
+.palco-tela { position: relative; min-width: 0; }
+.palco-objetivo {
+  position: absolute; left: 50%; top: 14px; transform: translateX(-50%); margin: 0; max-width: calc(100% - 28px);
+  padding: 6px 14px; background: var(--papel); border: 1px solid var(--tinta); border-radius: 999px;
+  font-size: 0.86rem; font-weight: 600; text-align: center; pointer-events: none;
+}
+.palco[data-modo="mini"] .palco-objetivo { display: none; }

@@ -1,6 +1,7 @@
 {
  "id": "multiplicacao-de-matrizes",
  "nome": "Multiplicação de matrizes",
+ "objetivo": "Multiplicar duas matrizes, combinando cada linha de uma com cada coluna da outra.",
  "variante": "pela definição, com três laços",
  "familia": "primeiros passos",
  "resumo": "Cada casa C[i][j] do produto é a linha i de A combinada com a coluna j de B: multiplica casa com casa e soma. Três laços, um dentro do outro: as linhas, as colunas e, para cada casa, os n pares. É o exemplo clássico de laço aninhado, e de como o custo multiplica.",

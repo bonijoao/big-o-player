@@ -1,6 +1,7 @@
 {
  "id": "vetor",
  "nome": "Vetor",
+ "objetivo": "Guardar valores em sequência e chegar a qualquer um pelo número da casa.",
  "variante": "dinâmico, com capacidade que dobra quando enche",
  "frase": "Casas numeradas, uma ao lado da outra.",
  "resumo": "Guarda os valores em casas contíguas, numeradas a partir de 0. Qualquer casa se alcança direto pelo número dela. O preço aparece quando o meio muda: abrir ou fechar uma casa no começo obriga todos os vizinhos a andar uma casa. E, quando as casas reservadas acabam, o vetor reserva o dobro e copia tudo.",

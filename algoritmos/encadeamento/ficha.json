@@ -1,6 +1,7 @@
 {
  "id": "colisao-encadeamento",
  "nome": "Colisão por encadeamento",
+ "objetivo": "Guardar chaves numa tabela quando duas caem na mesma casa: as duas ficam penduradas nela.",
  "variante": "tabela de m casas fixas, uma corrente de nós por casa",
  "familia": "dispersão",
  "resumo": "Pôr chaves numa tabela de m casas que não cresce. Cada casa guarda o início de uma corrente de nós; as chaves que caem na mesma casa (colidem) entram na mesma corrente, a mais nova no começo. Antes de entrar, a chave percorre a corrente da sua casa, para não ficar duas vezes. Com n chaves, as correntes têm α = n/m nós em média, e α pode passar de 1: a tabela nunca enche, só fica mais lenta.",

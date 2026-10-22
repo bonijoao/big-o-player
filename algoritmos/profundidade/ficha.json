@@ -1,6 +1,7 @@
 {
  "id": "busca-em-profundidade",
  "nome": "Busca em profundidade",
+ "objetivo": "Explorar tudo o que dá para alcançar num grafo, indo o mais fundo possível.",
  "variante": "grafo em grade, a partir de um canto; pilha no lugar da recursão",
  "familia": "grafos",
  "resumo": "Sai da origem e anda sempre para um vizinho ainda não visto, o mais fundo que der. Quando o vértice da vez não tem mais vizinho novo, volta um passo e tenta o próximo vizinho de quem veio antes. A pilha guarda o caminho de volta: é a recursão escrita à mão, e visita na mesma ordem da versão recursiva.",

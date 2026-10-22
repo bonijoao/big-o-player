@@ -1,6 +1,7 @@
 {
  "id": "maximo-de-um-vetor",
  "nome": "Máximo de um vetor",
+ "objetivo": "Achar o maior número de um vetor.",
  "variante": "guardando o maior visto até agora",
  "familia": "primeiros passos",
  "resumo": "Começa achando que o primeiro é o maior e passa pelos outros, um por um: quem for maior que o maior até aqui toma o lugar dele. No fim, o que sobrou é o máximo. Um laço e uma decisão: o básico da repetição e da condição.",

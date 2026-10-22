@@ -1,6 +1,7 @@
 {
  "id": "bubble-sort",
  "nome": "Bubble sort",
+ "objetivo": "Pôr o vetor em ordem trocando vizinhos fora de lugar.",
  "variante": "com parada antecipada",
  "familia": "ordenação",
  "resumo": "Compara vizinhos e troca os que estão fora de ordem. Cada passada leva o maior número que sobrou para o fim; se uma passada não troca nada, o vetor está pronto.",

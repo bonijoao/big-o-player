@@ -1,6 +1,7 @@
 {
  "id": "parenteses-balanceados",
  "nome": "Parênteses balanceados",
+ "objetivo": "Conferir se cada parêntese, colchete e chave que abre fecha no lugar certo.",
  "variante": "três tipos de símbolo: ( [ {",
  "familia": "estruturas lineares",
  "resumo": "Lê o texto da esquerda para a direita. Cada símbolo que abre vai para a pilha; cada um que fecha tira o do topo, que tem de ser o seu par. Se a pilha está vazia na hora de fechar, se o par não bate ou se sobra alguém na pilha no fim, o texto não está balanceado.",

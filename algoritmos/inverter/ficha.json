@@ -1,6 +1,7 @@
 {
  "id": "inverter-lista",
  "nome": "Inverter lista encadeada",
+ "objetivo": "Virar a ordem de uma lista encadeada sem copiar os valores.",
  "variante": "com três ponteiros, sem lista auxiliar",
  "familia": "estruturas lineares",
  "resumo": "Anda pela lista uma vez, do primeiro ao último nó, e vira o próx de cada um para o nó anterior. Antes de virar, guarda quem vem depois, senão o resto da lista se perde. No fim, o último nó vira o início. Ninguém muda de lugar e nenhum valor é copiado: só os ponteiros trocam de direção.",

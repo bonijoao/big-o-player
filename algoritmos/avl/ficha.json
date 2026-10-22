@@ -1,6 +1,7 @@
 {
  "id": "arvore-equilibrada-avl",
  "nome": "Árvore equilibrada (AVL)",
+ "objetivo": "Manter a árvore de busca baixa enquanto os valores chegam, para achar rápido.",
  "variante": "insere e gira na volta da recursão",
  "familia": "árvores e heaps",
  "resumo": "Insere como a árvore de busca comum: desce comparando e pendura o nó novo onde a descida acaba. A diferença está na volta da recursão. Cada nó do caminho lê a altura dos dois filhos e, se um lado ficou dois níveis mais alto que o outro, gira: o filho do lado pesado sobe e o nó desce para o lado leve (rotação simples). Se o neto pesado está do lado de dentro, ele sobe primeiro (rotação dupla). A árvore nunca passa de 1,44 log₂(n + 2) níveis, chegue a entrada na ordem que chegar.",

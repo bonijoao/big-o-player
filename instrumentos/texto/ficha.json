@@ -1,6 +1,7 @@
 {
  "id": "texto",
  "nome": "Texto",
+ "objetivo": "Guardar e montar palavras e frases, letra por letra.",
  "variante": "um vetor de caracteres, em duas versões: concatenar no laço e juntar no fim",
  "frase": "Letras numa fileira de casas, uma por casa.",
  "resumo": "Um texto é um vetor de caracteres: a letra i mora na casa i, e ler qualquer uma custa 1. A diferença aparece ao montar um texto aos poucos. Em Python, como em Java e em JavaScript, o texto pronto não muda: texto + letra cria um texto novo e copia todas as letras do antigo. Num laço, isso copia 1, depois 2, depois 3 letras… e montar n letras custa perto de n²/2 cópias. O jeito barato é guardar os pedaços numa lista, que cresce como o Vetor, e juntar tudo uma vez só no fim (o \"\".join do Python): cada letra é copiada uma vez.",
