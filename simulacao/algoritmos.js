@@ -405,8 +405,9 @@
       c.push({ t: "atribui", linha: 8 });
     }
     lista.fim = lista.inicio;
+    c.push({ t: "atribui", linha: 9 });
     lista.inicio = anterior;
-    c.push({ t: "atribui", fim: true, linha: 9 });
+    c.push({ t: "atribui", fim: true, linha: 10 });
     return { valores, invertida: lista.valores(), eventos: c.eventos, ops: c.ops.ponteiros || 0, pico: c.pico,
       casas: reg.leituras + reg.escritas };
   }

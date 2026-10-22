@@ -231,7 +231,7 @@
     const frag = document.createDocumentFragment();
     const itens = Object.entries(det).filter(([, tam]) => tam > 0).sort((p, q) => q[1] - p[1]);
     if (!itens.length) {
-      frag.append(el("p", { class: "memoria-total", html: `<b>Nenhum valor extra.</b> ${esc(a.memoria.vazio ? a.memoria.vazio[0].toUpperCase() + a.memoria.vazio.slice(1) : "Ordena dentro do próprio vetor")}; só guarda índices soltos.` }));
+      frag.append(el("p", { class: "memoria-total", html: `<b>Nenhum valor extra.</b> ${esc(a.memoria.vazio ? a.memoria.vazio[0].toUpperCase() + a.memoria.vazio.slice(1) : "Ordena dentro do próprio vetor")}; só guarda ${esc(a.memoria.soltos || "índices soltos")}.` }));
       return frag;
     }
     for (const [chave, tam] of itens) {

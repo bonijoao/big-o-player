@@ -13,7 +13,7 @@
  "tempo": {
   "notacao": "O(n)",
   "porque": "Cada posição é posta no deque uma vez e tirada no máximo uma vez. Cada comparação ou tira alguém de trás ou encerra a vez de quem chega, então são menos de 2n comparações, seja qual for o k. O ingênuo compara k − 1 vezes em cada uma das n − k + 1 janelas: O(n·k).",
-  "nota": "Com k = 2, os dois empatam; daí em diante, o ingênuo cresce com k, e o deque não."
+  "nota": "Com k = 2, os dois empatam. Daí em diante, o ingênuo cresce como k; o deque também sobe um pouco nos vetores sorteados, mas nunca passa de 2n, seja qual for o k."
  },
  "memoria": {
   "notacao": "O(k)",
@@ -36,7 +36,7 @@
   "texto": "As mesmas contas para vetores cada vez maiores e para janelas cada vez maiores, nos três tipos de vetor, e o ingênuo ao lado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
   "crescimento": "Comparações para n de {n0} a {n1}, com k = {k}. {dados}; a faixa cinza vai do menor ao maior dos sorteados. O ingênuo compara (n − k + 1)(k − 1) vezes, em qualquer vetor.",
   "por_k": "Comparações para k de {k0} a {k1}, com n = {nk}. O ingênuo sobe com k; o deque fica abaixo de 2n em qualquer janela.",
-  "memoria": "Deque mais cheio para k de {k0} a {k1}, com n = {nk}. No decrescente, ele chega a k; no crescente, fica em 1; nos sorteados (o maior pico entre eles), fica bem abaixo de k."
+  "memoria": "Deque mais cheio para k de {k0} a {k1}, com n = {nk}. No decrescente, ele chega a k; no crescente, fica em 1; nos sorteados (o maior pico entre eles), acompanha k nas janelas pequenas e fica bem abaixo dele nas grandes."
  },
  "pseudocodigo": "procedimento janela_maxima(v, k):\n    d ← deque vazio\n    para i de 1 até n:\n        se i > k e a frente de d = i − k:\n            tire da frente de d\n        enquanto d não está vazio e v[fundo de d] ≤ v[i]:\n            tire de trás de d\n        ponha i atrás de d\n        se i ≥ k:\n            máximo[i − k + 1] ← v[frente de d]\n    devolva máximo\n",
  "placa": {

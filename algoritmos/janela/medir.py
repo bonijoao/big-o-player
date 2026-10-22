@@ -75,7 +75,7 @@ if __name__ == "__main__":
             "k_fixo": K_FIXO,
             "por_k": por_k,
             "n_fixo": N_FIXO,
-            "eixo_k": f"k (tamanho da janela; dobra a cada passo), n = {N_FIXO}",
+            "eixo_k": f"k (tamanho da janela), n = {N_FIXO}",
         },
         "memoria": {"pico": c.pico, "detalhe": c.pico_detalhe},
         "ciclomatica": ciclomatica(janela.MEDIDA),

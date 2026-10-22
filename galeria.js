@@ -264,7 +264,7 @@
         el("section", {}, [
           el("h2", { text: "Caminhos" }),
           el("p", { class: "ordem", text: `M = ${c.M}` }),
-          el("p", { class: "conta", html: `<b>${c.decisoes.length}</b> decisões + 1<span>complexidade ciclomática da função</span>` }),
+          el("p", { class: "conta", html: `<b>${c.decisoes.length}</b> ${c.decisoes.length === 1 ? "decisão" : "decisões"} + 1<span>complexidade ciclomática da função</span>` }),
           el("p", { class: "porque", text: f.ciclomatica.porque }),
           f.ciclomatica.regra && el("p", { class: "nota", text: f.ciclomatica.regra }),
         ]),
@@ -312,7 +312,7 @@
         el("h2", { text: "Caminhos: onde o código se divide" }),
         el("p", { text: "O código abaixo é exatamente o que roda e é medido. Os pontos à esquerda são os comandos; as curvas, os saltos possíveis (tracejadas: de volta ao começo do laço). Os pontos verdes são as decisões." }),
         el("div", { class: "contas-m", html:
-          `<span>${c.decisoes.length} decisões + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
+          `<span>${c.decisoes.length} ${c.decisoes.length === 1 ? "decisão" : "decisões"} + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
         codigo,
       ]),
       el("section", { class: "secao ficha" }, [
@@ -359,7 +359,7 @@
     $("#caixa-fluxo-titulo").replaceChildren(`${f.nome}: fluxograma`);
     $("#caixa-fluxo-corpo").replaceChildren(
       el("p", { class: "caixa-nota", text: "Gerado do pseudocódigo: losango para cada decisão (uma condição com \"e\" vira dois), hexágono para cada laço \"para\", e a seta da esquerda volta ao começo do laço." }),
-      el("p", { class: "contas-m", html: `<span>${p.decisoes.length} decisões + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
+      el("p", { class: "contas-m", html: `<span>${p.decisoes.length} ${p.decisoes.length === 1 ? "decisão" : "decisões"} + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
       el("div", { class: "fluxo", "data-faixa": f.id }, window.Fluxograma(p)),
     );
     if (!caixaFluxo.open) caixaFluxo.showModal();

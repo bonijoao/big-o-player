@@ -25,9 +25,9 @@
   },
   {
    "id": "inserir-inicio-estatica",
-   "nome": "inserir no início",
+   "nome": "inserir no início, com folga",
    "notacao": "O(1)",
-   "porque": "Tira uma casa dos livres (lê o próx dela), escreve o valor e aponta o próx para o antigo início."
+   "porque": "Tira uma casa dos livres (lê o próx dela), escreve o valor e aponta o próx para o antigo início. Sem casa livre, antes dobra o vetor, como no fim."
   },
   {
    "id": "inserir-inicio-dinamica",
@@ -114,7 +114,7 @@
  ],
  "legendas": {
   "operacoes": "Custo = leituras + escritas de casas (o valor ou o próx de uma posição), contadas rodando as duas listas em Python com n valores já guardados, para n = {ns}. Seguir um ponteiro é ler um próx. O início, o fim, a cabeça dos livres e o tamanho, guardados à parte, não contam; pedir e soltar um nó da dinâmica também não.",
-  "custo": "O custo de cada operação com n valores já guardados, para n de {v0} a {v1}, medido uma vez por n (na dinâmica; a estática custa o mesmo ou 1 a mais, pela lista de livres). Remover do fim e ler a última sobem em linha reta: seguem todos os ponteiros. Inserir no início não sai do chão. Tracejadas: a média de n inserções seguidas no fim a partir da lista vazia; a da estática paga as cópias, a da dinâmica nunca copia.",
+  "custo": "O custo de cada operação com n valores já guardados, para n de {v0} a {v1}, medido uma vez por n (na dinâmica; com folga, a estática custa o mesmo ou 1 a mais, pela lista de livres, e quando o vetor está cheio paga também a cópia). Remover do fim e ler a última sobem em linha reta: seguem todos os ponteiros. Inserir no início não sai do chão. Tracejadas: a média de n inserções seguidas no fim a partir da lista vazia; a da estática paga as cópias, a da dinâmica nunca copia.",
   "casas": "Casas guardadas depois de pôr n valores no fim, a partir da lista vazia, para n de {v0} a {v1}. A dinâmica guarda exatamente 2n; a estática sobe em degraus, com a folga das casas livres."
  }
 }

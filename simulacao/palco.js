@@ -719,17 +719,17 @@
     const N = valores.length, ideia = faixa.video.ideia;
     // o próx de cada nó (pela posição na lista de entrada); virar é apontar para o vizinho da esquerda
     const prox = valores.map((_, i) => (i + 1 < N ? i + 1 : null));
-    let ops = 0, lido = null, virou = null, inicio = N ? 0 : null;
+    let ops = 0, casas = 0, lido = null, virou = null, inicio = N ? 0 : null;
     const id = (p) => (p === null ? null : p - 1);
     const est = r.eventos.map((e) => {
       lido = null; virou = null;
-      if (e.t === "proximo") lido = e.i;
-      else if (e.t === "vira") { prox[e.i] = e.de; virou = e.i; ops++; }
+      if (e.t === "proximo") { lido = e.i; casas++; }
+      else if (e.t === "vira") { prox[e.i] = e.de; virou = e.i; ops++; casas++; }
       else if (e.fim) inicio = id(e.vars.anterior);
-      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, prox: prox.slice(), ops, lido, virou, inicio,
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, prox: prox.slice(), ops, casas, lido, virou, inicio,
         anterior: id(e.vars.anterior), atual: id(e.vars.atual), proximo: id(e.vars["próximo"]), fim: !!e.fim };
     });
-    if (ops !== r.ops) throw new Error("reprodução da inversão não bate");
+    if (ops !== r.ops || casas !== r.casas) throw new Error("reprodução da inversão não bate");
     const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { atribui: 0.5, testa: 0.4, proximo: 1, vira: 1.6 }, (t) => t === "vira", 2, 2.5);
     const tl = linhaDoTempo(pesos);
     const X0 = 60, X1 = 620, passo = Math.min(84, (X1 - X0) / Math.max(1, N)), NW = Math.min(64, passo - 16), VW = NW / 2, NY = 190, NH = 40;
@@ -737,7 +737,7 @@
 
     function desenhar(ctx, u) {
       const k = tl.eventoEm(u), fim = u >= tl.total;
-      const s = k >= 0 ? est[k] : { prox: valores.map((_, i) => (i + 1 < N ? i + 1 : null)), ops: 0, lido: null, virou: null, inicio: N ? 0 : null, anterior: null, atual: null, proximo: null, fim: false };
+      const s = k >= 0 ? est[k] : { prox: valores.map((_, i) => (i + 1 < N ? i + 1 : null)), ops: 0, casas: 0, lido: null, virou: null, inicio: N ? 0 : null, anterior: null, atual: null, proximo: null, fim: false };
       for (let i = 0; i < N; i++) {
         const x = nx(i);
         texto(ctx, `nó ${i + 1}`, x + NW / 2, NY - 22, 11, COR.cinza, 400, "center");
@@ -785,7 +785,7 @@
       texto(ctx, "ponteiros trocados", x, 90, 13, COR.cinza);
       texto(ctx, `${s.ops}`, x, 106, 40, fim ? COR.verde : COR.tinta, 700);
       texto(ctx, "casas lidas e escritas", x, 174, 13, COR.cinza);
-      texto(ctx, String(2 * s.ops), x, 190, 26, COR.tinta, 700);
+      texto(ctx, String(s.casas), x, 190, 26, COR.tinta, 700);
       texto(ctx, "memória extra", x, 244, 13, COR.cinza);
       texto(ctx, "3 ponteiros", x, 260, 20, COR.tinta, 700);
       texto(ctx, "nenhum valor copiado", x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);

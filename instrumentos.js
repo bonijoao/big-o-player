@@ -751,7 +751,7 @@
     function vistaEstatica(q) {
       const C = q.valor.length, P = 40, S = 36, X0 = 46, YV = 76, W = Math.max(350, X0 + Math.max(C, 4) * P + 30);
       const usadas = corrente(q.inicio, (p) => q.prox[p], -1), livres = corrente(q.livre, (p) => q.prox[p], -1);
-      const H = YV + 26 + 4 + 22 + 74;
+      const H = YV + 26 + 4 + 22 + 88;
       const s = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
         "aria-label": `Lista estática: ${usadas.map((p) => q.valor[p]).join(", ") || "vazia"}; casas livres ${livres.join(", ") || "nenhuma"}` });
       s.append(svg("text", { x: 0, y: 14, "font-size": 12, fill: COR.cinza }, `${usadas.length} ${usadas.length === 1 ? "valor" : "valores"}, ${C} posições (${2 * C} casas), ${livres.length} ${livres.length === 1 ? "livre" : "livres"}`));
@@ -772,9 +772,10 @@
         caixa(s, x, YP, S, 22, q.prox[i] === -1 ? "∅" : String(q.prox[i]), q.cores[`${i},prox`], livre, 11);
         s.append(svg("text", { x: x + S / 2, y: YB - 2, "text-anchor": "middle", "font-size": 10, fill: COR.cinza }, String(i)));
       }
-      const marca = (i, rot, cor) => { if (i >= 0 && i < C) s.append(svg("text", { x: cx(i), y: H - 6, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: cor }, rot)); };
-      marca(q.inicio, "↑início", COR.tinta);
-      if (q.livre !== q.inicio) marca(q.livre, "↑livres", COR.cinza);
+      // em alturas diferentes: o início e a cabeça dos livres podem ser casas vizinhas
+      const marca = (i, rot, cor, y) => { if (i >= 0 && i < C) s.append(svg("text", { x: cx(i), y, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: cor }, rot)); };
+      marca(q.inicio, "↑início", COR.tinta, H - 20);
+      marca(q.livre, "↑livres", COR.cinza, H - 6);
       return s;
     }
 
