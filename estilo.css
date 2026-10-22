@@ -263,7 +263,7 @@ main:focus { outline: none; }
 /* ---------- encarte ---------- */
 
 .voltar { display: inline-block; font-size: 0.85rem; color: var(--cinza); }
-.encarte-topo { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 40px; margin: 22px 0 0; align-items: start; }
+.encarte-topo { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 36px; margin: 22px 0 0; align-items: start; }
 .encarte-topo .capa { width: 100%; }
 .capa-tocar { position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer; width: 100%; }
 .capa-tocar::after {
@@ -279,6 +279,37 @@ main:focus { outline: none; }
 .placa .o { color: var(--verde-texto); font-weight: 600; }
 .resumo { max-width: var(--medida); margin: 22px 0 0; }
 .encarte-topo .acoes { margin: 20px 0 0; display: flex; gap: 14px; align-items: center; color: var(--cinza); font-size: 0.85rem; }
+
+/* a letra: o pseudocódigo logo abaixo do título */
+.encarte-titulo h1 { margin: 0; font-size: clamp(1.9rem, 4.5vw, 2.8rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
+.encarte-titulo .variante { margin: 6px 0 0; color: var(--cinza); font-size: 0.88rem; }
+.encarte-titulo .variante .o { color: var(--verde-texto); font-weight: 600; }
+.encarte-titulo .resumo { margin: 14px 0 0; font-size: 0.92rem; }
+.botao-fluxo { font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--tinta); background: var(--papel); border: 1px solid var(--tinta); border-radius: 999px; padding: 7px 16px; cursor: pointer; }
+.botao-fluxo:hover { background: var(--fundo); }
+.letra { margin: 48px 0 0; }
+.letra > header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.letra h2 { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+.letra header > div { flex: 1 1 40ch; }
+.letra header p { margin: 4px 0 0; color: var(--cinza); font-size: 0.84rem; }
+.letra .pseudo { margin: 16px 0 0; font-size: 14.5px; line-height: 25px; padding: 16px 0; }
+.letra .pseudo li { min-height: 25px; }
+.ficha .placa { margin: 18px 0 0; }
+.letra .pseudo li.agora { background: var(--tinta); color: var(--papel); }
+.letra .pseudo li.agora .kw { color: var(--papel); }
+.letra .pseudo li.agora::before { color: var(--papel); }
+
+/* lightbox do fluxograma */
+.caixa-fluxo { width: min(1100px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--tinta); border-radius: 6px; color: var(--tinta); background: var(--papel); box-shadow: 0 24px 60px -24px rgba(30, 30, 30, 0.55); }
+.caixa-fluxo::backdrop { background: rgba(255, 255, 255, 0.86); }
+.caixa-fluxo[open] { display: flex; flex-direction: column; }
+.caixa-barra { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 20px; border-bottom: 1px solid var(--linha); }
+.caixa-barra h2 { flex: 1; margin: 0; font-size: 1rem; font-weight: 700; }
+.caixa-corpo { overflow: auto; padding: 14px 20px 22px; }
+.caixa-nota { margin: 0; color: var(--cinza); font-size: 0.82rem; max-width: 90ch; }
+.caixa-corpo .contas-m { margin: 8px 0 16px; font-size: 0.85rem; }
+.caixa-corpo .fluxo { max-height: none; border: 0; }
+.palco-fluxo { flex: none; }
 
 /* pseudocódigo + fluxograma */
 .algoritmo { display: grid; grid-template-columns: 1fr; gap: 36px; margin: 28px 0 0; align-items: start; }
@@ -491,3 +522,4 @@ svg text { font-family: var(--mono); }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
 }
+.palco[data-modo="mini"] .palco-fluxo { display: none; }

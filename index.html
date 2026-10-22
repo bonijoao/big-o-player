@@ -31,6 +31,7 @@
 <section id="palco" class="palco" data-modo="oculto" aria-label="Simulação da faixa" hidden>
   <div class="palco-barra">
     <span id="palco-titulo" class="palco-titulo"></span>
+    <button type="button" id="palco-fluxo" class="botao-passo palco-fluxo" hidden>fluxograma</button>
     <button type="button" id="palco-modo" class="icone" aria-label="Minimizar"></button>
     <button type="button" id="palco-fechar" class="icone" aria-label="Fechar">×</button>
   </div>
@@ -60,6 +61,15 @@
     <button type="button" id="cfg-acelera" class="botao-passo alterna" aria-pressed="false" title="Começa devagar e acelera">accelerando</button>
   </div>
 </section>
+
+<!-- o fluxograma abre por cima de tudo, do encarte ou do palco; a faixa continua tocando -->
+<dialog id="caixa-fluxo" class="caixa-fluxo" aria-labelledby="caixa-fluxo-titulo">
+  <div class="caixa-barra">
+    <h2 id="caixa-fluxo-titulo"></h2>
+    <button type="button" id="caixa-fluxo-fechar" class="icone" aria-label="Fechar o fluxograma">×</button>
+  </div>
+  <div id="caixa-fluxo-corpo" class="caixa-corpo"></div>
+</dialog>
 
 <footer class="tocador" id="tocador" aria-label="Player">
   <a class="agora" id="agora" href="#">

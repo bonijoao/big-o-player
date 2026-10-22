@@ -204,34 +204,38 @@
     const temPicoCasos = casos && m.tempo.crescimento.some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
     const dist = m.tempo.distribuicao;
-    const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div"), fluxo = el("div", { class: "fluxo", "data-faixa": f.id });
+    const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div");
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
     capa.addEventListener("click", () => tocar(f, a));
     const botao = el("button", { type: "button", class: "botao-tocar", text: "▶ Tocar" });
     botao.addEventListener("click", () => tocar(f, a));
+    const verFluxo = () => {
+      const b = el("button", { type: "button", class: "botao-fluxo", text: "ver o fluxograma" });
+      b.addEventListener("click", () => abrirFluxograma(f));
+      return b;
+    };
 
+    // abrir a faixa é ler a letra: o pseudocódigo vem logo abaixo do título; a ficha técnica desce
     const conteudo = el("div", {}, [
       el("a", { class: "voltar", href: `#${a.id}`, text: `álbum ${a.titulo}` }),
-      el("div", { class: "encarte-topo" }, [capa, el("div", {}, [
-        el("div", { class: "placa" }, [
-          el("h1", { text: f.nome }),
-          creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
-          el("p", { class: "variante", text: f.variante }),
-          el("dl", { html: `
-            <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
-            <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
-            <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
-            ${creditos(f).length ? `<dt>instrumentos</dt><dd>${creditos(f).map((c) => `<a href="#instrumentos/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
-            <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
-            <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
-            <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
-            <dt>duração</dt><dd>${relogio(duracao(f))} a 1×, na entrada do encarte</dd>` }),
-        ]),
+      el("div", { class: "encarte-topo" }, [capa, el("div", { class: "encarte-titulo" }, [
+        el("h1", { text: f.nome }),
+        creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
+        el("p", { class: "variante", html: `${esc(f.variante)} · <span class="o">${esc(f.tempo.notacao)}</span>` }),
         el("p", { class: "resumo", text: f.resumo }),
         el("p", { class: "ao-vivo", "data-ao-vivo": f.id }),
-        el("div", { class: "acoes" }, [botao, el("span", { text: `faixa ${a.faixas.indexOf(f) + 1} de ${a.faixas.length}, álbum ${a.titulo}` })]),
+        el("div", { class: "acoes" }, [botao, el("span", { text: `faixa ${a.faixas.indexOf(f) + 1} de ${a.faixas.length}, ${relogio(duracao(f))}` })]),
       ])]),
+
+      p && el("section", { class: "letra" }, [
+        el("header", {}, [
+          el("div", {}, [el("h2", { text: "O algoritmo em português" }),
+            el("p", { text: "Como o algoritmo seria proposto, sem depender de linguagem. Os índices começam em 1; as linhas verdes são as decisões." })]),
+          verFluxo(),
+        ]),
+        blocoPseudo(f),
+      ]),
 
       el("div", { class: "tres" }, [
         el("section", {}, [
@@ -259,13 +263,7 @@
         ]),
       ]),
 
-      p && el("section", { class: "secao" }, [
-        el("h2", { text: "O algoritmo em português" }),
-        el("p", { text: "O pseudocódigo é o jeito em que o algoritmo seria proposto, sem depender de linguagem; os índices começam em 1. O fluxograma é gerado dele: losango para cada decisão (uma condição com \"e\" vira dois), hexágono para cada laço \"para\" (o \"enquanto\" é um losango, porque testa uma condição), e a seta da esquerda volta ao começo do laço." }),
-        el("div", { class: "contas-m", html:
-          `<span>fluxograma: ${p.decisoes.length} decisões + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
-        el("div", { class: "algoritmo" }, [blocoPseudo(f), fluxo]),
-      ]),
+
 
       casos ? el("section", { class: "secao" }, [
         el("h2", { text: gr.titulo }),
@@ -310,10 +308,21 @@
           `<span>${c.decisoes.length} decisões + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
         codigo,
       ]),
+      el("section", { class: "secao ficha" }, [
+        el("h2", { text: "Ficha técnica" }),
+        el("div", { class: "placa" }, el("dl", { html: `
+          <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
+          <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
+          <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
+          ${creditos(f).length ? `<dt>instrumentos</dt><dd>${creditos(f).map((c) => `<a href="#instrumentos/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
+          <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
+          <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
+          <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
+          <dt>duração</dt><dd>${relogio(duracao(f))} a 1×, na entrada do encarte</dd>` })),
+      ]),
       cf && el("p", { class: "conferido", html: `<b>Conferido no R.</b> ${esc(cf.resumo)}` }),
     ]);
 
-    if (p) fluxo.append(window.Fluxograma(p));
     redesenhar = () => {
       const Gr = window.Graficos;
       if (casos) {
@@ -332,6 +341,24 @@
     };
     return conteudo;
   }
+
+  // ---------- fluxograma em lightbox (do encarte e do palco) ----------
+
+  const caixaFluxo = $("#caixa-fluxo");
+  function abrirFluxograma(f) {
+    const p = f.pseudocodigo, c = f.medido.ciclomatica;
+    if (!p) return;
+    $("#caixa-fluxo-titulo").replaceChildren(`${f.nome}: fluxograma`);
+    $("#caixa-fluxo-corpo").replaceChildren(
+      el("p", { class: "caixa-nota", text: "Gerado do pseudocódigo: losango para cada decisão (uma condição com \"e\" vira dois), hexágono para cada laço \"para\", e a seta da esquerda volta ao começo do laço." }),
+      el("p", { class: "contas-m", html: `<span>${p.decisoes.length} decisões + 1 = <b>${p.M}</b></span><span>${p.arestas} setas − ${p.nos} caixas + 2 = <b>${p.M}</b></span><span>código Python: <b>M = ${c.M}</b>${p.M === c.M ? ", os mesmos ramos" : ""}</span>` }),
+      el("div", { class: "fluxo", "data-faixa": f.id }, window.Fluxograma(p)),
+    );
+    if (!caixaFluxo.open) caixaFluxo.showModal();
+  }
+  $("#caixa-fluxo-fechar").addEventListener("click", () => caixaFluxo.close());
+  caixaFluxo.addEventListener("click", (e) => { if (e.target === caixaFluxo) caixaFluxo.close(); });   // clique fora da caixa
+  $("#palco-fluxo").addEventListener("click", (e) => { e.stopPropagation(); if (faixa) abrirFluxograma(faixa); });
 
   // ---------- rotas ----------
 
@@ -472,12 +499,30 @@
     window.Palco.pintar(tela, sim, u);
     atualizarTempo();
     pintarVariaveis();
+    acenderLetra();
   }
 
   // ---------- painel de variáveis: a linha que roda e os escalares da vez ----------
 
   const valor = (x) => (x === null || x === undefined ? "—" : x === true ? "verdadeiro" : x === false ? "falso"
     : Number.isInteger(x) ? mil(x) : x.toLocaleString("pt-BR", { maximumFractionDigits: 3 }));
+
+  // a letra sincronizada: no encarte da faixa que toca, acende a linha do pseudocódigo da vez
+  function acenderLetra() {
+    const ol = faixa && sim && document.querySelector(`.letra .pseudo[data-faixa="${faixa.id}"]`);
+    document.querySelectorAll(".letra .pseudo[data-agora]").forEach((x) => {   // a faixa mudou: a letra anterior apaga
+      if (x === ol) return;
+      delete x.dataset.agora;
+      x.querySelectorAll("li.agora").forEach((li) => li.classList.remove("agora"));
+    });
+    if (!ol) return;
+    const p = sim.varsEm(u), n = String(p && p.linha ? p.linha : 0);
+    if (ol.dataset.agora === n) return;
+    ol.dataset.agora = n;
+    ol.querySelectorAll("li.agora").forEach((li) => li.classList.remove("agora"));
+    const li = ol.querySelector(`li[data-linha="${n}"]`);
+    if (li) li.classList.add("agora");
+  }
 
   function pintarVariaveis() {
     const caixa = $("#palco-vars");
@@ -527,6 +572,7 @@
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
     $("#agora").href = rotaFaixa(faixa);
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
+    $("#palco-fluxo").hidden = !faixa.pseudocodigo;
     const r = sim.resumo;
     const med = sim.medidor && sim.medidor().split("<br>");
     $("#medidor").innerHTML = med
@@ -656,6 +702,7 @@
   fundo.addEventListener("click", () => modo("mini"));
   document.querySelectorAll(".palco-controles select").forEach((s) => s.addEventListener("change", () => s.blur()));   // as setas voltam a ser do player
   document.addEventListener("keydown", (e) => {
+    if (caixaFluxo.open) return;          // o Esc e as setas são da caixa do fluxograma
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
     if (e.key === " " && faixa && !e.target.closest("button, a")) { e.preventDefault(); botaoTocar.click(); }
