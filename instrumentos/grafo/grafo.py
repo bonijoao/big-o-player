@@ -41,6 +41,8 @@ class GrafoMatriz:
         self.E += 1
 
     def tirar(self, u, v):
+        if not self.casas[u * self.V + v]:          # conferir sem contar: tirar só aresta que existe
+            raise ValueError(f"a aresta {u}–{v} não existe")
         self._escreve(u, v, 0)
         self._escreve(v, u, 0)
         self.E -= 1
@@ -85,7 +87,10 @@ class GrafoLista:
         self.E += 1
 
     def tirar(self, u, v):
-        self.listas[u].remover(self.listas[u].buscar(v))
+        i = self.listas[u].buscar(v)
+        if i < 0:
+            raise ValueError(f"a aresta {u}–{v} não existe")
+        self.listas[u].remover(i)
         self.listas[v].remover(self.listas[v].buscar(u))
         self.E -= 1
 
@@ -157,6 +162,8 @@ class GrafoIncidencia:
     def tirar(self, u, v):
         """Acha a coluna e põe a última no lugar dela: V leituras e V escritas."""
         j = self._coluna(u, v)
+        if j < 0:
+            raise ValueError(f"a aresta {u}–{v} não existe")
         ult = self.E - 1
         if j != ult:
             for w in range(self.V):

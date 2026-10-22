@@ -143,7 +143,10 @@
     const g = {
       reg, V, E: 0, casas,
       por(u, v) { escreve(u, v, 1); escreve(v, u, 1); g.E++; },
-      tirar(u, v) { escreve(u, v, 0); escreve(v, u, 0); g.E--; },
+      tirar(u, v) {
+        if (!casas[u * V + v]) throw new Error(`a aresta ${u}–${v} não existe`);   // conferir sem contar
+        escreve(u, v, 0); escreve(v, u, 0); g.E--;
+      },
       existe: (u, v) => le(u, v) === 1,
       vizinhos(u) { const viz = []; for (let v = 0; v < V; v++) if (le(u, v) === 1) viz.push(v); return viz; },
       grau(u) { let s = 0; for (let v = 0; v < V; v++) s += le(u, v); return s; },
@@ -165,7 +168,11 @@
     const g = {
       reg, V, E: 0, listas,
       por(u, v) { listas[u].anexar(v); listas[v].anexar(u); g.E++; },
-      tirar(u, v) { listas[u].remover(listas[u].buscar(v)); listas[v].remover(listas[v].buscar(u)); g.E--; },
+      tirar(u, v) {
+        const i = listas[u].buscar(v);
+        if (i < 0) throw new Error(`a aresta ${u}–${v} não existe`);
+        listas[u].remover(i); listas[v].remover(listas[v].buscar(u)); g.E--;
+      },
       existe: (u, v) => listas[u].buscar(v) >= 0,
       vizinhos: (u) => Array.from({ length: listas[u].n }, (_, i) => listas[u].ler(i)),
       vizinho: (u, i) => listas[u].ler(i),
@@ -194,6 +201,7 @@
       },
       tirar(u, v) {
         const j = coluna(u, v), ult = colunas.length - 1;
+        if (j < 0) throw new Error(`a aresta ${u}–${v} não existe`);
         if (j !== ult) for (let w = 0; w < V; w++) escreve(w, j, le(w, ult));
         colunas.pop();
         reg.eventos.push({ t: "tira", j: ult });

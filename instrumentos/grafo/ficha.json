@@ -9,7 +9,7 @@
   "ano": "—"
  },
  "n": "V",
- "eixo": "V (vértices, com E = 3V arestas)",
+ "eixo": "V (vértices, com E = {razao}V arestas)",
  "memoria": {
   "notacao": "O(V²), O(V + E) e O(V · E)",
   "porque": "A matriz de adjacência guarda V × V casas, tenha o grafo poucas arestas ou muitas. A lista de adjacência guarda uma casa por vértice (onde começa a lista dele) e duas por aresta (u na lista de v e v na lista de u), mais a folga de cada vetor, que dobra quando enche. A matriz de incidência guarda V casas por aresta."
@@ -130,8 +130,8 @@
   }
  ],
  "legendas": {
-  "operacoes": "Custo = leituras + escritas de casas, contadas rodando as três vistas em Python no grafo de medição: V vértices, cada um ligado aos três seguintes dando a volta (E = 3V, grau 6), com V = {ns}. As perguntas são sobre o vértice 0, com uma aresta que não existe no existe e no pôr (o pior caso de quem procura). O número de vértices e de arestas e o tamanho de cada lista, guardados à parte, não contam.",
-  "custo": "O custo de achar os vizinhos de um vértice nas três vistas, e o de saber se uma aresta existe na matriz de adjacência, para V de {v0} a {v1} no grafo de medição, medido uma vez por V. Os vizinhos são sempre 6: a lista lê só eles, a matriz de adjacência lê a linha inteira e a de incidência varre a linha e desce as colunas.",
-  "casas": "Casas que cada vista guarda no grafo de medição, para V de {v0} a {v1} (E = 3V). A lista cresce como V; as duas matrizes, como V², e a de incidência três vezes mais depressa, porque E = 3V."
+  "operacoes": "Custo = leituras + escritas de casas, contadas rodando as três vistas em Python no grafo de medição: V vértices, cada um ligado aos {seguintes} seguintes dando a volta (E = {razao}V, grau {grau}), com V = {ns}. As perguntas são sobre o vértice 0, com uma aresta que não existe no existe e no pôr (o pior caso de quem procura). O número de vértices e de arestas e o tamanho de cada lista, guardados à parte, não contam.",
+  "custo": "O custo de achar os vizinhos de um vértice nas três vistas, e o de saber se uma aresta existe na matriz de adjacência, para V de {v0} a {v1} no grafo de medição, medido uma vez por V. Os vizinhos são sempre {grau}: a lista lê só eles, a matriz de adjacência lê a linha inteira e a de incidência varre a linha e desce as colunas.",
+  "casas": "Casas que cada vista guarda no grafo de medição, para V de {v0} a {v1} (E = {razao}V). A lista cresce como V; as duas matrizes, como V², e a de incidência {razao} vezes mais depressa que a de adjacência, porque E = {razao}V."
  }
 }

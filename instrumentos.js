@@ -607,7 +607,7 @@
       bloco("entrada", [el("div", { class: "demo-campos" }, [rotU, entU, rotV, entV])]),
       bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
       bloco("custou", [custou, aviso]),
-      bloco(`últimas operações (${VISTAS.map((v) => nomeVar[v]).join(" · ")})`, [lista], "historico"),
+      bloco("últimas operações", [el("p", { class: "demo-aviso", text: "custo na matriz · na lista · na incidência" }), lista], "historico"),
     ]);
     const tela = el("div", { class: "demo-tela" }, [el("div", { class: "demo-figura demo-grafo" }, el("div", { class: "demo-vistas" }, [desenho, ...vistas])),
       legenda, el("p", { class: "demo-dica", text: tipoTexto("grafo") })]);
@@ -617,6 +617,13 @@
   }
 
   // ---------- gráficos: custo × n e casas × n ----------
+
+  // o menor n medido nas séries (o Grafo começa em V = 8, onde o anel de medição já é ele mesmo)
+  const nMin = (inst) => Math.min(...Object.values(inst.medido.operacoes).flatMap((o) => o.serie.map((t) => t.n)));
+  // texto da ficha com os números do dados.json: {ns} os n da tabela, {v0}–{v1} as séries,
+  // e o que o próprio grafo de medição diz de si ({seguintes}, {grau}, {razao})
+  const textoInst = (inst, t) => t.replace(/\{(\w+)\}/g, (_, c) => ({ ns: inst.medido.tamanhos.map(mil).join(", "), v0: nMin(inst), v1: nMax(inst),
+    ...(inst.medido.anel || {}) })[c] ?? `{${c}}`);
 
   function graficoCusto(caixa, inst) {
     const ops = inst.medido.operacoes;
@@ -629,13 +636,13 @@
     const ymax = Math.max(...series.flatMap((s) => s.pts.map((p) => p[1])));
     const passoY = ymax > 200 ? 50 : ymax > 100 ? 25 : ymax > 40 ? 10 : 5, topo = Math.ceil(ymax / passoY) * passoY;
     const X = (n) => m.l + n / xmax * (W - m.l - m.r), Y = (v) => m.t + (1 - v / topo) * (H - m.t - m.b);
-    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Custo de cada operação (leituras + escritas) para n de 0 a ${xmax}` });
+    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Custo de cada operação (leituras + escritas) para ${inst.n || "n"} de ${nMin(inst)} a ${xmax}` });
     for (let v = 0; v <= topo; v += passoY) {
       s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: COR.linha }));
       s.append(svg("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: COR.cinza }, String(v)));
     }
     for (let n = 0; n <= xmax; n += 16) s.append(svg("text", { x: X(n), y: H - m.b + 18, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, String(n)));
-    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, inst.eixo || "n (valores já guardados)"));
+    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, inst.eixo ? textoInst(inst, inst.eixo) : "n (valores já guardados)"));
     for (const se of series) {
       s.append(svg("polyline", { points: se.pts.map(([n, v]) => `${X(n)},${Y(v)}`).join(" "), fill: "none", stroke: se.cor,
         "stroke-width": 2, "stroke-dasharray": se.media ? "5 4" : "", "stroke-linejoin": "round" }));
@@ -684,20 +691,20 @@
 
   // as vistas que guardam diferente (o Grafo): uma linha por vista, sem a referência de uma casa por valor
   function graficoCasasVistas(caixa, inst) {
-    const caps = Object.entries(inst.medido.capacidade);
+    const v0 = nMin(inst), caps = Object.entries(inst.medido.capacidade).map(([v, c]) => [v, c.filter((t) => t.n >= v0)]);
     caixa.replaceChildren();
     const W = Math.max(300, caixa.clientWidth), H = 240, direto = W >= 600, m = { l: 58, r: direto ? 190 : 16, t: 14, b: 40 };
     const xmax = Math.max(...caps.flatMap(([, c]) => c.map((t) => t.n))), ymax = Math.max(...caps.flatMap(([, c]) => c.map((t) => t.casas)));
     const ordem = 10 ** Math.floor(Math.log10(ymax / 4)), passo = [1, 2, 5, 10].map((f) => f * ordem).find((p) => ymax / p <= 6);
     const topo = Math.ceil(ymax / passo) * passo;
     const X = (n) => m.l + n / xmax * (W - m.l - m.r), Y = (v) => m.t + (1 - v / topo) * (H - m.t - m.b);
-    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Casas guardadas por cada vista, para ${inst.n || "n"} de 0 a ${xmax}` });
+    const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Casas guardadas por cada vista, para ${inst.n || "n"} de ${v0} a ${xmax}` });
     for (let v = 0; v <= topo; v += passo) {
       s.append(svg("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: COR.linha }));
       s.append(svg("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: COR.cinza }, mil(v)));
     }
     for (let n = 0; n <= xmax; n += 10) s.append(svg("text", { x: X(n), y: H - m.b + 18, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, String(n)));
-    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, inst.eixo || "n"));
+    s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, inst.eixo ? textoInst(inst, inst.eixo) : "n"));
     const series = caps.map(([v, c], k) => ({ rotulo: inst.variantes[v], cor: SERIES[k % SERIES.length], pts: c.map((t) => [t.n, t.casas]) }));
     for (const se of series) s.append(svg("polyline", { points: se.pts.map(([n, v]) => `${X(n)},${Y(v)}`).join(" "), fill: "none", stroke: se.cor, "stroke-width": 2, "stroke-linejoin": "round" }));
     if (direto) {
@@ -742,8 +749,7 @@
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos, nome = inst.n || "n";
     // legendas próprias da ficha (o Grafo), com os números do dados.json
-    const leg = inst.legendas || {}, serie = Object.values(inst.medido.operacoes).flatMap((o) => o.serie.map((t) => t.n));
-    const preencher = (t) => t.replace(/\{(\w+)\}/g, (_, c) => ({ ns: ns.map(mil).join(", "), v0: Math.min(...serie), v1: Math.max(...serie) })[c] ?? `{${c}}`);
+    const leg = inst.legendas || {}, preencher = (t) => textoInst(inst, t);
     // os detalhes ficam recolhidos; os gráficos só se desenham abertos (fechados, não têm largura)
     const detalhe = (titulo, resumo, filhos) => {
       const dt = el("details", { class: "detalhe" }, [el("summary", {}, [el("b", { text: titulo }), el("span", { text: resumo })]), el("div", { class: "detalhe-corpo" }, filhos)]);

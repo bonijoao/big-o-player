@@ -55,5 +55,17 @@ def sortear(r, variante, g):
     return op, [r.randrange(g.V)]
 
 
+def descrever(V=100):
+    """O anel de medição em números, para as legendas da página: quantos seguintes,
+    o grau e E/V, lidos do próprio anel (com V grande, longe dos casos pequenos)."""
+    arestas = anel(V)
+    grau = sum(1 for a in arestas if 0 in a)
+    return {"seguintes": grau // 2, "grau": grau, "razao": len(arestas) // V, "minimo": MINIMO}
+
+
 if __name__ == "__main__":
-    instrumento.medir(ESTRUTURAS, montar_anel, OPERACOES, sortear, AQUI, INICIO)
+    import json
+    dados = instrumento.medir(ESTRUTURAS, montar_anel, OPERACOES, sortear, AQUI, INICIO)
+    dados["anel"] = descrever()
+    with open(os.path.join(AQUI, "dados.json"), "w") as f:
+        json.dump(dados, f, ensure_ascii=False)

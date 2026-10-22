@@ -404,9 +404,9 @@
 
   function legendaCores(ctx, itens, y) {
     let lx = 70;
-    for (const [cor, rot] of itens) {
+    for (const [cor, rot, borda, larg = 1] of itens) {   // borda: a cor do contorno da amostra, quando ele faz parte do papel
       ctx.fillStyle = cor; ctx.fillRect(lx, y + 2, 10, 10);
-      if (cor === COR.claro || cor === "#fff") { ctx.strokeStyle = COR.borda; ctx.lineWidth = 1; ctx.strokeRect(lx + 0.5, y + 2.5, 9, 9); }
+      if (borda || cor === COR.claro || cor === "#fff") { ctx.strokeStyle = borda || COR.borda; ctx.lineWidth = larg; ctx.strokeRect(lx + 0.5, y + 2.5, 9, 9); }
       texto(ctx, rot, lx + 16, y, 11, COR.cinza);
       ctx.font = `400 11px ${MONO}`;
       lx += 16 + ctx.measureText(rot).width + 26;
@@ -812,7 +812,7 @@
       texto(ctx, `${nomeEst} mais ${largura ? "longa" : "alta"}: ${s.pico}`, x, 288, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
       texto(ctx, `V = ${V} vértices, E = ${arestas.length} arestas`, x, 330, 13, COR.cinza);
       texto(ctx, largura ? "no vértice: a distância à origem" : "no vértice: a ordem de visita", x, 350, 13, COR.cinza);
-      legendaCores(ctx, [[COR.mexeu, "o da vez"], ["#fff", `na ${nomeEst}`], [COR.claro, "já saiu"], [COR.tinta, "aresta da árvore"]], 500);
+      legendaCores(ctx, [["#fff", "não visto", COR.palido], ["#fff", `na ${nomeEst}`, COR.tinta, 2], [COR.mexeu, "o da vez"], [COR.claro, "já saiu", COR.cinza], [COR.tinta, "aresta da árvore"]], 500);
 
       if (fim && largura) legenda(ctx, [["visitou os ", ""], [`${V} vértices`, "b"], [": ", ""], [`${r.ops} operações`, "g"], [`, o mais longe a ${maisLonge} arestas`, ""]]);
       else if (fim) legenda(ctx, [["visitou os ", ""], [`${V} vértices`, "b"], [": ", ""], [`${r.ops} operações`, "g"], [`, pilha de até ${r.estrutura}`, ""]]);
