@@ -12,6 +12,17 @@
 </head>
 <body>
 
+<!-- os ícones do player -->
+<svg class="so-leitor" aria-hidden="true">
+  <symbol id="i-tocar" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="currentColor"/></symbol>
+  <symbol id="i-pausar" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></symbol>
+  <symbol id="i-passo-antes" viewBox="0 0 24 24"><rect x="4" y="5" width="2.4" height="14" fill="currentColor"/><path d="M19 5v14L8.5 12z" fill="currentColor"/></symbol>
+  <symbol id="i-passo-depois" viewBox="0 0 24 24"><rect x="17.6" y="5" width="2.4" height="14" fill="currentColor"/><path d="M5 5v14l10.5-7z" fill="currentColor"/></symbol>
+  <symbol id="i-faixa-antes" viewBox="0 0 24 24"><rect x="3" y="5" width="2.2" height="14" fill="currentColor"/><path d="M13 5v14L5.5 12zM21 5v14l-7.5-7z" fill="currentColor"/></symbol>
+  <symbol id="i-faixa-depois" viewBox="0 0 24 24"><rect x="18.8" y="5" width="2.2" height="14" fill="currentColor"/><path d="M3 5v14l7.5-7zM11 5v14l7.5-7z" fill="currentColor"/></symbol>
+  <symbol id="i-rampa" viewBox="0 0 20 14"><path d="M1 13L19 2M1 13h18" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+</svg>
+
 <div class="app">
   <aside class="lateral">
     <a class="marca" href="#">É complexo, baby?<span class="cursor" aria-hidden="true"></span></a>
@@ -42,13 +53,9 @@
     </div>
     <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
   </div>
+  <!-- embaixo do palco só a entrada do algoritmo; tocar, passos e velocidade são do rodapé -->
   <div class="palco-controles">
-    <span class="grupo">
-      <button type="button" id="passo-antes" class="botao-passo" aria-label="Voltar um passo">◀ passo</button>
-      <button type="button" id="passo-depois" class="botao-passo" aria-label="Avançar um passo">passo ▶</button>
-      <span id="passo-conta" class="passo-conta" aria-live="off"></span>
-    </span>
-    <label class="so-ordenacao"><span id="cfg-tipo-rotulo">entrada</span>
+    <label class="so-ordenacao so-tipo"><span id="cfg-tipo-rotulo">entrada</span>
       <select id="cfg-tipo"></select>
     </label>
     <label class="so-ordenacao"><span id="cfg-n-rotulo">n</span>
@@ -58,10 +65,12 @@
       <select id="cfg-k"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
     </label>
     <button type="button" id="cfg-sortear" class="botao-passo">embaralhar</button>
-    <label>velocidade
-      <select id="cfg-vel"><option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option><option value="16">16×</option></select>
-    </label>
-    <button type="button" id="cfg-acelera" class="botao-passo alterna" aria-pressed="false" title="Começa devagar e acelera">accelerando</button>
+    <span class="ritmo so-estreito"><span class="vel" role="group" aria-label="Velocidade">
+      <button type="button" class="icone" data-vel="-1" aria-label="Mais devagar" title="Mais devagar (−)">−</button>
+      <output class="vel-valor">1×</output>
+      <button type="button" class="icone" data-vel="1" aria-label="Mais rápido" title="Mais rápido (+)">+</button>
+    </span>
+    <button type="button" class="icone acelera" aria-pressed="false" aria-label="accelerando" title="accelerando: começa devagar e acelera"><svg aria-hidden="true"><use href="#i-rampa"/></svg></button></span>
   </div>
 </section>
 
@@ -81,17 +90,29 @@
   </a>
   <div class="controles">
     <div class="botoes">
-      <button type="button" id="anterior" class="icone" aria-label="Faixa anterior">⏮</button>
-      <button type="button" id="tocar" class="tocar" aria-label="Tocar">▶</button>
-      <button type="button" id="proxima" class="icone" aria-label="Próxima faixa">⏭</button>
+      <button type="button" id="anterior" class="icone faixa" aria-label="Faixa anterior"><svg aria-hidden="true"><use href="#i-faixa-antes"/></svg></button>
+      <button type="button" id="passo-antes" class="icone" aria-label="Voltar um passo" title="Voltar um passo (←)"><svg aria-hidden="true"><use href="#i-passo-antes"/></svg></button>
+      <button type="button" id="tocar" class="tocar" aria-label="Tocar" title="Tocar e pausar (espaço)"><svg aria-hidden="true"><use href="#i-tocar"/></svg></button>
+      <button type="button" id="passo-depois" class="icone" aria-label="Avançar um passo" title="Avançar um passo (→)"><svg aria-hidden="true"><use href="#i-passo-depois"/></svg></button>
+      <button type="button" id="proxima" class="icone faixa" aria-label="Próxima faixa"><svg aria-hidden="true"><use href="#i-faixa-depois"/></svg></button>
     </div>
     <div class="linha-tempo">
       <span id="tempo-agora">0:00</span>
-      <input type="range" id="trilho" min="0" max="1000" value="0" aria-label="Posição na faixa">
+      <span class="trilho-caixa">
+        <input type="range" id="trilho" min="0" max="1000" value="0" aria-label="Posição na faixa">
+        <span id="passo-conta" class="passo-conta" aria-hidden="true"></span>
+      </span>
       <span id="tempo-total">0:00</span>
     </div>
   </div>
-  <div class="medidor" id="medidor"></div>
+  <div class="ritmo">
+    <span class="vel" role="group" aria-label="Velocidade">
+      <button type="button" class="icone" data-vel="-1" aria-label="Mais devagar" title="Mais devagar (−)">−</button>
+      <output class="vel-valor">1×</output>
+      <button type="button" class="icone" data-vel="1" aria-label="Mais rápido" title="Mais rápido (+)">+</button>
+    </span>
+    <button type="button" class="icone acelera" aria-pressed="false" aria-label="accelerando" title="accelerando: começa devagar e acelera"><svg aria-hidden="true"><use href="#i-rampa"/></svg></button>
+  </div>
 </footer>
 
 <script src="dados.js"></script>

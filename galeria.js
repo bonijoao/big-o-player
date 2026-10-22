@@ -554,7 +554,7 @@
 
   function play(sim_) {
     tocando = sim_ && !!sim;
-    botaoTocar.textContent = tocando ? "❚❚" : "▶";
+    botaoTocar.firstElementChild.firstElementChild.setAttribute("href", tocando ? "#i-pausar" : "#i-tocar");
     botaoTocar.setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
     ultimoQuadro = performance.now();
     marcarTocando();
@@ -642,8 +642,11 @@
     $("#tempo-agora").textContent = relogio(u / (sim.ritmo * vel));
     $("#tempo-total").textContent = relogio(sim.total / (sim.ritmo * vel));
     if (!arrastandoTrilho) trilho.value = String(sim.total ? Math.round(1000 * u / sim.total) : 0);
-    const feitos = sim.passos.filter((x) => x <= u + 1e-9).length;
-    $("#passo-conta").textContent = `passo ${feitos} de ${sim.passos.length}`;
+    // o passo da vez aparece num balão sobre a bolinha do trilho, ao passar o mouse ou arrastar
+    const feitos = sim.passos.filter((x) => x <= u + 1e-9).length, conta = `passo ${mil(feitos)} de ${mil(sim.passos.length)}`;
+    const dica = $("#passo-conta");
+    if (dica.textContent !== conta) { dica.textContent = conta; trilho.setAttribute("aria-valuetext", conta); }
+    dica.style.left = `${Number(trilho.value) / 10}%`;
     const vivo = document.querySelector(`[data-ao-vivo="${faixa.id}"]`);
     if (vivo) vivo.textContent = textoAoVivo();
   }
@@ -667,13 +670,6 @@
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     $("#palco-fluxo").hidden = !faixa.pseudocodigo;
     objetivoPalco.textContent = faixa.objetivo || "";
-    const r = sim.resumo;
-    const med = sim.medidor && sim.medidor().split("<br>");
-    $("#medidor").innerHTML = med
-      ? `<b>${esc(faixa.tempo.notacao)}</b> ${med[0]}<br><b>${esc(faixa.memoria.notacao)}</b> ${med[1]}, <b>M = ${faixa.medido.ciclomatica.M}</b>`
-      : faixa.alg === "kmeans"
-      ? `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.distancias)} distâncias, ${r.voltas} voltas<br><b>${esc(faixa.memoria.notacao)}</b> ${mil(r.pico)} valores, <b>M = ${faixa.medido.ciclomatica.M}</b>`
-      : `<b>${esc(faixa.tempo.notacao)}</b> ${mil(r.comparacoes)} comparações, n = ${r.n}<br><b>${esc(faixa.memoria.notacao)}</b> ${r.pico ? `${mil(r.pico)} valores` : "sem memória extra"}, <b>M = ${faixa.medido.ciclomatica.M}</b>`;
     habilitar();
   }
 
@@ -682,7 +678,7 @@
     botaoTocar.disabled = !faixa;
     $("#anterior").disabled = i <= 0;
     $("#proxima").disabled = i < 0 || i >= fila.length - 1;
-    trilho.disabled = !faixa;
+    trilho.disabled = $("#passo-antes").disabled = $("#passo-depois").disabled = !faixa;
   }
 
   function marcarTocando() {
@@ -718,6 +714,7 @@
     }
     $("#cfg-sortear").textContent = km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear;
     $("#cfg-sortear").hidden = !km && !!ENTRADAS[tipoDe(faixa)].semSorteio;
+    $(".so-tipo").hidden = !km && ENTRADAS[tipoDe(faixa)].opcoes.length === 1;   // um menu de uma opção só não escolhe nada
   }
 
   function mudarCfg(muda) {
@@ -746,12 +743,21 @@
       mudarCfg({ tipo, n: Number($("#cfg-n").value), semente: novaSemente() });
     }
   });
-  $("#cfg-vel").addEventListener("change", (e) => { vel = Number(e.target.value); atualizarTempo(); });
-  // accelerando: troca o ritmo sem perder o lugar (o mesmo evento, na linha do tempo nova)
-  $("#cfg-acelera").addEventListener("click", (e) => {
+  // velocidade: − e + andam pela escada; o valor fica no próprio controle (no rodapé e, no celular, no palco)
+  const VELS = [0.25, 0.5, 1, 2, 4, 8, 16];
+  function mudarVel(d) {
+    vel = VELS[Math.min(VELS.length - 1, Math.max(0, VELS.indexOf(vel) + d))];
+    document.querySelectorAll(".vel-valor").forEach((o) => { o.textContent = `${vel.toLocaleString("pt-BR")}×`; });
+    document.querySelectorAll('.vel [data-vel="-1"]').forEach((b) => { b.disabled = vel === VELS[0]; });
+    document.querySelectorAll('.vel [data-vel="1"]').forEach((b) => { b.disabled = vel === VELS[VELS.length - 1]; });
+    atualizarTempo();
+  }
+  document.querySelectorAll(".vel [data-vel]").forEach((b) => b.addEventListener("click", () => mudarVel(Number(b.dataset.vel))));
+  // accelerando: um jeito de tocar, não uma velocidade; troca o ritmo sem perder o lugar (o mesmo evento, na linha do tempo nova)
+  document.querySelectorAll(".acelera").forEach((b) => b.addEventListener("click", (e) => {
     const botao = e.currentTarget;
     accelerando = !accelerando;
-    botao.setAttribute("aria-pressed", String(accelerando));
+    document.querySelectorAll(".acelera").forEach((x) => x.setAttribute("aria-pressed", String(accelerando)));
     if (!faixa) return;
     const k = sim.eventoEm(u), estava = tocando;
     sim = window.Palco.criar(faixa, cfgs[faixa.id], accelerando);
@@ -760,7 +766,7 @@
     play(estava);
     pintar();
     if (!paginaInst) { const y = window.scrollY; rota(); window.scrollTo(0, y); botao.focus(); }   // as durações mostradas mudam com o ritmo
-  });
+  }));
   const novaSemente = () => Math.floor(Math.random() * 2 ** 31);
 
   // passo a passo: pausa e vai ao fim do passo anterior/seguinte
@@ -810,7 +816,10 @@
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
     if (e.key === " " && faixa && !e.target.closest("button, a")) { e.preventDefault(); botaoTocar.click(); }
-    if (palco.dataset.modo === "grande" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
+    if (!faixa || palco.dataset.modo === "oculto" || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
+    if (e.key === "-" || e.key === "_") mudarVel(-1);
+    if (e.key === "+" || e.key === "=") mudarVel(1);
   });
 
   // mini player: arrasta pela tela, sempre dentro dela; um toque sem arrastar amplia

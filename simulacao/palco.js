@@ -2521,10 +2521,9 @@
         texto(ctx, ab, x, 190, Math.min(22, 270 / (0.6 * ab.length)), COR.tinta, 700);
         texto(ctx, "memória extra: 2 variáveis", x, 236, 13, COR.cinza);
       }
-      texto(ctx, `n = ${n}`, x, versao === "memoria" ? 352 : 340, 13, COR.cinza);
       if (fim) texto(ctx, `fib(${n}) = ${milhar(r.fib)}`, x, versao === "memoria" ? 376 : 370, 20, COR.verde, 700);
       legendaCores(ctx, arvore
-        ? [[COR.mexeu, "a chamada da vez"], [COR.tinta, "aberta, na pilha"], [COR.apagado, "já voltou"], ...(versao === "memoria" ? [[COR.album, "achou no memo"]] : [])]
+        ? [[COR.mexeu, "a chamada da vez"], [COR.tinta, "na pilha"], [COR.apagado, "já voltou"], ...(versao === "memoria" ? [[COR.album, "achou no memo"]] : [])]
         : [[COR.mexeu, "a e b"], [COR.verde, "fib(n)"]], 500);
 
       if (fim) legenda(ctx, [[`fib(${n}) = ${milhar(r.fib)}: `, ""], [`${milhar(r.ops)} somas`, "g"], [arvore ? `, ${milhar(r.chamadas)} chamadas` : ", duas variáveis", ""]]);
