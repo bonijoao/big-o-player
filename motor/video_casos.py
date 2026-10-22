@@ -490,7 +490,9 @@ def montar_palavras(pasta):
     contagens em verde (o resultado)."""
     D, F = _ler(pasta)
     ex = D["exemplo"]
-    chaves, valores = _tabela_sondagem(ex["m"], ex["contagens"])
+    conta = dict(ex["contagens"])
+    ordem = list(dict.fromkeys(ex["palavras"]))     # na ordem em que entraram, como na tabela de verdade
+    chaves, valores = _tabela_sondagem(ex["m"], [[w, conta[w]] for w in ordem])
 
     def cena(d, t, im):
         texto(d, f"dicionário: m = {ex['m']} casas", BX0, 96, 11, GRAY)

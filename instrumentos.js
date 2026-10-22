@@ -888,7 +888,7 @@
   // conta deu (com uma seta); as leituras e escritas acendem a casa ou o campo
   // do nó. A dobra não anda casa a casa: a tabela nova aparece pronta, e o aviso conta o que houve.
 
-  const MD = 12;                         // a demo vai até 12 chaves (m chega a 16)
+  const MD = 12;                         // a demo vai até 12 chaves (m chega a 16; na sondagem, com lápides, a 32 ou 64)
 
   function demoDicionario(inst) {
     const VARS = ["encadeamento", "sondagem"], nomeVar = inst.variantes;
@@ -968,8 +968,9 @@
           : chamada === "remover" ? (volta ? " → removida" : " → não estava") : "";
         custou.replaceChildren(el("b", { text: `${nome}${devolveu}` }), el("span", { text: " custou:" }),
           ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
-        const dobrou = es[0].m !== ms[0];
-        aviso.textContent = dobrou ? `α ia passar de 3/4: as duas tabelas dobraram de ${ms[0]} para ${es[0].m} casas e redistribuíram as ${es[0].n - 1} chaves que já tinham, cada uma na sua casa nova. Por isso esse pôr custou tanto.` : "";
+        // cada versão dobra na sua hora: na sondagem, as lápides contam como ocupadas, e reaproveitar uma lápide não dobra
+        const dobraram = VARS.filter((v, j) => es[j].m !== ms[j]);
+        aviso.textContent = dobraram.length ? `α ia passar de 3/4: ${dobraram.length === 2 ? "as duas tabelas dobraram" : `a tabela ${dobraram[0] === "sondagem" ? "da sondagem" : "do encadeamento"} dobrou`} (${[...new Set(dobraram.map((v) => `${ms[VARS.indexOf(v)]} → ${es[VARS.indexOf(v)].m} casas`))].join("; ")}) e ${dobraram.length === 2 ? "redistribuíram" : "redistribuiu"} as chaves, cada uma na sua casa nova. Por isso esse pôr custou tanto.${dobraram.length === 1 && dobraram[0] === "sondagem" ? " As lápides contam como casas ocupadas até a dobra, que as descarta." : ""}` : "";
         log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
         log = log.slice(0, 6);
         listar();

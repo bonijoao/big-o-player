@@ -10,7 +10,7 @@
  },
  "memoria": {
   "notacao": "O(n)",
-  "porque": "A tabela reserva m casas e dobra quando α passaria de 3/4, então, passadas as primeiras chaves, m fica entre 4n/3 e 8n/3: sempre proporcional a n. O encadeamento guarda m inícios de corrente e mais três casas por chave (chave, valor e próx). A sondagem guarda só as m casas de chave e valor, sem ponteiro, mas sempre com folga: um quarto delas, no mínimo, fica vazio."
+  "porque": "A tabela reserva m casas e dobra quando α passaria de 3/4, então, pondo chaves (passadas as primeiras), m fica entre 4n/3 e 8n/3: proporcional a n. Remover não encolhe a tabela. O encadeamento guarda m inícios de corrente e mais três casas por chave (chave, valor e próx). A sondagem guarda só as m casas de chave e valor, sem ponteiro, mas sempre com folga: um quarto delas, no mínimo, fica vazio."
  },
  "variantes": {
   "encadeamento": "encadeamento",
@@ -119,7 +119,7 @@
   }
  ],
  "legendas": {
-  "operacoes": "Custo = leituras + escritas de casas (a chave, o valor, o próx de um nó ou o início de uma corrente), contadas rodando as duas versões em Python com n chaves já guardadas, para n = {ns}. Calcular a casa da chave não conta. As chaves são 0, 1, …, n − 1 embaralhados (de outro jeito, a dispersão as espalharia sem nenhuma colisão); a chave lida e a removida são a do meio.",
+  "operacoes": "Custo = leituras + escritas de casas (a chave, o valor, o próx de um nó ou o início de uma corrente), contadas rodando as duas versões em Python com n chaves já guardadas, para n = {ns}. Calcular a casa da chave não conta. As chaves são 0, 1, …, n − 1 embaralhados (de outro jeito, a dispersão as espalharia quase sem colisão); a chave lida e a removida são a do meio.",
   "custo": "O custo de cada operação com n chaves já guardadas, para n de {v0} a {v1}, medido uma vez por n, numa chave só: sobe e desce com a colisão da vez, mas não cresce com n. Tracejadas: a média de n chaves postas uma a uma a partir da tabela vazia, que paga as dobras.",
   "casas": "Casas guardadas depois de pôr n chaves, a partir da tabela vazia, para n de {v0} a {v1}. As duas dobram juntas, quando α passaria de 3/4. A sondagem guarda 2m (chave e valor em cada casa); o encadeamento, m inícios de corrente e três casas por chave."
  }

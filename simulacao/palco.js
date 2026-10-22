@@ -1633,24 +1633,23 @@
   function simPalavras(faixa, p, accelerando) {
     const r = Algoritmos.palavras(p), N = p.length, ideia = faixa.video.ideia;
     const t = tabelaDic();
-    let gasto = 0, distintas = 0;
+    let gasto = 0, distintas = 0, vez = -1;
     const est = r.eventos.map((e) => {
+      if (e.i !== undefined) vez = e.i;                // a palavra da vez fica acesa até a próxima
       t.aplicar(e.dic || []);                         // sem eventos do dicionário, nenhuma casa acesa
       if (e.dic) gasto = e.gasto;
       if (e.t === "poe") distintas++;
-      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i: e.i ?? null, achou: e.achou, tab: t.foto(), gasto, distintas };
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i: vez, achou: e.achou, tab: t.foto(), gasto, distintas };
     });
     if (gasto !== r.ops || distintas !== r.d) throw new Error("reprodução da contagem de palavras não bate");
     const pesos = !accelerando ? est.map(() => 1)
       : pesosLentos(est, { le: 0.5, busca: 1, conta: 1, poe: 1, atribui: 0.4, devolva: 2 }, (x) => x === "conta" || x === "poe", 6, 2.5);
     const tl = linhaDoTempo(pesos);
-    let ultimo = -1;                                   // a palavra da vez fica acesa até a próxima
 
     function desenhar(ctx, u) {
       const k = tl.eventoEm(u), fim = u >= tl.total;
-      const s = k >= 0 ? est[k] : { i: null, tab: tabelaDic().foto(), gasto: 0, distintas: 0 };
-      ultimo = s.i ?? (k >= 0 ? ultimo : -1);
-      const i = fim ? -1 : ultimo;
+      const s = k >= 0 ? est[k] : { i: -1, tab: tabelaDic().foto(), gasto: 0, distintas: 0 };
+      const i = fim ? -1 : s.i;
       // o texto: algumas palavras antes e depois da da vez
       texto(ctx, "texto", 40, 68, 11, COR.cinza);
       ctx.font = `400 15px ${MONO}`;

@@ -38,7 +38,7 @@
   "texto": "Primeiro, o custo por chave em função da ocupação α, medido e previsto. Depois, o total de sondagens para tabelas cada vez maiores, com α fixo: em escala logarítmica, quem cresce como m sobe com inclinação 1.",
   "alfa": "Sondagens para α de {a0} a {a1}, média de {sementes} tabelas de {m} casas. Pontos cheios: a média por chave, pondo as chaves até α. Pontos vazados: pôr uma chave nova com α ocupado (a média das inserções entre α − 0,005 e α + 0,005). Tracejadas: as fórmulas, 1 + α/2 e 1 + α.",
   "crescimento": "Sondagens no total, pondo α·m chaves, para m de {n0} a {n1}. {dados}. Com α fixo, a média por chave não muda: o total acompanha m.",
-  "memoria": "Casas guardadas no pico para os mesmos tamanhos: m inícios de corrente e três casas por chave, m + 3αm. Com α = 2, os nós passam da tabela."
+  "memoria": "Casas guardadas no pico para os mesmos tamanhos: m inícios de corrente e três casas por chave, m + 3αm. Já com α acima de 1/3, os nós guardam mais casas que a tabela."
  },
  "pseudocodigo": "procedimento inserir_encadeamento(t, k):\n    i ← dispersão(k)\n    p ← início da corrente t[i]\n    enquanto p não é nulo:\n        se chave de p = k:\n            pare\n        p ← próximo de p\n    se p é nulo:\n        p ← nó com a chave k, apontando para o início de t[i]\n        início da corrente t[i] ← p\n    devolva p\n",
  "placa": {

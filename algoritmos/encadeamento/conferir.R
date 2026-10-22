@@ -5,4 +5,4 @@
 #   Rscript algoritmos/encadeamento/conferir.R
 source("motor/colisao.R")
 conferir_colisao("algoritmos/encadeamento", "tabela com encadeamento", sondagens_encadeamento,
-                 function(a) 1 + a / 2, function(a) 1 + a)
+                 function(a) 1 + a / 2, function(a) 1 + a, tol_media = 0.01, tol_ultima = 0.03)
