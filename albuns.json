@@ -137,22 +137,6 @@
   "titulo": "Estatística",
   "familia": "estatística",
   "frase": "Algoritmos que rodam por trás de uma análise.",
-  "em_producao": [
-   {
-    "nome": "Mediana por quickselect",
-    "tempo": "O(n) médio",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Média e variância em uma passada (Welford)",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Histograma",
-    "tempo": "O(n)",
-    "memoria": "O(c)"
-   }
-  ]
+  "em_producao": []
  }
 ]

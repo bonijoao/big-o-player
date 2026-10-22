@@ -1,0 +1,43 @@
+{
+ "id": "mediana-por-quickselect",
+ "nome": "Mediana por quickselect",
+ "variante": "partição de Lomuto, pivô = último, sem recursão",
+ "familia": "estatística",
+ "resumo": "Acha o número do meio sem ordenar tudo. Particiona como o quick sort, vê de que lado do pivô ficou a casa do meio e continua só daquele lado. Com n par, o outro número do meio é o menor do lado direito.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, particionada no próprio vetor"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n) médio",
+  "porque": "Cada partição compara o trecho inteiro com o pivô, mas o laço segue só o lado onde está o meio. Com o pivô caindo num lugar qualquer, esse lado tem em média três quartos do trecho, e a soma n + 3n/4 + (3/4)²n + … fica abaixo de 4n. A conta exata dá 2(1 + ln 2)·n, cerca de 3,4n comparações; com n par, achar o outro do meio custa mais n/2 − 1, e o total vai para perto de 3,9n. O quick sort, que segue os dois lados, paga cerca de 1,39 n log₂ n.",
+  "nota": "Pior caso: entrada já ordenada ou invertida, com o pivô no último. Cada partição só tira uma casa do trecho, e a conta vira O(n²). O trees vem do R ordenado pelo diâmetro, e o volume acompanha o diâmetro: com o pivô no último, a ordem do R cai do lado caro e custa mais que quase todos os embaralhamentos dos mesmos números (veja a distribuição abaixo), embora longe do pior caso. Sortear o pivô resolve isso na prática."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Troca dentro do próprio vetor e guarda só índices soltos (a, b, i, j, k, m). Não há pilha: o quick sort precisa dela para voltar e ordenar o outro lado, e o quickselect nunca volta.",
+  "nota": "O vetor sai daqui fora da ordem original. Se a entrada não pode ser mexida, é preciso trabalhar numa cópia: O(n).",
+  "vazio": "procura dentro do próprio vetor, e o deixa fora da ordem original"
+ },
+ "video": {
+  "ideia": [
+   "pivô = o último do trecho; os menores vão para a esquerda",
+   "o pivô cai no lugar final: a casa do meio está de um lado só",
+   "e segue só daquele lado, até o pivô cair na casa do meio"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e a ordem em que os dados chegam",
+  "texto": "As mesmas contas para vetores cada vez maiores e para três ordens de entrada. Em escala logarítmica, quem cresce como n sobe em linha reta com inclinação 1, e quem cresce como n² sobe duas vezes mais íngreme.",
+  "crescimento": "Comparações para n de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos embaralhados. Tracejadas: n²/2 e n, de referência.",
+  "distribuicao": "Os mesmos {nd} volumes do trees em {vezes} ordens sorteadas: de {min} a {max} comparações. A barra preta é a ordem do R, mais cara que {acima} dos {vezes} sorteios.",
+  "rotulo": "comparações (n = {nd})"
+ },
+ "pseudocodigo": "procedimento mediana(v):\n    k ← ⌊(n + 1) / 2⌋\n    a ← 1;  b ← n\n    enquanto a < b:\n        pivô ← v[b]\n        i ← a\n        para j de a até b − 1:\n            se v[j] < pivô:\n                troque v[i] com v[j]\n                i ← i + 1\n        troque v[i] com v[b]\n        se i = k:\n            pare\n        senão se i < k:\n            a ← i + 1\n        senão:\n            b ← i − 1\n    resposta ← v[k]\n    se n é par:\n        m ← k + 1\n        para j de k + 2 até n:\n            se v[j] < v[m]:\n                m ← j\n        resposta ← (v[k] + v[m]) / 2\n    devolva resposta\n",
+ "placa": {
+  "autor": "Tony Hoare (FIND)",
+  "ano": "1961"
+ }
+}

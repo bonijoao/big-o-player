@@ -37,7 +37,7 @@ motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens 
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 motor/busca.py         molde das buscas: os ajudantes que contam (igual, menor), as entradas e a medição padrão
 motor/busca.R          as buscas reescritas em R, para conferir posição e comparações
-motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, das buscas em grafo e do Dijkstra
+motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, das buscas em grafo, do Dijkstra e do álbum Estatística
 motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, grade cheia, caminho), a medição delas e os pesos do Dijkstra
 motor/heap.R           o heap do instrumento reescrito em R, contando casas, para conferir a fila de prioridade e o Dijkstra
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
@@ -47,7 +47,7 @@ simulacao/instrumentos.js  as mesmas estruturas em JS, com os eventos que a demo
 instrumentos.js        a página do instrumento: placa, demo ao vivo, tabela de operações, gráficos, "toca em"
 simulacao/algoritmos.js  os algoritmos em JS, contando como o Python, com a linha do pseudocódigo de cada evento
 simulacao/palco.js     a simulação: estado de cada instante, linha do tempo e desenho em canvas
-testes/conferir_js.mjs JS × Python nos mesmos vetores, textos e sorteios de clientes
+testes/conferir_js.mjs JS × Python nos mesmos vetores, textos, sorteios de clientes, grafos e amostras
 gerar.py               junta tudo em dados.js e roda o teste
 index.html, estilo.css, galeria.js
 docs/plans/            desenhos aprovados
@@ -72,6 +72,14 @@ A fila de prioridade (o pronto-socorro) é a fila de atendimento com o `Heap` no
 O Dijkstra roda na mesma grade das buscas, com um peso de 1 a 9 sorteado por aresta; cada casa da lista de adjacência guarda o par (vizinho, peso). O heap reinsere o par quando a distância melhora e descarta o par vencido quando ele sai. O `conferir.R` usa o `distances()` do igraph e o heap de `motor/heap.R`.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
+
+## O álbum Estatística
+
+Cada faixa usa um conjunto embutido no R, exportado para CSV por um script na própria pasta (`trees.R`, `lakehuron.R`, `faithful.R`), e o `conferir.R` confere o resultado contra a função do R:
+
+- **Mediana por quickselect** (`algoritmos/mediana/`): a partição do quick sort sem recursão, sobre o `trees$Volume` na ordem do R (quase ordenado: com o pivô no último, mais cara que quase todos os embaralhamentos). Confere com o `median()` e com uma reimplementação em R que conta comparações e trocas.
+- **Média e variância em uma passada** (`algoritmos/welford/`): o Welford comparado com a soma dos quadrados e as duas passadas, sobre o `LakeHuron` com uma constante somada (o menu do palco). O erro de cada conta é medido contra a variância exata em frações (`fractions.Fraction`). Confere com o `var()`; a soma dos quadrados é refeita num laço em R, porque o `sum()` acumula em precisão estendida e não reproduziria o erro. O gráfico do erro × constante é o `graficoErro` em `graficos.js` (`tempo.erro` no `dados.json`).
+- **Histograma** (`algoritmos/histograma/`): as classes do `hist()` (Sturges e o `R_pretty` do R, reescrito em Python e em JS) sobre o `faithful$eruptions`. Confere `$breaks` e `$counts` classe por classe.
 
 Essas faixas, e as buscas, descrevem os próprios casos de entrada no `dados.json` (`tempo.series`, `tempo.banda`, `tempo.refs`, `tempo.eixo`); o encarte desenha os gráficos a partir disso, e as legendas vêm de `graficos` na ficha, com os números preenchidos dos dados (`{n0}`, `{min}`, …). O menu de entrada de cada tipo de faixa fica em `ENTRADAS`, no `galeria.js`.
 

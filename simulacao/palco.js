@@ -18,7 +18,7 @@
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, grafo: 6 };          // accelerando: unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20 };          // accelerando: unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -1102,6 +1102,294 @@
     };
   }
 
+  // ---------- estatística ----------
+
+  // número com vírgula decimal e separador de milhar
+  const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+  // seis algarismos significativos, para variâncias que podem vir de 10⁻³ a 10³
+  const sig = (x) => (x === 0 ? "0" : num(x, Math.max(0, Math.min(10, 5 - Math.floor(Math.log10(Math.abs(x)))))));
+
+  function simMediana(faixa, vetor, accelerando) {
+    const r = Algoritmos.mediana(vetor);
+    const N = vetor.length, k = r.k, ideia = faixa.video.ideia;
+    const v = vetor.slice();
+    let a = 0, b = N - 1, part = null, comps = 0, trocas = 0, m = null, fimPart1 = -1;
+    const est = r.eventos.map((e, idx) => {
+      let foco = null;
+      if (e.t === "compara") {
+        comps++;
+        foco = [e.i, e.j];
+        if (part) part = { ...part, j: e.j, jMenor: v[e.j] < v[e.i] };
+      } else if (e.t === "troca") {
+        trocas++;
+        const x = v[e.i]; v[e.i] = v[e.j]; v[e.j] = x;
+        if (part) {
+          if (e.j === part.p) { part = null; if (fimPart1 < 0) fimPart1 = idx; }
+          else part = { ...part, i: part.i + 1, jMenor: false };
+        }
+      } else if (e.t === "corta") { a = e.a; b = e.b; }
+      else if (e.t === "pivo") part = { p: e.p, i: e.a, j: null, jMenor: false };
+      else if (e.t === "menor") m = e.m;
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, v: v.slice(), a, b, part, foco, comps, trocas, m };
+    });
+    if (comps !== r.comparacoes || trocas !== r.trocas) throw new Error("reprodução da mediana não bate");
+    const conta = (t) => t === "compara" || t === "troca";
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { compara: 1, troca: 2, pivo: 1.5, corta: 1.5, testa: 0.6, pare: 2, atribui: 1, menor: 1, devolva: 3 }, conta, 10, 4);
+    const tl = linhaDoTempo(pesos);
+    const BX0 = 70, BX1 = 600, BTOPO = 96, BBASE = 400;
+    const bw = (BX1 - BX0) / N, bx = (i) => BX0 + i * bw;
+    const lo = Math.min(...vetor), hi = Math.max(...vetor), folga = (hi - lo) / N || 1;
+    const altura = (x) => (x - lo + folga) / (hi - lo + folga) * (BBASE - BTOPO);
+    const media = vetor.reduce((s, x) => s + x, 0) / N;
+    const par = N % 2 === 0, mFinal = par ? est.at(-1).m : null;   // n par: a outra casa do meio
+
+    function desenhar(ctx, u) {
+      const kk = tl.eventoEm(u), fim = u >= tl.total;
+      const s = kk >= 0 ? est[kk] : { v: vetor, a: 0, b: N - 1, part: null, foco: null, comps: 0, trocas: 0, m: null };
+      const agora = !fim && kk >= 0 && est[kk].t === "compara" ? s.foco : null;
+      const segunda = s.m !== null;      // n par: procurando o menor do lado direito
+      linha(ctx, BX0, BBASE + 1, BX1, BBASE + 1, COR.palido);
+      s.v.forEach((x, i) => {
+        let cor = COR.tinta;
+        if (fim) cor = i === k || (par && i === mFinal) ? COR.verde : COR.apagado;
+        else if (segunda) cor = i === s.m ? COR.mexeu : i === k ? COR.album : i > k ? COR.tinta : COR.apagado;
+        else if (i < s.a || i > s.b) cor = COR.apagado;
+        else if (s.part) {
+          const p = s.part;
+          if (i === p.p) cor = COR.pivo;
+          else if (i < p.i || (i === p.j && p.jMenor)) cor = COR.menor;
+          else if (p.j !== null && i <= p.j) cor = COR.maior;
+        }
+        const h = altura(x);
+        ctx.fillStyle = cor;
+        ctx.fillRect(bx(i) + bw * 0.12, BBASE - h, bw * 0.76, h);
+      });
+      if (agora) { seta(ctx, bx(agora[0]) + bw / 2, BBASE + 5); seta(ctx, bx(agora[1]) + bw / 2, BBASE + 5); }
+      if (!fim && s.part) texto(ctx, "pivô", bx(s.part.p) + bw / 2, BBASE + 14, 11, COR.tinta, 600, "center");
+      // a casa do meio, sempre marcada embaixo
+      texto(ctx, "▲ meio", bx(k) + bw / 2, BBASE + 30, 11, fim ? COR.verde : COR.tinta, 600, "center");
+      if (!fim && !segunda && s.a <= s.b) {
+        const y = BBASE + 52;
+        linha(ctx, bx(s.a) + 2, y, bx(s.b + 1) - 2, y, COR.tinta, 2);
+        const resta = s.b - s.a + 1;
+        const meioX = Math.min(BX1 - 110, Math.max(BX0 + 110, (bx(s.a) + bx(s.b + 1)) / 2));
+        texto(ctx, `o meio está aqui: ${resta} ${resta === 1 ? "casa" : "casas"}`, meioX, y + 8, 11, COR.cinza, 400, "center");
+      }
+      if (fim) {   // a média, tracejada: o que a mediana não é
+        const ym = BBASE - altura(media);
+        ctx.setLineDash([5, 4]); linha(ctx, BX0, ym, BX1, ym, COR.cinza, 1.2); ctx.setLineDash([]);
+        texto(ctx, "média", BX0 - 6, ym - 7, 11, COR.cinza, 400, "right");
+      }
+
+      const x = 650;
+      texto(ctx, "comparações", x, BTOPO - 6, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, BTOPO + 10, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "trocas", x, BTOPO + 84, 13, COR.cinza);
+      texto(ctx, String(s.trocas), x, BTOPO + 100, 26, COR.tinta, 700);
+      texto(ctx, fim ? "mediana" : "casa do meio", x, BTOPO + 154, 13, COR.cinza);
+      texto(ctx, fim ? num(r.mediana, 1) : `${k + 1}ª de ${N}`, x, BTOPO + 170, 20, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "memória extra: 0 valores", x, BTOPO + 210, 13, COR.cinza);
+      texto(ctx, `n = ${N} números`, x, BBASE - 14, 13, COR.cinza);
+
+      legendaCores(ctx, segunda && !fim
+        ? [[COR.album, "a casa do meio"], [COR.mexeu, "o menor à direita até aqui"], [COR.apagado, "fora da conta"]]
+        : [[COR.pivo, "pivô"], [COR.menor, "menor que o pivô"], [COR.maior, "maior"], [COR.apagado, "descartado"], [COR.verde, "a mediana"]], 480);
+
+      if (fim) legenda(ctx, [["mediana ", ""], [num(r.mediana, 1), "g"], [`: ${r.comparacoes} comparações, sem ordenar tudo`, ""]]);
+      else if (segunda) legenda(ctx, [["n par: o outro do meio é o menor à direita", ""]]);
+      else legenda(ctx, [[ideia[kk < fimPart1 || fimPart1 < 0 ? 0 : kk < fimPart1 + 12 ? 1 : ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const kk = tl.eventoEm(u); return kk >= 0 ? est[kk].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.mediana, accelerando),
+      resumo: { comparacoes: r.comparacoes, mediana: r.mediana, n: N, pico: 0 }, contagemEm,
+      medidor: () => `${r.comparacoes} comparações, n = ${N}<br>sem memória extra`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.comparacoes} comparações, mediana ${num(r.mediana, 1)}, sem memória extra.`,
+    };
+  }
+
+  function simWelford(faixa, x, anos, menu, accelerando) {
+    const r = Algoritmos.welford(x), sq = Algoritmos.somaDosQuadrados(x), dp = Algoritmos.duasPassadas(x);
+    const N = x.length, ideia = faixa.video.ideia, desloc = menu.deslocamento;
+    // a soma dos quadrados corre junto, valor a valor, na mesma ordem do Python
+    // nw: quantos valores o Welford já somou (o valor lido só entra na conta na linha seguinte)
+    let lidos = 0, s1 = 0, s2 = 0, media = 0, m2 = 0, nw = 0;
+    const est = r.eventos.map((e) => {
+      if (e.t === "le") lidos++;
+      if (e.t === "atribui" && e.linha === 6) { s1 += x[e.i]; s2 += x[e.i] * x[e.i]; }   // a soma dos quadrados anda junto com o n do Welford
+      if (e.t === "atribui") { media = e.vars["média"]; m2 = e.vars.M2; nw = e.vars.n; }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i: e.i, lidos, s1, s2, media, m2, nw };
+    });
+    if (lidos !== r.leituras) throw new Error("reprodução do Welford não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { le: 1, atribui: 0.5, devolva: 3 }, (t) => t === "le", 6, 3);
+    const tl = linhaDoTempo(pesos);
+    // a curva corrente (média e ±1 dp depois de cada valor), para o desenho
+    const curva = [];
+    { let n = 0, me = 0, q = 0; for (const v of x) { n++; const d = v - me; me += d / n; q += d * (v - me); curva.push([me, n > 1 ? Math.sqrt(q / (n - 1)) : 0]); } }
+    const GX0 = 70, GX1 = 600, GY0 = 80, GY1 = 290;
+    const lo = Math.min(...x), hi = Math.max(...x), pad = (hi - lo) * 0.12;
+    const gx = (i) => GX0 + i / (N - 1) * (GX1 - GX0), gy = (y) => GY1 - (y - lo + pad) / (hi - lo + 2 * pad) * (GY1 - GY0);
+    const certo = (v) => Math.abs(v - menu.exata) / menu.exata < 1e-6;
+    const nivel = (y) => num(y, Math.abs(y) >= 1e6 ? 1 : 2);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { lidos: 0, s1: 0, s2: 0, media: 0, m2: 0, nw: 0, i: -1 };
+      const n = s.lidos;
+      // a série até aqui: faixa de ±1 dp, a média corrente e os pontos
+      texto(ctx, `nível do lago Huron${desloc ? ` + ${num(desloc, 0)}` : ""}, de ${nivel(lo)} a ${nivel(hi)} pés`, GX0, GY0 - 22, 11, COR.cinza);
+      linha(ctx, GX0, GY1 + 6, GX1, GY1 + 6, COR.palido);
+      texto(ctx, String(anos[0]), GX0, GY1 + 12, 11, COR.cinza);
+      texto(ctx, String(anos[N - 1]), GX1, GY1 + 12, 11, COR.cinza, 400, "right");
+      if (n >= 2) {
+        ctx.fillStyle = COR.claro; ctx.beginPath();
+        for (let i = 1; i < n; i++) ctx.lineTo(gx(i), gy(curva[i][0] + curva[i][1]));
+        for (let i = n - 1; i >= 1; i--) ctx.lineTo(gx(i), gy(curva[i][0] - curva[i][1]));
+        ctx.fill();
+      }
+      if (n >= 1) {
+        ctx.strokeStyle = COR.tinta; ctx.lineWidth = 2; ctx.beginPath();
+        for (let i = 0; i < n; i++) ctx.lineTo(gx(i), gy(curva[i][0]));
+        ctx.stroke();
+      }
+      for (let i = 0; i < n; i++) {
+        ctx.fillStyle = i === n - 1 && !fim ? COR.mexeu : COR.cinza;
+        ctx.beginPath(); ctx.arc(gx(i), gy(x[i]), i === n - 1 && !fim ? 4.5 : 2.5, 0, 7); ctx.fill();
+      }
+
+      // as três contas, lado a lado
+      const TY = 342, cols = [GX0, 250, 400, 520];
+      texto(ctx, "conta", cols[0], TY, 11, COR.cinza);
+      texto(ctx, "variância", cols[1], TY, 11, COR.cinza);
+      texto(ctx, "lê", cols[2], TY, 11, COR.cinza);
+      texto(ctx, "guarda", cols[3], TY, 11, COR.cinza);
+      linha(ctx, GX0, TY + 18, GX1, TY + 18, COR.palido);
+      const varSoma = s.nw >= 2 ? (s.s2 - s.s1 * s.s1 / s.nw) / (s.nw - 1) : null, varW = s.nw >= 2 ? s.m2 / (s.nw - 1) : null;
+      const linhas = [
+        ["Welford", fim ? r.variancia : varW, `${n}`, "3 números"],
+        ["soma dos quadrados", fim ? sq.variancia : varSoma, `${n}`, "3 números"],
+        ["duas passadas", fim ? dp.variancia : null, fim ? `${2 * N}` : `${n} (e de novo)`, `${n} valores`],
+      ];
+      linhas.forEach(([nome, val, le, guarda], i) => {
+        const y = TY + 28 + i * 26;
+        texto(ctx, nome, cols[0], y, 13, COR.tinta, i === 0 ? 600 : 400);
+        const ok = fim && certo(val);
+        texto(ctx, val === null ? (i === 2 ? "falta a 2ª leitura" : "—") : sig(val) + (fim && !ok ? "  ✗" : ""), cols[1], y, 13, ok ? COR.verde : COR.tinta, ok || (fim && !ok) ? 600 : 400);
+        texto(ctx, le, cols[2], y, 13, COR.cinza);
+        texto(ctx, guarda, cols[3], y, 13, COR.cinza);
+      });
+      texto(ctx, `variância certa (em frações): ${sig(menu.exata)}`, GX0, TY + 110, 11, COR.cinza);
+
+      const px = 650;
+      texto(ctx, "leituras", px, 90, 13, COR.cinza);
+      texto(ctx, String(n), px, 106, 40, COR.tinta, 700);
+      texto(ctx, "média até aqui", px, 174, 13, COR.cinza);
+      texto(ctx, s.nw ? num(s.media, Math.abs(s.media) >= 1e6 ? 2 : 3) : "—", px, 190, 20, COR.tinta, 700);
+      texto(ctx, "variância (Welford)", px, 234, 13, COR.cinza);
+      texto(ctx, varW === null ? "—" : sig(fim ? r.variancia : varW), px, 250, 20, fim && certo(r.variancia) ? COR.verde : COR.tinta, 700);
+      texto(ctx, "memória extra: 0 valores", px, 296, 13, COR.cinza);
+      texto(ctx, `n = ${N} anos`, px, 318, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "o ano lido agora"], [COR.claro, "média ± 1 desvio-padrão"]], 488);
+
+      if (fim) legenda(ctx, [["Welford: variância ", ""], [sig(r.variancia), "g"], [certo(sq.variancia) ? "; a soma dos quadrados também bate" : `; a soma dos quadrados dá ${sig(sq.variancia)}`, ""]], 26, 17);
+      else legenda(ctx, [[ideia[n < 12 ? 0 : ideia.length - 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].lidos : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.welford, accelerando),
+      resumo: { leituras: r.leituras, n: N, pico: 0 }, contagemEm,
+      medidor: () => `${r.leituras} leituras, n = ${N}<br>sem memória extra`,
+      aoVivo: (u, cfg) => `Tocando agora: ${cfg.rotulo}; ${contagemEm(u)} de ${r.leituras} leituras, variância ${sig(r.variancia)} pelo Welford e ${sig(sq.variancia)} pela soma dos quadrados (a certa é ${sig(menu.exata)}), sem memória extra.`,
+    };
+  }
+
+  function simHistograma(faixa, x, accelerando) {
+    const r = Algoritmos.histograma(x);
+    const N = x.length, C = r.c, ideia = faixa.video.ideia;
+    const cont = new Array(C).fill(0);
+    let lidos = 0, menor = x[0], maior = x[0], classes = false, ultimo = null;
+    const est = r.eventos.map((e) => {
+      if (e.t === "le" || (e.t === "atribui" && e.linha === 2)) { lidos++; ultimo = e.i; }
+      else if (e.t === "menor") menor = x[e.i];
+      else if (e.t === "maior") maior = x[e.i];
+      else if (e.t === "classes") classes = true;
+      else if (e.t === "classe") { lidos++; ultimo = e.i; }
+      else if (e.t === "conta") cont[e.j]++;
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, lidos, menor, maior, classes, ultimo, cont: cont.slice(), j: e.j };
+    });
+    if (lidos !== r.ops || cont.some((q, j) => q !== r.contagens[j])) throw new Error("reprodução do histograma não bate");
+    // ritmo constante: a primeira passada corre (só procura o menor e o maior); cada valor da segunda vale 1
+    const pesos = !accelerando
+      ? est.map((s) => ({ le: 0.25, menor: 0.25, maior: 0.25, classe: 0.5, conta: 0.5 }[s.t] ?? 1))
+      : pesosLentos(est, { le: 0.12, menor: 0.3, maior: 0.3, classes: 4, atribui: 0.6, classe: 0.4, conta: 0.6, devolva: 3 }, (t) => t === "conta", 6, 5);
+    const tl = linhaDoTempo(pesos);
+    const BX0 = 70, BX1 = 600, BTOPO = 124, BBASE = 380, EIXO = 420;
+    const a = r.a, b = r.a + C * r.h;
+    const ex = (v) => BX0 + (v - a) / (b - a) * (BX1 - BX0);
+    const topo = Math.max(...r.contagens), cw = (BX1 - BX0) / C;
+    const casas = r.h >= 1 ? 0 : r.h >= 0.1 ? 1 : 2;
+    const valor = (v) => v.toLocaleString("pt-BR", { maximumFractionDigits: 3 });   // como veio nos dados
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { lidos: 0, menor: x[0], maior: x[0], classes: false, ultimo: null, cont: new Array(C).fill(0), t: null };
+      const segunda = s.classes;
+      // o eixo dos valores: cada valor lido aparece como um risco; o da vez, maior e em coral
+      linha(ctx, BX0, EIXO, BX1, EIXO, COR.palido);
+      if (!segunda) {
+        for (let i = 0; i <= (s.ultimo ?? -1); i++) linha(ctx, ex(x[i]), EIXO - 5, ex(x[i]), EIXO + 5, COR.cinza);
+        if (s.ultimo !== null && !fim) linha(ctx, ex(x[s.ultimo]), EIXO - 14, ex(x[s.ultimo]), EIXO + 14, COR.mexeu, 3);
+        texto(ctx, `menor ${valor(s.menor)}`, ex(s.menor), EIXO + 18, 11, COR.tinta, 600, "center");
+        texto(ctx, `maior ${valor(s.maior)}`, ex(s.maior), EIXO + 34, 11, COR.tinta, 600, "center");
+        texto(ctx, "1ª passada: acha o menor e o maior", BX0, 66, 11, COR.cinza);
+      } else {
+        // as classes e as barras: a altura é a contagem; a cor nunca é
+        for (let j = 0; j < C; j++) {
+          const h = s.cont[j] / topo * (BBASE - BTOPO), vez = !fim && s.t === "conta" && s.j === j;
+          ctx.fillStyle = fim ? COR.verde : vez ? COR.mexeu : COR.tinta;
+          ctx.fillRect(BX0 + j * cw + 2, BBASE - h, cw - 4, h);
+          if (s.cont[j]) texto(ctx, String(s.cont[j]), BX0 + (j + 0.5) * cw, BBASE - h - 16, 11, COR.tinta, 400, "center");
+        }
+        linha(ctx, BX0, BBASE + 1, BX1, BBASE + 1, COR.palido);
+        const passo = C > 12 ? 2 : 1;
+        for (let j = 0; j <= C; j += passo) texto(ctx, num(a + j * r.h, casas), BX0 + j * cw, BBASE + 6, 10, COR.cinza, 400, "center");
+        if (s.ultimo !== null && !fim) {
+          const vx = ex(x[s.ultimo]);
+          linha(ctx, vx, EIXO - 14, vx, EIXO + 14, COR.mexeu, 3);
+          linha(ctx, vx, EIXO - 14, vx, BBASE + 22, COR.mexeu, 1);
+          texto(ctx, valor(x[s.ultimo]), vx, EIXO + 18, 11, COR.tinta, 600, "center");
+        }
+        texto(ctx, `2ª passada: cada valor cai na sua classe (${C} classes de ${num(r.h, casas)})`, BX0, 66, 11, COR.cinza);
+      }
+
+      const px = 650;
+      texto(ctx, "leituras", px, 90, 13, COR.cinza);
+      texto(ctx, String(s.lidos), px, 106, 40, COR.tinta, 700);
+      texto(ctx, "classes", px, 174, 13, COR.cinza);
+      texto(ctx, segunda ? String(C) : "—", px, 190, 26, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "memória extra agora", px, 244, 13, COR.cinza);
+      texto(ctx, segunda ? `${C} contagens` : "0 valores", px, 260, 20, COR.tinta, 700);
+      texto(ctx, `n = ${N} valores`, px, 300, 13, COR.cinza);
+      texto(ctx, `Sturges: ⌈log₂ n + 1⌉ = ${Algoritmos.sturges(N)}`, px, 320, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "o valor lido agora"], [COR.verde, "o histograma pronto"]], 488);
+
+      if (fim) legenda(ctx, [[`${N} valores em `, ""], [`${C} classes`, "g"], [`: ${r.ops} leituras`, ""]]);
+      else legenda(ctx, [[ideia[segunda ? ideia.length - 1 : 0], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].lidos : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.histograma, accelerando),
+      resumo: { leituras: r.ops, classes: C, n: N, pico: r.pico }, contagemEm,
+      medidor: () => `${r.ops} leituras, n = ${N}<br>${C} contagens`,
+      aoVivo: (u, cfg) => `Tocando agora: ${N} valores, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} leituras, ${C} classes de ${num(r.h, casas)}.`,
+    };
+  }
+
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
@@ -1129,6 +1417,12 @@
       const arestas = padrao ? ex.arestas : Algoritmos.grafoGrade(k, cfg.tipo, cfg.semente);
       return simDijkstra(faixa, k, arestas, padrao ? ex.pesos : Algoritmos.pesosGrade(arestas.length, ex.faixa_pesos, cfg.semente + 1), accelerando);
     }
+    if (tipo === "mediana") return simMediana(faixa, padrao ? ex.vetor : Algoritmos.entrada(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "welford") {
+      const d = { padrao: 0, d6: 1e6, d8: 1e8, d9: 1e9 }[cfg.tipo];
+      return simWelford(faixa, ex.x.map((v) => v + d), ex.anos, ex.menu.find((m) => m.deslocamento === d), accelerando);
+    }
+    if (tipo === "histograma") return simHistograma(faixa, padrao ? ex.x : Algoritmos.amostra(cfg.n, cfg.tipo, cfg.semente), accelerando);
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;
       const iniciais = cfg.semente === null ? faixa.exemplo.iniciais : Algoritmos.centrosIniciais(pontos, cfg.k, cfg.semente);
