@@ -219,7 +219,7 @@
     const series = t.series.map((sr) => ({ ...sr, curto: sr.nome.replace(/ \(.*\)$/, ""),
       cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }))
       .filter((sr) => (tempo || alt ? sr.tempo !== false : sr.memoria !== false));   // o ingênuo não guarda nada: fica fora da memória; a fila dos percursos, fora do tempo
-    if (!tempo) series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
+    if (medida === "pico") series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
     desenharCasos(caixa, {
       dados: t[chave],
       val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : alt ? d[caso].altura : d[caso].pico),
