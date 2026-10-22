@@ -143,9 +143,10 @@
         continue;
       }
       g.membros.forEach((sr, k) => {
-        const larg = 2 + 4 * (g.membros.length - 1 - k);
+        // as séries "de fundo" (os outros dois Fibonacci) ficam finas, por trás da desta faixa
+        const larg = sr.fundo ? 1.5 : 2 + 4 * (g.membros.length - 1 - k);
         s.append(svg("polyline", { points: pts.map((p) => p.join(",")).join(" "), fill: "none", stroke: sr.cor, "stroke-width": larg }));
-        pts.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 3.2 + larg / 3, fill: sr.cor })));
+        pts.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: sr.fundo ? 2.5 : 3.2 + larg / 3, fill: sr.cor })));
       });
       const texto = g.membros.length === 1 ? g.membros[0].nome
         : g.membros.length === series.length && series.length > 2 ? cfg.todas : g.membros.map((sr) => sr.curto).join(" = ");
@@ -207,6 +208,8 @@
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
     "log₂ n + 1": { nome: "log₂ n + 1", f: (n) => Math.log2(n) + 1 },
     m: { nome: "m", f: (n) => n },
+    "n²": { nome: "n²", f: (n) => n * n },
+    "n³": { nome: "n³", f: (n) => n ** 3 },
   };
   const CORES_CASOS = ["#2869c3", "#e05a3f", "#8c50b9"];
 
@@ -217,8 +220,9 @@
     const t = a.medido.tempo, tempo = medida === "ops", porK = chave === "por_k";
     let k = 0;
     const series = t.series.map((sr) => ({ ...sr, curto: sr.nome.replace(/ \(.*\)$/, ""),
-      cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }))
-      .filter((sr) => tempo || sr.memoria !== false);   // o ingênuo não guarda nada: fica fora da memória
+      cor: sr.fundo ? "#a3a7ae" : sr.caso === t.banda || t.series.some((x) => x.fundo) ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }))
+      .filter((sr) => tempo || sr.memoria !== false)   // o ingênuo não guarda nada: fica fora da memória
+      .sort((a, b) => !!b.fundo - !!a.fundo);
     if (!tempo) series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
     desenharCasos(caixa, {
       dados: t[chave],
@@ -227,7 +231,7 @@
       refs: (tempo ? t.refs || [] : t.refs_memoria || []).map((r) => REFS[r]),
       banda: tempo && t.banda ? { min: (d) => d[t.banda].min, max: (d) => d[t.banda].max } : null,
       todas: "todos os casos",
-      aria: `${tempo ? t.unidade : "memória extra no pico"} por ${porK ? "tamanho da janela k" : "tamanho n"}, um traço por caso de entrada`,
+      aria: `${tempo ? t.unidade : "memória extra no pico"} por ${porK ? t.eixo_k : "tamanho n"}, um traço por caso de entrada`,
       eixo: porK ? t.eixo_k : t.eixo,
     });
   }

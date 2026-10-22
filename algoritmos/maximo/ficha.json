@@ -1,0 +1,44 @@
+{
+ "id": "maximo-de-um-vetor",
+ "nome": "Máximo de um vetor",
+ "variante": "guardando o maior visto até agora",
+ "familia": "primeiros passos",
+ "resumo": "Começa achando que o primeiro é o maior e passa pelos outros, um por um: quem for maior que o maior até aqui toma o lugar dele. No fim, o que sobrou é o máximo. Um laço e uma decisão: o básico da repetição e da condição.",
+ "instrumentos": [
+  {
+   "id": "vetor",
+   "papel": "a entrada, lida casa por casa"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Cada um dos n − 1 valores depois do primeiro é comparado uma vez com o maior até aqui. São sempre n − 1 comparações, seja qual for a ordem: não dá para saber o máximo sem olhar todos.",
+  "nota": "O que muda com a entrada é quantas vezes o maior troca: nenhuma num vetor decrescente, n − 1 num crescente e, num embaralhado de valores diferentes, em média 1/2 + 1/3 + … + 1/n, que cresce como ln n. Uma troca é só uma atribuição: não muda a ordem do tempo."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Guarda só o maior até aqui e o índice do laço, que não crescem com n.",
+  "nomes": {},
+  "cresce_com_n": [],
+  "vazio": "não guarda nenhum valor além da entrada",
+  "soltos": "só guarda o maior até aqui e o índice i"
+ },
+ "video": {
+  "ideia": [
+   "quem passa o maior até aqui toma o lugar dele",
+   "sempre n − 1 comparações; as trocas dependem da ordem"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: sempre n − 1, e o que muda com a ordem",
+  "texto": "As comparações para vetores cada vez maiores, em três ordens de entrada, e quantas vezes o maior troca num vetor embaralhado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Comparações para n de {n0} a {n1}. {dados}. As três ordens dão o mesmo número: n − 1. Tracejada: n, de referência.",
+  "distribuicao": "Trocas do maior em {vezes} vetores sorteados de {nd} valores: de {min} a {max}. A barra preta é o vetor do encarte.",
+  "rotulo": "trocas do maior (n = {nd})"
+ },
+ "pseudocodigo": "procedimento maximo(v):\n    m ← v[1]\n    para i de 2 até n:\n        se v[i] > m:\n            m ← v[i]\n    devolva m\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

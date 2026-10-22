@@ -1021,6 +1021,184 @@
     return { x, menor, maior, a, h, c: nc, contagens, eventos: c.eventos, ops: c.ops.leituras || 0, pico: c.pico };
   }
 
+  // ---------- primeiros passos ----------
+
+  /** Máximo de um vetor (algoritmos/maximo/maximo.py): n − 1 comparações; as trocas do maior dependem da ordem. */
+  function maximo(v) {
+    const c = contador();
+    let m = v[0], trocas = 0;
+    const V = c.vars = { m, i: null, "v[i]": null };
+    c.push({ t: "atribui", i: 0, linha: 2 });
+    for (let i = 1; i < v.length; i++) {
+      Object.assign(V, { i: i + 1, "v[i]": v[i] });
+      c.push({ t: "le", i, linha: 3 });
+      c.op("comparacoes");
+      c.push({ t: "compara", i, linha: 4 });
+      if (v[i] > m) { m = v[i]; trocas++; V.m = m; c.push({ t: "troca", i, linha: 5 }); }
+    }
+    c.push({ t: "devolva", linha: 6 });
+    return { maximo: m, ops: c.ops.comparacoes || 0, trocas, pico: c.pico, eventos: c.eventos };
+  }
+
+  /** Multiplicação de matrizes (algoritmos/multiplicacao), sobre a Matriz do instrumento: n³ multiplicações. */
+  function multiplicacao(a, b) {
+    const c = contador(), I_ = instrumentos(), n = a.length;
+    const reg = { leituras: 0, escritas: 0, eventos: [] };
+    const A = I_.Matriz(reg, n, n), B = I_.Matriz(reg, n, n), C = I_.Matriz(reg, n, n);
+    A.carregar(a.flat()); B.carregar(b.flat());
+    const V = c.vars = { i: null, j: null, k: null, s: null };
+    c.aloca("C", n * n);
+    c.push({ t: "atribui", linha: 2 });
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        let s = 0;
+        Object.assign(V, { i: i + 1, j: j + 1, k: null, s });
+        c.push({ t: "atribui", i, j, linha: 5 });
+        for (let k = 0; k < n; k++) {
+          const x = A.ler(i, k), y = B.ler(k, j);
+          s += x * y;
+          c.op("multiplicacoes");
+          Object.assign(V, { k: k + 1, s });
+          c.push({ t: "multiplica", i, j, k, x, y, linha: 7 });
+        }
+        C.escrever(i, j, s);
+        reg.eventos = [];
+        V.k = null;
+        c.push({ t: "escreve", i, j, x: s, onde: "C", linha: 8 });
+      }
+    }
+    c.push({ t: "devolva", linha: 9 });
+    return { C: C.valores(), ops: c.ops.multiplicacoes || 0, pico: c.pico, casas: reg.leituras + reg.escritas, eventos: c.eventos };
+  }
+
+  /** Fatorial recursivo (algoritmos/fatorial): inteiros grandes (BigInt), porque 19! já passa de 2⁵³. */
+  function fatorial(n) {
+    const c = contador();
+    function f(k, linha) {
+      const V = { n: k, r: null };
+      c.entra(k, null, linha, V);
+      c.push({ t: "testa", linha: 2 });
+      let r;
+      if (k <= 1) { r = 1n; V.r = "1"; c.push({ t: "atribui", k, linha: 3 }); }
+      else {
+        r = BigInt(k) * f(k - 1, 5);
+        c.op("multiplicacoes");
+        V.r = r.toString();
+        c.push({ t: "multiplica", k, r: r.toString(), linha: 5 });
+      }
+      c.sai();
+      return r;
+    }
+    const r = f(n, 1);
+    return { fatorial: r.toString(), ops: c.ops.multiplicacoes || 0, pico: c.pico, eventos: c.eventos };
+  }
+
+  /** Fibonacci recursivo (algoritmos/fibrecursivo): fib(n + 1) − 1 somas. */
+  function fibRecursivo(n) {
+    const c = contador();
+    function f(k, linha) {
+      const V = { n: k, r: null };
+      c.entra(k, null, linha, V);
+      c.push({ t: "testa", linha: 2 });
+      let r;
+      if (k <= 1) { r = k; V.r = r; c.push({ t: "atribui", k, linha: 3 }); }
+      else {
+        const x = f(k - 1, 5), y = f(k - 2, 5);
+        r = x + y;
+        c.op("somas");
+        V.r = r;
+        c.push({ t: "soma", k, r, linha: 5 });
+      }
+      c.sai();
+      return r;
+    }
+    const r = f(n, 1);
+    return { fib: r, ops: c.ops.somas || 0, pico: c.pico, casas: 0, chamadas: c.seq, eventos: c.eventos };
+  }
+
+  /** Fibonacci com memória (algoritmos/fibmemoria): o memo é o Dicionário com sondagem do instrumento. */
+  function fibMemoria(n) {
+    const c = contador(), d = instrumentos().DicSondagem();
+    function f(k, linha) {
+      const V = { n: k, r: null, "respostas guardadas": d.n };
+      c.entra(k, null, linha, V);
+      c.push({ t: "testa", linha: 2 });
+      let r;
+      if (k <= 1) { r = k; V.r = r; c.push({ t: "atribui", k, linha: 3 }); }
+      else {
+        const tem = d.tem(k);
+        c.push({ t: "busca", k, achou: tem, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 4 });
+        if (tem) {
+          r = d.ler(k);
+          V.r = r;
+          c.push({ t: "lembra", k, r, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 5 });
+        } else {
+          const x = f(k - 1, 7), y = f(k - 2, 7);
+          r = x + y;
+          c.op("somas");
+          V.r = r;
+          c.push({ t: "soma", k, r, linha: 7 });
+          d.por(k, r);
+          c.aloca("memo", d.n);
+          V["respostas guardadas"] = d.n;
+          c.push({ t: "guarda", k, r, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 8 });
+        }
+      }
+      c.sai();
+      return r;
+    }
+    const r = f(n, 1);
+    return { fib: r, ops: c.ops.somas || 0, pico: c.pico, casas: d.reg.leituras + d.reg.escritas, chamadas: c.seq,
+      guardadas: d.n, m: d.m, eventos: c.eventos };
+  }
+
+  /** Fibonacci iterativo (algoritmos/fibiterativo): n somas, duas variáveis. */
+  function fibIterativo(n) {
+    const c = contador();
+    let a = 0, b = 1;
+    const V = c.vars = { a, b, i: null };
+    c.push({ t: "atribui", linha: 2 });
+    for (let i = 0; i < n; i++) {
+      V.i = i + 1;
+      c.push({ t: "le", i, linha: 3 });
+      [a, b] = [b, a + b];
+      c.op("somas");
+      Object.assign(V, { i: i + 1, a, b });
+      c.push({ t: "soma", i, a, b, linha: 4 });
+    }
+    c.push({ t: "devolva", linha: 5 });
+    return { fib: a, ops: c.ops.somas || 0, pico: c.pico, casas: 0, chamadas: 0, eventos: c.eventos };
+  }
+
+  /** Busca de padrão ingênua (algoritmos/padrao), com o texto no Texto do instrumento: cada letra lida conta. */
+  function padrao(texto, p) {
+    const c = contador(), t = instrumentos().TextoImutavel(), n = texto.length, m = p.length, achou = [];
+    t.carregar([...texto]);
+    const V = c.vars = { i: null, j: null, "t[i + j − 1]": null, "p[j]": null, "posições achadas": 0 };
+    for (let i = 0; i <= n - m; i++) {
+      Object.assign(V, { i: i + 1, j: null, "t[i + j − 1]": null, "p[j]": null });
+      c.push({ t: "encosta", i, linha: 2 });
+      let j = 0;
+      V.j = 1;
+      c.push({ t: "atribui", i, linha: 3 });
+      for (;;) {
+        if (!(j < m)) { c.push({ t: "testa", i, linha: 4, parte: 0 }); break; }
+        const x = t.ler(i + j), ok = x === p[j];
+        c.op("comparacoes");
+        Object.assign(V, { "t[i + j − 1]": x, "p[j]": p[j] });
+        c.push({ t: "compara", i, j, ok, a: x, b: p[j], linha: 4, parte: 1 });
+        if (!ok) break;
+        j++;
+        V.j = j + 1;
+        c.push({ t: "atribui", i, j, linha: 5 });
+      }
+      c.push({ t: "testa", i, linha: 6 });
+      if (j === m) { achou.push(i); V["posições achadas"] = achou.length; c.push({ t: "achou", i, linha: 7 }); }
+    }
+    c.push({ t: "devolva", linha: 8 });
+    return { achou, ops: c.ops.comparacoes || 0, pico: c.pico, casas: t.reg.leituras, eventos: c.eventos };
+  }
+
   // ---------- entradas ----------
 
   // gerador com semente (mulberry32): o mesmo número de sorteio dá o mesmo vetor
@@ -1175,9 +1353,23 @@
       : forma === "uniforme" ? 100 * r() : r() < 0.5 ? normal(35, 6) : normal(65, 6)));
   }
 
+  /** Duas matrizes n × n com valores de 0 a 9, para a multiplicação. */
+  function matrizesSorteadas(n, semente) {
+    const r = sorteador(semente), m = () => Array.from({ length: n }, () => Array.from({ length: n }, () => Math.floor(r() * 10)));
+    return { A: m(), B: m() };
+  }
+
+  /** O texto e o padrão da busca: o pior caso ("aaa…ab" procurando "aa…ab") ou DNA sorteado, com o padrão sorteado à parte. */
+  function textoPadrao(n, m, caso, semente) {
+    if (caso === "pior") return { texto: "a".repeat(n - 1) + "b", padrao: "a".repeat(m - 1) + "b" };
+    const r = sorteador(semente), base = (k) => Array.from({ length: k }, () => "ACGT"[Math.floor(r() * 4)]).join("");
+    return { texto: base(n), padrao: base(m) };
+  }
+
   const api = { ordenar, kmeans, buscar, parenteses, atendimento, inverter, janela, janelaIngenua, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
     histograma, pretty, sturges, prioridade, dijkstra, entrada, valoresSorteados, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade,
-    centrosIniciais, amostra, palavras, repetidos, repetidosVetor, encadeamento, sondagem, valoresRepetidos, chavesColisao, ORDENACOES };
+    centrosIniciais, amostra, palavras, repetidos, repetidosVetor, encadeamento, sondagem, valoresRepetidos, chavesColisao, ORDENACOES,
+    maximo, multiplicacao, fatorial, fibRecursivo, fibMemoria, fibIterativo, padrao, matrizesSorteadas, textoPadrao };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -20,9 +20,9 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo e no Dijkstra, 8 textos da contagem de palavras, 76 vetores de achar repetidos e 56 tabelas por colisão) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo e no Dijkstra, 8 textos da contagem de palavras, 76 vetores de achar repetidos, 56 tabelas por colisão, 61 vetores do máximo, 16 pares de matrizes, 22 n do fatorial e de cada Fibonacci e 59 buscas de padrão) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
-Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas buscas em grafo e no Dijkstra, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
+Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas buscas em grafo, no Dijkstra e no álbum Primeiros passos, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
 
 Requisitos: Python 3 com Pillow, Node, ffmpeg (só para exportar clipes), R com jsonlite e igraph, IBM Plex Mono instalada e a skill `explainer-videos` em `~/.claude/skills/` (o motor `engine.py` é importado de lá, sem cópia).
 
@@ -37,11 +37,13 @@ motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens 
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 motor/busca.py         molde das buscas: os ajudantes que contam (igual, menor), as entradas e a medição padrão
 motor/busca.R          as buscas reescritas em R, para conferir posição e comparações
-motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, da inversão da lista, da janela deslizante, das buscas em grafo, do Dijkstra e do álbum Estatística
+motor/video_casos.py   pôsteres do álbum Primeiros passos, das buscas, dos parênteses, das filas de atendimento e de prioridade, da inversão da lista, da janela deslizante, das buscas em grafo, do Dijkstra e do álbum Estatística
 motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, grade cheia, caminho), a medição delas e os pesos do Dijkstra
 motor/heap.R           o heap do instrumento reescrito em R, contando casas, para conferir a fila de prioridade e o Dijkstra
 motor/colisao.py       a medição comum das duas faixas de colisão: o exemplo, as sondagens × α e o total × m
 motor/colisao.R        as duas colisões refeitas em R com casas sorteadas, conferidas contra as fórmulas de Knuth
+motor/fibonacci.py     a medição comum dos três Fibonacci: as mesmas somas para os mesmos n, as três séries em cada dados.json
+motor/fibonacci.R      os três Fibonacci refeitos em R, contando as somas e o pico de memória, conferidos contra a fórmula de Binet
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
 motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
 instrumentos/<nome>/   estrutura instrumentada (cada leitura e escrita de casa conta 1), medir.py, ficha.json
@@ -67,6 +69,10 @@ O Heap (de mínimo, sobre o Vetor) mostra a árvore e o vetor ao mesmo tempo: s�
 
 O Dicionário (tabela de dispersão) tem duas versões lado a lado: encadeamento (cada casa guarda o início de uma corrente de nós com chave, valor e próx) e sondagem linear (ocupada, tenta a casa seguinte; remover deixa uma lápide). A casa sai da dispersão multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits; uma palavra vira número pelo polinômio de base 31), igual em Python e JS (o R das colisões sorteia as casas com `sample.int()`). As duas dobram m quando α = n/m passaria de 3/4; com `fixa`, m não muda. A medição põe chaves embaralhadas (`chave_medida`), porque chaves seguidas quase não colidem nessa dispersão. Fora as leituras e escritas, o registro conta `sondagens` e `comparacoes`.
 
+A Matriz guarda as linhas × colunas casas num bloco só, linha a linha: a casa (i, j) mora no endereço i·colunas + j. A demo mostra a grade e o bloco ao mesmo tempo, e a casa lida ou escrita acende nas duas vistas; percorrer uma coluna lê o mesmo tanto que uma linha, pulando de colunas em colunas casas. A medição usa a matriz n × n (`quadrada`); transpor e criar custam n².
+
+O Texto é um vetor de caracteres em duas versões lado a lado: concatenar no laço (o texto imutável, como a str do Python: acrescentar uma letra copia todas para um bloco novo) e juntar no fim (os pedaços numa lista sobre o Vetor, e um "".join que copia cada letra uma vez). A tabela compara montar n letras nas duas: perto de n² contra perto de 5n.
+
 O Grafo tem três vistas lado a lado (matriz de adjacência, lista de adjacência e matriz de incidência): cada operação da demo roda nas três ao mesmo tempo, e a tabela mede as três num grafo de medição fixo, com V vértices e E = 3V arestas.
 
 ## Faixas que usam um instrumento por dentro
@@ -78,6 +84,16 @@ A fila de prioridade (o pronto-socorro) é a fila de atendimento com o `Heap` no
 O Dijkstra roda na mesma grade das buscas, com um peso de 1 a 9 sorteado por aresta; cada casa da lista de adjacência guarda o par (vizinho, peso). O heap reinsere o par quando a distância melhora e descarta o par vencido quando ele sai. O `conferir.R` usa o `distances()` do igraph e o heap de `motor/heap.R`.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
+
+## O álbum Primeiros passos
+
+- **Máximo de um vetor** (`algoritmos/maximo/`): sempre n − 1 comparações; o encarte mostra também quantas vezes o maior troca (perto de ln n num vetor sorteado), conferido no R contra a soma harmônica.
+- **Multiplicação de matrizes** (`algoritmos/multiplicacao/`): os três laços sobre a Matriz do instrumento; n³ multiplicações e as n² casas de C. Confere com o `%*%`.
+- **Fatorial recursivo** (`algoritmos/fatorial/`): a pilha de chamadas desce n níveis. Os fatoriais vão como texto no `dados.json`, e o JS usa BigInt (19! já passa de 2⁵³). Confere com o `factorial()`.
+- **Os três Fibonacci** (`algoritmos/fibrecursivo/`, `fibmemoria/`, `fibiterativo/`): a mesma unidade (somas) para os mesmos n, medida em `motor/fibonacci.py`; o gráfico de tempo de cada um traz os outros dois por trás (séries com `"fundo": true`). O com memória guarda as respostas no Dicionário com sondagem. O palco do recursivo desenha a árvore de chamadas inteira e vai até n = 15.
+- **Busca de padrão ingênua** (`algoritmos/padrao/`): a primeira estrofe da Canção do Exílio no palco, procurando "gorjeiam"; as curvas usam o Dom Casmurro, DNA sorteado e o pior caso ("aaa…ab"), com o segundo eixo m (`tempo.por_k`, o seletor do palco com o rótulo m). Confere com o `gregexpr()`.
+
+A Pilha repassa a pilha de chamadas do fatorial e dos dois Fibonacci recursivos, além do merge e do quick.
 
 ## O álbum Dispersão
 

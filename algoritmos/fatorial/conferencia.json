@@ -1,0 +1,7 @@
+{
+  "referencia": "factorial() do R base e fatorial_r() (reimplementação recursiva em R)",
+  "versao_r": "4.6.0",
+  "casos": 21,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 para n de 0 a 20: o resultado bate com factorial() algarismo por algarismo, e as multiplicações e a pilha mais funda batem com a reimplementação recursiva em R."
+}

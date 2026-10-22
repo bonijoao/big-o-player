@@ -18,7 +18,8 @@
   const GRUPOS = ["#2869c3", "#8c50b9", "#008c96", "#c8641e", "#5a7d1e"];
   const MONO = '"IBM Plex Mono", ui-monospace, monospace';
   const PASSOS_POR_SEGUNDO = 6;                          // ritmo constante, a 1×
-  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20, palavras: 8, repetidos: 6, colisao: 5 };          // accelerando: unidades por segundo a 1×
+  const RITMO = { ordenacao: 15, kmeans: 30, busca: 4, parenteses: 4, atendimento: 6, inverter: 4, janela: 6, grafo: 6, mediana: 15, welford: 8, histograma: 20, palavras: 8, repetidos: 6, colisao: 5,
+    matrizes: 8, fatorial: 4, fibonacci: 10, padrao: 8 };          // accelerando: unidades por segundo a 1×
 
   // ---------- utilidades de desenho ----------
 
@@ -1870,6 +1871,401 @@
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
+  // ---------- primeiros passos ----------
+
+  function simMaximo(faixa, v, accelerando) {
+    const r = Algoritmos.maximo(v), N = v.length, ideia = faixa.video.ideia;
+    let comps = 0, trocas = 0, m = 0, olhou = 0;
+    const est = r.eventos.map((e) => {
+      let foco = null;
+      if (e.t === "compara") { comps++; foco = e.i; olhou = e.i + 1; }
+      else if (e.t === "troca") { trocas++; m = e.i; foco = e.i; }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, foco, comps, trocas, m, olhou };
+    });
+    if (comps !== r.ops || trocas !== r.trocas) throw new Error("reprodução do máximo não bate");
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { le: 0.4, compara: 1, troca: 1.5, atribui: 0.6, devolva: 3 }, (t) => t === "compara", 4, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const BX0 = 70, BX1 = 600, BTOPO = 96, BBASE = 410;
+    const bw = (BX1 - BX0) / N, bx = (i) => BX0 + i * bw, alt = (x) => x / 100 * (BBASE - BTOPO);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { foco: null, comps: 0, trocas: 0, m: 0, olhou: 1 };
+      const agora = !fim && k >= 0 && (est[k].t === "compara" || est[k].t === "troca") ? s.foco : null;
+      linha(ctx, BX0, BBASE + 1, BX1, BBASE + 1, COR.palido);
+      v.forEach((x, i) => {
+        let cor = i < s.olhou ? COR.apagado : COR.tinta;
+        if (i === s.m) cor = fim ? COR.verde : COR.album;
+        if (i === agora && !(fim)) cor = est[k].t === "troca" ? COR.album : COR.mexeu;
+        ctx.fillStyle = cor;
+        ctx.fillRect(bx(i) + bw * 0.12, BBASE - alt(x), bw * 0.76, alt(x));
+      });
+      // o maior até aqui: uma linha na altura dele, que só sobe
+      const ym = BBASE - alt(v[s.m]);
+      ctx.setLineDash([5, 4]); linha(ctx, BX0, ym, BX1, ym, fim ? COR.verde : COR.album, 1.2); ctx.setLineDash([]);
+      texto(ctx, "maior", BX0 - 6, ym - 7, 11, fim ? COR.verde : COR.album, 600, "right");
+      if (agora !== null) seta(ctx, bx(agora) + bw / 2, BBASE + 5);
+
+      const x = 650;
+      texto(ctx, "comparações", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.comps), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "trocas do maior", x, 174, 13, COR.cinza);
+      texto(ctx, String(s.trocas), x, 190, 26, COR.tinta, 700);
+      texto(ctx, "maior até aqui", x, 244, 13, COR.cinza);
+      texto(ctx, String(v[s.m]), x, 260, 26, fim ? COR.verde : COR.album, 700);
+      texto(ctx, "memória extra: 0 valores", x, 316, 13, COR.cinza);
+      texto(ctx, `n = ${N} números`, x, 338, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "comparando agora"], [COR.album, "o maior até aqui"], [COR.apagado, "já olhado"], [COR.tinta, "falta olhar"], [COR.verde, "o máximo"]], 470);
+
+      if (fim) legenda(ctx, [["o máximo é ", ""], [String(r.maximo), "b"], [": ", ""], [`${r.ops} comparações`, "g"], [`, ${r.trocas} ${r.trocas === 1 ? "troca" : "trocas"} do maior`, ""]]);
+      else legenda(ctx, [[ideia[s.comps < N / 2 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.busca, accelerando),
+      resumo: { ops: r.ops, n: N, pico: 0 }, contagemEm,
+      medidor: () => `${r.ops} comparações, n = ${N}<br>${r.trocas} trocas do maior, sem memória extra`,
+      aoVivo: (u, cfg) => `Tocando agora: n = ${N}, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} comparações, o máximo é ${r.maximo}, com ${r.trocas} ${r.trocas === 1 ? "troca" : "trocas"} do maior, sem memória extra.`,
+    };
+  }
+
+  function simMatrizes(faixa, a, b, accelerando) {
+    const r = Algoritmos.multiplicacao(a, b), N = a.length, ideia = faixa.video.ideia;
+    const C = Array.from({ length: N }, () => new Array(N).fill(null));
+    let mults = 0, i = null, j = null, kk = null, termos = [], escritas = 0;
+    const est = r.eventos.map((e) => {
+      if (e.t === "atribui" && e.i !== undefined) { i = e.i; j = e.j; kk = null; termos = []; }
+      else if (e.t === "multiplica") { mults++; kk = e.k; termos = termos.concat([[e.x, e.y]]); }
+      else if (e.t === "escreve") { C[e.i][e.j] = e.x; escritas++; kk = null; }
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i, j, k: kk, termos, mults, escritas, C: C.map((l) => l.slice()) };
+    });
+    if (mults !== r.ops) throw new Error("reprodução da multiplicação não bate");
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { multiplica: 1, escreve: 1.5, atribui: 0.4, devolva: 3 }, (t) => t === "multiplica", 2 * N, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const cs = Math.min(42, 560 / (3 * N + 2)), GY = 110, gx = [40, 40 + (N + 1) * cs, 40 + 2 * (N + 1) * cs];
+
+    function grade_(ctx, M, x0, nome, cor) {
+      texto(ctx, nome, x0 + N * cs / 2, GY - 24, 13, COR.cinza, 600, "center");
+      for (let p = 0; p < N; p++) for (let q = 0; q < N; q++) {
+        const x = x0 + q * cs, y = GY + p * cs, c = cor(p, q);
+        ctx.fillStyle = c.fundo || "#fff"; ctx.fillRect(x + 1, y + 1, cs - 2, cs - 2);
+        ctx.strokeStyle = c.borda || COR.borda; ctx.lineWidth = c.borda ? 2 : 1; ctx.strokeRect(x + 1, y + 1, cs - 2, cs - 2);
+        const val = M[p][q];
+        if (val !== null) texto(ctx, String(val), x + cs / 2, y + cs / 2 - Math.min(14, cs * 0.4) * 0.6, Math.min(14, cs * 0.4), c.letra || COR.tinta, 600, "center");
+      }
+    }
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { i: null, j: null, k: null, termos: [], mults: 0, escritas: 0, C: C.map((l) => l.map(() => null)) };
+      const vivo = !fim && s.i !== null;
+      grade_(ctx, a, gx[0], "A", (p, q) => (vivo && p === s.i ? (q === s.k ? { fundo: COR.mexeu, letra: "#fff", borda: COR.mexeu } : { borda: COR.album }) : {}));
+      grade_(ctx, b, gx[1], "B", (p, q) => (vivo && q === s.j ? (p === s.k ? { fundo: COR.mexeu, letra: "#fff", borda: COR.mexeu } : { borda: COR.album }) : {}));
+      grade_(ctx, s.C, gx[2], "C", (p, q) => (fim ? { letra: COR.verde } : vivo && p === s.i && q === s.j ? { borda: COR.tinta, fundo: COR.claro } : {}));
+      const ym = GY + N * cs / 2 - 12;
+      texto(ctx, "·", gx[1] - cs / 2, ym, 22, COR.tinta, 700, "center");
+      texto(ctx, "=", gx[2] - cs / 2, ym, 22, COR.tinta, 700, "center");
+      // B na memória: a coluna j pula de N em N casas
+      const ys = GY + N * cs + 34, sw = Math.min(26, 580 / (N * N));
+      texto(ctx, `B na memória, linha a linha: a coluna ${vivo ? s.j + 1 : "j"} pula de ${N} em ${N} casas`, 40, ys - 18, 11, COR.cinza);
+      for (let t = 0; t < N * N; t++) {
+        const p = Math.floor(t / N), q = t % N, x = 40 + t * sw;
+        const naColuna = vivo && q === s.j, agora = naColuna && p === s.k;
+        ctx.fillStyle = agora ? COR.mexeu : "#fff"; ctx.fillRect(x + 1, ys, sw - 2, 22);
+        ctx.strokeStyle = naColuna ? COR.album : COR.borda; ctx.lineWidth = naColuna ? 2 : 1; ctx.strokeRect(x + 1, ys, sw - 2, 22);
+        if (sw >= 14) texto(ctx, String(b[p][q]), x + sw / 2, ys + 5, Math.min(12, sw * 0.5), agora ? "#fff" : COR.tinta, 400, "center");
+      }
+      // a conta da casa da vez
+      if (vivo && s.termos.length) {
+        const conta = s.termos.map(([x, y]) => `${x}·${y}`).join(" + ");
+        const tot = s.termos.reduce((t, [x, y]) => t + x * y, 0);
+        const txt = `C[${s.i + 1}][${s.j + 1}] = ${conta}${s.termos.length === N ? ` = ${tot}` : " + …"}`;
+        texto(ctx, txt, 40, ys + 44, Math.min(15, 1100 / txt.length), COR.tinta, 600);
+      }
+
+      const x = 680;
+      texto(ctx, "multiplicações", x, 90, 13, COR.cinza);
+      texto(ctx, milhar(s.mults), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "casas de C prontas", x, 174, 13, COR.cinza);
+      texto(ctx, `${s.escritas} de ${N * N}`, x, 190, 22, COR.tinta, 700);
+      texto(ctx, "memória extra", x, 236, 13, COR.cinza);
+      texto(ctx, `C: ${N}² = ${N * N} casas`, x, 252, 20, COR.tinta, 700);
+      texto(ctx, `n = ${N}: n³ = ${N ** 3}`, x, 296, 13, COR.cinza);
+      legendaCores(ctx, [[COR.mexeu, "o par multiplicado agora"], ["#fff", "a linha de A e a coluna de B", COR.album, 2], [COR.claro, "a casa de C da vez", COR.tinta, 2]], 488);
+
+      if (fim) legenda(ctx, [[`${N} × ${N}: `, ""], [`${milhar(r.ops)} multiplicações`, "g"], [` = ${N}³`, ""]]);
+      else legenda(ctx, [[ideia[s.escritas < 2 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].mults : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.matrizes, accelerando),
+      resumo: { ops: r.ops, n: N, pico: r.pico }, contagemEm,
+      medidor: () => `${milhar(r.ops)} multiplicações, n = ${N}<br>C com ${r.pico} casas`,
+      aoVivo: (u, cfg) => `Tocando agora: matrizes ${N} × ${N}, ${cfg.rotulo}; ${milhar(contagemEm(u))} de ${milhar(r.ops)} multiplicações, memória extra de ${r.pico} casas (a matriz C).`,
+    };
+  }
+
+  // a pilha de chamadas de uma faixa recursiva (o fatorial): cada quadro com o seu n e, depois que a de baixo volta, a conta
+  function simFatorial(faixa, n, accelerando) {
+    const r = Algoritmos.fatorial(n), ideia = faixa.video.ideia;
+    const pilha = [];   // do fundo para o topo: { k, volta, conta }
+    let mults = 0, pico = 0, voltou = null;
+    const est = r.eventos.map((e) => {
+      voltou = null;
+      if (e.t === "entra") pilha.push({ k: e.a, volta: null, conta: null });
+      else if (e.t === "atribui") pilha.at(-1).volta = "1";
+      else if (e.t === "multiplica") { mults++; pilha.at(-1).volta = e.r; }
+      else if (e.t === "sai") { const q = pilha.pop(); voltou = q.volta; if (pilha.length) pilha.at(-1).sub = q.volta; }
+      pico = Math.max(pico, pilha.length);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, pilha: pilha.map((q) => ({ ...q })), mults, pico, voltou };
+    });
+    if (mults !== r.ops || pico !== r.pico) throw new Error("reprodução do fatorial não bate");
+    const pesos = !accelerando ? est.map(() => 1) : pesosLentos(est, { entra: 1.2, testa: 0.5, atribui: 1, multiplica: 1.5, sai: 1 }, (t) => t === "entra", 3, 2);
+    const tl = linhaDoTempo(pesos);
+    const X0 = 70, X1 = 600, BASE = 450, TOPO = 80, hq = Math.min(40, (BASE - TOPO) / Math.max(n, 1));
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { pilha: [], mults: 0, pico: 0 };
+      texto(ctx, "a pilha de chamadas (o fundo embaixo)", X0, TOPO - 26, 11, COR.cinza);
+      linha(ctx, X0 - 4, BASE + 2, X1 + 4, BASE + 2, COR.tinta, 2);
+      const tam = Math.max(9, Math.min(15, hq * 0.5));
+      s.pilha.forEach((q, p) => {
+        const y = BASE - (p + 1) * hq, topo = p === s.pilha.length - 1;
+        ctx.fillStyle = topo && !fim ? COR.claro : "#fff"; ctx.fillRect(X0, y + 1, X1 - X0, hq - 2);
+        ctx.strokeStyle = topo && !fim ? COR.tinta : COR.borda; ctx.lineWidth = topo ? 2 : 1; ctx.strokeRect(X0, y + 1, X1 - X0, hq - 2);
+        texto(ctx, `fatorial(${q.k})`, X0 + 10, y + hq / 2 - tam * 0.6, tam, COR.tinta, 600);
+        const conta = q.volta !== null ? (q.k <= 1 ? "= 1" : `= ${q.k} · ${q.sub} = ${q.volta}`) : q.sub !== undefined ? `= ${q.k} · ${q.sub}` : `espera fatorial(${q.k - 1})`;
+        texto(ctx, conta, X0 + 140, y + hq / 2 - tam * 0.6, tam, q.volta !== null ? COR.tinta : COR.cinza, q.volta !== null ? 600 : 400);
+      });
+      if (fim) texto(ctx, `${n}! = ${r.fatorial}`, X0, BASE - 40, 22, COR.verde, 700);
+
+      const x = 650;
+      texto(ctx, "multiplicações", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.mults), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "níveis na pilha", x, 174, 13, COR.cinza);
+      texto(ctx, `${s.pilha.length} (pico ${s.pico})`, x, 190, 22, COR.tinta, 700);
+      if (s.voltou !== null && s.voltou !== undefined && !fim) {
+        texto(ctx, "voltou", x, 236, 13, COR.cinza);
+        texto(ctx, s.voltou, x, 252, Math.min(20, 520 / s.voltou.length), COR.tinta, 700);
+      }
+      texto(ctx, `n = ${n}`, x, 300, 13, COR.cinza);
+      legendaCores(ctx, [[COR.claro, "a chamada da vez (o topo)", COR.tinta, 2], ["#fff", "esperando a de cima voltar"]], 488);
+
+      if (fim) legenda(ctx, [[`${n}! = `, ""], [r.fatorial, "g"], [`: ${r.ops} multiplicações, pilha de ${r.pico} níveis`, ""]], 26, r.fatorial.length > 12 ? 16 : 18);
+      else legenda(ctx, [[ideia[s.mults === 0 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].mults : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.fatorial, accelerando),
+      resumo: { ops: r.ops, n, pico: r.pico }, contagemEm,
+      medidor: () => `${r.ops} multiplicações, n = ${n}<br>pilha de ${r.pico} níveis`,
+      aoVivo: (u) => `Tocando agora: ${n}!; ${contagemEm(u)} de ${r.ops} multiplicações, pilha de até ${r.pico} níveis, resultado ${r.fatorial}.`,
+    };
+  }
+
+  // os três Fibonacci: a árvore de chamadas (recursivo e com memória) ou o par (a, b) andando pela sequência (iterativo)
+  function simFibonacci(faixa, n, accelerando) {
+    const versao = faixa.medido.tempo.tipo.replace("fib_", "");
+    const f = { recursivo: Algoritmos.fibRecursivo, memoria: Algoritmos.fibMemoria, iterativo: Algoritmos.fibIterativo }[versao];
+    const r = f(n), ideia = faixa.video.ideia, arvore = versao !== "iterativo";
+    const longe = faixa.medido.tempo.crescimento.at(-1);
+    // a árvore inteira, das chamadas: x pela ordem das folhas, y pela profundidade
+    const nos = [], abertos = [];
+    r.eventos.forEach((e, t) => {
+      if (e.t === "entra") { const no = { k: e.a, pai: abertos.at(-1) ?? null, filhos: [], ini: t, fim: Infinity, lembrou: false, prof: abertos.length }; if (no.pai !== null) nos[no.pai].filhos.push(nos.length); abertos.push(nos.length); nos.push(no); }
+      else if (e.t === "sai") nos[abertos.pop()].fim = t;
+      else if (e.t === "lembra") nos[abertos.at(-1)].lembrou = true;
+    });
+    let folhas = 0;
+    const posX = (id) => { const no = nos[id]; if (!no.filhos.length) { no.x = folhas++; return no.x; } const xs = no.filhos.map(posX); no.x = (xs[0] + xs.at(-1)) / 2; return no.x; };
+    if (nos.length) posX(0);
+    const prof = Math.max(1, ...nos.map((q) => q.prof));
+    // o memo: a tabela do dicionário depois de cada evento
+    const tab = tabelaDic();
+    let somas = 0, casas = 0, chamadas = 0, pilha = 0, pico = 0, a = 0, b = 1, i = 0;
+    const seq = [0];
+    const est = r.eventos.map((e, t) => {
+      if (versao === "memoria") { tab.aplicar(e.dic || []); if (e.gasto !== undefined) casas = e.gasto; }
+      if (e.t === "entra") { chamadas++; pilha++; }
+      else if (e.t === "sai") pilha--;
+      else if (e.t === "soma") { somas++; if (!arvore) { a = e.a; b = e.b; i = e.i + 1; seq.push(e.a); } }
+      pico = Math.max(pico, pilha);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, somas, casas, chamadas, pilha, pico, a, b, i, nSeq: seq.length,
+        tab: versao === "memoria" ? tab.foto() : null };
+    });
+    if (somas !== r.ops || (arvore && chamadas !== r.chamadas) || casas !== r.casas) throw new Error("reprodução do Fibonacci não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { entra: 1, testa: 0.3, atribui: 0.6, busca: 0.8, lembra: 1.2, soma: 1, guarda: 1, sai: 0.4, le: 0.5, devolva: 3 }, (x) => x === "entra" || x === "soma", 6, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const AX0 = 50, AX1 = 620, AY0 = 92, AY1 = versao === "memoria" ? 300 : 440;
+    const dx = (AX1 - AX0) / Math.max(1, folhas), dy = (AY1 - AY0) / prof;
+    const R = Math.max(1.2, Math.min(14, dx * 0.38, dy * 0.32));
+    const px = (q) => AX0 + (q.x + 0.5) * dx, py = (q) => AY0 + q.prof * dy;
+
+    function desenharArvore(ctx, k, fim) {
+      const agora = !fim && k >= 0 ? est[k].chamada - 1 : -1;   // a chamada da vez (os ids começam em 1)
+      ctx.lineWidth = R > 4 ? 1.2 : 0.6; ctx.strokeStyle = COR.palido; ctx.beginPath();
+      for (const q of nos) if (q.pai !== null && q.ini <= k) { const p = nos[q.pai]; ctx.moveTo(px(p), py(p)); ctx.lineTo(px(q), py(q)); }
+      ctx.stroke();
+      nos.forEach((q, id) => {
+        if (q.ini > k) return;
+        const aberto = q.fim > k;
+        const cor = fim && id === 0 ? COR.verde : id === agora ? COR.mexeu : q.lembrou && !aberto ? COR.album : aberto ? COR.tinta : COR.apagado;
+        ctx.fillStyle = cor; ctx.beginPath(); ctx.arc(px(q), py(q), R, 0, 7); ctx.fill();
+        if (R >= 9) texto(ctx, String(q.k), px(q), py(q) - R * 0.62, R * 1.05, "#fff", 600, "center");
+      });
+    }
+
+    function desenharSequencia(ctx, s, fim) {
+      const col = 8, bw = 70, bh = 34, X0 = 50, Y0 = 96;
+      texto(ctx, "a sequência, de fib(0) em diante; a e b andam juntos", X0, Y0 - 26, 11, COR.cinza);
+      for (let p = 0; p < s.nSeq + 1 && p <= n + 1; p++) {
+        const x = X0 + (p % col) * (bw + 4), y = Y0 + Math.floor(p / col) * (bh + 22);
+        const ehA = p === s.i, ehB = p === s.i + 1;
+        const val = p < s.nSeq ? fibs[p] : ehB ? s.b : null;
+        if (val === null) continue;
+        const cor = fim ? (p === n ? COR.verde : null) : ehA || ehB ? COR.mexeu : null;
+        ctx.fillStyle = cor || "#fff"; ctx.fillRect(x, y, bw, bh);
+        ctx.strokeStyle = cor || COR.borda; ctx.lineWidth = 1; ctx.strokeRect(x, y, bw, bh);
+        texto(ctx, milhar(val), x + bw / 2, y + 10, Math.min(14, 120 / String(val).length + 4), cor ? "#fff" : COR.tinta, 600, "center");
+        const marca = !fim && (ehA || ehB);
+        texto(ctx, marca ? `${ehA ? "a" : "b"} = fib(${p})` : `fib(${p})`, x + bw / 2, y + bh + 4, 10, marca ? COR.tinta : COR.cinza, marca ? 600 : 400, "center");
+      }
+    }
+    const fibs = [0, 1];
+    for (let p = 2; p <= n + 1; p++) fibs.push(fibs[p - 1] + fibs[p - 2]);
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { somas: 0, casas: 0, chamadas: 0, pilha: 0, pico: 0, a: 0, b: 1, i: 0, nSeq: 1, tab: tabelaDic().foto() };
+      if (arvore) {
+        texto(ctx, versao === "memoria" ? "a árvore de chamadas (azul: a resposta já estava guardada)" : `a árvore de chamadas: ${milhar(r.chamadas)} no total`, AX0, AY0 - 34, 11, COR.cinza);
+        desenharArvore(ctx, fim ? Infinity : k, fim);
+        if (versao === "memoria") grade(ctx, s.tab, AX0, 360, 570, 110, "o memo (chave n e a resposta fib(n))", fim);
+      } else desenharSequencia(ctx, s, fim);
+
+      const x = 680;
+      texto(ctx, "somas", x, 90, 13, COR.cinza);
+      texto(ctx, milhar(s.somas), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      if (arvore) {
+        texto(ctx, "chamadas", x, 174, 13, COR.cinza);
+        texto(ctx, milhar(s.chamadas), x, 190, 22, COR.tinta, 700);
+        texto(ctx, "níveis na pilha", x, 236, 13, COR.cinza);
+        texto(ctx, `${s.pilha} (pico ${s.pico})`, x, 252, 22, COR.tinta, 700);
+        if (versao === "memoria") {
+          texto(ctx, "casas lidas e escritas no memo", x, 298, 13, COR.cinza);
+          texto(ctx, milhar(s.casas), x, 314, 22, COR.tinta, 700);
+        } else {
+          texto(ctx, `com n = ${longe.n}, seriam`, x, 298, 13, COR.cinza);
+          texto(ctx, `${milhar(longe.recursivo.ops)} somas`, x, 314, 20, COR.tinta, 700);
+        }
+      } else {
+        texto(ctx, "a e b", x, 174, 13, COR.cinza);
+        texto(ctx, `${milhar(s.a)} e ${milhar(s.b)}`, x, 190, Math.min(22, 400 / (String(s.a).length + String(s.b).length + 3)), COR.tinta, 700);
+        texto(ctx, "memória extra: 2 variáveis", x, 236, 13, COR.cinza);
+      }
+      texto(ctx, `n = ${n}`, x, versao === "memoria" ? 352 : 340, 13, COR.cinza);
+      if (fim) texto(ctx, `fib(${n}) = ${milhar(r.fib)}`, x, versao === "memoria" ? 376 : 370, 20, COR.verde, 700);
+      legendaCores(ctx, arvore
+        ? [[COR.mexeu, "a chamada da vez"], [COR.tinta, "aberta, na pilha"], [COR.apagado, "já voltou"], ...(versao === "memoria" ? [[COR.album, "achou no memo"]] : [])]
+        : [[COR.mexeu, "a e b"], [COR.verde, "fib(n)"]], 500);
+
+      if (fim) legenda(ctx, [[`fib(${n}) = ${milhar(r.fib)}: `, ""], [`${milhar(r.ops)} somas`, "g"], [arvore ? `, ${milhar(r.chamadas)} chamadas` : ", duas variáveis", ""]]);
+      else legenda(ctx, [[ideia[s.somas < 3 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].somas : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.fibonacci, accelerando),
+      resumo: { ops: r.ops, n, pico: r.pico }, contagemEm,
+      medidor: () => `${milhar(r.ops)} somas, n = ${n}<br>${arvore ? `${milhar(r.chamadas)} chamadas, pilha de ${r.pico}` : "duas variáveis"}`,
+      aoVivo: (u) => `Tocando agora: fib(${n}); ${milhar(contagemEm(u))} de ${milhar(r.ops)} somas${arvore ? `, ${milhar(r.chamadas)} chamadas, pilha de até ${r.pico} níveis` : ", sem memória extra além de duas variáveis"}, resultado ${milhar(r.fib)}.`,
+    };
+  }
+
+  function simPadrao(faixa, t, p, accelerando) {
+    const r = Algoritmos.padrao(t, p), N = t.length, M = p.length, ideia = faixa.video.ideia;
+    let comps = 0, i = 0, j = null, ok = null, achou = [];
+    const est = r.eventos.map((e) => {
+      if (e.t === "encosta") { i = e.i; j = null; ok = null; }
+      else if (e.t === "compara") { comps++; j = e.j; ok = e.ok; }
+      else if (e.t === "achou") achou = achou.concat([e.i]);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, i, j, ok, comps, achou };
+    });
+    if (comps !== r.ops) throw new Error("reprodução da busca de padrão não bate");
+    const pesos = !accelerando ? est.map(() => 1)
+      : pesosLentos(est, { encosta: 0.6, atribui: 0.3, compara: 1, testa: 0.3, achou: 3, devolva: 3 }, (x) => x === "compara", 8, 2.5);
+    const tl = linhaDoTempo(pesos);
+    const letra = (c) => (c === " " ? "·" : c);
+    const COL = 40, cw = 14.5, ch = 20, X0 = 40, Y0 = 90;
+
+    function desenhar(ctx, u) {
+      const k = tl.eventoEm(u), fim = u >= tl.total;
+      const s = k >= 0 ? est[k] : { i: 0, j: null, ok: null, comps: 0, achou: [] };
+      // o texto inteiro, pequeno: a janela do padrão acesa e as posições achadas sublinhadas
+      texto(ctx, `o texto: n = ${N} letras`, X0, Y0 - 22, 11, COR.cinza);
+      const achadas = new Set(s.achou.flatMap((q) => Array.from({ length: M }, (_, d) => q + d)));
+      for (let q = 0; q < N; q++) {
+        const x = X0 + (q % COL) * cw, y = Y0 + Math.floor(q / COL) * (ch + 6);
+        const naJanela = !fim && q >= s.i && q < s.i + M;
+        if (naJanela) { ctx.fillStyle = COR.claro; ctx.fillRect(x, y, cw, ch); }
+        texto(ctx, letra(t[q]), x + cw / 2, y + 3, 13, achadas.has(q) ? COR.verde : t[q] === " " ? COR.palido : COR.tinta, achadas.has(q) ? 700 : 400, "center");
+        if (achadas.has(q)) linha(ctx, x, y + ch, x + cw, y + ch, COR.verde, 2);
+      }
+      // de perto: o trecho em volta da janela e o padrão encostado embaixo
+      const yz = Y0 + Math.ceil(N / COL) * (ch + 6) + 58, zw = 30, zh = 36, antes = 6;
+      const a = Math.max(0, Math.min(s.i - antes, N - 18)), vis = Math.min(N, 18);
+      texto(ctx, `de perto: o padrão encostado na posição ${s.i + 1}`, X0, yz - 36, 11, COR.cinza);
+      for (let q = a; q < a + vis; q++) {
+        const x = X0 + (q - a) * zw, d = q - s.i, naJanela = d >= 0 && d < M;
+        const atual = !fim && naJanela && d === s.j;
+        ctx.fillStyle = atual ? (s.ok ? COR.tinta : COR.mexeu) : naJanela && s.j !== null && d < s.j ? COR.claro : "#fff";
+        ctx.fillRect(x + 1, yz, zw - 2, zh);
+        ctx.strokeStyle = naJanela ? COR.tinta : COR.borda; ctx.lineWidth = 1; ctx.strokeRect(x + 1, yz, zw - 2, zh);
+        texto(ctx, letra(t[q]), x + zw / 2, yz + 9, 16, atual ? "#fff" : COR.tinta, 600, "center");
+        texto(ctx, String(q + 1), x + zw / 2, yz - 13, 9, COR.cinza, 400, "center");
+      }
+      for (let d = 0; d < M; d++) {
+        const q = s.i + d - a;
+        if (q < 0 || q >= vis) continue;
+        const x = X0 + q * zw, atual = !fim && d === s.j, y = yz + zh + 26;
+        ctx.fillStyle = atual ? (s.ok ? COR.tinta : COR.mexeu) : s.j !== null && d < s.j ? COR.claro : "#fff";
+        ctx.fillRect(x + 1, y, zw - 2, zh);
+        ctx.strokeStyle = COR.tinta; ctx.lineWidth = 1; ctx.strokeRect(x + 1, y, zw - 2, zh);
+        texto(ctx, letra(p[d]), x + zw / 2, y + 9, 16, atual ? "#fff" : COR.tinta, 600, "center");
+        if (s.j !== null && d <= s.j && !fim) texto(ctx, d < s.j || s.ok ? "=" : "≠", x + zw / 2, yz + zh + 5, 14, d < s.j || s.ok ? COR.cinza : COR.mexeu, 700, "center");
+      }
+
+      const x = 680;
+      texto(ctx, "comparações", x, 90, 13, COR.cinza);
+      texto(ctx, milhar(s.comps), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "posição do padrão", x, 174, 13, COR.cinza);
+      texto(ctx, `${s.i + 1} de ${N - M + 1}`, x, 190, 22, COR.tinta, 700);
+      texto(ctx, "achou em", x, 236, 13, COR.cinza);
+      const ach = s.achou.length ? s.achou.map((q) => q + 1).join(", ") : "—";
+      texto(ctx, ach, x, 252, Math.min(20, 520 / Math.max(1, ach.length)), s.achou.length ? COR.verde : COR.tinta, 700);
+      texto(ctx, `n = ${N}, m = ${M}`, x, 298, 13, COR.cinza);
+      texto(ctx, `pior caso: (n − m + 1)·m = ${milhar((N - M + 1) * M)}`, x, 320, 11, COR.cinza);
+      texto(ctx, "memória extra: 0 valores", x, 342, 11, COR.cinza);
+      legendaCores(ctx, [[COR.tinta, "letra igual"], [COR.mexeu, "letra diferente"], [COR.claro, "a janela do padrão"], [COR.verde, "achou"]], 500);
+
+      if (fim) legenda(ctx, [[`"${p}" ${r.achou.length ? `aparece ${r.achou.length} ${r.achou.length === 1 ? "vez" : "vezes"}` : "não aparece"}: `, ""], [`${milhar(r.ops)} comparações`, "g"]], 26, p.length > 16 ? 16 : 18);
+      else legenda(ctx, [[ideia[s.comps < 6 ? 0 : 1], ""]]);
+    }
+
+    const contagemEm = (u) => { const k = tl.eventoEm(u); return k >= 0 ? est[k].comps : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.padrao, accelerando),
+      resumo: { ops: r.ops, n: N, pico: 0 }, contagemEm,
+      medidor: () => `${milhar(r.ops)} comparações, n = ${N}, m = ${M}<br>sem memória extra`,
+      aoVivo: (u, cfg) => `Tocando agora: ${cfg.rotulo}, n = ${N} letras e padrão de ${M}; ${milhar(contagemEm(u))} de ${milhar(r.ops)} comparações, ${r.achou.length ? `achou em ${r.achou.map((q) => q + 1).join(", ")}` : "não achou"}, sem memória extra.`,
+    };
+  }
+
   function criar(faixa, cfg, accelerando = false) {
     const tipo = faixa.medido.tempo.tipo, ex = faixa.exemplo, padrao = cfg.tipo === "padrao";
     if (tipo === "busca") {
@@ -1906,6 +2302,19 @@
     if (tipo === "repetidos") return simRepetidos(faixa, padrao ? ex.vetor : Algoritmos.valoresRepetidos(cfg.n, cfg.tipo, cfg.semente), accelerando);
     if (tipo === "encadeamento" || tipo === "sondagem") {
       return simColisao(faixa, padrao ? ex.chaves : Algoritmos.chavesColisao(cfg.n, cfg.tipo, ex.bits, cfg.semente), ex.bits, accelerando);
+    }
+    if (tipo === "maximo") return simMaximo(faixa, padrao ? ex.vetor : Algoritmos.valoresSorteados(cfg.n, cfg.tipo, cfg.semente), accelerando);
+    if (tipo === "matrizes") {
+      const e = padrao ? ex : Algoritmos.matrizesSorteadas(cfg.n, cfg.semente);
+      return simMatrizes(faixa, e.A, e.B, accelerando);
+    }
+    // o fatorial e os Fibonacci só têm o n: o do encarte, ou o escolhido no menu
+    if (tipo === "fatorial") return simFatorial(faixa, cfg.n, accelerando);
+    if (tipo.startsWith("fib_")) return simFibonacci(faixa, cfg.n, accelerando);
+    if (tipo === "busca_padrao") {
+      const m = cfg.k || ex.m;
+      const e = padrao ? { texto: ex.texto, padrao: ex.padrao.slice(0, m) } : Algoritmos.textoPadrao(cfg.n, m, cfg.tipo, cfg.semente);
+      return simPadrao(faixa, e.texto, e.padrao, accelerando);
     }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;

@@ -1,0 +1,116 @@
+{
+ "id": "texto",
+ "nome": "Texto",
+ "variante": "um vetor de caracteres, em duas versões: concatenar no laço e juntar no fim",
+ "frase": "Letras numa fileira de casas, uma por casa.",
+ "resumo": "Um texto é um vetor de caracteres: a letra i mora na casa i, e ler qualquer uma custa 1. A diferença aparece ao montar um texto aos poucos. Em Python, como em Java e em JavaScript, o texto pronto não muda: texto + letra cria um texto novo e copia todas as letras do antigo. Num laço, isso copia 1, depois 2, depois 3 letras… e montar n letras custa perto de n²/2 cópias. O jeito barato é guardar os pedaços numa lista, que cresce como o Vetor, e juntar tudo uma vez só no fim (o \"\".join do Python): cada letra é copiada uma vez.",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Uma casa por letra. O texto imutável tem exatamente n casas, mas a cada acréscimo reserva um bloco novo e solta o antigo. A lista de pedaços tem a folga do Vetor, que dobra quando enche; juntar reserva mais n casas para o texto pronto."
+ },
+ "variantes": {
+  "imutavel": "concatenar no laço",
+  "pedacos": "juntar no fim"
+ },
+ "operacoes": [
+  {
+   "id": "acrescentar-imutavel",
+   "nome": "acrescentar uma letra",
+   "notacao": "O(n)",
+   "porque": "texto ← texto + letra: reserva n + 1 casas novas, copia as n letras (uma leitura e uma escrita cada) e escreve a nova."
+  },
+  {
+   "id": "acrescentar-pedacos",
+   "nome": "acrescentar uma letra, com folga",
+   "notacao": "O(1)",
+   "porque": "Anexa o pedaço no fim da lista: uma escrita."
+  },
+  {
+   "id": "acrescentar-media-imutavel",
+   "nome": "acrescentar, média de n seguidas",
+   "notacao": "O(n)",
+   "porque": "Cada acréscimo copia tudo o que já existe: 1, 2, 3, … letras. A média cresce com n."
+  },
+  {
+   "id": "acrescentar-media-pedacos",
+   "nome": "acrescentar, média de n seguidas",
+   "notacao": "O(1) amortizado",
+   "porque": "Como no Vetor, as cópias ao dobrar ficam cada vez mais raras: a média não cresce com n."
+  },
+  {
+   "id": "montar-imutavel",
+   "nome": "montar n letras",
+   "notacao": "O(n²)",
+   "porque": "n acréscimos, cada um copiando o texto inteiro: perto de n² leituras e escritas no total."
+  },
+  {
+   "id": "montar-pedacos",
+   "nome": "montar n letras e juntar",
+   "notacao": "O(n)",
+   "porque": "n anexações (mais as cópias ao dobrar) e uma junção no fim, que copia cada letra uma vez."
+  },
+  {
+   "id": "juntar-imutavel",
+   "nome": "juntar",
+   "notacao": "O(1)",
+   "porque": "O texto já é um bloco só: não há o que copiar."
+  },
+  {
+   "id": "juntar-pedacos",
+   "nome": "juntar",
+   "notacao": "O(n)",
+   "porque": "Reserva um bloco de n casas e copia cada pedaço uma vez."
+  },
+  {
+   "id": "ler-imutavel",
+   "nome": "ler a letra i",
+   "notacao": "O(1)",
+   "porque": "A letra i mora na casa i: uma leitura. Na lista de pedaços, o mesmo."
+  },
+  {
+   "id": "comprimento-imutavel",
+   "nome": "comprimento",
+   "notacao": "O(1)",
+   "porque": "O tamanho fica guardado à parte: nenhuma casa lida. Na lista de pedaços, o mesmo."
+  },
+  {
+   "id": "fatiar-imutavel",
+   "nome": "fatiar t[a:b]",
+   "notacao": "O(b − a)",
+   "porque": "Um texto novo com as letras de a até b − 1: lê e escreve cada uma. Na lista de pedaços, o mesmo."
+  },
+  {
+   "id": "comparar-imutavel",
+   "nome": "comparar com outro texto",
+   "notacao": "O(n)",
+   "porque": "Se os tamanhos diferem, já não é igual. Se não, compara letra a letra até a primeira diferença; iguais, lê as n. Na lista de pedaços, o mesmo."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "acrescentar-imutavel",
+   "rotulo": "acrescentar, concatenando"
+  },
+  {
+   "id": "acrescentar-pedacos",
+   "rotulo": "acrescentar, pedaços"
+  },
+  {
+   "id": "montar-imutavel",
+   "rotulo": "montar, concatenando"
+  },
+  {
+   "id": "montar-pedacos",
+   "rotulo": "montar e juntar, pedaços"
+  }
+ ],
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas, contadas rodando os dois textos em Python, já montados com n letras (a, b, c, …), para n = {ns}. As montagens partem do texto vazio e recebem as n letras; nelas, a tabela traz o total e o custo por letra. O tamanho, guardado à parte, não conta.",
+  "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Acrescentar concatenando sobe em linha reta (copia o texto todo); com pedaços, não sai do chão, fora as vezes em que a lista dobra. Tracejadas: as montagens, em custo por letra (o total dividido por n). Concatenando, o custo por letra cresce com n, então o total cresce como n²; com pedaços e uma junção no fim, fica parado.",
+  "casas": "Casas guardadas depois de acrescentar n letras, a partir do texto vazio, para n de {v0} a {v1}. O texto imutável tem exatamente n; a lista de pedaços sobe em degraus, com a folga do Vetor."
+ }
+}

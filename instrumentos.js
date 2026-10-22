@@ -57,6 +57,12 @@
       [[0, 1], [0, 2]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
       P.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 4.5, fill: COR.tinta })));
       [0, 1, 2].forEach((k) => casa(6 + k * 10, 34, 8, 8, true)); casa(36, 34, 8, 8, false);
+    } else if (id === "matriz") {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) casa(9 + j * 10, 6 + i * 10, 8, 8, true);
+      for (let k = 0; k < 9; k++) casa(2 + k * 5, 40, 4, 5, true);
+    } else if (id === "texto") {
+      [0, 1, 2].forEach((k) => casa(4 + k * 10, 20, 8, 8, true)); casa(34, 20, 8, 8, false);
+      ["a", "b", "c"].forEach((c, k) => s.append(svg("text", { x: 8 + k * 10, y: 27, "text-anchor": "middle", "font-size": 7, "font-weight": 600, fill: "#fff" }, c)));
     } else { [0, 1, 2].forEach((k) => casa(4 + k * 10, 20, 8, 8, true)); casa(34, 20, 8, 8, false); }
     return el("span", { class: `capa capa-instrumento ${extra}` }, s);
   }
@@ -129,6 +135,13 @@
       parar() { clearTimeout(timer); timer = null; fim = null; },
     };
   }
+
+  // as faixas recursivas fora das ordenações, que a Pilha repassa: o que roda e o que vai em cada nível
+  const RECURSAO = {
+    fatorial: { rodar: (n) => window.Algoritmos.fatorial(n) },
+    fibrecursivo: { rodar: (n) => window.Algoritmos.fibRecursivo(n) },
+    fibmemoria: { rodar: (n) => window.Algoritmos.fibMemoria(n), extra: ", memo" },
+  };
 
   // ---------- a demo ----------
 
@@ -354,7 +367,7 @@
 
     const extras = [];
     if (tipo === "pilha") {
-      const recursivas = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === "pilha") && I && window.Algoritmos.ORDENACOES[f.alg]);
+      const recursivas = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === "pilha") && I && (window.Algoritmos.ORDENACOES[f.alg] || RECURSAO[f.alg]));
       if (recursivas.length) {
         pararRepasse.addEventListener("click", () => {
           if (!repasse) return;
@@ -378,9 +391,10 @@
 
     function repassar(f) {
       recomecar(0);
-      const r = window.Algoritmos.ordenar(f.alg, f.exemplo.vetor);
+      const rec = RECURSAO[f.alg], r = rec ? rec.rodar(f.exemplo.n) : window.Algoritmos.ordenar(f.alg, f.exemplo.vetor);
       const nome = f.pseudocodigo ? f.pseudocodigo.linhas[0].match(/procedimento\s+(\S+?)\(/)[1] : f.alg;
-      rotulo = (v) => (Array.isArray(v) ? `${nome}(v, ${v[0] + 1}, ${v[1]})` : String(v));
+      // cada nível guarda os argumentos da chamada: o trecho (a, b) nas ordenações, o n no fatorial e nos Fibonacci
+      rotulo = (v) => (!Array.isArray(v) ? String(v) : v.length === 1 ? `${nome}(${v[0]}${rec.extra || ""})` : `${nome}(v, ${v[0] + 1}, ${v[1]})`);
       const chamadas = r.eventos.filter((e) => e.t === "entra" || e.t === "sai");
       let k = 0, pico = 0;
       const meu = repasse = { timer: null };
@@ -396,7 +410,7 @@
           return;
         }
         const e = chamadas[k++];
-        fazer(e.t === "entra" ? "empilhar" : "desempilhar", e.t === "entra" ? [[e.a, e.b]] : [], () => {
+        fazer(e.t === "entra" ? "empilhar" : "desempilhar", e.t === "entra" ? [rec ? [e.a] : [e.a, e.b]] : [], () => {
           pico = Math.max(pico, es[0].n);
           if (repasse === meu) meu.timer = setTimeout(anda, calmo ? 0 : 90);
         });
@@ -1298,6 +1312,365 @@
     return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
   }
 
+  // ---------- a demo da Matriz: a grade e o bloco na memória, a mesma casa nas duas vistas ----------
+
+  const MM = 6;                          // até 6 linhas e 6 colunas: 36 casas no bloco
+
+  function demoMatriz() {
+    let m = null, q = null, log = [], foco = null, dims = null;
+    const anim = animador();
+    const figura = el("div", { class: "demo-figura demo-heap" });
+    const custou = el("p", { class: "demo-custou", "aria-live": "polite" });
+    const lista = el("ol", { class: "demo-log" });
+    const aviso = el("p", { class: "demo-aviso" });
+    const conta = el("p", { class: "demo-dica demo-conta", "aria-live": "polite" });
+    const campo = (rotulo, id, valor, min, max) => {
+      const i = el("input", { type: "number", id, min, max, value: String(valor), inputmode: "numeric" });
+      return [el("label", { for: id, text: rotulo }), i];
+    };
+    const [rotI, entI] = campo("linha i", "i-matriz", 1, 0, MM - 1);
+    const [rotJ, entJ] = campo("coluna j", "j-matriz", 3, 0, MM - 1);
+    const [rotX, entX] = campo("valor", "x-matriz", sorteia(), 0, 99);
+    const [rotL, entL] = campo("linhas", "l-matriz", 4, 1, MM);
+    const [rotC, entC] = campo("colunas", "c-matriz", 3, 1, MM);
+
+    const quadroM = () => ({ ...quadro(m), linhas: m.linhas, colunas: m.colunas });
+    function aplicarM(ev) {
+      aplicar(q, ev);
+      if (ev.t === "trocou" && dims) { q.linhas = dims[0]; q.colunas = dims[1]; }
+    }
+
+    function recomecar() {
+      anim.parar();
+      m = I.Matriz(undefined, 3, 5);
+      m.carregar(Array.from({ length: 15 }, () => sorteia()));
+      q = quadroM();
+      log = []; foco = null;
+      custou.textContent = "Uma matriz 3 × 5 para começar; clique numa operação.";
+      aviso.textContent = "";
+      desenhar(); listar(); habilitar();
+    }
+
+    function nomeOp(chamada, args) {
+      return { ler: `ler a[${args[0]}][${args[1]}]`, escrever: `escrever ${args[2]} em a[${args[0]}][${args[1]}]`, linha: `percorrer a linha ${args[0]}`,
+        coluna: `percorrer a coluna ${args[0]}`, transpor: "transpor", criar: `criar ${args[0]} × ${args[1]} de zeros` }[chamada];
+    }
+
+    function fazer(chamada, args) {
+      anim.terminar();
+      q = quadroM();
+      const antes = [m.linhas, m.colunas];
+      const r = I.operar(m, chamada, args);
+      dims = [m.linhas, m.colunas];
+      habilitar();
+      const nome = nomeOp(chamada, args);
+      const fim = () => {
+        q = quadroM(); dims = null;
+        desenhar(); habilitar();
+        const volta = Array.isArray(r.volta) ? ` → ${r.volta.join(" ")}` : r.volta !== null ? ` → ${r.volta}` : "";
+        const soma = r.leituras + r.escritas;
+        custou.replaceChildren(el("b", { text: nome + volta }), el("span", { text: ` custou ${textoCusto(r)}` }),
+          el("span", { class: "total", text: ` = ${plural(soma, "acesso", "acessos")}` }));
+        const [L, C] = antes;
+        aviso.textContent = chamada === "ler" || chamada === "escrever" ? `O endereço sai da conta: ${args[0]}·${C} + ${args[1]} = ${args[0] * C + args[1]}. Nenhuma outra casa é lida.`
+          : chamada === "coluna" ? `De uma casa para a seguinte, o endereço pula ${C}: ${Array.from({ length: L }, (_, i) => i * C + args[0]).join(", ")}.`
+          : chamada === "linha" ? `As casas da linha estão lado a lado: endereços de ${args[0] * C} a ${args[0] * C + C - 1}.`
+          : chamada === "transpor" ? `As casas mudam de endereço: o bloco novo tem ${m.linhas} linhas de ${m.colunas}, e cada valor foi lido e escrito uma vez.` : "";
+        log.unshift({ nome: nome + volta, custo: soma });
+        log = log.slice(0, 6);
+        listar();
+      };
+      fim.quadro = desenhar;
+      anim.tocar([r.eventos], (j, ev) => aplicarM(ev), fim);
+    }
+
+    function listar() {
+      lista.replaceChildren(...log.map((l) => el("li", {}, [el("span", { text: l.nome }), el("b", { text: plural(l.custo, "acesso", "acessos") })])));
+    }
+
+    // ---------- desenho ----------
+
+    function explicar() {
+      if (foco === null || foco >= q.casas.length) { conta.textContent = "Aponte uma casa da grade ou do bloco (ou toque) para ver o endereço: é só conta."; return; }
+      const i = Math.floor(foco / q.colunas), j = foco % q.colunas;
+      conta.textContent = `a[${i}][${j}] mora no endereço ${i}·${q.colunas} + ${j} = ${foco}: ${i} linhas inteiras antes dela, mais ${j} casas.`;
+    }
+
+    function desenhar() {
+      const estreito = figura.clientWidth > 0 && figura.clientWidth < 560;
+      const col = estreito ? 8 : 12, S = 38, P = 42, X0 = 24;
+      const { linhas: L, colunas: C } = q;
+      const W = Math.max(X0 + col * P + 12, X0 + 30 + C * P + 12);
+      const g = svg("g");
+      // a grade: índice da linha à esquerda, da coluna em cima
+      const GX = X0 + 30, GY = 40;
+      g.append(svg("text", { x: X0, y: 16, "font-size": 12, fill: COR.cinza }, `a grade: ${L} ${L === 1 ? "linha" : "linhas"} × ${C} ${C === 1 ? "coluna" : "colunas"}`));
+      for (let j = 0; j < C; j++) g.append(svg("text", { x: GX + j * P + S / 2, y: GY - 6, "text-anchor": "middle", "font-size": 10, fill: COR.cinza }, String(j)));
+      for (let i = 0; i < L; i++) {
+        g.append(svg("text", { x: GX - 8, y: GY + i * P + S / 2 + 4, "text-anchor": "end", "font-size": 10, fill: COR.cinza }, String(i)));
+        for (let j = 0; j < C; j++) {
+          const k = i * C + j;
+          casa(g, GX + j * P, GY + i * P, S, S, k < q.casas.length ? q.casas[k] : null, q.cores[k], String);
+          if (k === foco) g.append(svg("rect", { x: GX + j * P - 2, y: GY + i * P - 2, width: S + 4, height: S + 4, rx: 4, fill: "none", stroke: COR.tinta, "stroke-width": 2.5 }));
+          g.append(svg("rect", { x: GX + j * P, y: GY + i * P, width: S, height: S, fill: "transparent", "data-k": k, style: "cursor: pointer" }));
+        }
+      }
+      // o bloco: as mesmas casas, uma linha depois da outra
+      let y = GY + L * P + 18;
+      g.append(svg("text", { x: X0, y: y + 14, "font-size": 12, fill: COR.cinza }, `na memória: um bloco de ${q.casas.length} casas, linha a linha`));
+      const marcas = {};
+      for (let i = 0; i < L; i++) marcas[i * C] = `linha ${i}`;
+      const yb = y + 6;
+      y += fileira(g, q.casas, q.cores, yb, col, String, marcas) + 6;
+      q.casas.forEach((_, k) => {
+        const cx = X0 + (k % col) * P, cy = yb + Math.floor(k / col) * 68 + 32;
+        if (k === foco) g.append(svg("rect", { x: cx - 2, y: cy - 2, width: S + 4, height: S + 4, rx: 4, fill: "none", stroke: COR.tinta, "stroke-width": 2.5 }));
+        g.append(svg("rect", { x: cx, y: cy, width: S, height: S, fill: "transparent", "data-k": k, style: "cursor: pointer" }));
+      });
+      if (q.novas) {
+        g.append(svg("text", { x: X0, y: y + 14, "font-size": 12, fill: COR.escreve, "font-weight": 600 }, `bloco novo: ${q.novas.length} casas`));
+        y += fileira(g, q.novas, q.coresNovas, y + 6, col, String) + 6;
+      }
+      y += 8;
+      const s = svg("svg", { viewBox: `0 0 ${W} ${y}`, width: W, height: y, role: "img",
+        "aria-label": `Matriz ${L} × ${C}, linha a linha: ${m.valores().map((l) => l.join(" ")).join("; ")}` });
+      s.append(g);
+      figura.replaceChildren(s);
+      explicar();
+    }
+
+    figura.addEventListener("pointerover", (e) => {
+      const alvo = e.target.closest && e.target.closest("[data-k]");
+      const k = alvo ? Number(alvo.dataset.k) : null;
+      if (k !== foco) { foco = k; desenhar(); }
+    });
+    figura.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch" && foco !== null) { foco = null; desenhar(); } });
+
+    // ---------- controles ----------
+
+    const botoes = [];
+    const botao = (rot, acao, cond) => {
+      const b = el("button", { type: "button", class: "botao-passo", text: rot });
+      b.addEventListener("click", () => { if (cond()) acao(); });
+      botoes.push({ b, cond });
+      return b;
+    };
+    const inteiro = (ent, a, b, nome) => {
+      const x = Number(ent.value);
+      if (ent.value === "" || !Number.isInteger(x) || x < a || x > b) { aviso.textContent = `${nome} vai de ${a} a ${b}.`; return null; }
+      return x;
+    };
+    const lerI = () => inteiro(entI, 0, m.linhas - 1, "A linha i");
+    const lerJ = () => inteiro(entJ, 0, m.colunas - 1, "A coluna j");
+    const ops = [
+      botao("ler a[i][j]", () => { const i = lerI(), j = i === null ? null : lerJ(); if (j !== null) fazer("ler", [i, j]); }, () => true),
+      botao("escrever x em a[i][j]", () => {
+        const i = lerI(), j = i === null ? null : lerJ(), x = j === null ? null : inteiro(entX, 0, 99, "O valor");
+        if (x !== null) { fazer("escrever", [i, j, x]); entX.value = String(sorteia()); }
+      }, () => true),
+      botao("percorrer a linha i", () => { const i = lerI(); if (i !== null) fazer("linha", [i]); }, () => true),
+      botao("percorrer a coluna j", () => { const j = lerJ(); if (j !== null) fazer("coluna", [j]); }, () => true),
+      botao("transpor", () => fazer("transpor", []), () => true),
+      botao("criar linhas × colunas de zeros", () => {
+        const l = inteiro(entL, 1, MM, "O número de linhas"), c = l === null ? null : inteiro(entC, 1, MM, "O número de colunas");
+        if (c !== null) fazer("criar", [l, c]);
+      }, () => true),
+    ];
+    function habilitar() {
+      for (const { b, cond } of botoes) b.disabled = !cond();
+      entI.max = String(m.linhas - 1); entJ.max = String(m.colunas - 1);
+    }
+    const recomeca = el("button", { type: "button", class: "botao-passo", text: "recomeçar" });
+    recomeca.addEventListener("click", () => recomecar());
+
+    const legenda = el("p", { class: "demo-legenda", html:
+      `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita <i class="contorno" style="box-shadow: inset 0 0 0 2px ${COR.tinta}"></i>a casa apontada, nas duas vistas` });
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [rotI, entI, rotJ, entJ, rotX, entX, rotL, entL, rotC, entC])]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [lista], "historico"),
+    ]);
+    const tela = el("div", { class: "demo-tela" }, [figura, conta, legenda, el("p", { class: "demo-dica", text: tipoTexto("matriz") })]);
+    const raiz = el("div", { class: "demo" }, [tela, painel]);
+    recomecar();
+    return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
+  }
+
+  // ---------- a demo do Texto: concatenar no laço × juntar no fim, lado a lado ----------
+  // Cada operação roda nos dois. No imutável, acrescentar reserva um bloco novo
+  // e copia todas as letras; na lista de pedaços, só anexa. Juntar e fatiar
+  // escrevem um texto novo, que aparece embaixo de cada versão.
+
+  const MT = 16;                         // a demo vai até 16 letras
+
+  function demoTexto(inst) {
+    const VARS = ["imutavel", "pedacos"], nomeVar = inst.variantes;
+    let es = [], qs = [], saidas = [], log = [];
+    const anim = animador();
+    const vistas = VARS.map(() => el("figure", { class: "demo-vista" }));
+    const custou = el("p", { class: "demo-custou", "aria-live": "polite" });
+    const lista = el("ol", { class: "demo-log" });
+    const aviso = el("p", { class: "demo-aviso" });
+    const entrada = (rotulo, id, attrs) => [el("label", { for: id, text: rotulo }), el("input", { id, ...attrs })];
+    const [rotX, entX] = entrada("letra", "x-texto", { type: "text", maxlength: 1, value: "s", autocomplete: "off" });
+    const [rotI, entI] = entrada("posição i", "i-texto", { type: "number", min: 0, max: MT - 1, value: "1", inputmode: "numeric" });
+    const [rotA, entA] = entrada("de a", "a-texto", { type: "number", min: 0, max: MT, value: "1", inputmode: "numeric" });
+    const [rotB, entB] = entrada("até b", "b-texto", { type: "number", min: 0, max: MT, value: "3", inputmode: "numeric" });
+    const [rotS, entS] = entrada("palavra", "s-texto", { type: "text", maxlength: MT, value: "complexo", autocomplete: "off" });
+
+    const quadroT = (e) => ({ ...quadro(e), saida: null, coresSaida: {} });
+    function aplicarT(j, ev) {
+      const q = qs[j];
+      aplicar(q, ev);
+      if (ev.t === "junta" || ev.t === "fatia") {
+        if (!q.saida) q.saida = [];
+        q.saida[ev.k] = ev.x;
+        q.coresSaida = { [ev.k]: "escreve" };
+        saidas[j] = { nome: ev.t === "junta" ? "texto juntado" : "fatia", casas: q.saida.slice() };
+      }
+    }
+
+    function recomecar() {
+      anim.parar();
+      es = VARS.map((v) => I.ESTRUTURAS[v]());
+      for (const x of "baby") es.forEach((e) => e.acrescentar(x));
+      qs = es.map(quadroT); saidas = [null, null];
+      log = [];
+      custou.textContent = "\"baby\", posto letra por letra, para começar; clique numa operação.";
+      aviso.textContent = "";
+      desenhar(); listar(); habilitar();
+    }
+
+    function nomeOp(chamada, args) {
+      return { acrescentar: `acrescentar "${args[0]}"`, juntar: "juntar", ler: `ler t[${args[0]}]`, comprimento: "comprimento",
+        fatiar: `fatiar t[${args[0]}:${args[1]}]`, comparar: `comparar com "${args[0]}"`, montar: `montar "${[].concat(args[0]).join("")}" do zero` }[chamada];
+    }
+
+    // `nova`: montar recomeça dos dois textos vazios
+    function fazer(chamada, args, nova) {
+      anim.terminar();
+      if (nova) es = VARS.map((v) => I.ESTRUTURAS[v]());
+      qs = es.map(quadroT); saidas = [null, null];
+      const rs = es.map((e) => I.operar(e, chamada, args));
+      habilitar();
+      const nome = nomeOp(chamada, args);
+      const fim = () => {
+        qs = es.map(quadroT);
+        desenhar(); habilitar();
+        const volta = rs[0].volta;
+        const devolveu = volta === null ? "" : typeof volta === "boolean" ? (volta ? " → igual" : " → diferente") : typeof volta === "string" ? ` → "${volta}"` : ` → ${volta}`;
+        custou.replaceChildren(el("b", { text: `${nome}${devolveu}` }), el("span", { text: " custou:" }),
+          ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
+        const n = es[0].n;
+        aviso.textContent = chamada === "acrescentar" ? `Concatenando, as ${n - 1} letras de antes foram copiadas para um bloco novo de ${n} casas. Com pedaços, só se anexou uma letra${rs[1].eventos.some((e) => e.t === "realoca") ? " (e, desta vez, a lista dobrou e copiou)" : ""}.`
+          : chamada === "montar" ? `Montar ${n} letras concatenando copiou 0 + 1 + … + ${n - 1} letras; com pedaços, cada letra foi copiada uma vez, na junção (fora as cópias quando a lista dobrou).`
+          : chamada === "juntar" ? "O texto imutável já era um bloco só. A lista de pedaços copiou cada letra para um bloco do tamanho certo." : "";
+        log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
+        log = log.slice(0, 6);
+        listar();
+      };
+      fim.quadro = desenhar;
+      anim.tocar(rs.map((r) => r.eventos), aplicarT, fim, chamada === "montar" ? 60 : 260);
+    }
+
+    function listar() {
+      lista.replaceChildren(...log.map((l) => el("li", {}, [el("span", { text: l.nome }),
+        el("b", { text: l.custos.map((c) => mil(c)).join(" · ") })])));
+    }
+
+    // ---------- desenho ----------
+
+    function vista(q, j, col) {
+      const W = 24 + col * 42 + 12, g = svg("g");
+      const cap = q.casas.length, n = q.casas.filter((x) => x !== null).length;   // no meio da animação, o que já está escrito
+      g.append(svg("text", { x: 24, y: 14, "font-size": 12, fill: COR.cinza },
+        j === 0 ? `${n} ${n === 1 ? "letra" : "letras"}, ${cap} ${cap === 1 ? "casa" : "casas"}` : `pedaços: ${n} ${n === 1 ? "letra" : "letras"}, ${cap} ${cap === 1 ? "casa reservada" : "casas reservadas"}`));
+      let y = fileira(g, q.casas, q.cores, 6, col, String) + 6;
+      if (q.novas) {
+        g.append(svg("text", { x: 24, y: y + 14, "font-size": 12, fill: COR.escreve, "font-weight": 600 },
+          j === 0 ? `bloco novo: ${q.novas.length} casas, copiando` : `casas novas: ${q.novas.length}, copiando`));
+        y += fileira(g, q.novas, q.coresNovas, y + 6, col, String) + 6;
+      }
+      const sd = saidas[j];
+      if (sd) {
+        g.append(svg("text", { x: 24, y: y + 14, "font-size": 12, fill: COR.tinta, "font-weight": 600 }, `${sd.nome}: ${sd.casas.length} ${sd.casas.length === 1 ? "casa" : "casas"}`));
+        y += fileira(g, sd.casas, q.saida ? q.coresSaida : {}, y + 6, col, String) + 6;
+      }
+      y += 4;
+      const s = svg("svg", { viewBox: `0 0 ${W} ${y}`, width: W, height: y, role: "img",
+        "aria-label": `${nomeVar[VARS[j]]}: "${es[j].valores().join("")}"` });
+      s.append(g);
+      return s;
+    }
+
+    function desenhar() {
+      const larg = vistas[1].parentElement ? vistas[1].parentElement.clientWidth : 0, estreito = larg > 0 && larg < 560;
+      const col = estreito ? 8 : MT;
+      const ss = qs.map((q, j) => vista(q, j, col));
+      const W = Math.max(...ss.map((s) => Number(s.getAttribute("width")))), esc = larg > 0 ? Math.min(1.4, larg / W) : 1;
+      ss.forEach((s) => { s.style.width = `${Number(s.getAttribute("width")) * esc}px`; s.style.height = `${Number(s.getAttribute("height")) * esc}px`; });
+      vistas[0].replaceChildren(el("figcaption", { text: `${nomeVar.imutavel}: texto ← texto + letra` }), ss[0]);
+      vistas[1].replaceChildren(el("figcaption", { text: `${nomeVar.pedacos}: pedaços numa lista, "".join no fim` }), ss[1]);
+    }
+
+    // ---------- controles ----------
+
+    const botoes = [];
+    const botao = (rot, acao, cond) => {
+      const b = el("button", { type: "button", class: "botao-passo", text: rot });
+      b.addEventListener("click", () => { if (cond()) acao(); });
+      botoes.push({ b, cond });
+      return b;
+    };
+    const n0 = () => es[0].n;
+    const inteiro = (ent, a, b, nome) => {
+      const x = Number(ent.value);
+      if (ent.value === "" || !Number.isInteger(x) || x < a || x > b) { aviso.textContent = `${nome} vai de ${a} a ${b}.`; return null; }
+      return x;
+    };
+    const palavra = () => {
+      const s = entS.value;
+      if (!s.length || s.length > MT) { aviso.textContent = `A palavra tem de 1 a ${MT} letras.`; return null; }
+      return s;
+    };
+    const ops = [
+      botao("acrescentar a letra", () => {
+        const x = entX.value;
+        if (x.length !== 1) { aviso.textContent = "Escreva uma letra."; return; }
+        fazer("acrescentar", [x]);
+      }, () => n0() < MT),
+      botao("juntar", () => fazer("juntar", []), () => true),
+      botao("ler t[i]", () => { const i = inteiro(entI, 0, n0() - 1, "A posição i"); if (i !== null) fazer("ler", [i]); }, () => n0() > 0),
+      botao("comprimento", () => fazer("comprimento", []), () => true),
+      botao("fatiar t[a:b]", () => {
+        const a = inteiro(entA, 0, n0(), "O começo a"), b = a === null ? null : inteiro(entB, a, n0(), "O fim b");
+        if (b !== null) fazer("fatiar", [a, b]);
+      }, () => true),
+      botao("comparar com a palavra", () => { const s = palavra(); if (s !== null) fazer("comparar", [s]); }, () => true),
+      botao("montar a palavra do zero", () => { const s = palavra(); if (s !== null) fazer("montar", [[...s]], true); }, () => true),
+    ];
+    function habilitar() { for (const { b, cond } of botoes) b.disabled = !cond(); entI.max = String(Math.max(0, n0() - 1)); }
+    const recomeca = el("button", { type: "button", class: "botao-passo", text: "recomeçar" });
+    recomeca.addEventListener("click", () => recomecar());
+
+    const legenda = el("p", { class: "demo-legenda", html:
+      `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita <i class="livre"></i>casa reservada, livre` });
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [rotX, entX, rotI, entI, rotA, entA, rotB, entB, rotS, entS])]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [el("p", { class: "demo-aviso", text: "custo concatenando · com pedaços" }), lista], "historico"),
+    ]);
+    const tela = el("div", { class: "demo-tela" }, [el("div", { class: "demo-figura demo-grafo" }, el("div", { class: "demo-vistas demo-listas" }, vistas)),
+      legenda, el("p", { class: "demo-dica", text: tipoTexto("texto") })]);
+    const raiz = el("div", { class: "demo" }, [tela, painel]);
+    recomecar();
+    return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
+  }
+
   // ---------- gráficos: custo × n e casas × n ----------
 
   // o menor n medido nas séries (o Grafo começa em V = 8, onde o anel de medição já é ele mesmo)
@@ -1316,7 +1689,8 @@
     const m = { l: 48, r: direto ? 170 : 16, t: 14, b: 40 };
     const xmax = Math.max(...series.flatMap((s) => s.pts.map((p) => p[0])));
     const ymax = Math.max(...series.flatMap((s) => s.pts.map((p) => p[1])));
-    const passoY = ymax > 200 ? 50 : ymax > 100 ? 25 : ymax > 40 ? 10 : 5, topo = Math.ceil(ymax / passoY) * passoY;
+    const ordem = 10 ** Math.floor(Math.log10(Math.max(1, ymax) / 4));
+    const passoY = ymax > 400 ? [1, 2, 5, 10].map((f) => f * ordem).find((p) => ymax / p <= 6) : ymax > 200 ? 50 : ymax > 100 ? 25 : ymax > 40 ? 10 : 5, topo = Math.ceil(ymax / passoY) * passoY;
     const X = (n) => m.l + n / xmax * (W - m.l - m.r), Y = (v) => m.t + (1 - v / topo) * (H - m.t - m.b);
     const s = svg("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": `Custo de cada operação (leituras + escritas) para ${inst.n || "n"} de ${nMin(inst)} a ${xmax}` });
     for (let v = 0; v <= topo; v += passoY) {
@@ -1348,7 +1722,7 @@
   }
 
   function graficoCasas(caixa, inst) {
-    if (!mesmaCapacidade(inst) && Object.keys(inst.medido.capacidade).length > 1) return graficoCasasVistas(caixa, inst);
+    if ((!mesmaCapacidade(inst) && Object.keys(inst.medido.capacidade).length > 1) || inst.rotulo_casas) return graficoCasasVistas(caixa, inst);
     const cap = Object.values(inst.medido.capacidade)[0];
     caixa.replaceChildren();
     const W = Math.max(300, caixa.clientWidth), H = 220, m = { l: 48, r: W >= 600 ? 170 : 16, t: 14, b: 40 };
@@ -1387,7 +1761,7 @@
     }
     for (let n = 0; n <= xmax; n += 10) s.append(svg("text", { x: X(n), y: H - m.b + 18, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, String(n)));
     s.append(svg("text", { x: (m.l + W - m.r) / 2, y: H - 4, "text-anchor": "middle", "font-size": 12, fill: COR.cinza }, inst.eixo ? textoInst(inst, inst.eixo) : "n"));
-    const series = caps.map(([v, c], k) => ({ rotulo: inst.variantes[v], cor: SERIES[k % SERIES.length], pts: c.map((t) => [t.n, t.casas]) }));
+    const series = caps.map(([v, c], k) => ({ rotulo: inst.variantes ? inst.variantes[v] : inst.rotulo_casas, cor: SERIES[k % SERIES.length], pts: c.map((t) => [t.n, t.casas]) }));
     for (const se of series) s.append(svg("polyline", { points: se.pts.map(([n, v]) => `${X(n)},${Y(v)}`).join(" "), fill: "none", stroke: se.cor, "stroke-width": 2, "stroke-linejoin": "round" }));
     if (direto) {
       const fins = series.map((se) => ({ se, y: Y(se.pts.at(-1)[1]) })).sort((a, b) => a.y - b.y);
@@ -1429,7 +1803,7 @@
   function pagina(inst, ctx) {
     const usam = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === inst.id));
     const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "lista" ? demoLista(inst) : inst.id === "heap" ? demoHeap()
-      : inst.id === "dicionario" ? demoDicionario(inst) : demo(inst, ctx);
+      : inst.id === "dicionario" ? demoDicionario(inst) : inst.id === "matriz" ? demoMatriz() : inst.id === "texto" ? demoTexto(inst) : demo(inst, ctx);
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos, nome = inst.n || "n";
     // legendas próprias da ficha (o Grafo), com os números do dados.json
@@ -1501,6 +1875,8 @@
       lista: "Cada clique roda a mesma operação nas duas listas. Na estática, os arcos de cima seguem os próx pelo vetor, e os tracejados de baixo são a lista de livres. Na dinâmica, cada nó tem um endereço, e o próx guarda o endereço do seguinte. Compare inserir no início com ler a última: um troca um ponteiro, o outro segue todos.",
       heap: "Insira e tire o menor: a casa que se mexe acende ao mesmo tempo na árvore e no vetor, porque são a mesma casa. Repare que inserir sobe e tirar desce, no máximo a altura da árvore. Depois compare as duas montagens com os mesmos valores: de uma vez, de baixo para cima, sai mais barato que um por um.",
       dicionario: "Cada clique roda a mesma operação nas duas tabelas. A seta marca a casa que a conta da dispersão deu para a chave; dali, o encadeamento segue a corrente para baixo, e a sondagem anda para a direita até achar a chave ou uma casa vazia. Ponha chaves até colidirem e compare as duas. Remova uma chave da sondagem e veja a lápide que fica no lugar.",
+      matriz: "Cada clique roda a operação na matriz de verdade. A grade em cima e o bloco embaixo são as mesmas casas: a que se lê ou escreve acende nas duas. Compare percorrer uma linha com percorrer uma coluna: as mesmas leituras, mas a coluna pula de tantas em tantas casas no bloco. Transpor precisa de um bloco novo.",
+      texto: "Cada clique roda a mesma operação nos dois textos. Acrescente letras e compare: concatenando, o texto inteiro é copiado para um bloco novo a cada letra; com pedaços, a letra só é anexada, e a cópia fica para juntar, uma vez só. Depois monte uma palavra do zero e compare os totais.",
       grafo: "Escolha u e v e clique numa operação: ela roda nas três vistas ao mesmo tempo, sobre as mesmas arestas, e cada vista mostra as casas que leu e escreveu. A letra de cada aresta no desenho é a coluna dela na matriz de incidência. Compare os vizinhos de u: a lista lê só eles, a matriz de adjacência lê a linha inteira.",
     }[id];
   }

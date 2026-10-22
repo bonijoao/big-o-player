@@ -1,0 +1,37 @@
+{
+ "id": "fibonacci-iterativo",
+ "nome": "Fibonacci iterativo",
+ "variante": "de baixo para cima, guardando só os dois últimos",
+ "familia": "primeiros passos",
+ "resumo": "Em vez de descer de fib(n) até os casos pequenos, sobe: começa com 0 e 1 e, a cada volta, o par (a, b) vira (b, a + b). Depois de n voltas, a é fib(n). Nenhuma chamada, nenhuma lista: só duas variáveis andando pela sequência.",
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "n voltas, uma soma por volta: n somas (a última calcula um número a mais, que sobra em b).",
+  "nota": "Empata com o Fibonacci com memória no tempo e ganha na memória. Do recursivo para cá, a mesma resposta passou de φⁿ para n somas."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Só a, b e o índice da volta, que não crescem com n. Sem recursão, não há pilha de chamadas.",
+  "nomes": {},
+  "cresce_com_n": [],
+  "vazio": "não guarda nenhum valor além de duas variáveis",
+  "soltos": "só guarda a, b e o índice i"
+ },
+ "video": {
+  "ideia": [
+   "o par (a, b) vira (b, a + b)",
+   "duas variáveis andando pela sequência"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
+  "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
+  "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
+  "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+ },
+ "pseudocodigo": "procedimento fib_iterativo(n):\n    a ← 0;  b ← 1\n    para i de 1 até n:\n        a, b ← b, a + b\n    devolva a\n",
+ "placa": {
+  "autor": "Leonardo de Pisa, o Fibonacci (a sequência)",
+  "ano": "1202"
+ }
+}

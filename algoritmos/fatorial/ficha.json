@@ -1,0 +1,45 @@
+{
+ "id": "fatorial-recursivo",
+ "nome": "Fatorial recursivo",
+ "variante": "n! = n · (n − 1)!",
+ "familia": "primeiros passos",
+ "resumo": "O fatorial de n é n vezes o fatorial de n − 1, e o de 1 é 1. A função chama a si mesma com um número menor até chegar ao caso que ela já sabe responder. Cada chamada espera a de baixo voltar para fazer a sua multiplicação: a pilha de chamadas desce n níveis e depois volta, multiplicando.",
+ "instrumentos": [
+  {
+   "id": "pilha",
+   "papel": "a pilha de chamadas: cada fatorial(k) empilha um nível e espera"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n)",
+  "porque": "Uma chamada para cada número de n até 1, e uma multiplicação em cada uma, menos na última: n − 1 multiplicações.",
+  "nota": "O número cresce depressa: 19! já passa de 2⁵³, até onde um double guarda todos os inteiros exatos, por isso o palco usa inteiros grandes. Aqui, multiplicar conta 1, seja qual for o tamanho; com números enormes, cada multiplicação também fica mais cara."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Cada chamada fica aberta na pilha, guardando o seu n, até a de baixo voltar. No fundo, são n níveis empilhados. O mesmo cálculo num laço guardaria só o produto: O(1).",
+  "nomes": {
+   "pilha": "níveis da pilha de chamadas"
+  },
+  "cresce_com_n": [
+   "pilha"
+  ]
+ },
+ "video": {
+  "ideia": [
+   "cada chamada espera a de baixo voltar",
+   "a pilha desce n níveis e volta multiplicando"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo e memória: os dois crescem como n",
+  "texto": "As contas para n cada vez maior. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}: n − 1. Tracejada: n, de referência.",
+  "memoria": "Níveis da pilha no pico, para os mesmos n: exatamente n (tracejada)."
+ },
+ "pseudocodigo": "procedimento fatorial(n):\n    se n ≤ 1:\n        r ← 1\n    senão:\n        r ← n · fatorial(n − 1)\n    devolva r\n",
+ "placa": {
+  "autor": "Christian Kramp (a notação n!)",
+  "ano": "1808"
+ }
+}

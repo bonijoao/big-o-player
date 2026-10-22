@@ -1,0 +1,45 @@
+{
+ "id": "multiplicacao-de-matrizes",
+ "nome": "Multiplicação de matrizes",
+ "variante": "pela definição, com três laços",
+ "familia": "primeiros passos",
+ "resumo": "Cada casa C[i][j] do produto é a linha i de A combinada com a coluna j de B: multiplica casa com casa e soma. Três laços, um dentro do outro: as linhas, as colunas e, para cada casa, os n pares. É o exemplo clássico de laço aninhado, e de como o custo multiplica.",
+ "instrumentos": [
+  {
+   "id": "matriz",
+   "papel": "A, B e C, guardadas linha a linha; a linha de A anda junto, a coluna de B pula de n em n"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n³)",
+  "porque": "São n² casas em C, e cada uma soma n produtos: n · n · n = n³ multiplicações. Dobrar n multiplica o tempo por 8.",
+  "nota": "Existem jeitos mais espertos (o de Strassen, de 1969, faz perto de n^2,81), mas os três laços continuam sendo o que quase todo mundo escreve, e para n pequeno ganham."
+ },
+ "memoria": {
+  "notacao": "O(n²)",
+  "porque": "A matriz C, com n² casas. A soma da vez e os três índices são soltos. A e B são a entrada e não contam.",
+  "nomes": {
+   "C": "casas da matriz C"
+  },
+  "cresce_com_n": [
+   "C"
+  ]
+ },
+ "video": {
+  "ideia": [
+   "a linha i de A encontra a coluna j de B",
+   "n multiplicações por casa, n² casas: n³"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo e memória: n³ e n²",
+  "texto": "As contas para matrizes cada vez maiores. Em escala logarítmica, a inclinação da linha é o expoente: n³ sobe três vezes mais íngreme que n.",
+  "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}. Tracejada: n³, de referência; as duas coincidem.",
+  "memoria": "Casas da matriz C no pico, para os mesmos n: exatamente n² (tracejada)."
+ },
+ "pseudocodigo": "procedimento multiplica(A, B):\n    C ← matriz n × n\n    para i de 1 até n:\n        para j de 1 até n:\n            s ← 0\n            para k de 1 até n:\n                s ← s + A[i][k] · B[k][j]\n            C[i][j] ← s\n    devolva C\n",
+ "placa": {
+  "autor": "Arthur Cayley (a definição do produto)",
+  "ano": "1858"
+ }
+}

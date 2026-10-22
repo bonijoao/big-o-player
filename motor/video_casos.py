@@ -580,3 +580,170 @@ def montar_colisao(pasta):
         rich(d, [(f"{ex['n']} chaves em {m} casas: ", ""), (f"{ex['ops']} sondagens", "bg")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+# ---------- primeiros passos ----------
+
+def _milhar(x):
+    return f"{x:,}".replace(",", ".")
+
+
+def montar_maximo(pasta):
+    """Máximo de um vetor: as barras do encarte, o máximo em verde e a linha na altura dele."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    v, N = ex["vetor"], ex["n"]
+    BTOPO, BBASE = 96, 410
+    bw = (BX1 - BX0) / N
+    im_ = v.index(ex["maximo"])
+
+    def cena(d, t, im):
+        line(d, (BX0, BBASE + 1), (BX1, BBASE + 1), PALIDO, w=1)
+        for i, x in enumerate(v):
+            h = x / 100 * (BBASE - BTOPO)
+            d.rectangle((BX0 + i * bw + bw * 0.12, BBASE - h, BX0 + i * bw + bw * 0.88, BBASE), fill=GREEN if i == im_ else APAGADO)
+        ya = BBASE - ex["maximo"] / 100 * (BBASE - BTOPO)
+        for x0 in range(BX0, BX1, 9):
+            line(d, (x0, ya), (min(x0 + 5, BX1), ya), GREEN, w=1)
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("trocas do maior", str(ex["trocas"]), 26, False), ("o máximo", str(ex["maximo"]), 20, False)])
+        rich(d, [("o máximo é ", ""), (str(ex["maximo"]), "b"), (": ", ""), (f"{ex['ops']} comparações", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_multiplicacao(pasta):
+    """Multiplicação de matrizes: A · B = C, com C em verde (o resultado)."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    A, B, C, N = ex["A"], ex["B"], ex["C"], ex["n"]
+    cs = min(42, 560 / (3 * N + 2))
+    gx = [BX0, BX0 + (N + 1) * cs, BX0 + 2 * (N + 1) * cs]
+    GY = 150
+
+    def grade(d, M, x0, nome, verde):
+        texto(d, nome, x0 + N * cs / 2, GY - 26, 13, GRAY, b=True, align="c")
+        for p in range(N):
+            for q in range(N):
+                x, y = x0 + q * cs, GY + p * cs
+                d.rectangle((x + 1, y + 1, x + cs - 1, y + cs - 1), fill=(255, 255, 255), outline=PALIDO, width=1)
+                texto(d, str(M[p][q]), x + cs / 2, y + cs / 2 - 8, 14, GREEN if verde else INK, b=True, align="c")
+
+    def cena(d, t, im):
+        grade(d, A, gx[0], "A", False)
+        grade(d, B, gx[1], "B", False)
+        grade(d, C, gx[2], "C", True)
+        texto(d, "·", gx[1] - cs / 2, GY + N * cs / 2 - 14, 22, INK, b=True, align="c")
+        texto(d, "=", gx[2] - cs / 2, GY + N * cs / 2 - 14, 22, INK, b=True, align="c")
+        _painel(d, [("multiplicações", str(ex["ops"]), 40, True), ("casas de C", str(ex["pico"]), 26, False), ("n", str(N), 20, False)])
+        rich(d, [(f"{N} × {N}: ", ""), (f"{ex['ops']} multiplicações", "bg"), (f" = {N}³", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_fatorial(pasta):
+    """Fatorial recursivo: a pilha de chamadas no fundo (todos os níveis abertos) e o resultado em verde."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    n = ex["n"]
+    BASE, TOPO = 450, 90
+    hq = min(34, (BASE - TOPO) / n)
+
+    def cena(d, t, im):
+        line(d, (BX0 - 4, BASE + 2), (BX1 + 4, BASE + 2), INK, w=2)
+        for p in range(n):
+            k, y = n - p, BASE - (p + 1) * hq
+            d.rectangle((BX0, y + 1, BX1, y + hq - 1), fill=(255, 255, 255), outline=PALIDO, width=1)
+            texto(d, f"fatorial({k})", BX0 + 10, y + hq / 2 - 8, 13, INK, b=True)
+            texto(d, "= 1" if k <= 1 else f"espera fatorial({k - 1})", BX0 + 150, y + hq / 2 - 8, 13, GRAY)
+        _painel(d, [("multiplicações", str(ex["ops"]), 40, False), ("níveis na pilha", str(ex["pico"]), 26, False), (f"{n}!", ex["fatorial"], 20, True)])
+        rich(d, [(f"{n}! = ", ""), (ex["fatorial"], "bg"), (f": a pilha desce {ex['pico']} níveis", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def _arvore(eventos):
+    """A árvore de chamadas a partir dos eventos entra/sai: (n, pai, profundidade, lembrou) por chamada, e o x de cada uma."""
+    nos, abertos = [], []
+    for e in eventos:
+        if e[0] == "entra":
+            nos.append({"k": e[1], "pai": abertos[-1] if abertos else None, "filhos": [], "prof": len(abertos), "lembrou": False})
+            if abertos:
+                nos[abertos[-1]]["filhos"].append(len(nos) - 1)
+            abertos.append(len(nos) - 1)
+        elif e[0] == "sai":
+            abertos.pop()
+        elif e[0] == "lembra":
+            nos[abertos[-1]]["lembrou"] = True
+    folhas = [0]
+
+    def px(i):
+        no = nos[i]
+        if not no["filhos"]:
+            no["x"] = folhas[0]
+            folhas[0] += 1
+        else:
+            xs = [px(f) for f in no["filhos"]]
+            no["x"] = (xs[0] + xs[-1]) / 2
+        return no["x"]
+    px(0)
+    return nos, folhas[0]
+
+
+def montar_fibonacci(pasta):
+    """Fibonacci: a árvore de chamadas inteira (recursivo e com memória; as respostas lembradas em azul)
+    ou a sequência com o fib(n) em verde (iterativo)."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    n, versao = ex["n"], D["tempo"]["tipo"].replace("fib_", "")
+    AZUL = GRUPOS[0]
+
+    def cena(d, t, im):
+        if versao != "iterativo":
+            nos, folhas = _arvore(ex["eventos"])
+            prof = max(1, max(q["prof"] for q in nos))
+            dx, dy = (BX1 + 20 - BX0) / folhas, (420 - 110) / prof
+            r = max(1.5, min(13, dx * 0.38, dy * 0.32))
+            pos = lambda q: (BX0 + (q["x"] + 0.5) * dx, 110 + q["prof"] * dy)
+            for q in nos:
+                if q["pai"] is not None:
+                    line(d, pos(nos[q["pai"]]), pos(q), PALIDO, w=1)
+            for i, q in enumerate(nos):
+                x, y = pos(q)
+                ponto(d, x, y, r, GREEN if i == 0 else AZUL if q["lembrou"] else INK)
+                if r >= 9:
+                    texto(d, str(q["k"]), x, y - 8, 12, (255, 255, 255), b=True, align="c")
+            _painel(d, [("somas", _milhar(ex["ops"]), 40, False), ("chamadas", _milhar(ex["chamadas"]), 26, False), (f"fib({n})", str(ex["fib"]), 20, True)])
+        else:
+            fibs = [0, 1]
+            for _ in range(n):
+                fibs.append(fibs[-1] + fibs[-2])
+            for p in range(n + 1):
+                x, y = BX0 + (p % 8) * 74, 110 + (p // 8) * 56
+                verde = p == n
+                d.rectangle((x, y, x + 70, y + 34), fill=GREEN if verde else (255, 255, 255), outline=GREEN if verde else PALIDO, width=1)
+                texto(d, str(fibs[p]), x + 35, y + 9, 14, (255, 255, 255) if verde else INK, b=True, align="c")
+                texto(d, f"fib({p})", x + 35, y + 38, 10, GRAY, align="c")
+            _painel(d, [("somas", str(ex["ops"]), 40, False), ("memória", "a e b", 26, False), (f"fib({n})", str(ex["fib"]), 20, True)])
+        rich(d, [(f"fib({n}) = {ex['fib']}: ", ""), (f"{_milhar(ex['ops'])} somas", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+
+
+def montar_padrao(pasta):
+    """Busca de padrão: o texto do encarte em linhas, com as ocorrências do padrão em verde."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    t, m, achou = ex["texto"], ex["m"], ex["achou"]
+    verdes = {i + d for i in achou for d in range(m)}
+    COL, cw = 32, 17
+
+    def cena(d, t_, im):
+        for q, c in enumerate(t):
+            x, y = BX0 + (q % COL) * cw, 120 + (q // COL) * 44
+            texto(d, "·" if c == " " else c, x + cw / 2, y, 18, GREEN if q in verdes else PALIDO if c == " " else INK, b=q in verdes, align="c")
+            if q in verdes:
+                line(d, (x, y + 27), (x + cw, y + 27), GREEN, w=2)
+        _painel(d, [("comparações", str(ex["ops"]), 40, True), ("padrão", ex["padrao"], 26, False), ("achou em", ", ".join(str(i + 1) for i in achou), 20, False)])
+        rich(d, [(f"\"{ex['padrao']}\" aparece {len(achou)} vezes: ", ""), (f"{ex['ops']} comparações", "bg")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5

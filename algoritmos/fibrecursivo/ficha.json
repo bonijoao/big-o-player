@@ -1,0 +1,45 @@
+{
+ "id": "fibonacci-recursivo",
+ "nome": "Fibonacci recursivo",
+ "variante": "direto da definição, sem guardar nada",
+ "familia": "primeiros passos",
+ "resumo": "Cada número de Fibonacci é a soma dos dois anteriores: fib(n) = fib(n − 1) + fib(n − 2). Escrita assim, a função se chama duas vezes, e cada uma dessas se chama mais duas. O mesmo valor é recalculado de novo e de novo: fib(15) pede fib(2) 377 vezes. É a explosão da árvore de chamadas.",
+ "instrumentos": [
+  {
+   "id": "pilha",
+   "papel": "a pilha de chamadas: só desce n níveis, mesmo com a árvore enorme"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(φⁿ)",
+  "porque": "As somas obedecem à mesma regra dos números: S(n) = S(n − 1) + S(n − 2) + 1, o que dá fib(n + 1) − 1 somas e 2·fib(n + 1) − 1 chamadas. Crescem como φⁿ, com φ = (1 + √5)/2 ≈ 1,618: cada n a mais multiplica o trabalho por quase 1,6.",
+  "nota": "Por isso o palco vai só até n = 15 (986 somas). Com n = 30, já são mais de um milhão; com n = 50, uns 20 bilhões."
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "A árvore é enorme, mas a pilha só guarda o caminho da raiz até a chamada da vez: no máximo n níveis abertos ao mesmo tempo.",
+  "nomes": {
+   "pilha": "níveis da pilha de chamadas"
+  },
+  "cresce_com_n": [
+   "pilha"
+  ]
+ },
+ "video": {
+  "ideia": [
+   "cada chamada pede as duas de baixo",
+   "o mesmo valor é recalculado de novo e de novo"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
+  "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
+  "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
+  "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+ },
+ "pseudocodigo": "procedimento fib(n):\n    se n ≤ 1:\n        r ← n\n    senão:\n        r ← fib(n − 1) + fib(n − 2)\n    devolva r\n",
+ "placa": {
+  "autor": "Leonardo de Pisa, o Fibonacci (os coelhos do Liber Abaci)",
+  "ano": "1202"
+ }
+}

@@ -31,7 +31,7 @@ function tipos(pasta) {
     const t = l.trim();
     if (/^(se|enquanto|senão se) /.test(t)) return "decisao";
     if (/^para /.test(t)) return "laco";
-    if (t.startsWith(nome + "(") || t.startsWith("procedimento")) return "chamada";
+    if (t.startsWith(nome + "(") || t.startsWith("procedimento") || new RegExp(`← .*\\b${nome}\\(`).test(t)) return "chamada";   // r ← n · fatorial(n − 1) também chama
     return "passo";
   });
 }
@@ -44,7 +44,8 @@ function confereLinhas(pasta, eventos) {
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
     atribui: "passo", insere: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo",
     proximo: "passo", vira: "passo", tira: "passo", poe: "passo", maximo: "passo",
-    busca: "decisao", dispersa: "passo", inicio: "passo", sonda: "decisao", liga: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    busca: "decisao", dispersa: "passo", inicio: "passo", sonda: "decisao", liga: "passo",
+    multiplica: ["passo", "chamada"], soma: ["passo", "chamada"], lembra: "passo", guarda: "passo", encosta: "laco" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -111,6 +112,15 @@ function confereVars(pasta, vetor, eventos) {
     encadeamento: (e) => (e.t !== "dispersa" || (e.vars.k === e.k && e.vars.i === e.i + 1)) && (e.t !== "avanca" || e.vars["sondagens desta chave"] === e.pos + 1),
     sondagem: (e) => (e.t !== "dispersa" && e.t !== "sonda" && e.t !== "avanca" || (e.vars.k === e.k && e.vars.i === e.i + 1))
       && (e.t !== "poe" || e.vars.n >= 1),
+    maximo: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i])) && (e.t !== "troca" || e.vars.m === v[e.i]),
+    multiplicacao: (e) => (e.t !== "multiplica" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars.k === e.k + 1))
+      && (e.t !== "escreve" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars.s === e.x)),
+    fatorial: (e) => (e.t !== "entra" || e.vars.n === e.a) && (e.t !== "multiplica" || (e.vars.n === e.k && e.vars.r === e.r)),
+    fibrecursivo: (e) => (e.t !== "entra" || e.vars.n === e.a) && (e.t !== "soma" || (e.vars.n === e.k && e.vars.r === e.r)),
+    fibmemoria: (e) => (e.t !== "entra" || e.vars.n === e.a) && (e.t !== "soma" && e.t !== "lembra" && e.t !== "guarda" || (e.vars.n === e.k && e.vars.r === e.r)),
+    fibiterativo: (e) => e.t !== "soma" || (e.vars.i === e.i + 1 && e.vars.a === e.a && e.vars.b === e.b),
+    padrao: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars["t[i + j − 1]"] === e.a && e.vars["p[j]"] === e.b))
+      && (e.t !== "encosta" || e.vars.i === e.i + 1),
   }[pasta];
   let erros = 0;
   const abertas = [];
@@ -119,7 +129,7 @@ function confereVars(pasta, vetor, eventos) {
     if (e.t === "sai") { abertas.pop(); if (e.nivel !== abertas.length || e.chamada !== (abertas.at(-1) ?? 0)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: retorno no nível ${e.nivel}, chamada ${e.chamada}`); } }
     // escalares: número, booleano, null ou um símbolo (os parênteses mostram o caractere lido)
     // (contar palavras mostra a palavra da vez)
-    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean" || (typeof x === "string" && (x.length === 1 || pasta === "palavras")));
+    const escalares = e.vars && Object.values(e.vars).every((x) => x === null || typeof x === "number" || typeof x === "boolean" || (typeof x === "string" && (x.length === 1 || pasta === "palavras" || pasta === "fatorial")));
     if (!escalares || !regra(e)) { if (erros++ < 3) console.log(`  ✗ ${pasta}: variáveis do evento ${e.t} ${JSON.stringify(e.vars)}`); }
     if (v && e.t === "troca") { const x = v[e.i]; v[e.i] = v[e.j]; v[e.j] = x; }
     if (v && e.t === "escreve" && e.onde === "v") v[e.k] = e.x;
@@ -286,6 +296,61 @@ for (const pasta of ["encadeamento", "sondagem"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} tabelas)`);
 }
 
+// ---------- primeiros passos ----------
+
+{
+  const d = ler("algoritmos/maximo/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ maximo: r.maximo, ops: r.ops, trocas: r.trocas, pico: r.pico });
+  const casos = [{ ...ex, caso: "encarte" }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`maximo ${c.caso} n=${c.vetor.length}`, medidas(A.maximo(c.vetor)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("maximo", A.maximo(c.vetor).eventos) && confereVars("maximo", c.vetor, A.maximo(c.vetor).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: maximo (${casos.length} vetores)`);
+}
+
+{
+  const d = ler("algoritmos/multiplicacao/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ C: r.C, ops: r.ops, pico: r.pico, casas: r.casas });
+  const casos = [ex, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`multiplicacao n=${c.A.length}`, medidas(A.multiplicacao(c.A, c.B)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("multiplicacao", A.multiplicacao(c.A, c.B).eventos) && confereVars("multiplicacao", null, A.multiplicacao(c.A, c.B).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: multiplicacao (${casos.length} pares de matrizes)`);
+}
+
+{
+  const d = ler("algoritmos/fatorial/dados.json");
+  const medidas = (r) => ({ fatorial: r.fatorial, ops: r.ops, pico: r.pico });
+  let ok = confere("fatorial encarte", medidas(A.fatorial(d.exemplo.n)), medidas(d.exemplo));
+  for (const c of d.conferir) ok = confere(`fatorial n=${c.n}`, medidas(A.fatorial(c.n)), medidas(c)) && ok;
+  for (const c of d.conferir) ok = confereLinhas("fatorial", A.fatorial(c.n).eventos) && confereVars("fatorial", null, A.fatorial(c.n).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: fatorial (${d.conferir.length + 1} n)`);
+}
+
+for (const [pasta, f] of [["fibrecursivo", A.fibRecursivo], ["fibmemoria", A.fibMemoria], ["fibiterativo", A.fibIterativo]]) {
+  const d = ler(`algoritmos/${pasta}/dados.json`);
+  const medidas = (r) => ({ fib: r.fib, ops: r.ops, pico: r.pico, casas: r.casas });
+  let ok = confere(`${pasta} encarte`, { ...medidas(f(d.exemplo.n)), chamadas: f(d.exemplo.n).chamadas }, { ...medidas(d.exemplo), chamadas: d.exemplo.chamadas });
+  for (const c of d.conferir) ok = confere(`${pasta} n=${c.n}`, medidas(f(c.n)), medidas(c)) && ok;
+  for (const c of d.conferir) ok = confereLinhas(pasta, f(c.n).eventos) && confereVars(pasta, null, f(c.n).eventos) && ok;
+  // as três séries do gráfico comum, nos n que o palco toca
+  for (const t of d.tempo.crescimento.filter((t) => t.n <= 20)) {
+    ok = confere(`${pasta} gráfico n=${t.n}`, [A.fibRecursivo(t.n).ops, A.fibMemoria(t.n).ops, A.fibIterativo(t.n).ops, A.fibRecursivo(t.n).pico, A.fibMemoria(t.n).pico],
+      [t.recursivo.ops, t.memoria.ops, t.iterativo.ops, t.recursivo.pico, t.memoria.pico]) && ok;
+  }
+  console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${d.conferir.length + 1} n)`);
+}
+
+{
+  const d = ler("algoritmos/padrao/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ achou: r.achou, ops: r.ops, pico: r.pico, casas: r.casas });
+  const casos = [{ ...ex, caso: "encarte" }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`padrao ${c.caso} "${c.padrao}"`, medidas(A.padrao(c.texto, c.padrao)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("padrao", A.padrao(c.texto, c.padrao).eventos) && confereVars("padrao", null, A.padrao(c.texto, c.padrao).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: padrao (${casos.length} buscas)`);
+}
+
 // ---------- estatística ----------
 
 {
@@ -395,6 +460,20 @@ for (const pasta of ["encadeamento", "sondagem"]) {
       }
     }
   }
+  // primeiros passos: matrizes de 0 a 9; o pior caso da busca dá (n − m + 1)·m e acha no fim; o DNA só tem ACGT
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [2, 3, 4, 5, 6]) {
+      const { A: a, B: b } = A.matrizesSorteadas(n, semente);
+      ok = confere(`matrizes n=${n} s=${semente}`, [a.length, b[0].length, [...a.flat(), ...b.flat()].every((x) => Number.isInteger(x) && x >= 0 && x <= 9)], [n, n, true]) && ok;
+    }
+    for (const n of [24, 40, 64, 96]) {
+      for (const m of [2, 3, 4, 8]) {
+        const pi = A.textoPadrao(n, m, "pior", semente), dn = A.textoPadrao(n, m, "dna", semente), r = A.padrao(pi.texto, pi.padrao);
+        ok = confere(`padrao n=${n} m=${m} s=${semente}`, [r.ops, r.achou, dn.texto.length, dn.padrao.length, /^[ACGT]+$/.test(dn.texto + dn.padrao)],
+          [(n - m + 1) * m, [n - m], n, m, true]) && ok;
+      }
+    }
+  }
   console.log(`${ok ? "ok" : "FALHOU"}: geradores de entrada do palco`);
 }
 
@@ -440,9 +519,10 @@ for (const pasta of INSTRUMENTOS) {
 }
 
 // a pilha de recursão que a página do instrumento repassa: o pico é o da faixa
-for (const pasta of ["intercalacao", "rapida"]) {
+const RECURSIVAS = { fatorial: (ex) => A.fatorial(ex.n), fibrecursivo: (ex) => A.fibRecursivo(ex.n), fibmemoria: (ex) => A.fibMemoria(ex.n) };
+for (const pasta of ["intercalacao", "rapida", "fatorial", "fibrecursivo", "fibmemoria"]) {
   const d = ler(`algoritmos/${pasta}/dados.json`);
-  const r = A.ordenar(pasta, d.exemplo.vetor);
+  const r = RECURSIVAS[pasta] ? RECURSIVAS[pasta](d.exemplo) : A.ordenar(pasta, d.exemplo.vetor);
   const p = I.Pilha();
   let pico = 0;
   for (const e of r.eventos) {

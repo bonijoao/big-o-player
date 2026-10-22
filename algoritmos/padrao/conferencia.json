@@ -1,0 +1,7 @@
+{
+  "referencia": "gregexpr() do R base (com lookahead) e busca_r() (reimplementação em R)",
+  "versao_r": "4.6.0",
+  "buscas": 58,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 58 buscas (a estrofe do encarte com 8 padrões, DNA sorteado e o pior caso, com n de 8 a 96 e m de 1 a 10): as posições batem com gregexpr(), as comparações batem com a reimplementação em R, uma a uma, e no pior caso dão exatamente (n − m + 1)·m."
+}

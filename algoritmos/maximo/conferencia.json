@@ -1,0 +1,7 @@
+{
+  "referencia": "max() do R base e maximo_r() (reimplementação em R)",
+  "versao_r": "4.6.0",
+  "vetores": 61,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 61 vetores (sorteados, crescentes e decrescentes, de 1 a 50 valores): o máximo bate com max(), e as comparações (sempre n − 1) e as trocas do maior batem com a reimplementação em R, uma a uma. Nos 1000 vetores sorteados de 24 valores, o maior trocou em média 2,72 vezes; com valores todos diferentes, a conta daria 1/2 + … + 1/24 = 2,78."
+}

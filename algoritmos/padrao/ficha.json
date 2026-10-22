@@ -1,0 +1,43 @@
+{
+ "id": "busca-de-padrao",
+ "nome": "Busca de padrão ingênua",
+ "variante": "força bruta, posição por posição",
+ "familia": "primeiros passos",
+ "resumo": "Procura uma palavra (o padrão, com m letras) dentro de um texto (n letras). Encosta o padrão em cada posição do texto e compara letra a letra, da esquerda para a direita, até errar ou casar todas. Errou, anda uma posição e recomeça. É o jeito ingênuo: não aproveita nada do que já comparou.",
+ "instrumentos": [
+  {
+   "id": "texto",
+   "papel": "o texto, um vetor de caracteres lido letra por letra"
+  }
+ ],
+ "tempo": {
+  "notacao": "O(n·m)",
+  "porque": "São n − m + 1 posições, e cada uma compara no máximo m letras. O pior caso é um texto de letras repetidas, como \"aaaa…a\", procurando \"aa…ab\": cada posição casa m − 1 letras antes de errar, (n − m + 1)·m comparações.",
+  "nota": "Num texto de verdade, quase toda posição erra logo na primeira ou na segunda letra, e a busca fica perto de n comparações, seja qual for o m. Algoritmos como o KMP e o Boyer–Moore garantem O(n + m) aproveitando o que já foi comparado."
+ },
+ "memoria": {
+  "notacao": "O(1)",
+  "porque": "Só os índices i e j, que não crescem com n nem com m. A lista das posições achadas é a resposta e não conta.",
+  "nomes": {},
+  "cresce_com_n": [],
+  "vazio": "não guarda nenhuma letra além do texto e do padrão",
+  "soltos": "só guarda os índices i e j"
+ },
+ "video": {
+  "ideia": [
+   "encosta o padrão e compara letra a letra",
+   "errou, anda uma posição e recomeça"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce com n, e com o tamanho do padrão",
+  "texto": "As mesmas contas para textos cada vez maiores e para padrões cada vez maiores, em três tipos de texto. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+  "crescimento": "Comparações para n de {n0} a {n1}, com m = {k}. {dados}; a faixa cinza vai do menor ao maior dos sorteados. No português, as n primeiras letras do Dom Casmurro, procurando m letras tiradas do próprio trecho. Tracejada: n.",
+  "por_k": "Comparações para m de {k0} a {k1}, com n = {nk}. Só o pior caso cresce com m; no português e no DNA, quase toda posição erra cedo, e o m não pesa."
+ },
+ "pseudocodigo": "procedimento busca_ingenua(t, p):\n    para i de 1 até n − m + 1:\n        j ← 1\n        enquanto j ≤ m e t[i + j − 1] = p[j]:\n            j ← j + 1\n        se j > m:\n            anote a posição i\n    devolva as posições anotadas\n",
+ "placa": {
+  "autor": "sem autoria única",
+  "ano": "—"
+ }
+}

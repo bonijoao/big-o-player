@@ -5,6 +5,4034 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "maximo",
+  "id": "maximo-de-um-vetor",
+  "nome": "Máximo de um vetor",
+  "variante": "guardando o maior visto até agora",
+  "familia": "primeiros passos",
+  "resumo": "Começa achando que o primeiro é o maior e passa pelos outros, um por um: quem for maior que o maior até aqui toma o lugar dele. No fim, o que sobrou é o máximo. Um laço e uma decisão: o básico da repetição e da condição.",
+  "instrumentos": [
+   {
+    "id": "vetor",
+    "papel": "a entrada, lida casa por casa"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Cada um dos n − 1 valores depois do primeiro é comparado uma vez com o maior até aqui. São sempre n − 1 comparações, seja qual for a ordem: não dá para saber o máximo sem olhar todos.",
+   "nota": "O que muda com a entrada é quantas vezes o maior troca: nenhuma num vetor decrescente, n − 1 num crescente e, num embaralhado de valores diferentes, em média 1/2 + 1/3 + … + 1/n, que cresce como ln n. Uma troca é só uma atribuição: não muda a ordem do tempo."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Guarda só o maior até aqui e o índice do laço, que não crescem com n.",
+   "nomes": {},
+   "cresce_com_n": [],
+   "vazio": "não guarda nenhum valor além da entrada",
+   "soltos": "só guarda o maior até aqui e o índice i"
+  },
+  "video": {
+   "ideia": [
+    "quem passa o maior até aqui toma o lugar dele",
+    "sempre n − 1 comparações; as trocas dependem da ordem"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: sempre n − 1, e o que muda com a ordem",
+   "texto": "As comparações para vetores cada vez maiores, em três ordens de entrada, e quantas vezes o maior troca num vetor embaralhado. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+   "crescimento": "Comparações para n de {n0} a {n1}. {dados}. As três ordens dão o mesmo número: n − 1. Tracejada: n, de referência.",
+   "distribuicao": "Trocas do maior em {vezes} vetores sorteados de {nd} valores: de {min} a {max}. A barra preta é o vetor do encarte.",
+   "rotulo": "trocas do maior (n = {nd})"
+  },
+  "placa": {
+   "autor": "sem autoria única",
+   "ano": "—"
+  },
+  "poster": "algoritmos/maximo/maximo.png",
+  "exemplo": {
+   "dados": "24 valores sorteados de 10 a 99 com a semente 7",
+   "n": 24,
+   "semente": 7,
+   "vetor": [
+    51,
+    29,
+    60,
+    93,
+    16,
+    19,
+    78,
+    22,
+    56,
+    84,
+    17,
+    74,
+    37,
+    14,
+    21,
+    65,
+    63,
+    18,
+    40,
+    21,
+    80,
+    64,
+    17,
+    82
+   ],
+   "maximo": 93,
+   "ops": 23,
+   "trocas": 2,
+   "pico": 0
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "maximo",
+    "series": [
+     {
+      "caso": "sorteada",
+      "nome": "sorteado (média)"
+     },
+     {
+      "caso": "crescente",
+      "nome": "crescente"
+     },
+     {
+      "caso": "decrescente",
+      "nome": "decrescente"
+     }
+    ],
+    "banda": "sorteada",
+    "crescimento": [
+     {
+      "n": 16,
+      "sorteada": {
+       "media": 15,
+       "min": 15,
+       "max": 15,
+       "pico": 0,
+       "trocas": 2.42,
+       "trocas_min": 0,
+       "trocas_max": 7
+      },
+      "crescente": {
+       "media": 15,
+       "min": 15,
+       "max": 15,
+       "pico": 0,
+       "trocas": 15,
+       "trocas_min": 15,
+       "trocas_max": 15
+      },
+      "decrescente": {
+       "media": 15,
+       "min": 15,
+       "max": 15,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 32,
+      "sorteada": {
+       "media": 31,
+       "min": 31,
+       "max": 31,
+       "pico": 0,
+       "trocas": 3.01,
+       "trocas_min": 0,
+       "trocas_max": 8
+      },
+      "crescente": {
+       "media": 31,
+       "min": 31,
+       "max": 31,
+       "pico": 0,
+       "trocas": 31,
+       "trocas_min": 31,
+       "trocas_max": 31
+      },
+      "decrescente": {
+       "media": 31,
+       "min": 31,
+       "max": 31,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 64,
+      "sorteada": {
+       "media": 63,
+       "min": 63,
+       "max": 63,
+       "pico": 0,
+       "trocas": 3.61,
+       "trocas_min": 0,
+       "trocas_max": 9
+      },
+      "crescente": {
+       "media": 63,
+       "min": 63,
+       "max": 63,
+       "pico": 0,
+       "trocas": 63,
+       "trocas_min": 63,
+       "trocas_max": 63
+      },
+      "decrescente": {
+       "media": 63,
+       "min": 63,
+       "max": 63,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 128,
+      "sorteada": {
+       "media": 127,
+       "min": 127,
+       "max": 127,
+       "pico": 0,
+       "trocas": 4.37,
+       "trocas_min": 1,
+       "trocas_max": 9
+      },
+      "crescente": {
+       "media": 127,
+       "min": 127,
+       "max": 127,
+       "pico": 0,
+       "trocas": 127,
+       "trocas_min": 127,
+       "trocas_max": 127
+      },
+      "decrescente": {
+       "media": 127,
+       "min": 127,
+       "max": 127,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 256,
+      "sorteada": {
+       "media": 255,
+       "min": 255,
+       "max": 255,
+       "pico": 0,
+       "trocas": 4.98,
+       "trocas_min": 1,
+       "trocas_max": 10
+      },
+      "crescente": {
+       "media": 255,
+       "min": 255,
+       "max": 255,
+       "pico": 0,
+       "trocas": 255,
+       "trocas_min": 255,
+       "trocas_max": 255
+      },
+      "decrescente": {
+       "media": 255,
+       "min": 255,
+       "max": 255,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 512,
+      "sorteada": {
+       "media": 511,
+       "min": 511,
+       "max": 511,
+       "pico": 0,
+       "trocas": 5.81,
+       "trocas_min": 1,
+       "trocas_max": 11
+      },
+      "crescente": {
+       "media": 511,
+       "min": 511,
+       "max": 511,
+       "pico": 0,
+       "trocas": 511,
+       "trocas_min": 511,
+       "trocas_max": 511
+      },
+      "decrescente": {
+       "media": 511,
+       "min": 511,
+       "max": 511,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     },
+     {
+      "n": 1024,
+      "sorteada": {
+       "media": 1023,
+       "min": 1023,
+       "max": 1023,
+       "pico": 0,
+       "trocas": 6.39,
+       "trocas_min": 1,
+       "trocas_max": 13
+      },
+      "crescente": {
+       "media": 1023,
+       "min": 1023,
+       "max": 1023,
+       "pico": 0,
+       "trocas": 1023,
+       "trocas_min": 1023,
+       "trocas_max": 1023
+      },
+      "decrescente": {
+       "media": 1023,
+       "min": 1023,
+       "max": 1023,
+       "pico": 0,
+       "trocas": 0,
+       "trocas_min": 0,
+       "trocas_max": 0
+      }
+     }
+    ],
+    "eixo": "n (valores; dobra a cada passo)",
+    "refs": [
+     "n"
+    ],
+    "crescimento_dados": "sorteado: média de 100 vetores por tamanho (crescente e decrescente: um vetor)",
+    "distribuicao": {
+     "n": 24,
+     "vezes": 1000,
+     "valores": [
+      3,
+      5,
+      3,
+      2,
+      3,
+      5,
+      3,
+      3,
+      2,
+      4,
+      1,
+      3,
+      3,
+      2,
+      2,
+      4,
+      5,
+      2,
+      2,
+      4,
+      4,
+      3,
+      4,
+      1,
+      4,
+      3,
+      2,
+      4,
+      4,
+      1,
+      5,
+      0,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2,
+      7,
+      1,
+      2,
+      3,
+      3,
+      1,
+      4,
+      1,
+      2,
+      6,
+      2,
+      0,
+      3,
+      2,
+      2,
+      3,
+      4,
+      6,
+      7,
+      2,
+      1,
+      4,
+      1,
+      3,
+      4,
+      3,
+      2,
+      0,
+      4,
+      3,
+      3,
+      1,
+      4,
+      5,
+      3,
+      1,
+      1,
+      4,
+      3,
+      1,
+      5,
+      1,
+      2,
+      4,
+      2,
+      3,
+      1,
+      2,
+      1,
+      3,
+      2,
+      4,
+      2,
+      2,
+      1,
+      3,
+      3,
+      4,
+      1,
+      1,
+      4,
+      3,
+      6,
+      2,
+      2,
+      3,
+      4,
+      6,
+      2,
+      1,
+      3,
+      3,
+      2,
+      4,
+      4,
+      4,
+      1,
+      4,
+      2,
+      3,
+      4,
+      3,
+      2,
+      1,
+      3,
+      5,
+      3,
+      6,
+      3,
+      2,
+      4,
+      4,
+      2,
+      3,
+      3,
+      4,
+      5,
+      3,
+      6,
+      2,
+      4,
+      4,
+      2,
+      4,
+      4,
+      1,
+      2,
+      3,
+      1,
+      4,
+      1,
+      2,
+      5,
+      3,
+      3,
+      2,
+      1,
+      3,
+      1,
+      2,
+      4,
+      4,
+      4,
+      2,
+      4,
+      4,
+      5,
+      2,
+      0,
+      2,
+      2,
+      2,
+      6,
+      4,
+      2,
+      1,
+      4,
+      2,
+      4,
+      3,
+      1,
+      1,
+      2,
+      2,
+      1,
+      3,
+      3,
+      5,
+      3,
+      1,
+      2,
+      2,
+      5,
+      1,
+      5,
+      4,
+      1,
+      5,
+      4,
+      0,
+      1,
+      3,
+      2,
+      4,
+      3,
+      2,
+      2,
+      1,
+      4,
+      1,
+      2,
+      2,
+      4,
+      2,
+      3,
+      2,
+      1,
+      1,
+      2,
+      2,
+      1,
+      4,
+      2,
+      5,
+      1,
+      0,
+      5,
+      1,
+      3,
+      1,
+      5,
+      4,
+      3,
+      3,
+      1,
+      4,
+      3,
+      0,
+      2,
+      4,
+      5,
+      4,
+      0,
+      1,
+      4,
+      3,
+      3,
+      3,
+      4,
+      5,
+      2,
+      2,
+      4,
+      0,
+      3,
+      1,
+      3,
+      5,
+      3,
+      2,
+      5,
+      1,
+      6,
+      3,
+      7,
+      4,
+      4,
+      3,
+      0,
+      2,
+      3,
+      4,
+      1,
+      3,
+      3,
+      1,
+      5,
+      2,
+      3,
+      2,
+      2,
+      2,
+      3,
+      1,
+      6,
+      3,
+      2,
+      3,
+      2,
+      3,
+      0,
+      3,
+      4,
+      3,
+      2,
+      4,
+      2,
+      2,
+      1,
+      2,
+      2,
+      2,
+      3,
+      3,
+      2,
+      3,
+      2,
+      4,
+      1,
+      1,
+      3,
+      5,
+      2,
+      4,
+      1,
+      2,
+      3,
+      1,
+      4,
+      1,
+      5,
+      4,
+      3,
+      2,
+      2,
+      2,
+      1,
+      3,
+      3,
+      2,
+      2,
+      3,
+      4,
+      2,
+      3,
+      3,
+      1,
+      4,
+      2,
+      2,
+      1,
+      1,
+      3,
+      2,
+      3,
+      5,
+      4,
+      2,
+      1,
+      2,
+      2,
+      3,
+      5,
+      2,
+      4,
+      2,
+      2,
+      0,
+      2,
+      2,
+      1,
+      2,
+      3,
+      4,
+      2,
+      4,
+      4,
+      2,
+      2,
+      2,
+      2,
+      1,
+      2,
+      2,
+      2,
+      5,
+      3,
+      4,
+      5,
+      4,
+      3,
+      1,
+      0,
+      1,
+      1,
+      2,
+      3,
+      4,
+      2,
+      3,
+      1,
+      2,
+      4,
+      3,
+      7,
+      2,
+      4,
+      1,
+      3,
+      5,
+      5,
+      2,
+      1,
+      3,
+      2,
+      3,
+      5,
+      2,
+      3,
+      1,
+      3,
+      2,
+      5,
+      2,
+      2,
+      3,
+      2,
+      2,
+      3,
+      1,
+      3,
+      2,
+      4,
+      5,
+      3,
+      4,
+      4,
+      3,
+      2,
+      4,
+      3,
+      4,
+      3,
+      1,
+      2,
+      5,
+      4,
+      1,
+      4,
+      2,
+      3,
+      2,
+      1,
+      1,
+      3,
+      3,
+      1,
+      3,
+      3,
+      2,
+      3,
+      1,
+      2,
+      5,
+      3,
+      5,
+      2,
+      1,
+      2,
+      2,
+      4,
+      4,
+      1,
+      2,
+      1,
+      1,
+      3,
+      5,
+      1,
+      3,
+      1,
+      6,
+      2,
+      4,
+      3,
+      3,
+      4,
+      3,
+      1,
+      1,
+      2,
+      4,
+      1,
+      3,
+      2,
+      1,
+      3,
+      4,
+      3,
+      4,
+      2,
+      2,
+      2,
+      3,
+      1,
+      6,
+      3,
+      2,
+      3,
+      5,
+      2,
+      3,
+      2,
+      1,
+      3,
+      2,
+      5,
+      2,
+      5,
+      1,
+      2,
+      2,
+      3,
+      1,
+      3,
+      4,
+      5,
+      4,
+      4,
+      4,
+      3,
+      5,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      1,
+      1,
+      3,
+      2,
+      3,
+      4,
+      4,
+      1,
+      1,
+      3,
+      5,
+      4,
+      2,
+      3,
+      3,
+      2,
+      4,
+      3,
+      2,
+      5,
+      5,
+      4,
+      4,
+      3,
+      3,
+      2,
+      3,
+      1,
+      3,
+      2,
+      2,
+      2,
+      3,
+      2,
+      2,
+      2,
+      7,
+      3,
+      2,
+      1,
+      2,
+      1,
+      6,
+      3,
+      2,
+      2,
+      1,
+      1,
+      2,
+      3,
+      0,
+      4,
+      2,
+      6,
+      4,
+      2,
+      3,
+      5,
+      3,
+      4,
+      5,
+      3,
+      2,
+      4,
+      4,
+      2,
+      3,
+      2,
+      3,
+      1,
+      4,
+      2,
+      1,
+      2,
+      4,
+      4,
+      4,
+      2,
+      5,
+      2,
+      2,
+      3,
+      2,
+      1,
+      4,
+      4,
+      4,
+      3,
+      5,
+      3,
+      2,
+      1,
+      0,
+      4,
+      4,
+      1,
+      2,
+      1,
+      3,
+      3,
+      1,
+      4,
+      2,
+      2,
+      3,
+      6,
+      2,
+      1,
+      3,
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      6,
+      5,
+      3,
+      2,
+      0,
+      4,
+      2,
+      3,
+      2,
+      5,
+      4,
+      3,
+      3,
+      2,
+      2,
+      4,
+      1,
+      2,
+      2,
+      4,
+      1,
+      0,
+      2,
+      4,
+      1,
+      2,
+      5,
+      1,
+      2,
+      4,
+      2,
+      2,
+      3,
+      2,
+      3,
+      6,
+      0,
+      3,
+      1,
+      6,
+      4,
+      3,
+      2,
+      2,
+      2,
+      3,
+      1,
+      4,
+      3,
+      4,
+      4,
+      1,
+      5,
+      1,
+      3,
+      1,
+      3,
+      3,
+      4,
+      3,
+      3,
+      2,
+      3,
+      2,
+      1,
+      2,
+      1,
+      4,
+      1,
+      3,
+      4,
+      2,
+      2,
+      3,
+      3,
+      6,
+      4,
+      4,
+      3,
+      4,
+      4,
+      2,
+      3,
+      5,
+      1,
+      8,
+      1,
+      3,
+      2,
+      3,
+      2,
+      2,
+      6,
+      4,
+      2,
+      2,
+      1,
+      3,
+      4,
+      3,
+      2,
+      4,
+      1,
+      5,
+      2,
+      3,
+      3,
+      2,
+      2,
+      3,
+      3,
+      5,
+      2,
+      1,
+      3,
+      2,
+      1,
+      5,
+      5,
+      4,
+      4,
+      3,
+      2,
+      5,
+      6,
+      4,
+      3,
+      5,
+      3,
+      5,
+      5,
+      4,
+      4,
+      5,
+      5,
+      2,
+      1,
+      3,
+      1,
+      1,
+      5,
+      3,
+      2,
+      5,
+      2,
+      3,
+      5,
+      4,
+      2,
+      3,
+      2,
+      2,
+      3,
+      3,
+      4,
+      2,
+      4,
+      4,
+      5,
+      3,
+      2,
+      2,
+      1,
+      1,
+      4,
+      4,
+      2,
+      7,
+      4,
+      3,
+      1,
+      2,
+      2,
+      3,
+      4,
+      2,
+      1,
+      5,
+      4,
+      3,
+      2,
+      0,
+      2,
+      4,
+      2,
+      3,
+      4,
+      1,
+      3,
+      3,
+      2,
+      3,
+      0,
+      3,
+      1,
+      2,
+      3,
+      4,
+      1,
+      2,
+      1,
+      2,
+      2,
+      1,
+      2,
+      3,
+      4,
+      3,
+      2,
+      2,
+      2,
+      2,
+      4,
+      2,
+      5,
+      1,
+      1,
+      1,
+      4,
+      2,
+      3,
+      2,
+      3,
+      3,
+      1,
+      2,
+      2,
+      1,
+      4,
+      3,
+      4,
+      6,
+      1,
+      1,
+      5,
+      3,
+      1,
+      1,
+      1,
+      2,
+      7,
+      2,
+      0,
+      3,
+      0,
+      2,
+      1,
+      1,
+      3,
+      2,
+      4,
+      1,
+      2,
+      1,
+      5,
+      0,
+      3,
+      3,
+      5,
+      2,
+      3,
+      5,
+      0,
+      3,
+      1,
+      4,
+      2,
+      3,
+      1,
+      2,
+      2,
+      3,
+      2,
+      5,
+      3,
+      2,
+      2,
+      2,
+      4,
+      5,
+      2,
+      6,
+      3,
+      6,
+      2,
+      1,
+      1,
+      4,
+      2,
+      3,
+      2,
+      2,
+      4,
+      5,
+      2,
+      4,
+      2,
+      2,
+      1,
+      5,
+      2,
+      2,
+      0,
+      3,
+      2,
+      5,
+      0,
+      3,
+      3,
+      2,
+      2,
+      4,
+      2,
+      1,
+      1,
+      2,
+      3,
+      0,
+      0,
+      3,
+      1,
+      3,
+      2,
+      1,
+      1,
+      4,
+      3,
+      0,
+      1,
+      2,
+      4,
+      2,
+      3,
+      6,
+      1,
+      2,
+      5,
+      3,
+      4,
+      4,
+      3,
+      2,
+      1,
+      4,
+      3,
+      4,
+      3,
+      2,
+      1,
+      4,
+      1,
+      2,
+      2,
+      1,
+      1,
+      2,
+      1,
+      0,
+      4
+     ],
+     "destaque": 2,
+     "media": 2.724,
+     "harmonico": 2.7759581777535067
+    }
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 3,
+    "nos": 9,
+    "arestas": 10,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "for"
+     },
+     {
+      "linha": 4,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "for"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "if"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "expr"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "return"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 2,
+       "tipo": "volta"
+      },
+      {
+       "de": 3,
+       "para": 2,
+       "tipo": "volta"
+      },
+      {
+       "de": 2,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def maximo(v, conta):\n    m = v[0]\n    for i in range(1, len(v)):\n        if maior(v, i, m, conta):\n            m = v[i]\n            conta.op(\"trocas\")\n            conta.evento(\"troca\", i)\n    return m\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "max() do R base e maximo_r() (reimplementação em R)",
+   "versao_r": "4.6.0",
+   "vetores": 61,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 em 61 vetores (sorteados, crescentes e decrescentes, de 1 a 50 valores): o máximo bate com max(), e as comparações (sempre n − 1) e as trocas do maior batem com a reimplementação em R, uma a uma. Nos 1000 vetores sorteados de 24 valores, o maior trocou em média 2,72 vezes; com valores todos diferentes, a conta daria 1/2 + … + 1/24 = 2,78."
+  },
+  "pseudocodigo": {
+   "assinatura": "maximo(v)",
+   "nome": "maximo",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "m ← v[1]",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "para i de 2 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "se",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "v[i] > m"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "m ← v[i]",
+         "chamada": false
+        }
+       ],
+       "senao": null
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 6,
+     "texto": "devolva m"
+    }
+   ],
+   "linhas": [
+    "procedimento maximo(v):",
+    "    m ← v[1]",
+    "    para i de 2 até n:",
+    "        se v[i] > m:",
+    "            m ← v[i]",
+    "    devolva m"
+   ],
+   "M": 3,
+   "nos": 7,
+   "arestas": 8,
+   "decisoes": [
+    3,
+    4
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "multiplicacao",
+  "id": "multiplicacao-de-matrizes",
+  "nome": "Multiplicação de matrizes",
+  "variante": "pela definição, com três laços",
+  "familia": "primeiros passos",
+  "resumo": "Cada casa C[i][j] do produto é a linha i de A combinada com a coluna j de B: multiplica casa com casa e soma. Três laços, um dentro do outro: as linhas, as colunas e, para cada casa, os n pares. É o exemplo clássico de laço aninhado, e de como o custo multiplica.",
+  "instrumentos": [
+   {
+    "id": "matriz",
+    "papel": "A, B e C, guardadas linha a linha; a linha de A anda junto, a coluna de B pula de n em n"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n³)",
+   "porque": "São n² casas em C, e cada uma soma n produtos: n · n · n = n³ multiplicações. Dobrar n multiplica o tempo por 8.",
+   "nota": "Existem jeitos mais espertos (o de Strassen, de 1969, faz perto de n^2,81), mas os três laços continuam sendo o que quase todo mundo escreve, e para n pequeno ganham."
+  },
+  "memoria": {
+   "notacao": "O(n²)",
+   "porque": "A matriz C, com n² casas. A soma da vez e os três índices são soltos. A e B são a entrada e não contam.",
+   "nomes": {
+    "C": "casas da matriz C"
+   },
+   "cresce_com_n": [
+    "C"
+   ]
+  },
+  "video": {
+   "ideia": [
+    "a linha i de A encontra a coluna j de B",
+    "n multiplicações por casa, n² casas: n³"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo e memória: n³ e n²",
+   "texto": "As contas para matrizes cada vez maiores. Em escala logarítmica, a inclinação da linha é o expoente: n³ sobe três vezes mais íngreme que n.",
+   "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}. Tracejada: n³, de referência; as duas coincidem.",
+   "memoria": "Casas da matriz C no pico, para os mesmos n: exatamente n² (tracejada)."
+  },
+  "placa": {
+   "autor": "Arthur Cayley (a definição do produto)",
+   "ano": "1858"
+  },
+  "poster": "algoritmos/multiplicacao/multiplicacao.png",
+  "exemplo": {
+   "dados": "duas matrizes 4 × 4 com valores de 0 a 9 sorteados com a semente 3",
+   "n": 4,
+   "semente": 3,
+   "A": [
+    [
+     3,
+     9,
+     8,
+     2
+    ],
+    [
+     5,
+     9,
+     7,
+     9
+    ],
+    [
+     1,
+     9,
+     0,
+     7
+    ],
+    [
+     4,
+     8,
+     3,
+     3
+    ]
+   ],
+   "B": [
+    [
+     7,
+     8,
+     8,
+     7
+    ],
+    [
+     6,
+     2,
+     3,
+     2
+    ],
+    [
+     8,
+     6,
+     0,
+     1
+    ],
+    [
+     2,
+     9,
+     0,
+     4
+    ]
+   ],
+   "C": [
+    [
+     143,
+     108,
+     51,
+     55
+    ],
+    [
+     163,
+     181,
+     67,
+     96
+    ],
+    [
+     75,
+     89,
+     35,
+     53
+    ],
+    [
+     106,
+     93,
+     56,
+     59
+    ]
+   ],
+   "ops": 64,
+   "pico": 16,
+   "casas": 144
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "multiplicações",
+    "tipo": "matrizes",
+    "series": [
+     {
+      "caso": "sorteada",
+      "nome": "matrizes sorteadas"
+     }
+    ],
+    "crescimento": [
+     {
+      "n": 2,
+      "sorteada": {
+       "ops": 8,
+       "pico": 4,
+       "casas": 20
+      }
+     },
+     {
+      "n": 4,
+      "sorteada": {
+       "ops": 64,
+       "pico": 16,
+       "casas": 144
+      }
+     },
+     {
+      "n": 8,
+      "sorteada": {
+       "ops": 512,
+       "pico": 64,
+       "casas": 1088
+      }
+     },
+     {
+      "n": 16,
+      "sorteada": {
+       "ops": 4096,
+       "pico": 256,
+       "casas": 8448
+      }
+     },
+     {
+      "n": 32,
+      "sorteada": {
+       "ops": 32768,
+       "pico": 1024,
+       "casas": 66560
+      }
+     },
+     {
+      "n": 64,
+      "sorteada": {
+       "ops": 262144,
+       "pico": 4096,
+       "casas": 528384
+      }
+     }
+    ],
+    "eixo": "n (lado das matrizes n × n; dobra a cada passo)",
+    "refs": [
+     "n³"
+    ],
+    "refs_memoria": [
+     "n²"
+    ],
+    "crescimento_dados": "um par de matrizes sorteadas por tamanho; as contas não dependem dos valores"
+   },
+   "memoria": {
+    "pico": 16,
+    "detalhe": {
+     "C": 16
+    }
+   },
+   "ciclomatica": {
+    "M": 4,
+    "nos": 13,
+    "arestas": 15,
+    "decisoes": [
+     {
+      "linha": 5,
+      "tipo": "for"
+     },
+     {
+      "linha": 6,
+      "tipo": "for"
+     },
+     {
+      "linha": 8,
+      "tipo": "for"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "expr"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "for"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "for"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "assign"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "for"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 9,
+       "linha": 10,
+       "rotulo": "expr"
+      },
+      {
+       "id": 10,
+       "linha": 11,
+       "rotulo": "expr"
+      },
+      {
+       "id": 11,
+       "linha": 12,
+       "rotulo": "return"
+      },
+      {
+       "id": 12,
+       "linha": 13,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 7,
+       "tipo": "volta"
+      },
+      {
+       "de": 7,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 4,
+       "tipo": "volta"
+      },
+      {
+       "de": 4,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def multiplicar(A, B, conta):\n    n = A.linhas\n    C = Matriz(conta, n, n)\n    conta.ocupa(\"C\", n * n)\n    for i in range(n):\n        for j in range(n):\n            s = 0\n            for k in range(n):\n                s += vezes(A.ler(i, k), B.ler(k, j), conta)\n            C.escrever(i, j, s)\n            conta.evento(\"casa\", i, j, s)\n    return C\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "%*% do R base e multiplica_r() (reimplementação em R)",
+   "versao_r": "4.6.0",
+   "matrizes": 16,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 em 16 pares de matrizes sorteadas, de 1 × 1 a 8 × 8: o produto bate com A %*% B casa por casa, as multiplicações (n³) batem com a reimplementação em R, e a memória é a matriz C, n² casas."
+  },
+  "pseudocodigo": {
+   "assinatura": "multiplica(A, B)",
+   "nome": "multiplica",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "C ← matriz n × n",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "para i de 1 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "laco",
+       "rotulo": "para",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "para j de 1 até n"
+       ],
+       "corpo": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "s ← 0",
+         "chamada": false
+        },
+        {
+         "tipo": "laco",
+         "rotulo": "para",
+         "linha": 6,
+         "op": "e",
+         "conds": [
+          "para k de 1 até n"
+         ],
+         "corpo": [
+          {
+           "tipo": "acao",
+           "linha": 7,
+           "texto": "s ← s + A[i][k] · B[k][j]",
+           "chamada": false
+          }
+         ]
+        },
+        {
+         "tipo": "acao",
+         "linha": 8,
+         "texto": "C[i][j] ← s",
+         "chamada": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 9,
+     "texto": "devolva C"
+    }
+   ],
+   "linhas": [
+    "procedimento multiplica(A, B):",
+    "    C ← matriz n × n",
+    "    para i de 1 até n:",
+    "        para j de 1 até n:",
+    "            s ← 0",
+    "            para k de 1 até n:",
+    "                s ← s + A[i][k] · B[k][j]",
+    "            C[i][j] ← s",
+    "    devolva C"
+   ],
+   "M": 4,
+   "nos": 10,
+   "arestas": 12,
+   "decisoes": [
+    3,
+    4,
+    6
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "fatorial",
+  "id": "fatorial-recursivo",
+  "nome": "Fatorial recursivo",
+  "variante": "n! = n · (n − 1)!",
+  "familia": "primeiros passos",
+  "resumo": "O fatorial de n é n vezes o fatorial de n − 1, e o de 1 é 1. A função chama a si mesma com um número menor até chegar ao caso que ela já sabe responder. Cada chamada espera a de baixo voltar para fazer a sua multiplicação: a pilha de chamadas desce n níveis e depois volta, multiplicando.",
+  "instrumentos": [
+   {
+    "id": "pilha",
+    "papel": "a pilha de chamadas: cada fatorial(k) empilha um nível e espera"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Uma chamada para cada número de n até 1, e uma multiplicação em cada uma, menos na última: n − 1 multiplicações.",
+   "nota": "O número cresce depressa: 19! já passa de 2⁵³, até onde um double guarda todos os inteiros exatos, por isso o palco usa inteiros grandes. Aqui, multiplicar conta 1, seja qual for o tamanho; com números enormes, cada multiplicação também fica mais cara."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "Cada chamada fica aberta na pilha, guardando o seu n, até a de baixo voltar. No fundo, são n níveis empilhados. O mesmo cálculo num laço guardaria só o produto: O(1).",
+   "nomes": {
+    "pilha": "níveis da pilha de chamadas"
+   },
+   "cresce_com_n": [
+    "pilha"
+   ]
+  },
+  "video": {
+   "ideia": [
+    "cada chamada espera a de baixo voltar",
+    "a pilha desce n níveis e volta multiplicando"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo e memória: os dois crescem como n",
+   "texto": "As contas para n cada vez maior. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+   "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}: n − 1. Tracejada: n, de referência.",
+   "memoria": "Níveis da pilha no pico, para os mesmos n: exatamente n (tracejada)."
+  },
+  "placa": {
+   "autor": "Christian Kramp (a notação n!)",
+   "ano": "1808"
+  },
+  "poster": "algoritmos/fatorial/fatorial.png",
+  "exemplo": {
+   "dados": "n = 10",
+   "n": 10,
+   "fatorial": "3628800",
+   "ops": 9,
+   "pico": 10
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "multiplicações",
+    "tipo": "fatorial",
+    "series": [
+     {
+      "caso": "unico",
+      "nome": "fatorial(n)"
+     }
+    ],
+    "crescimento": [
+     {
+      "n": 4,
+      "unico": {
+       "ops": 3,
+       "pico": 4
+      }
+     },
+     {
+      "n": 8,
+      "unico": {
+       "ops": 7,
+       "pico": 8
+      }
+     },
+     {
+      "n": 16,
+      "unico": {
+       "ops": 15,
+       "pico": 16
+      }
+     },
+     {
+      "n": 32,
+      "unico": {
+       "ops": 31,
+       "pico": 32
+      }
+     },
+     {
+      "n": 64,
+      "unico": {
+       "ops": 63,
+       "pico": 64
+      }
+     },
+     {
+      "n": 128,
+      "unico": {
+       "ops": 127,
+       "pico": 128
+      }
+     },
+     {
+      "n": 256,
+      "unico": {
+       "ops": 255,
+       "pico": 256
+      }
+     }
+    ],
+    "eixo": "n (dobra a cada passo)",
+    "refs": [
+     "n"
+    ],
+    "refs_memoria": [
+     "n"
+    ],
+    "crescimento_dados": "uma chamada por n: as contas só dependem de n"
+   },
+   "memoria": {
+    "pico": 10,
+    "detalhe": {
+     "pilha": 10
+    }
+   },
+   "ciclomatica": {
+    "M": 2,
+    "nos": 10,
+    "arestas": 10,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "expr"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "if"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 6,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 6,
+       "linha": 8,
+       "rotulo": "expr"
+      },
+      {
+       "id": 7,
+       "linha": 9,
+       "rotulo": "expr"
+      },
+      {
+       "id": 8,
+       "linha": 10,
+       "rotulo": "return"
+      },
+      {
+       "id": 9,
+       "linha": 11,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def fatorial(n, conta):\n    conta.entra(n)\n    if n <= 1:\n        r = 1\n    else:\n        r = n * fatorial(n - 1, conta)\n        conta.op(\"multiplicacoes\")\n        conta.evento(\"multiplica\", n, r)\n    conta.sai()\n    return r\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "factorial() do R base e fatorial_r() (reimplementação recursiva em R)",
+   "versao_r": "4.6.0",
+   "casos": 21,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 para n de 0 a 20: o resultado bate com factorial() algarismo por algarismo, e as multiplicações e a pilha mais funda batem com a reimplementação recursiva em R."
+  },
+  "pseudocodigo": {
+   "assinatura": "fatorial(n)",
+   "nome": "fatorial",
+   "arvore": [
+    {
+     "tipo": "se",
+     "linha": 2,
+     "op": "e",
+     "conds": [
+      "n ≤ 1"
+     ],
+     "entao": [
+      {
+       "tipo": "acao",
+       "linha": 3,
+       "texto": "r ← 1",
+       "chamada": false
+      }
+     ],
+     "senao": [
+      {
+       "tipo": "acao",
+       "linha": 5,
+       "texto": "r ← n · fatorial(n − 1)",
+       "chamada": false
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 6,
+     "texto": "devolva r"
+    }
+   ],
+   "linhas": [
+    "procedimento fatorial(n):",
+    "    se n ≤ 1:",
+    "        r ← 1",
+    "    senão:",
+    "        r ← n · fatorial(n − 1)",
+    "    devolva r"
+   ],
+   "M": 2,
+   "nos": 6,
+   "arestas": 6,
+   "decisoes": [
+    2
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "fibrecursivo",
+  "id": "fibonacci-recursivo",
+  "nome": "Fibonacci recursivo",
+  "variante": "direto da definição, sem guardar nada",
+  "familia": "primeiros passos",
+  "resumo": "Cada número de Fibonacci é a soma dos dois anteriores: fib(n) = fib(n − 1) + fib(n − 2). Escrita assim, a função se chama duas vezes, e cada uma dessas se chama mais duas. O mesmo valor é recalculado de novo e de novo: fib(15) pede fib(2) 377 vezes. É a explosão da árvore de chamadas.",
+  "instrumentos": [
+   {
+    "id": "pilha",
+    "papel": "a pilha de chamadas: só desce n níveis, mesmo com a árvore enorme"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(φⁿ)",
+   "porque": "As somas obedecem à mesma regra dos números: S(n) = S(n − 1) + S(n − 2) + 1, o que dá fib(n + 1) − 1 somas e 2·fib(n + 1) − 1 chamadas. Crescem como φⁿ, com φ = (1 + √5)/2 ≈ 1,618: cada n a mais multiplica o trabalho por quase 1,6.",
+   "nota": "Por isso o palco vai só até n = 15 (986 somas). Com n = 30, já são mais de um milhão; com n = 50, uns 20 bilhões."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "A árvore é enorme, mas a pilha só guarda o caminho da raiz até a chamada da vez: no máximo n níveis abertos ao mesmo tempo.",
+   "nomes": {
+    "pilha": "níveis da pilha de chamadas"
+   },
+   "cresce_com_n": [
+    "pilha"
+   ]
+  },
+  "video": {
+   "ideia": [
+    "cada chamada pede as duas de baixo",
+    "o mesmo valor é recalculado de novo e de novo"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
+   "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
+   "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
+   "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+  },
+  "placa": {
+   "autor": "Leonardo de Pisa, o Fibonacci (os coelhos do Liber Abaci)",
+   "ano": "1202"
+  },
+  "poster": "algoritmos/fibrecursivo/fibrecursivo.png",
+  "exemplo": {
+   "dados": "n = 10",
+   "n": 10,
+   "fib": 55,
+   "ops": 88,
+   "pico": 10,
+   "casas": 0,
+   "chamadas": 177
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "somas",
+    "tipo": "fib_recursivo",
+    "versao": "recursivo",
+    "series": [
+     {
+      "caso": "recursivo",
+      "nome": "recursivo"
+     },
+     {
+      "caso": "memoria",
+      "nome": "com memória",
+      "fundo": true
+     },
+     {
+      "caso": "iterativo",
+      "nome": "iterativo",
+      "fundo": true
+     }
+    ],
+    "crescimento": [
+     {
+      "n": 5,
+      "recursivo": {
+       "ops": 7,
+       "pico": 5
+      },
+      "memoria": {
+       "ops": 4,
+       "pico": 5
+      },
+      "iterativo": {
+       "ops": 5,
+       "pico": 0
+      }
+     },
+     {
+      "n": 10,
+      "recursivo": {
+       "ops": 88,
+       "pico": 10
+      },
+      "memoria": {
+       "ops": 9,
+       "pico": 10
+      },
+      "iterativo": {
+       "ops": 10,
+       "pico": 0
+      }
+     },
+     {
+      "n": 15,
+      "recursivo": {
+       "ops": 986,
+       "pico": 15
+      },
+      "memoria": {
+       "ops": 14,
+       "pico": 15
+      },
+      "iterativo": {
+       "ops": 15,
+       "pico": 0
+      }
+     },
+     {
+      "n": 20,
+      "recursivo": {
+       "ops": 10945,
+       "pico": 20
+      },
+      "memoria": {
+       "ops": 19,
+       "pico": 20
+      },
+      "iterativo": {
+       "ops": 20,
+       "pico": 0
+      }
+     },
+     {
+      "n": 25,
+      "recursivo": {
+       "ops": 121392,
+       "pico": 25
+      },
+      "memoria": {
+       "ops": 24,
+       "pico": 25
+      },
+      "iterativo": {
+       "ops": 25,
+       "pico": 0
+      }
+     },
+     {
+      "n": 30,
+      "recursivo": {
+       "ops": 1346268,
+       "pico": 30
+      },
+      "memoria": {
+       "ops": 29,
+       "pico": 30
+      },
+      "iterativo": {
+       "ops": 30,
+       "pico": 0
+      }
+     }
+    ],
+    "eixo": "n",
+    "refs": [],
+    "crescimento_dados": "uma chamada por n: as contas só dependem de n"
+   },
+   "memoria": {
+    "pico": 10,
+    "detalhe": {
+     "pilha": 10
+    }
+   },
+   "ciclomatica": {
+    "M": 2,
+    "nos": 8,
+    "arestas": 8,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "expr"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "if"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 6,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 6,
+       "linha": 8,
+       "rotulo": "return"
+      },
+      {
+       "id": 7,
+       "linha": 9,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def fib(n, conta):\n    conta.entra(n)\n    if n <= 1:\n        r = n\n    else:\n        r = soma(fib(n - 1, conta), fib(n - 2, conta), conta)\n    conta.sai()\n    return r\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "a fórmula de Binet, round(φⁿ/√5), e a mesma versão reimplementada em R",
+   "versao_r": "4.6.0",
+   "casos": 21,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 para n de 0 a 20: fib(n) bate com a fórmula de Binet, e as somas (fib(n + 1) − 1) e o pico de memória batem com a reimplementação em R, um n por vez."
+  },
+  "pseudocodigo": {
+   "assinatura": "fib(n)",
+   "nome": "fib",
+   "arvore": [
+    {
+     "tipo": "se",
+     "linha": 2,
+     "op": "e",
+     "conds": [
+      "n ≤ 1"
+     ],
+     "entao": [
+      {
+       "tipo": "acao",
+       "linha": 3,
+       "texto": "r ← n",
+       "chamada": false
+      }
+     ],
+     "senao": [
+      {
+       "tipo": "acao",
+       "linha": 5,
+       "texto": "r ← fib(n − 1) + fib(n − 2)",
+       "chamada": false
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 6,
+     "texto": "devolva r"
+    }
+   ],
+   "linhas": [
+    "procedimento fib(n):",
+    "    se n ≤ 1:",
+    "        r ← n",
+    "    senão:",
+    "        r ← fib(n − 1) + fib(n − 2)",
+    "    devolva r"
+   ],
+   "M": 2,
+   "nos": 6,
+   "arestas": 6,
+   "decisoes": [
+    2
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "fibmemoria",
+  "id": "fibonacci-com-memoria",
+  "nome": "Fibonacci com memória",
+  "variante": "a mesma recursão, guardando cada resposta num dicionário",
+  "familia": "primeiros passos",
+  "resumo": "A mesma função recursiva, com uma memória: antes de calcular fib(k), olha se a resposta já está guardada. Se está, devolve na hora; se não, calcula uma vez e guarda. A árvore de chamadas murcha: cada fib(k) é somado uma vez só, e os outros pedidos viram uma consulta ao dicionário.",
+  "instrumentos": [
+   {
+    "id": "dicionario",
+    "papel": "a memória (memo): cada fib(k) calculado, com k como chave"
+   },
+   {
+    "id": "pilha",
+    "papel": "a pilha de chamadas, que ainda desce n níveis"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "Cada fib(k), de 2 até n, é calculado uma vez: n − 1 somas. As chamadas são 2n − 1: a da esquerda calcula, a da direita acha a resposta guardada. Cada consulta ao dicionário custa poucas casas.",
+   "nota": "As somas empatam com o iterativo (n − 1 contra n). O que a memória acrescenta são as idas ao dicionário: no palco, as casas lidas e escritas aparecem ao lado."
+  },
+  "memoria": {
+   "notacao": "O(n)",
+   "porque": "Guarda até n − 1 respostas no dicionário, e a pilha ainda desce n níveis. No fundo da pilha, o dicionário está vazio; enquanto ele enche, a pilha esvazia. O pico é n, como no recursivo, mas o dicionário fica com as n − 1 respostas no fim.",
+   "nomes": {
+    "pilha": "níveis da pilha de chamadas",
+    "memo": "respostas guardadas no dicionário"
+   },
+   "cresce_com_n": [
+    "pilha",
+    "memo"
+   ]
+  },
+  "video": {
+   "ideia": [
+    "antes de calcular, olha se já está guardado",
+    "cada fib(k) é somado uma vez só"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
+   "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
+   "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
+   "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+  },
+  "placa": {
+   "autor": "Donald Michie (as \"memo functions\")",
+   "ano": "1968"
+  },
+  "poster": "algoritmos/fibmemoria/fibmemoria.png",
+  "exemplo": {
+   "dados": "n = 10",
+   "n": 10,
+   "fib": 55,
+   "ops": 9,
+   "pico": 10,
+   "casas": 90,
+   "chamadas": 19
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "somas",
+    "tipo": "fib_memoria",
+    "versao": "memoria",
+    "series": [
+     {
+      "caso": "recursivo",
+      "nome": "recursivo",
+      "fundo": true
+     },
+     {
+      "caso": "memoria",
+      "nome": "com memória"
+     },
+     {
+      "caso": "iterativo",
+      "nome": "iterativo",
+      "fundo": true
+     }
+    ],
+    "crescimento": [
+     {
+      "n": 5,
+      "recursivo": {
+       "ops": 7,
+       "pico": 5
+      },
+      "memoria": {
+       "ops": 4,
+       "pico": 5
+      },
+      "iterativo": {
+       "ops": 5,
+       "pico": 0
+      }
+     },
+     {
+      "n": 10,
+      "recursivo": {
+       "ops": 88,
+       "pico": 10
+      },
+      "memoria": {
+       "ops": 9,
+       "pico": 10
+      },
+      "iterativo": {
+       "ops": 10,
+       "pico": 0
+      }
+     },
+     {
+      "n": 15,
+      "recursivo": {
+       "ops": 986,
+       "pico": 15
+      },
+      "memoria": {
+       "ops": 14,
+       "pico": 15
+      },
+      "iterativo": {
+       "ops": 15,
+       "pico": 0
+      }
+     },
+     {
+      "n": 20,
+      "recursivo": {
+       "ops": 10945,
+       "pico": 20
+      },
+      "memoria": {
+       "ops": 19,
+       "pico": 20
+      },
+      "iterativo": {
+       "ops": 20,
+       "pico": 0
+      }
+     },
+     {
+      "n": 25,
+      "recursivo": {
+       "ops": 121392,
+       "pico": 25
+      },
+      "memoria": {
+       "ops": 24,
+       "pico": 25
+      },
+      "iterativo": {
+       "ops": 25,
+       "pico": 0
+      }
+     },
+     {
+      "n": 30,
+      "recursivo": {
+       "ops": 1346268,
+       "pico": 30
+      },
+      "memoria": {
+       "ops": 29,
+       "pico": 30
+      },
+      "iterativo": {
+       "ops": 30,
+       "pico": 0
+      }
+     }
+    ],
+    "eixo": "n",
+    "refs": [],
+    "crescimento_dados": "uma chamada por n: as contas só dependem de n"
+   },
+   "memoria": {
+    "pico": 10,
+    "detalhe": {
+     "pilha": 10
+    }
+   },
+   "ciclomatica": {
+    "M": 3,
+    "nos": 14,
+    "arestas": 15,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "if"
+     },
+     {
+      "linha": 5,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "expr"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "if"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "if"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "assign"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "expr"
+      },
+      {
+       "id": 7,
+       "linha": 9,
+       "rotulo": "assign"
+      },
+      {
+       "id": 8,
+       "linha": 10,
+       "rotulo": "expr"
+      },
+      {
+       "id": 9,
+       "linha": 11,
+       "rotulo": "expr"
+      },
+      {
+       "id": 10,
+       "linha": 12,
+       "rotulo": "expr"
+      },
+      {
+       "id": 11,
+       "linha": 13,
+       "rotulo": "expr"
+      },
+      {
+       "id": 12,
+       "linha": 14,
+       "rotulo": "return"
+      },
+      {
+       "id": 13,
+       "linha": 15,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 13,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def fib_memo(n, memo, conta):\n    conta.entra(n)\n    if n <= 1:\n        r = n\n    elif memo.tem(n):\n        r = memo.ler(n)\n        conta.evento(\"lembra\", n)\n    else:\n        r = soma(fib_memo(n - 1, memo, conta), fib_memo(n - 2, memo, conta), conta)\n        memo.por(n, r)\n        conta.ocupa(\"memo\", memo.n)\n        conta.evento(\"guarda\", n, r)\n    conta.sai()\n    return r\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "a fórmula de Binet, round(φⁿ/√5), e a mesma versão reimplementada em R",
+   "versao_r": "4.6.0",
+   "casos": 21,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 para n de 0 a 20: fib(n) bate com a fórmula de Binet, e as somas (n − 1) e o pico de memória batem com a reimplementação em R, um n por vez."
+  },
+  "pseudocodigo": {
+   "assinatura": "fib_memo(n, memo)",
+   "nome": "fib_memo",
+   "arvore": [
+    {
+     "tipo": "se",
+     "linha": 2,
+     "op": "e",
+     "conds": [
+      "n ≤ 1"
+     ],
+     "entao": [
+      {
+       "tipo": "acao",
+       "linha": 3,
+       "texto": "r ← n",
+       "chamada": false
+      }
+     ],
+     "senao": [
+      {
+       "tipo": "se",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "memo tem n"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "r ← memo[n]",
+         "chamada": false
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "acao",
+         "linha": 7,
+         "texto": "r ← fib_memo(n − 1, memo) + fib_memo(n − 2, memo)",
+         "chamada": false
+        },
+        {
+         "tipo": "acao",
+         "linha": 8,
+         "texto": "memo[n] ← r",
+         "chamada": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 9,
+     "texto": "devolva r"
+    }
+   ],
+   "linhas": [
+    "procedimento fib_memo(n, memo):",
+    "    se n ≤ 1:",
+    "        r ← n",
+    "    senão se memo tem n:",
+    "        r ← memo[n]",
+    "    senão:",
+    "        r ← fib_memo(n − 1, memo) + fib_memo(n − 2, memo)",
+    "        memo[n] ← r",
+    "    devolva r"
+   ],
+   "M": 3,
+   "nos": 9,
+   "arestas": 10,
+   "decisoes": [
+    2,
+    4
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "fibiterativo",
+  "id": "fibonacci-iterativo",
+  "nome": "Fibonacci iterativo",
+  "variante": "de baixo para cima, guardando só os dois últimos",
+  "familia": "primeiros passos",
+  "resumo": "Em vez de descer de fib(n) até os casos pequenos, sobe: começa com 0 e 1 e, a cada volta, o par (a, b) vira (b, a + b). Depois de n voltas, a é fib(n). Nenhuma chamada, nenhuma lista: só duas variáveis andando pela sequência.",
+  "tempo": {
+   "notacao": "O(n)",
+   "porque": "n voltas, uma soma por volta: n somas (a última calcula um número a mais, que sobra em b).",
+   "nota": "Empata com o Fibonacci com memória no tempo e ganha na memória. Do recursivo para cá, a mesma resposta passou de φⁿ para n somas."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Só a, b e o índice da volta, que não crescem com n. Sem recursão, não há pilha de chamadas.",
+   "nomes": {},
+   "cresce_com_n": [],
+   "vazio": "não guarda nenhum valor além de duas variáveis",
+   "soltos": "só guarda a, b e o índice i"
+  },
+  "video": {
+   "ideia": [
+    "o par (a, b) vira (b, a + b)",
+    "duas variáveis andando pela sequência"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
+   "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
+   "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
+   "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+  },
+  "placa": {
+   "autor": "Leonardo de Pisa, o Fibonacci (a sequência)",
+   "ano": "1202"
+  },
+  "poster": "algoritmos/fibiterativo/fibiterativo.png",
+  "exemplo": {
+   "dados": "n = 10",
+   "n": 10,
+   "fib": 55,
+   "ops": 10,
+   "pico": 0,
+   "casas": 0,
+   "chamadas": 0
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "somas",
+    "tipo": "fib_iterativo",
+    "versao": "iterativo",
+    "series": [
+     {
+      "caso": "recursivo",
+      "nome": "recursivo",
+      "fundo": true
+     },
+     {
+      "caso": "memoria",
+      "nome": "com memória",
+      "fundo": true
+     },
+     {
+      "caso": "iterativo",
+      "nome": "iterativo"
+     }
+    ],
+    "crescimento": [
+     {
+      "n": 5,
+      "recursivo": {
+       "ops": 7,
+       "pico": 5
+      },
+      "memoria": {
+       "ops": 4,
+       "pico": 5
+      },
+      "iterativo": {
+       "ops": 5,
+       "pico": 0
+      }
+     },
+     {
+      "n": 10,
+      "recursivo": {
+       "ops": 88,
+       "pico": 10
+      },
+      "memoria": {
+       "ops": 9,
+       "pico": 10
+      },
+      "iterativo": {
+       "ops": 10,
+       "pico": 0
+      }
+     },
+     {
+      "n": 15,
+      "recursivo": {
+       "ops": 986,
+       "pico": 15
+      },
+      "memoria": {
+       "ops": 14,
+       "pico": 15
+      },
+      "iterativo": {
+       "ops": 15,
+       "pico": 0
+      }
+     },
+     {
+      "n": 20,
+      "recursivo": {
+       "ops": 10945,
+       "pico": 20
+      },
+      "memoria": {
+       "ops": 19,
+       "pico": 20
+      },
+      "iterativo": {
+       "ops": 20,
+       "pico": 0
+      }
+     },
+     {
+      "n": 25,
+      "recursivo": {
+       "ops": 121392,
+       "pico": 25
+      },
+      "memoria": {
+       "ops": 24,
+       "pico": 25
+      },
+      "iterativo": {
+       "ops": 25,
+       "pico": 0
+      }
+     },
+     {
+      "n": 30,
+      "recursivo": {
+       "ops": 1346268,
+       "pico": 30
+      },
+      "memoria": {
+       "ops": 29,
+       "pico": 30
+      },
+      "iterativo": {
+       "ops": 30,
+       "pico": 0
+      }
+     }
+    ],
+    "eixo": "n",
+    "refs": [],
+    "crescimento_dados": "uma chamada por n: as contas só dependem de n"
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 2,
+    "nos": 7,
+    "arestas": 7,
+    "decisoes": [
+     {
+      "linha": 3,
+      "tipo": "for"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "for"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "expr"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "return"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 2,
+       "tipo": "volta"
+      },
+      {
+       "de": 2,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def fib(n, conta):\n    a, b = 0, 1\n    for i in range(n):\n        a, b = b, soma(a, b, conta)\n        conta.evento(\"volta\", i, a, b)\n    return a\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "a fórmula de Binet, round(φⁿ/√5), e a mesma versão reimplementada em R",
+   "versao_r": "4.6.0",
+   "casos": 21,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 para n de 0 a 20: fib(n) bate com a fórmula de Binet, e as somas (n) e o pico de memória batem com a reimplementação em R, um n por vez."
+  },
+  "pseudocodigo": {
+   "assinatura": "fib_iterativo(n)",
+   "nome": "fib_iterativo",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "a ← 0;  b ← 1",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 3,
+     "op": "e",
+     "conds": [
+      "para i de 1 até n"
+     ],
+     "corpo": [
+      {
+       "tipo": "acao",
+       "linha": 4,
+       "texto": "a, b ← b, a + b",
+       "chamada": false
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 5,
+     "texto": "devolva a"
+    }
+   ],
+   "linhas": [
+    "procedimento fib_iterativo(n):",
+    "    a ← 0;  b ← 1",
+    "    para i de 1 até n:",
+    "        a, b ← b, a + b",
+    "    devolva a"
+   ],
+   "M": 2,
+   "nos": 6,
+   "arestas": 6,
+   "decisoes": [
+    3
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
+  "alg": "padrao",
+  "id": "busca-de-padrao",
+  "nome": "Busca de padrão ingênua",
+  "variante": "força bruta, posição por posição",
+  "familia": "primeiros passos",
+  "resumo": "Procura uma palavra (o padrão, com m letras) dentro de um texto (n letras). Encosta o padrão em cada posição do texto e compara letra a letra, da esquerda para a direita, até errar ou casar todas. Errou, anda uma posição e recomeça. É o jeito ingênuo: não aproveita nada do que já comparou.",
+  "instrumentos": [
+   {
+    "id": "texto",
+    "papel": "o texto, um vetor de caracteres lido letra por letra"
+   }
+  ],
+  "tempo": {
+   "notacao": "O(n·m)",
+   "porque": "São n − m + 1 posições, e cada uma compara no máximo m letras. O pior caso é um texto de letras repetidas, como \"aaaa…a\", procurando \"aa…ab\": cada posição casa m − 1 letras antes de errar, (n − m + 1)·m comparações.",
+   "nota": "Num texto de verdade, quase toda posição erra logo na primeira ou na segunda letra, e a busca fica perto de n comparações, seja qual for o m. Algoritmos como o KMP e o Boyer–Moore garantem O(n + m) aproveitando o que já foi comparado."
+  },
+  "memoria": {
+   "notacao": "O(1)",
+   "porque": "Só os índices i e j, que não crescem com n nem com m. A lista das posições achadas é a resposta e não conta.",
+   "nomes": {},
+   "cresce_com_n": [],
+   "vazio": "não guarda nenhuma letra além do texto e do padrão",
+   "soltos": "só guarda os índices i e j"
+  },
+  "video": {
+   "ideia": [
+    "encosta o padrão e compara letra a letra",
+    "errou, anda uma posição e recomeça"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce com n, e com o tamanho do padrão",
+   "texto": "As mesmas contas para textos cada vez maiores e para padrões cada vez maiores, em três tipos de texto. Em escala logarítmica, quem cresce como n sobe em linha reta, com inclinação 1.",
+   "crescimento": "Comparações para n de {n0} a {n1}, com m = {k}. {dados}; a faixa cinza vai do menor ao maior dos sorteados. No português, as n primeiras letras do Dom Casmurro, procurando m letras tiradas do próprio trecho. Tracejada: n.",
+   "por_k": "Comparações para m de {k0} a {k1}, com n = {nk}. Só o pior caso cresce com m; no português e no DNA, quase toda posição erra cedo, e o m não pesa."
+  },
+  "placa": {
+   "autor": "sem autoria única",
+   "ano": "—"
+  },
+  "poster": "algoritmos/padrao/padrao.png",
+  "exemplo": {
+   "dados": "a primeira estrofe da Canção do Exílio (Gonçalves Dias, 1843), procurando \"gorjeiam\"",
+   "n": 96,
+   "m": 8,
+   "k": 8,
+   "texto": "Minha terra tem palmeiras, Onde canta o Sabiá; As aves, que aqui gorjeiam, Não gorjeiam como lá.",
+   "padrao": "gorjeiam",
+   "achou": [
+    65,
+    79
+   ],
+   "ops": 103,
+   "pico": 0,
+   "casas": 103
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "comparações",
+    "tipo": "busca_padrao",
+    "series": [
+     {
+      "caso": "portugues",
+      "nome": "português (Dom Casmurro)"
+     },
+     {
+      "caso": "dna",
+      "nome": "DNA sorteado (média)"
+     },
+     {
+      "caso": "pior",
+      "nome": "pior caso (aaa…ab)"
+     }
+    ],
+    "banda": "dna",
+    "crescimento": [
+     {
+      "n": 64,
+      "portugues": {
+       "media": 69,
+       "min": 69,
+       "max": 69,
+       "pico": 0
+      },
+      "dna": {
+       "media": 76.85,
+       "min": 66,
+       "max": 85,
+       "pico": 0
+      },
+      "pior": {
+       "media": 456,
+       "min": 456,
+       "max": 456,
+       "pico": 0
+      }
+     },
+     {
+      "n": 128,
+      "portugues": {
+       "media": 144,
+       "min": 144,
+       "max": 144,
+       "pico": 0
+      },
+      "dna": {
+       "media": 162.3,
+       "min": 147,
+       "max": 179,
+       "pico": 0
+      },
+      "pior": {
+       "media": 968,
+       "min": 968,
+       "max": 968,
+       "pico": 0
+      }
+     },
+     {
+      "n": 256,
+      "portugues": {
+       "media": 277,
+       "min": 277,
+       "max": 277,
+       "pico": 0
+      },
+      "dna": {
+       "media": 336.75,
+       "min": 314,
+       "max": 365,
+       "pico": 0
+      },
+      "pior": {
+       "media": 1992,
+       "min": 1992,
+       "max": 1992,
+       "pico": 0
+      }
+     },
+     {
+      "n": 512,
+      "portugues": {
+       "media": 545,
+       "min": 545,
+       "max": 545,
+       "pico": 0
+      },
+      "dna": {
+       "media": 676.05,
+       "min": 652,
+       "max": 694,
+       "pico": 0
+      },
+      "pior": {
+       "media": 4040,
+       "min": 4040,
+       "max": 4040,
+       "pico": 0
+      }
+     },
+     {
+      "n": 1024,
+      "portugues": {
+       "media": 1123,
+       "min": 1123,
+       "max": 1123,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1360.2,
+       "min": 1318,
+       "max": 1428,
+       "pico": 0
+      },
+      "pior": {
+       "media": 8136,
+       "min": 8136,
+       "max": 8136,
+       "pico": 0
+      }
+     },
+     {
+      "n": 2048,
+      "portugues": {
+       "media": 2243,
+       "min": 2243,
+       "max": 2243,
+       "pico": 0
+      },
+      "dna": {
+       "media": 2731.25,
+       "min": 2673,
+       "max": 2785,
+       "pico": 0
+      },
+      "pior": {
+       "media": 16328,
+       "min": 16328,
+       "max": 16328,
+       "pico": 0
+      }
+     },
+     {
+      "n": 4096,
+      "portugues": {
+       "media": 4276,
+       "min": 4276,
+       "max": 4276,
+       "pico": 0
+      },
+      "dna": {
+       "media": 5459.9,
+       "min": 5386,
+       "max": 5549,
+       "pico": 0
+      },
+      "pior": {
+       "media": 32712,
+       "min": 32712,
+       "max": 32712,
+       "pico": 0
+      }
+     }
+    ],
+    "eixo": "n (letras do texto; dobra a cada passo), m = 8",
+    "refs": [
+     "n"
+    ],
+    "crescimento_dados": "no DNA, média de 20 textos sorteados por tamanho; o português e o pior caso, um texto",
+    "k_fixo": 8,
+    "por_k": [
+     {
+      "n": 2,
+      "portugues": {
+       "media": 1117,
+       "min": 1117,
+       "max": 1117,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1282.4,
+       "min": 1255,
+       "max": 1325,
+       "pico": 0
+      },
+      "pior": {
+       "media": 2046,
+       "min": 2046,
+       "max": 2046,
+       "pico": 0
+      }
+     },
+     {
+      "n": 4,
+      "portugues": {
+       "media": 1038,
+       "min": 1038,
+       "max": 1038,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1360.85,
+       "min": 1317,
+       "max": 1424,
+       "pico": 0
+      },
+      "pior": {
+       "media": 4084,
+       "min": 4084,
+       "max": 4084,
+       "pico": 0
+      }
+     },
+     {
+      "n": 8,
+      "portugues": {
+       "media": 1123,
+       "min": 1123,
+       "max": 1123,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1360.2,
+       "min": 1318,
+       "max": 1428,
+       "pico": 0
+      },
+      "pior": {
+       "media": 8136,
+       "min": 8136,
+       "max": 8136,
+       "pico": 0
+      }
+     },
+     {
+      "n": 16,
+      "portugues": {
+       "media": 1132,
+       "min": 1132,
+       "max": 1132,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1350.05,
+       "min": 1309,
+       "max": 1416,
+       "pico": 0
+      },
+      "pior": {
+       "media": 16144,
+       "min": 16144,
+       "max": 16144,
+       "pico": 0
+      }
+     },
+     {
+      "n": 32,
+      "portugues": {
+       "media": 1039,
+       "min": 1039,
+       "max": 1039,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1328.45,
+       "min": 1290,
+       "max": 1394,
+       "pico": 0
+      },
+      "pior": {
+       "media": 31776,
+       "min": 31776,
+       "max": 31776,
+       "pico": 0
+      }
+     },
+     {
+      "n": 64,
+      "portugues": {
+       "media": 1063,
+       "min": 1063,
+       "max": 1063,
+       "pico": 0
+      },
+      "dna": {
+       "media": 1285.7,
+       "min": 1252,
+       "max": 1347,
+       "pico": 0
+      },
+      "pior": {
+       "media": 61504,
+       "min": 61504,
+       "max": 61504,
+       "pico": 0
+      }
+     }
+    ],
+    "n_fixo": 1024,
+    "eixo_k": "m (letras do padrão), n = 1024"
+   },
+   "memoria": {
+    "pico": 0,
+    "detalhe": {}
+   },
+   "ciclomatica": {
+    "M": 5,
+    "nos": 13,
+    "arestas": 16,
+    "decisoes": [
+     {
+      "linha": 4,
+      "tipo": "for"
+     },
+     {
+      "linha": 6,
+      "tipo": "and/or"
+     },
+     {
+      "linha": 6,
+      "tipo": "while"
+     },
+     {
+      "linha": 8,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "for"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "assign"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "while"
+      },
+      {
+       "id": 6,
+       "linha": 6,
+       "rotulo": "e"
+      },
+      {
+       "id": 7,
+       "linha": 7,
+       "rotulo": "augassign"
+      },
+      {
+       "id": 8,
+       "linha": 8,
+       "rotulo": "if"
+      },
+      {
+       "id": 9,
+       "linha": 9,
+       "rotulo": "expr"
+      },
+      {
+       "id": 10,
+       "linha": 10,
+       "rotulo": "expr"
+      },
+      {
+       "id": 11,
+       "linha": 11,
+       "rotulo": "return"
+      },
+      {
+       "id": 12,
+       "linha": 12,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 8,
+       "para": 3,
+       "tipo": "volta"
+      },
+      {
+       "de": 3,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def buscar(t, p, conta):\n    n, m = t.n, len(p)\n    achou = []\n    for i in range(n - m + 1):\n        j = 0\n        while j < m and igual(t, i + j, p, j, conta):\n            j += 1\n        if j == m:\n            achou.append(i)\n            conta.evento(\"achou\", i)\n    return achou\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "gregexpr() do R base (com lookahead) e busca_r() (reimplementação em R)",
+   "versao_r": "4.6.0",
+   "buscas": 58,
+   "tudo_ok": true,
+   "resumo": "Rodado em R 4.6.0 em 58 buscas (a estrofe do encarte com 8 padrões, DNA sorteado e o pior caso, com n de 8 a 96 e m de 1 a 10): as posições batem com gregexpr(), as comparações batem com a reimplementação em R, uma a uma, e no pior caso dão exatamente (n − m + 1)·m."
+  },
+  "pseudocodigo": {
+   "assinatura": "busca_ingenua(t, p)",
+   "nome": "busca_ingenua",
+   "arvore": [
+    {
+     "tipo": "laco",
+     "rotulo": "para",
+     "linha": 2,
+     "op": "e",
+     "conds": [
+      "para i de 1 até n − m + 1"
+     ],
+     "corpo": [
+      {
+       "tipo": "acao",
+       "linha": 3,
+       "texto": "j ← 1",
+       "chamada": false
+      },
+      {
+       "tipo": "laco",
+       "rotulo": "enquanto",
+       "linha": 4,
+       "op": "e",
+       "conds": [
+        "j ≤ m",
+        "t[i + j − 1] = p[j]"
+       ],
+       "corpo": [
+        {
+         "tipo": "acao",
+         "linha": 5,
+         "texto": "j ← j + 1",
+         "chamada": false
+        }
+       ]
+      },
+      {
+       "tipo": "se",
+       "linha": 6,
+       "op": "e",
+       "conds": [
+        "j > m"
+       ],
+       "entao": [
+        {
+         "tipo": "acao",
+         "linha": 7,
+         "texto": "anote a posição i",
+         "chamada": false
+        }
+       ],
+       "senao": null
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 8,
+     "texto": "devolva as posições anotadas"
+    }
+   ],
+   "linhas": [
+    "procedimento busca_ingenua(t, p):",
+    "    para i de 1 até n − m + 1:",
+    "        j ← 1",
+    "        enquanto j ≤ m e t[i + j − 1] = p[j]:",
+    "            j ← j + 1",
+    "        se j > m:",
+    "            anote a posição i",
+    "    devolva as posições anotadas"
+   ],
+   "M": 5,
+   "nos": 10,
+   "arestas": 13,
+   "decisoes": [
+    2,
+    4,
+    4,
+    6
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "sequencial",
   "id": "busca-sequencial",
   "nome": "Busca sequencial",
@@ -20202,43 +24230,7 @@ window.ALBUNS = [
   "titulo": "Primeiros passos",
   "familia": "primeiros passos",
   "frase": "Laços, decisões e recursão: o básico, com as contas à mostra.",
-  "em_producao": [
-   {
-    "nome": "Máximo de um vetor",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Multiplicação de matrizes",
-    "tempo": "O(n³)",
-    "memoria": "O(n²)"
-   },
-   {
-    "nome": "Fatorial recursivo",
-    "tempo": "O(n)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci recursivo",
-    "tempo": "O(φⁿ)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci com memória",
-    "tempo": "O(n)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci iterativo",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Busca de padrão ingênua",
-    "tempo": "O(n·m)",
-    "memoria": "O(1)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "busca",
@@ -20306,4 +24298,4 @@ window.ALBUNS = [
   "em_producao": []
  }
 ];
-window.INSTRUMENTOS = [{"id": "vetor", "nome": "Vetor", "variante": "dinâmico, com capacidade que dobra quando enche", "frase": "Casas numeradas, uma ao lado da outra.", "resumo": "Guarda os valores em casas contíguas, numeradas a partir de 0. Qualquer casa se alcança direto pelo número dela. O preço aparece quando o meio muda: abrir ou fechar uma casa no começo obriga todos os vizinhos a andar uma casa. E, quando as casas reservadas acabam, o vetor reserva o dobro e copia tudo.", "placa": {"autor": "sem autoria única", "ano": "—"}, "memoria": {"notacao": "O(n)", "porque": "Uma casa por valor, mais a folga: logo depois de dobrar, até metade das casas reservadas está vazia. Depois de n anexações a partir de uma casa, a capacidade fica entre n e 2n. Remover não devolve casas."}, "operacoes": [{"id": "ler", "nome": "ler v[i]", "notacao": "O(1)", "porque": "O endereço da casa i se calcula direto (onde o vetor começa + i): uma leitura, sem passar pelas outras casas."}, {"id": "escrever", "nome": "escrever em v[i]", "notacao": "O(1)", "porque": "Pelo mesmo endereço calculado: uma escrita."}, {"id": "anexar", "nome": "anexar no fim, com folga", "notacao": "O(1)", "porque": "Se ainda sobra casa reservada, é só escrever na primeira livre."}, {"id": "anexar-pior", "nome": "anexar no fim, a mais cara de n seguidas", "notacao": "O(n)", "porque": "Quando o vetor enche, reserva o dobro de casas e copia cada valor (uma leitura e uma escrita por valor) antes de escrever o novo."}, {"id": "anexar-media", "nome": "anexar no fim, média de n seguidas", "notacao": "O(1) amortizado", "porque": "Como a capacidade dobra, as cópias ficam cada vez mais raras: somadas, dão menos de 2n valores copiados ao longo de n anexações. Dividido por n, o custo médio não cresce com n."}, {"id": "inserir-inicio", "nome": "inserir na posição 0", "notacao": "O(n)", "porque": "Cada valor anda uma casa para a direita (uma leitura e uma escrita) antes de a casa 0 ficar livre."}, {"id": "remover-inicio", "nome": "remover da posição 0", "notacao": "O(n)", "porque": "Lê o valor da casa 0 e puxa cada vizinho uma casa para a esquerda."}, {"id": "remover-fim", "nome": "remover do fim", "notacao": "O(1)", "porque": "Lê a última casa; ninguém precisa andar."}, {"id": "buscar", "nome": "buscar um valor que não está lá", "notacao": "O(n)", "porque": "Sem ordem, a busca sequencial lê casa por casa; um valor ausente obriga a ler todas."}], "grafico": [{"id": "anexar", "rotulo": "anexar"}, {"id": "anexar-media", "rotulo": "anexar, média"}, {"id": "inserir-inicio", "rotulo": "inserir em 0"}, {"id": "buscar", "rotulo": "buscar ausente"}, {"id": "ler", "rotulo": "ler v[i]"}], "medido": {"encher": "anexar", "tamanhos": [10, 100, 1000], "operacoes": {"ler": {"estrutura": "vetor", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "escrever": {"estrutura": "vetor", "chamada": "escrever", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 1, "leituras": 0, "escritas": 1}, {"n": 2, "leituras": 0, "escritas": 1}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 0, "escritas": 1}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 0, "escritas": 1}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 0, "escritas": 1}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 0, "escritas": 1}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "anexar": {"estrutura": "vetor", "chamada": "anexar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "anexar-media": {"estrutura": "vetor", "chamada": "anexar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "anexar-pior": {"estrutura": "vetor", "chamada": "anexar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "inserir-inicio": {"estrutura": "vetor", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 11}, {"n": 100, "leituras": 100, "escritas": 101}, {"n": 1000, "leituras": 1000, "escritas": 1001}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 2, "escritas": 3}, {"n": 2, "leituras": 4, "escritas": 5}, {"n": 3, "leituras": 3, "escritas": 4}, {"n": 4, "leituras": 8, "escritas": 9}, {"n": 5, "leituras": 5, "escritas": 6}, {"n": 6, "leituras": 6, "escritas": 7}, {"n": 7, "leituras": 7, "escritas": 8}, {"n": 8, "leituras": 16, "escritas": 17}, {"n": 9, "leituras": 9, "escritas": 10}, {"n": 10, "leituras": 10, "escritas": 11}, {"n": 11, "leituras": 11, "escritas": 12}, {"n": 12, "leituras": 12, "escritas": 13}, {"n": 13, "leituras": 13, "escritas": 14}, {"n": 14, "leituras": 14, "escritas": 15}, {"n": 15, "leituras": 15, "escritas": 16}, {"n": 16, "leituras": 32, "escritas": 33}, {"n": 17, "leituras": 17, "escritas": 18}, {"n": 18, "leituras": 18, "escritas": 19}, {"n": 19, "leituras": 19, "escritas": 20}, {"n": 20, "leituras": 20, "escritas": 21}, {"n": 21, "leituras": 21, "escritas": 22}, {"n": 22, "leituras": 22, "escritas": 23}, {"n": 23, "leituras": 23, "escritas": 24}, {"n": 24, "leituras": 24, "escritas": 25}, {"n": 25, "leituras": 25, "escritas": 26}, {"n": 26, "leituras": 26, "escritas": 27}, {"n": 27, "leituras": 27, "escritas": 28}, {"n": 28, "leituras": 28, "escritas": 29}, {"n": 29, "leituras": 29, "escritas": 30}, {"n": 30, "leituras": 30, "escritas": 31}, {"n": 31, "leituras": 31, "escritas": 32}, {"n": 32, "leituras": 64, "escritas": 65}, {"n": 33, "leituras": 33, "escritas": 34}, {"n": 34, "leituras": 34, "escritas": 35}, {"n": 35, "leituras": 35, "escritas": 36}, {"n": 36, "leituras": 36, "escritas": 37}, {"n": 37, "leituras": 37, "escritas": 38}, {"n": 38, "leituras": 38, "escritas": 39}, {"n": 39, "leituras": 39, "escritas": 40}, {"n": 40, "leituras": 40, "escritas": 41}, {"n": 41, "leituras": 41, "escritas": 42}, {"n": 42, "leituras": 42, "escritas": 43}, {"n": 43, "leituras": 43, "escritas": 44}, {"n": 44, "leituras": 44, "escritas": 45}, {"n": 45, "leituras": 45, "escritas": 46}, {"n": 46, "leituras": 46, "escritas": 47}, {"n": 47, "leituras": 47, "escritas": 48}, {"n": 48, "leituras": 48, "escritas": 49}, {"n": 49, "leituras": 49, "escritas": 50}, {"n": 50, "leituras": 50, "escritas": 51}, {"n": 51, "leituras": 51, "escritas": 52}, {"n": 52, "leituras": 52, "escritas": 53}, {"n": 53, "leituras": 53, "escritas": 54}, {"n": 54, "leituras": 54, "escritas": 55}, {"n": 55, "leituras": 55, "escritas": 56}, {"n": 56, "leituras": 56, "escritas": 57}, {"n": 57, "leituras": 57, "escritas": 58}, {"n": 58, "leituras": 58, "escritas": 59}, {"n": 59, "leituras": 59, "escritas": 60}, {"n": 60, "leituras": 60, "escritas": 61}]}, "remover-inicio": {"estrutura": "vetor", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 9}, {"n": 100, "leituras": 100, "escritas": 99}, {"n": 1000, "leituras": 1000, "escritas": 999}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 2}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 4}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 7, "escritas": 6}, {"n": 8, "leituras": 8, "escritas": 7}, {"n": 9, "leituras": 9, "escritas": 8}, {"n": 10, "leituras": 10, "escritas": 9}, {"n": 11, "leituras": 11, "escritas": 10}, {"n": 12, "leituras": 12, "escritas": 11}, {"n": 13, "leituras": 13, "escritas": 12}, {"n": 14, "leituras": 14, "escritas": 13}, {"n": 15, "leituras": 15, "escritas": 14}, {"n": 16, "leituras": 16, "escritas": 15}, {"n": 17, "leituras": 17, "escritas": 16}, {"n": 18, "leituras": 18, "escritas": 17}, {"n": 19, "leituras": 19, "escritas": 18}, {"n": 20, "leituras": 20, "escritas": 19}, {"n": 21, "leituras": 21, "escritas": 20}, {"n": 22, "leituras": 22, "escritas": 21}, {"n": 23, "leituras": 23, "escritas": 22}, {"n": 24, "leituras": 24, "escritas": 23}, {"n": 25, "leituras": 25, "escritas": 24}, {"n": 26, "leituras": 26, "escritas": 25}, {"n": 27, "leituras": 27, "escritas": 26}, {"n": 28, "leituras": 28, "escritas": 27}, {"n": 29, "leituras": 29, "escritas": 28}, {"n": 30, "leituras": 30, "escritas": 29}, {"n": 31, "leituras": 31, "escritas": 30}, {"n": 32, "leituras": 32, "escritas": 31}, {"n": 33, "leituras": 33, "escritas": 32}, {"n": 34, "leituras": 34, "escritas": 33}, {"n": 35, "leituras": 35, "escritas": 34}, {"n": 36, "leituras": 36, "escritas": 35}, {"n": 37, "leituras": 37, "escritas": 36}, {"n": 38, "leituras": 38, "escritas": 37}, {"n": 39, "leituras": 39, "escritas": 38}, {"n": 40, "leituras": 40, "escritas": 39}, {"n": 41, "leituras": 41, "escritas": 40}, {"n": 42, "leituras": 42, "escritas": 41}, {"n": 43, "leituras": 43, "escritas": 42}, {"n": 44, "leituras": 44, "escritas": 43}, {"n": 45, "leituras": 45, "escritas": 44}, {"n": 46, "leituras": 46, "escritas": 45}, {"n": 47, "leituras": 47, "escritas": 46}, {"n": 48, "leituras": 48, "escritas": 47}, {"n": 49, "leituras": 49, "escritas": 48}, {"n": 50, "leituras": 50, "escritas": 49}, {"n": 51, "leituras": 51, "escritas": 50}, {"n": 52, "leituras": 52, "escritas": 51}, {"n": 53, "leituras": 53, "escritas": 52}, {"n": 54, "leituras": 54, "escritas": 53}, {"n": 55, "leituras": 55, "escritas": 54}, {"n": 56, "leituras": 56, "escritas": 55}, {"n": 57, "leituras": 57, "escritas": 56}, {"n": 58, "leituras": 58, "escritas": 57}, {"n": 59, "leituras": 59, "escritas": 58}, {"n": 60, "leituras": 60, "escritas": 59}]}, "remover-fim": {"estrutura": "vetor", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "buscar": {"estrutura": "vetor", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}}, "capacidade": {"vetor": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "pilha", "nome": "Pilha", "variante": "sobre um vetor dinâmico; o topo é o fim do vetor", "frase": "O último que entra é o primeiro que sai.", "resumo": "Só se mexe no topo: empilhar põe um valor em cima, desempilhar tira o de cima. Montada sobre o vetor, com o topo no fim dele, nenhum valor precisa andar. É a mesma ideia da pilha de chamadas: cada chamada recursiva empilha um nível, e cada retorno desempilha.", "placa": {"autor": "Alan Turing; Friedrich L. Bauer e Klaus Samelson", "ano": "1946 (Turing, \"bury\" e \"unbury\"); 1955, com pedido de patente em 1957 (Bauer e Samelson)"}, "memoria": {"notacao": "O(n)", "porque": "As casas do vetor por baixo: uma por valor empilhado, mais a folga do vetor, que dobra quando enche. Desempilhar não devolve casas."}, "operacoes": [{"id": "empilhar", "nome": "empilhar, com folga", "notacao": "O(1)", "porque": "Anexa no fim do vetor: uma escrita."}, {"id": "empilhar-pior", "nome": "empilhar, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando o vetor de baixo enche, ele dobra e copia todos os valores."}, {"id": "empilhar-media", "nome": "empilhar, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras, como no vetor: o custo médio não cresce com n."}, {"id": "desempilhar", "nome": "desempilhar", "notacao": "O(1)", "porque": "Lê a última casa e diminui o tamanho; ninguém anda."}, {"id": "topo", "nome": "ver o topo", "notacao": "O(1)", "porque": "Uma leitura da última casa."}], "grafico": [{"id": "empilhar", "rotulo": "empilhar"}, {"id": "empilhar-media", "rotulo": "empilhar, média"}, {"id": "desempilhar", "rotulo": "desempilhar"}], "medido": {"encher": "empilhar", "tamanhos": [10, 100, 1000], "operacoes": {"empilhar": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "empilhar-media": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "empilhar-pior": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desempilhar": {"estrutura": "pilha", "chamada": "desempilhar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "topo": {"estrutura": "pilha", "chamada": "topo", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"pilha": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "fila", "nome": "Fila", "variante": "duas versões: ingênua e circular", "frase": "O primeiro que entra é o primeiro que sai.", "resumo": "Entra-se pelo fim e sai-se pelo começo. Na fila ingênua, o primeiro mora na casa 0 do vetor, e cada saída puxa todos os outros uma casa para a frente. Na fila circular, ninguém anda: quem anda é o marcador do início, que dá a volta quando chega ao fim do vetor.", "placa": {"autor": "sem autoria única", "ano": "—"}, "memoria": {"notacao": "O(n)", "porque": "Nas duas, uma casa por valor na fila mais a folga do vetor, que dobra quando enche; desenfileirar não devolve casas. A circular guarda também onde a fila começa."}, "variantes": {"ingenua": "ingênua", "circular": "circular"}, "operacoes": [{"id": "enfileirar-ingenua", "nome": "enfileirar, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois do último."}, {"id": "enfileirar-circular", "nome": "enfileirar, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois do último, dando a volta se passar do fim do vetor."}, {"id": "enfileirar-pior-circular", "nome": "enfileirar, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando enche, dobra e copia a fila na ordem, a partir da casa 0. Na ingênua, o mesmo."}, {"id": "enfileirar-media-circular", "nome": "enfileirar, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n. Na ingênua, o mesmo."}, {"id": "desenfileirar-ingenua", "nome": "desenfileirar", "notacao": "O(n)", "porque": "Tira o valor da casa 0 e puxa cada um dos outros uma casa para a frente."}, {"id": "desenfileirar-circular", "nome": "desenfileirar", "notacao": "O(1)", "porque": "Lê a casa do início e anda o marcador do início uma casa. Ninguém se desloca."}, {"id": "primeiro-ingenua", "nome": "ver o primeiro", "notacao": "O(1)", "porque": "Uma leitura da casa 0."}, {"id": "primeiro-circular", "nome": "ver o primeiro", "notacao": "O(1)", "porque": "Uma leitura da casa do início."}], "grafico": [{"id": "desenfileirar-ingenua", "rotulo": "desenfileirar, ingênua"}, {"id": "desenfileirar-circular", "rotulo": "desenfileirar, circular"}, {"id": "enfileirar-circular", "rotulo": "enfileirar"}, {"id": "enfileirar-media-circular", "rotulo": "enfileirar, média"}], "medido": {"encher": "enfileirar", "tamanhos": [10, 100, 1000], "operacoes": {"enfileirar-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "enfileirar-media-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "enfileirar-pior-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desenfileirar-ingenua": {"estrutura": "ingenua", "chamada": "desenfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 9}, {"n": 100, "leituras": 100, "escritas": 99}, {"n": 1000, "leituras": 1000, "escritas": 999}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 2}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 4}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 7, "escritas": 6}, {"n": 8, "leituras": 8, "escritas": 7}, {"n": 9, "leituras": 9, "escritas": 8}, {"n": 10, "leituras": 10, "escritas": 9}, {"n": 11, "leituras": 11, "escritas": 10}, {"n": 12, "leituras": 12, "escritas": 11}, {"n": 13, "leituras": 13, "escritas": 12}, {"n": 14, "leituras": 14, "escritas": 13}, {"n": 15, "leituras": 15, "escritas": 14}, {"n": 16, "leituras": 16, "escritas": 15}, {"n": 17, "leituras": 17, "escritas": 16}, {"n": 18, "leituras": 18, "escritas": 17}, {"n": 19, "leituras": 19, "escritas": 18}, {"n": 20, "leituras": 20, "escritas": 19}, {"n": 21, "leituras": 21, "escritas": 20}, {"n": 22, "leituras": 22, "escritas": 21}, {"n": 23, "leituras": 23, "escritas": 22}, {"n": 24, "leituras": 24, "escritas": 23}, {"n": 25, "leituras": 25, "escritas": 24}, {"n": 26, "leituras": 26, "escritas": 25}, {"n": 27, "leituras": 27, "escritas": 26}, {"n": 28, "leituras": 28, "escritas": 27}, {"n": 29, "leituras": 29, "escritas": 28}, {"n": 30, "leituras": 30, "escritas": 29}, {"n": 31, "leituras": 31, "escritas": 30}, {"n": 32, "leituras": 32, "escritas": 31}, {"n": 33, "leituras": 33, "escritas": 32}, {"n": 34, "leituras": 34, "escritas": 33}, {"n": 35, "leituras": 35, "escritas": 34}, {"n": 36, "leituras": 36, "escritas": 35}, {"n": 37, "leituras": 37, "escritas": 36}, {"n": 38, "leituras": 38, "escritas": 37}, {"n": 39, "leituras": 39, "escritas": 38}, {"n": 40, "leituras": 40, "escritas": 39}, {"n": 41, "leituras": 41, "escritas": 40}, {"n": 42, "leituras": 42, "escritas": 41}, {"n": 43, "leituras": 43, "escritas": 42}, {"n": 44, "leituras": 44, "escritas": 43}, {"n": 45, "leituras": 45, "escritas": 44}, {"n": 46, "leituras": 46, "escritas": 45}, {"n": 47, "leituras": 47, "escritas": 46}, {"n": 48, "leituras": 48, "escritas": 47}, {"n": 49, "leituras": 49, "escritas": 48}, {"n": 50, "leituras": 50, "escritas": 49}, {"n": 51, "leituras": 51, "escritas": 50}, {"n": 52, "leituras": 52, "escritas": 51}, {"n": 53, "leituras": 53, "escritas": 52}, {"n": 54, "leituras": 54, "escritas": 53}, {"n": 55, "leituras": 55, "escritas": 54}, {"n": 56, "leituras": 56, "escritas": 55}, {"n": 57, "leituras": 57, "escritas": 56}, {"n": 58, "leituras": 58, "escritas": 57}, {"n": 59, "leituras": 59, "escritas": 58}, {"n": 60, "leituras": 60, "escritas": 59}]}, "primeiro-ingenua": {"estrutura": "ingenua", "chamada": "primeiro", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "enfileirar-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "enfileirar-media-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "enfileirar-pior-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desenfileirar-circular": {"estrutura": "circular", "chamada": "desenfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "primeiro-circular": {"estrutura": "circular", "chamada": "primeiro", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"ingenua": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}], "circular": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "deque", "nome": "Deque", "variante": "circular, com capacidade que dobra quando enche", "frase": "Uma fila que abre pelas duas pontas.", "resumo": "Põe-se e tira-se pela frente e por trás. É a fila circular com as duas pontas abertas: os valores moram em casas próprias, e ninguém anda; quem anda são os marcadores. Pôr na frente recua o início uma casa, dando a volta no começo do vetor; tirar de trás só lê a última casa. Serve de pilha e de fila ao mesmo tempo, e é o que a janela deslizante precisa: entra por trás, sai pelas duas pontas.", "placa": {"autor": "o nome é de E. J. Schweppe; Donald Knuth o registrou em The Art of Computer Programming", "ano": "1968"}, "memoria": {"notacao": "O(n)", "porque": "Uma casa por valor, mais a folga do vetor, que dobra quando enche; tirar não devolve casas. O início e o tamanho ficam guardados à parte."}, "operacoes": [{"id": "por-tras", "nome": "pôr atrás, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois da última, dando a volta se passar do fim do vetor."}, {"id": "por-frente", "nome": "pôr na frente, com folga", "notacao": "O(1)", "porque": "Recua o início uma casa (do 0, vai para a última casa do vetor) e escreve ali."}, {"id": "por-tras-pior", "nome": "pôr, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando enche, dobra e copia o deque na ordem, a partir da casa 0. Na frente, o mesmo."}, {"id": "por-tras-media", "nome": "pôr atrás, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."}, {"id": "por-frente-media", "nome": "pôr na frente, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As mesmas cópias, nas mesmas vezes: o vetor enche igual por qualquer ponta."}, {"id": "tirar-frente", "nome": "tirar da frente", "notacao": "O(1)", "porque": "Lê a casa do início e anda o início uma casa. Ninguém se desloca."}, {"id": "tirar-tras", "nome": "tirar de trás", "notacao": "O(1)", "porque": "Lê a última casa (início + tamanho − 1, dando a volta) e diminui o tamanho."}, {"id": "frente", "nome": "ver a frente", "notacao": "O(1)", "porque": "Uma leitura da casa do início."}, {"id": "fundo", "nome": "ver o fundo", "notacao": "O(1)", "porque": "Uma leitura da última casa."}], "grafico": [{"id": "por-tras-media", "rotulo": "pôr atrás, média"}, {"id": "por-tras", "rotulo": "pôr atrás"}, {"id": "tirar-tras", "rotulo": "tirar de trás"}], "medido": {"encher": "por_tras", "tamanhos": [10, 100, 1000], "operacoes": {"por-tras": {"estrutura": "deque", "chamada": "por_tras", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "por-tras-media": {"estrutura": "deque", "chamada": "por_tras", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "por-tras-pior": {"estrutura": "deque", "chamada": "por_tras", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "por-frente": {"estrutura": "deque", "chamada": "por_frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "por-frente-media": {"estrutura": "deque", "chamada": "por_frente", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "tirar-frente": {"estrutura": "deque", "chamada": "tirar_frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "tirar-tras": {"estrutura": "deque", "chamada": "tirar_tras", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "frente": {"estrutura": "deque", "chamada": "frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "fundo": {"estrutura": "deque", "chamada": "fundo", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"deque": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "lista", "nome": "Lista encadeada", "variante": "duas versões: estática (vetor + índice do próximo) e dinâmica (nós e ponteiros)", "frase": "Cada valor sabe quem vem depois dele.", "resumo": "Os valores não precisam morar em ordem: cada um guarda, ao lado de si, onde está o seguinte. Inserir ou tirar no começo é só trocar um ponteiro, sem ninguém andar. O preço é a posição: para chegar ao i-ésimo, é preciso seguir os ponteiros um por um desde o início. Na estática, tudo mora em dois vetores (valor e próx), e as casas vagas formam uma segunda lista, a dos livres. Na dinâmica, cada valor mora num nó pedido à memória na hora, e o próx guarda o endereço do nó seguinte.", "placa": {"autor": "Allen Newell, Cliff Shaw e Herbert Simon (a lista ligada da linguagem IPL)", "ano": "1955–1956"}, "memoria": {"notacao": "O(n)", "porque": "As duas guardam duas casas por valor: o valor e o próx. A estática reserva o vetor inteiro, com a folga das casas livres, e dobra quando enche, como o Vetor; remover devolve a casa para a lista de livres, mas não encolhe o vetor. A dinâmica pede um nó por valor e solta o nó ao remover: nunca tem folga, mas paga o ponteiro de cada valor."}, "variantes": {"estatica": "estática", "dinamica": "dinâmica"}, "operacoes": [{"id": "ler-ultima-dinamica", "nome": "ler a posição i (a última)", "notacao": "O(n)", "porque": "Não há endereço calculado: segue i próx desde o início e lê o valor. Na estática, o mesmo, com índices no lugar de endereços."}, {"id": "inserir-inicio-estatica", "nome": "inserir no início, com folga", "notacao": "O(1)", "porque": "Tira uma casa dos livres (lê o próx dela), escreve o valor e aponta o próx para o antigo início. Sem casa livre, antes dobra o vetor, como no fim."}, {"id": "inserir-inicio-dinamica", "nome": "inserir no início", "notacao": "O(1)", "porque": "Pede um nó, escreve o valor e aponta o próx para o antigo início. Ninguém anda, ao contrário do Vetor."}, {"id": "inserir-fim-estatica", "nome": "inserir no fim, com folga", "notacao": "O(1)", "porque": "Como no início, e mais uma escrita: o próx do antigo fim, guardado à parte, passa a apontar para a casa nova."}, {"id": "inserir-fim-pior-estatica", "nome": "inserir no fim, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Sem casa livre, dobra: copia o valor e o próx de cada casa no mesmo índice e encadeia as casas novas na lista de livres."}, {"id": "inserir-fim-media-estatica", "nome": "inserir no fim, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."}, {"id": "inserir-fim-dinamica", "nome": "inserir no fim", "notacao": "O(1)", "porque": "Pede um nó, escreve o valor, o próx nulo e o próx do antigo fim. Nunca copia: o mais caro de n seguidos custa o mesmo."}, {"id": "inserir-meio-dinamica", "nome": "inserir no meio", "notacao": "O(n)", "porque": "Anda até o nó anterior à posição e troca dois ponteiros. A troca é O(1); a caminhada é que custa. Na estática, o mesmo, mais a lista de livres."}, {"id": "remover-inicio-estatica", "nome": "remover do início", "notacao": "O(1)", "porque": "Lê o valor e o próx do primeiro e devolve a casa para os livres (uma escrita no próx dela)."}, {"id": "remover-inicio-dinamica", "nome": "remover do início", "notacao": "O(1)", "porque": "Lê o valor e o próx do primeiro; o início passa a ser o seguinte, e o nó é solto."}, {"id": "remover-fim-dinamica", "nome": "remover do fim", "notacao": "O(n)", "porque": "O fim está guardado, mas quem vem antes dele não: é preciso andar até o penúltimo para apagar o próx dele. Na estática, o mesmo."}, {"id": "buscar-ausente-dinamica", "nome": "buscar um valor que não está", "notacao": "O(n)", "porque": "Lê o valor e o próx de cada nó até o fim. Na estática, o mesmo."}], "grafico": [{"id": "remover-fim-dinamica", "rotulo": "remover do fim"}, {"id": "ler-ultima-dinamica", "rotulo": "ler a última"}, {"id": "inserir-fim-media-estatica", "rotulo": "média, estática"}, {"id": "inserir-fim-media-dinamica", "rotulo": "média, dinâmica"}, {"id": "inserir-inicio-dinamica", "rotulo": "inserir no início"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas (o valor ou o próx de uma posição), contadas rodando as duas listas em Python com n valores já guardados, para n = {ns}. Seguir um ponteiro é ler um próx. O início, o fim, a cabeça dos livres e o tamanho, guardados à parte, não contam; pedir e soltar um nó da dinâmica também não.", "custo": "O custo de cada operação com n valores já guardados, para n de {v0} a {v1}, medido uma vez por n (na dinâmica; com folga, a estática custa o mesmo ou 1 a mais, pela lista de livres, e quando o vetor está cheio paga também a cópia). Remover do fim e ler a última sobem em linha reta: seguem todos os ponteiros. Inserir no início não sai do chão. Tracejadas: a média de n inserções seguidas no fim a partir da lista vazia; a da estática paga as cópias, a da dinâmica nunca copia.", "casas": "Casas guardadas depois de pôr n valores no fim, a partir da lista vazia, para n de {v0} a {v1}. A dinâmica guarda exatamente 2n; a estática sobe em degraus, com a folga das casas livres."}, "medido": {"encher": "inserir_fim", "tamanhos": [10, 100, 1000], "operacoes": {"ler-ultima-estatica": {"estrutura": "estatica", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "inserir-inicio-estatica": {"estrutura": "estatica", "chamada": "inserir_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 2}, {"n": 100, "leituras": 1, "escritas": 2}, {"n": 1000, "leituras": 1, "escritas": 2}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 5}, {"n": 2, "leituras": 5, "escritas": 8}, {"n": 3, "leituras": 1, "escritas": 2}, {"n": 4, "leituras": 9, "escritas": 14}, {"n": 5, "leituras": 1, "escritas": 2}, {"n": 6, "leituras": 1, "escritas": 2}, {"n": 7, "leituras": 1, "escritas": 2}, {"n": 8, "leituras": 17, "escritas": 26}, {"n": 9, "leituras": 1, "escritas": 2}, {"n": 10, "leituras": 1, "escritas": 2}, {"n": 11, "leituras": 1, "escritas": 2}, {"n": 12, "leituras": 1, "escritas": 2}, {"n": 13, "leituras": 1, "escritas": 2}, {"n": 14, "leituras": 1, "escritas": 2}, {"n": 15, "leituras": 1, "escritas": 2}, {"n": 16, "leituras": 33, "escritas": 50}, {"n": 17, "leituras": 1, "escritas": 2}, {"n": 18, "leituras": 1, "escritas": 2}, {"n": 19, "leituras": 1, "escritas": 2}, {"n": 20, "leituras": 1, "escritas": 2}, {"n": 21, "leituras": 1, "escritas": 2}, {"n": 22, "leituras": 1, "escritas": 2}, {"n": 23, "leituras": 1, "escritas": 2}, {"n": 24, "leituras": 1, "escritas": 2}, {"n": 25, "leituras": 1, "escritas": 2}, {"n": 26, "leituras": 1, "escritas": 2}, {"n": 27, "leituras": 1, "escritas": 2}, {"n": 28, "leituras": 1, "escritas": 2}, {"n": 29, "leituras": 1, "escritas": 2}, {"n": 30, "leituras": 1, "escritas": 2}, {"n": 31, "leituras": 1, "escritas": 2}, {"n": 32, "leituras": 65, "escritas": 98}, {"n": 33, "leituras": 1, "escritas": 2}, {"n": 34, "leituras": 1, "escritas": 2}, {"n": 35, "leituras": 1, "escritas": 2}, {"n": 36, "leituras": 1, "escritas": 2}, {"n": 37, "leituras": 1, "escritas": 2}, {"n": 38, "leituras": 1, "escritas": 2}, {"n": 39, "leituras": 1, "escritas": 2}, {"n": 40, "leituras": 1, "escritas": 2}, {"n": 41, "leituras": 1, "escritas": 2}, {"n": 42, "leituras": 1, "escritas": 2}, {"n": 43, "leituras": 1, "escritas": 2}, {"n": 44, "leituras": 1, "escritas": 2}, {"n": 45, "leituras": 1, "escritas": 2}, {"n": 46, "leituras": 1, "escritas": 2}, {"n": 47, "leituras": 1, "escritas": 2}, {"n": 48, "leituras": 1, "escritas": 2}, {"n": 49, "leituras": 1, "escritas": 2}, {"n": 50, "leituras": 1, "escritas": 2}, {"n": 51, "leituras": 1, "escritas": 2}, {"n": 52, "leituras": 1, "escritas": 2}, {"n": 53, "leituras": 1, "escritas": 2}, {"n": 54, "leituras": 1, "escritas": 2}, {"n": 55, "leituras": 1, "escritas": 2}, {"n": 56, "leituras": 1, "escritas": 2}, {"n": 57, "leituras": 1, "escritas": 2}, {"n": 58, "leituras": 1, "escritas": 2}, {"n": 59, "leituras": 1, "escritas": 2}, {"n": 60, "leituras": 1, "escritas": 2}]}, "inserir-fim-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 3}, {"n": 100, "leituras": 1, "escritas": 3}, {"n": 1000, "leituras": 1, "escritas": 3}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 6}, {"n": 2, "leituras": 5, "escritas": 9}, {"n": 3, "leituras": 1, "escritas": 3}, {"n": 4, "leituras": 9, "escritas": 15}, {"n": 5, "leituras": 1, "escritas": 3}, {"n": 6, "leituras": 1, "escritas": 3}, {"n": 7, "leituras": 1, "escritas": 3}, {"n": 8, "leituras": 17, "escritas": 27}, {"n": 9, "leituras": 1, "escritas": 3}, {"n": 10, "leituras": 1, "escritas": 3}, {"n": 11, "leituras": 1, "escritas": 3}, {"n": 12, "leituras": 1, "escritas": 3}, {"n": 13, "leituras": 1, "escritas": 3}, {"n": 14, "leituras": 1, "escritas": 3}, {"n": 15, "leituras": 1, "escritas": 3}, {"n": 16, "leituras": 33, "escritas": 51}, {"n": 17, "leituras": 1, "escritas": 3}, {"n": 18, "leituras": 1, "escritas": 3}, {"n": 19, "leituras": 1, "escritas": 3}, {"n": 20, "leituras": 1, "escritas": 3}, {"n": 21, "leituras": 1, "escritas": 3}, {"n": 22, "leituras": 1, "escritas": 3}, {"n": 23, "leituras": 1, "escritas": 3}, {"n": 24, "leituras": 1, "escritas": 3}, {"n": 25, "leituras": 1, "escritas": 3}, {"n": 26, "leituras": 1, "escritas": 3}, {"n": 27, "leituras": 1, "escritas": 3}, {"n": 28, "leituras": 1, "escritas": 3}, {"n": 29, "leituras": 1, "escritas": 3}, {"n": 30, "leituras": 1, "escritas": 3}, {"n": 31, "leituras": 1, "escritas": 3}, {"n": 32, "leituras": 65, "escritas": 99}, {"n": 33, "leituras": 1, "escritas": 3}, {"n": 34, "leituras": 1, "escritas": 3}, {"n": 35, "leituras": 1, "escritas": 3}, {"n": 36, "leituras": 1, "escritas": 3}, {"n": 37, "leituras": 1, "escritas": 3}, {"n": 38, "leituras": 1, "escritas": 3}, {"n": 39, "leituras": 1, "escritas": 3}, {"n": 40, "leituras": 1, "escritas": 3}, {"n": 41, "leituras": 1, "escritas": 3}, {"n": 42, "leituras": 1, "escritas": 3}, {"n": 43, "leituras": 1, "escritas": 3}, {"n": 44, "leituras": 1, "escritas": 3}, {"n": 45, "leituras": 1, "escritas": 3}, {"n": 46, "leituras": 1, "escritas": 3}, {"n": 47, "leituras": 1, "escritas": 3}, {"n": 48, "leituras": 1, "escritas": 3}, {"n": 49, "leituras": 1, "escritas": 3}, {"n": 50, "leituras": 1, "escritas": 3}, {"n": 51, "leituras": 1, "escritas": 3}, {"n": 52, "leituras": 1, "escritas": 3}, {"n": 53, "leituras": 1, "escritas": 3}, {"n": 54, "leituras": 1, "escritas": 3}, {"n": 55, "leituras": 1, "escritas": 3}, {"n": 56, "leituras": 1, "escritas": 3}, {"n": 57, "leituras": 1, "escritas": 3}, {"n": 58, "leituras": 1, "escritas": 3}, {"n": 59, "leituras": 1, "escritas": 3}, {"n": 60, "leituras": 1, "escritas": 3}]}, "inserir-fim-media-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 40, "escritas": 74}, {"n": 100, "vezes": 100, "leituras": 354, "escritas": 680}, {"n": 1000, "vezes": 1000, "leituras": 3046, "escritas": 6068}], "serie": [{"n": 1, "vezes": 1, "leituras": 1, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 4, "escritas": 8}, {"n": 3, "vezes": 3, "leituras": 9, "escritas": 17}, {"n": 4, "vezes": 4, "leituras": 10, "escritas": 20}, {"n": 5, "vezes": 5, "leituras": 19, "escritas": 35}, {"n": 6, "vezes": 6, "leituras": 20, "escritas": 38}, {"n": 7, "vezes": 7, "leituras": 21, "escritas": 41}, {"n": 8, "vezes": 8, "leituras": 22, "escritas": 44}, {"n": 9, "vezes": 9, "leituras": 39, "escritas": 71}, {"n": 10, "vezes": 10, "leituras": 40, "escritas": 74}, {"n": 11, "vezes": 11, "leituras": 41, "escritas": 77}, {"n": 12, "vezes": 12, "leituras": 42, "escritas": 80}, {"n": 13, "vezes": 13, "leituras": 43, "escritas": 83}, {"n": 14, "vezes": 14, "leituras": 44, "escritas": 86}, {"n": 15, "vezes": 15, "leituras": 45, "escritas": 89}, {"n": 16, "vezes": 16, "leituras": 46, "escritas": 92}, {"n": 17, "vezes": 17, "leituras": 79, "escritas": 143}, {"n": 18, "vezes": 18, "leituras": 80, "escritas": 146}, {"n": 19, "vezes": 19, "leituras": 81, "escritas": 149}, {"n": 20, "vezes": 20, "leituras": 82, "escritas": 152}, {"n": 21, "vezes": 21, "leituras": 83, "escritas": 155}, {"n": 22, "vezes": 22, "leituras": 84, "escritas": 158}, {"n": 23, "vezes": 23, "leituras": 85, "escritas": 161}, {"n": 24, "vezes": 24, "leituras": 86, "escritas": 164}, {"n": 25, "vezes": 25, "leituras": 87, "escritas": 167}, {"n": 26, "vezes": 26, "leituras": 88, "escritas": 170}, {"n": 27, "vezes": 27, "leituras": 89, "escritas": 173}, {"n": 28, "vezes": 28, "leituras": 90, "escritas": 176}, {"n": 29, "vezes": 29, "leituras": 91, "escritas": 179}, {"n": 30, "vezes": 30, "leituras": 92, "escritas": 182}, {"n": 31, "vezes": 31, "leituras": 93, "escritas": 185}, {"n": 32, "vezes": 32, "leituras": 94, "escritas": 188}, {"n": 33, "vezes": 33, "leituras": 159, "escritas": 287}, {"n": 34, "vezes": 34, "leituras": 160, "escritas": 290}, {"n": 35, "vezes": 35, "leituras": 161, "escritas": 293}, {"n": 36, "vezes": 36, "leituras": 162, "escritas": 296}, {"n": 37, "vezes": 37, "leituras": 163, "escritas": 299}, {"n": 38, "vezes": 38, "leituras": 164, "escritas": 302}, {"n": 39, "vezes": 39, "leituras": 165, "escritas": 305}, {"n": 40, "vezes": 40, "leituras": 166, "escritas": 308}, {"n": 41, "vezes": 41, "leituras": 167, "escritas": 311}, {"n": 42, "vezes": 42, "leituras": 168, "escritas": 314}, {"n": 43, "vezes": 43, "leituras": 169, "escritas": 317}, {"n": 44, "vezes": 44, "leituras": 170, "escritas": 320}, {"n": 45, "vezes": 45, "leituras": 171, "escritas": 323}, {"n": 46, "vezes": 46, "leituras": 172, "escritas": 326}, {"n": 47, "vezes": 47, "leituras": 173, "escritas": 329}, {"n": 48, "vezes": 48, "leituras": 174, "escritas": 332}, {"n": 49, "vezes": 49, "leituras": 175, "escritas": 335}, {"n": 50, "vezes": 50, "leituras": 176, "escritas": 338}, {"n": 51, "vezes": 51, "leituras": 177, "escritas": 341}, {"n": 52, "vezes": 52, "leituras": 178, "escritas": 344}, {"n": 53, "vezes": 53, "leituras": 179, "escritas": 347}, {"n": 54, "vezes": 54, "leituras": 180, "escritas": 350}, {"n": 55, "vezes": 55, "leituras": 181, "escritas": 353}, {"n": 56, "vezes": 56, "leituras": 182, "escritas": 356}, {"n": 57, "vezes": 57, "leituras": 183, "escritas": 359}, {"n": 58, "vezes": 58, "leituras": 184, "escritas": 362}, {"n": 59, "vezes": 59, "leituras": 185, "escritas": 365}, {"n": 60, "vezes": 60, "leituras": 186, "escritas": 368}]}, "inserir-fim-pior-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 17, "escritas": 27}, {"n": 100, "k": 65, "leituras": 129, "escritas": 195}, {"n": 1000, "k": 513, "leituras": 1025, "escritas": 1539}], "serie": []}, "inserir-meio-estatica": {"estrutura": "estatica", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 3}, {"n": 100, "leituras": 51, "escritas": 3}, {"n": 1000, "leituras": 501, "escritas": 3}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 5}, {"n": 2, "leituras": 6, "escritas": 9}, {"n": 3, "leituras": 2, "escritas": 3}, {"n": 4, "leituras": 11, "escritas": 15}, {"n": 5, "leituras": 3, "escritas": 3}, {"n": 6, "leituras": 4, "escritas": 3}, {"n": 7, "leituras": 4, "escritas": 3}, {"n": 8, "leituras": 21, "escritas": 27}, {"n": 9, "leituras": 5, "escritas": 3}, {"n": 10, "leituras": 6, "escritas": 3}, {"n": 11, "leituras": 6, "escritas": 3}, {"n": 12, "leituras": 7, "escritas": 3}, {"n": 13, "leituras": 7, "escritas": 3}, {"n": 14, "leituras": 8, "escritas": 3}, {"n": 15, "leituras": 8, "escritas": 3}, {"n": 16, "leituras": 41, "escritas": 51}, {"n": 17, "leituras": 9, "escritas": 3}, {"n": 18, "leituras": 10, "escritas": 3}, {"n": 19, "leituras": 10, "escritas": 3}, {"n": 20, "leituras": 11, "escritas": 3}, {"n": 21, "leituras": 11, "escritas": 3}, {"n": 22, "leituras": 12, "escritas": 3}, {"n": 23, "leituras": 12, "escritas": 3}, {"n": 24, "leituras": 13, "escritas": 3}, {"n": 25, "leituras": 13, "escritas": 3}, {"n": 26, "leituras": 14, "escritas": 3}, {"n": 27, "leituras": 14, "escritas": 3}, {"n": 28, "leituras": 15, "escritas": 3}, {"n": 29, "leituras": 15, "escritas": 3}, {"n": 30, "leituras": 16, "escritas": 3}, {"n": 31, "leituras": 16, "escritas": 3}, {"n": 32, "leituras": 81, "escritas": 99}, {"n": 33, "leituras": 17, "escritas": 3}, {"n": 34, "leituras": 18, "escritas": 3}, {"n": 35, "leituras": 18, "escritas": 3}, {"n": 36, "leituras": 19, "escritas": 3}, {"n": 37, "leituras": 19, "escritas": 3}, {"n": 38, "leituras": 20, "escritas": 3}, {"n": 39, "leituras": 20, "escritas": 3}, {"n": 40, "leituras": 21, "escritas": 3}, {"n": 41, "leituras": 21, "escritas": 3}, {"n": 42, "leituras": 22, "escritas": 3}, {"n": 43, "leituras": 22, "escritas": 3}, {"n": 44, "leituras": 23, "escritas": 3}, {"n": 45, "leituras": 23, "escritas": 3}, {"n": 46, "leituras": 24, "escritas": 3}, {"n": 47, "leituras": 24, "escritas": 3}, {"n": 48, "leituras": 25, "escritas": 3}, {"n": 49, "leituras": 25, "escritas": 3}, {"n": 50, "leituras": 26, "escritas": 3}, {"n": 51, "leituras": 26, "escritas": 3}, {"n": 52, "leituras": 27, "escritas": 3}, {"n": 53, "leituras": 27, "escritas": 3}, {"n": 54, "leituras": 28, "escritas": 3}, {"n": 55, "leituras": 28, "escritas": 3}, {"n": 56, "leituras": 29, "escritas": 3}, {"n": 57, "leituras": 29, "escritas": 3}, {"n": 58, "leituras": 30, "escritas": 3}, {"n": 59, "leituras": 30, "escritas": 3}, {"n": 60, "leituras": 31, "escritas": 3}]}, "remover-inicio-estatica": {"estrutura": "estatica", "chamada": "remover_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 1}, {"n": 100, "leituras": 2, "escritas": 1}, {"n": 1000, "leituras": 2, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 2, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 1}, {"n": 5, "leituras": 2, "escritas": 1}, {"n": 6, "leituras": 2, "escritas": 1}, {"n": 7, "leituras": 2, "escritas": 1}, {"n": 8, "leituras": 2, "escritas": 1}, {"n": 9, "leituras": 2, "escritas": 1}, {"n": 10, "leituras": 2, "escritas": 1}, {"n": 11, "leituras": 2, "escritas": 1}, {"n": 12, "leituras": 2, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 2, "escritas": 1}, {"n": 15, "leituras": 2, "escritas": 1}, {"n": 16, "leituras": 2, "escritas": 1}, {"n": 17, "leituras": 2, "escritas": 1}, {"n": 18, "leituras": 2, "escritas": 1}, {"n": 19, "leituras": 2, "escritas": 1}, {"n": 20, "leituras": 2, "escritas": 1}, {"n": 21, "leituras": 2, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 2, "escritas": 1}, {"n": 25, "leituras": 2, "escritas": 1}, {"n": 26, "leituras": 2, "escritas": 1}, {"n": 27, "leituras": 2, "escritas": 1}, {"n": 28, "leituras": 2, "escritas": 1}, {"n": 29, "leituras": 2, "escritas": 1}, {"n": 30, "leituras": 2, "escritas": 1}, {"n": 31, "leituras": 2, "escritas": 1}, {"n": 32, "leituras": 2, "escritas": 1}, {"n": 33, "leituras": 2, "escritas": 1}, {"n": 34, "leituras": 2, "escritas": 1}, {"n": 35, "leituras": 2, "escritas": 1}, {"n": 36, "leituras": 2, "escritas": 1}, {"n": 37, "leituras": 2, "escritas": 1}, {"n": 38, "leituras": 2, "escritas": 1}, {"n": 39, "leituras": 2, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 2, "escritas": 1}, {"n": 43, "leituras": 2, "escritas": 1}, {"n": 44, "leituras": 2, "escritas": 1}, {"n": 45, "leituras": 2, "escritas": 1}, {"n": 46, "leituras": 2, "escritas": 1}, {"n": 47, "leituras": 2, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 2, "escritas": 1}, {"n": 50, "leituras": 2, "escritas": 1}, {"n": 51, "leituras": 2, "escritas": 1}, {"n": 52, "leituras": 2, "escritas": 1}, {"n": 53, "leituras": 2, "escritas": 1}, {"n": 54, "leituras": 2, "escritas": 1}, {"n": 55, "leituras": 2, "escritas": 1}, {"n": 56, "leituras": 2, "escritas": 1}, {"n": 57, "leituras": 2, "escritas": 1}, {"n": 58, "leituras": 2, "escritas": 1}, {"n": 59, "leituras": 2, "escritas": 1}, {"n": 60, "leituras": 2, "escritas": 1}]}, "remover-fim-estatica": {"estrutura": "estatica", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 11, "escritas": 2}, {"n": 100, "leituras": 101, "escritas": 2}, {"n": 1000, "leituras": 1001, "escritas": 2}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 3, "escritas": 2}, {"n": 3, "leituras": 4, "escritas": 2}, {"n": 4, "leituras": 5, "escritas": 2}, {"n": 5, "leituras": 6, "escritas": 2}, {"n": 6, "leituras": 7, "escritas": 2}, {"n": 7, "leituras": 8, "escritas": 2}, {"n": 8, "leituras": 9, "escritas": 2}, {"n": 9, "leituras": 10, "escritas": 2}, {"n": 10, "leituras": 11, "escritas": 2}, {"n": 11, "leituras": 12, "escritas": 2}, {"n": 12, "leituras": 13, "escritas": 2}, {"n": 13, "leituras": 14, "escritas": 2}, {"n": 14, "leituras": 15, "escritas": 2}, {"n": 15, "leituras": 16, "escritas": 2}, {"n": 16, "leituras": 17, "escritas": 2}, {"n": 17, "leituras": 18, "escritas": 2}, {"n": 18, "leituras": 19, "escritas": 2}, {"n": 19, "leituras": 20, "escritas": 2}, {"n": 20, "leituras": 21, "escritas": 2}, {"n": 21, "leituras": 22, "escritas": 2}, {"n": 22, "leituras": 23, "escritas": 2}, {"n": 23, "leituras": 24, "escritas": 2}, {"n": 24, "leituras": 25, "escritas": 2}, {"n": 25, "leituras": 26, "escritas": 2}, {"n": 26, "leituras": 27, "escritas": 2}, {"n": 27, "leituras": 28, "escritas": 2}, {"n": 28, "leituras": 29, "escritas": 2}, {"n": 29, "leituras": 30, "escritas": 2}, {"n": 30, "leituras": 31, "escritas": 2}, {"n": 31, "leituras": 32, "escritas": 2}, {"n": 32, "leituras": 33, "escritas": 2}, {"n": 33, "leituras": 34, "escritas": 2}, {"n": 34, "leituras": 35, "escritas": 2}, {"n": 35, "leituras": 36, "escritas": 2}, {"n": 36, "leituras": 37, "escritas": 2}, {"n": 37, "leituras": 38, "escritas": 2}, {"n": 38, "leituras": 39, "escritas": 2}, {"n": 39, "leituras": 40, "escritas": 2}, {"n": 40, "leituras": 41, "escritas": 2}, {"n": 41, "leituras": 42, "escritas": 2}, {"n": 42, "leituras": 43, "escritas": 2}, {"n": 43, "leituras": 44, "escritas": 2}, {"n": 44, "leituras": 45, "escritas": 2}, {"n": 45, "leituras": 46, "escritas": 2}, {"n": 46, "leituras": 47, "escritas": 2}, {"n": 47, "leituras": 48, "escritas": 2}, {"n": 48, "leituras": 49, "escritas": 2}, {"n": 49, "leituras": 50, "escritas": 2}, {"n": 50, "leituras": 51, "escritas": 2}, {"n": 51, "leituras": 52, "escritas": 2}, {"n": 52, "leituras": 53, "escritas": 2}, {"n": 53, "leituras": 54, "escritas": 2}, {"n": 54, "leituras": 55, "escritas": 2}, {"n": 55, "leituras": 56, "escritas": 2}, {"n": 56, "leituras": 57, "escritas": 2}, {"n": 57, "leituras": 58, "escritas": 2}, {"n": 58, "leituras": 59, "escritas": 2}, {"n": 59, "leituras": 60, "escritas": 2}, {"n": 60, "leituras": 61, "escritas": 2}]}, "buscar-ausente-estatica": {"estrutura": "estatica", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 20, "escritas": 0}, {"n": 100, "leituras": 200, "escritas": 0}, {"n": 1000, "leituras": 2000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 4, "escritas": 0}, {"n": 3, "leituras": 6, "escritas": 0}, {"n": 4, "leituras": 8, "escritas": 0}, {"n": 5, "leituras": 10, "escritas": 0}, {"n": 6, "leituras": 12, "escritas": 0}, {"n": 7, "leituras": 14, "escritas": 0}, {"n": 8, "leituras": 16, "escritas": 0}, {"n": 9, "leituras": 18, "escritas": 0}, {"n": 10, "leituras": 20, "escritas": 0}, {"n": 11, "leituras": 22, "escritas": 0}, {"n": 12, "leituras": 24, "escritas": 0}, {"n": 13, "leituras": 26, "escritas": 0}, {"n": 14, "leituras": 28, "escritas": 0}, {"n": 15, "leituras": 30, "escritas": 0}, {"n": 16, "leituras": 32, "escritas": 0}, {"n": 17, "leituras": 34, "escritas": 0}, {"n": 18, "leituras": 36, "escritas": 0}, {"n": 19, "leituras": 38, "escritas": 0}, {"n": 20, "leituras": 40, "escritas": 0}, {"n": 21, "leituras": 42, "escritas": 0}, {"n": 22, "leituras": 44, "escritas": 0}, {"n": 23, "leituras": 46, "escritas": 0}, {"n": 24, "leituras": 48, "escritas": 0}, {"n": 25, "leituras": 50, "escritas": 0}, {"n": 26, "leituras": 52, "escritas": 0}, {"n": 27, "leituras": 54, "escritas": 0}, {"n": 28, "leituras": 56, "escritas": 0}, {"n": 29, "leituras": 58, "escritas": 0}, {"n": 30, "leituras": 60, "escritas": 0}, {"n": 31, "leituras": 62, "escritas": 0}, {"n": 32, "leituras": 64, "escritas": 0}, {"n": 33, "leituras": 66, "escritas": 0}, {"n": 34, "leituras": 68, "escritas": 0}, {"n": 35, "leituras": 70, "escritas": 0}, {"n": 36, "leituras": 72, "escritas": 0}, {"n": 37, "leituras": 74, "escritas": 0}, {"n": 38, "leituras": 76, "escritas": 0}, {"n": 39, "leituras": 78, "escritas": 0}, {"n": 40, "leituras": 80, "escritas": 0}, {"n": 41, "leituras": 82, "escritas": 0}, {"n": 42, "leituras": 84, "escritas": 0}, {"n": 43, "leituras": 86, "escritas": 0}, {"n": 44, "leituras": 88, "escritas": 0}, {"n": 45, "leituras": 90, "escritas": 0}, {"n": 46, "leituras": 92, "escritas": 0}, {"n": 47, "leituras": 94, "escritas": 0}, {"n": 48, "leituras": 96, "escritas": 0}, {"n": 49, "leituras": 98, "escritas": 0}, {"n": 50, "leituras": 100, "escritas": 0}, {"n": 51, "leituras": 102, "escritas": 0}, {"n": 52, "leituras": 104, "escritas": 0}, {"n": 53, "leituras": 106, "escritas": 0}, {"n": 54, "leituras": 108, "escritas": 0}, {"n": 55, "leituras": 110, "escritas": 0}, {"n": 56, "leituras": 112, "escritas": 0}, {"n": 57, "leituras": 114, "escritas": 0}, {"n": 58, "leituras": 116, "escritas": 0}, {"n": 59, "leituras": 118, "escritas": 0}, {"n": 60, "leituras": 120, "escritas": 0}]}, "ler-ultima-dinamica": {"estrutura": "dinamica", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "inserir-inicio-dinamica": {"estrutura": "dinamica", "chamada": "inserir_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 2}, {"n": 2, "leituras": 0, "escritas": 2}, {"n": 3, "leituras": 0, "escritas": 2}, {"n": 4, "leituras": 0, "escritas": 2}, {"n": 5, "leituras": 0, "escritas": 2}, {"n": 6, "leituras": 0, "escritas": 2}, {"n": 7, "leituras": 0, "escritas": 2}, {"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "inserir-fim-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 3}, {"n": 100, "leituras": 0, "escritas": 3}, {"n": 1000, "leituras": 0, "escritas": 3}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 3}, {"n": 2, "leituras": 0, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 3}, {"n": 4, "leituras": 0, "escritas": 3}, {"n": 5, "leituras": 0, "escritas": 3}, {"n": 6, "leituras": 0, "escritas": 3}, {"n": 7, "leituras": 0, "escritas": 3}, {"n": 8, "leituras": 0, "escritas": 3}, {"n": 9, "leituras": 0, "escritas": 3}, {"n": 10, "leituras": 0, "escritas": 3}, {"n": 11, "leituras": 0, "escritas": 3}, {"n": 12, "leituras": 0, "escritas": 3}, {"n": 13, "leituras": 0, "escritas": 3}, {"n": 14, "leituras": 0, "escritas": 3}, {"n": 15, "leituras": 0, "escritas": 3}, {"n": 16, "leituras": 0, "escritas": 3}, {"n": 17, "leituras": 0, "escritas": 3}, {"n": 18, "leituras": 0, "escritas": 3}, {"n": 19, "leituras": 0, "escritas": 3}, {"n": 20, "leituras": 0, "escritas": 3}, {"n": 21, "leituras": 0, "escritas": 3}, {"n": 22, "leituras": 0, "escritas": 3}, {"n": 23, "leituras": 0, "escritas": 3}, {"n": 24, "leituras": 0, "escritas": 3}, {"n": 25, "leituras": 0, "escritas": 3}, {"n": 26, "leituras": 0, "escritas": 3}, {"n": 27, "leituras": 0, "escritas": 3}, {"n": 28, "leituras": 0, "escritas": 3}, {"n": 29, "leituras": 0, "escritas": 3}, {"n": 30, "leituras": 0, "escritas": 3}, {"n": 31, "leituras": 0, "escritas": 3}, {"n": 32, "leituras": 0, "escritas": 3}, {"n": 33, "leituras": 0, "escritas": 3}, {"n": 34, "leituras": 0, "escritas": 3}, {"n": 35, "leituras": 0, "escritas": 3}, {"n": 36, "leituras": 0, "escritas": 3}, {"n": 37, "leituras": 0, "escritas": 3}, {"n": 38, "leituras": 0, "escritas": 3}, {"n": 39, "leituras": 0, "escritas": 3}, {"n": 40, "leituras": 0, "escritas": 3}, {"n": 41, "leituras": 0, "escritas": 3}, {"n": 42, "leituras": 0, "escritas": 3}, {"n": 43, "leituras": 0, "escritas": 3}, {"n": 44, "leituras": 0, "escritas": 3}, {"n": 45, "leituras": 0, "escritas": 3}, {"n": 46, "leituras": 0, "escritas": 3}, {"n": 47, "leituras": 0, "escritas": 3}, {"n": 48, "leituras": 0, "escritas": 3}, {"n": 49, "leituras": 0, "escritas": 3}, {"n": 50, "leituras": 0, "escritas": 3}, {"n": 51, "leituras": 0, "escritas": 3}, {"n": 52, "leituras": 0, "escritas": 3}, {"n": 53, "leituras": 0, "escritas": 3}, {"n": 54, "leituras": 0, "escritas": 3}, {"n": 55, "leituras": 0, "escritas": 3}, {"n": 56, "leituras": 0, "escritas": 3}, {"n": 57, "leituras": 0, "escritas": 3}, {"n": 58, "leituras": 0, "escritas": 3}, {"n": 59, "leituras": 0, "escritas": 3}, {"n": 60, "leituras": 0, "escritas": 3}]}, "inserir-fim-media-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 0, "escritas": 29}, {"n": 100, "vezes": 100, "leituras": 0, "escritas": 299}, {"n": 1000, "vezes": 1000, "leituras": 0, "escritas": 2999}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 0, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 0, "escritas": 8}, {"n": 4, "vezes": 4, "leituras": 0, "escritas": 11}, {"n": 5, "vezes": 5, "leituras": 0, "escritas": 14}, {"n": 6, "vezes": 6, "leituras": 0, "escritas": 17}, {"n": 7, "vezes": 7, "leituras": 0, "escritas": 20}, {"n": 8, "vezes": 8, "leituras": 0, "escritas": 23}, {"n": 9, "vezes": 9, "leituras": 0, "escritas": 26}, {"n": 10, "vezes": 10, "leituras": 0, "escritas": 29}, {"n": 11, "vezes": 11, "leituras": 0, "escritas": 32}, {"n": 12, "vezes": 12, "leituras": 0, "escritas": 35}, {"n": 13, "vezes": 13, "leituras": 0, "escritas": 38}, {"n": 14, "vezes": 14, "leituras": 0, "escritas": 41}, {"n": 15, "vezes": 15, "leituras": 0, "escritas": 44}, {"n": 16, "vezes": 16, "leituras": 0, "escritas": 47}, {"n": 17, "vezes": 17, "leituras": 0, "escritas": 50}, {"n": 18, "vezes": 18, "leituras": 0, "escritas": 53}, {"n": 19, "vezes": 19, "leituras": 0, "escritas": 56}, {"n": 20, "vezes": 20, "leituras": 0, "escritas": 59}, {"n": 21, "vezes": 21, "leituras": 0, "escritas": 62}, {"n": 22, "vezes": 22, "leituras": 0, "escritas": 65}, {"n": 23, "vezes": 23, "leituras": 0, "escritas": 68}, {"n": 24, "vezes": 24, "leituras": 0, "escritas": 71}, {"n": 25, "vezes": 25, "leituras": 0, "escritas": 74}, {"n": 26, "vezes": 26, "leituras": 0, "escritas": 77}, {"n": 27, "vezes": 27, "leituras": 0, "escritas": 80}, {"n": 28, "vezes": 28, "leituras": 0, "escritas": 83}, {"n": 29, "vezes": 29, "leituras": 0, "escritas": 86}, {"n": 30, "vezes": 30, "leituras": 0, "escritas": 89}, {"n": 31, "vezes": 31, "leituras": 0, "escritas": 92}, {"n": 32, "vezes": 32, "leituras": 0, "escritas": 95}, {"n": 33, "vezes": 33, "leituras": 0, "escritas": 98}, {"n": 34, "vezes": 34, "leituras": 0, "escritas": 101}, {"n": 35, "vezes": 35, "leituras": 0, "escritas": 104}, {"n": 36, "vezes": 36, "leituras": 0, "escritas": 107}, {"n": 37, "vezes": 37, "leituras": 0, "escritas": 110}, {"n": 38, "vezes": 38, "leituras": 0, "escritas": 113}, {"n": 39, "vezes": 39, "leituras": 0, "escritas": 116}, {"n": 40, "vezes": 40, "leituras": 0, "escritas": 119}, {"n": 41, "vezes": 41, "leituras": 0, "escritas": 122}, {"n": 42, "vezes": 42, "leituras": 0, "escritas": 125}, {"n": 43, "vezes": 43, "leituras": 0, "escritas": 128}, {"n": 44, "vezes": 44, "leituras": 0, "escritas": 131}, {"n": 45, "vezes": 45, "leituras": 0, "escritas": 134}, {"n": 46, "vezes": 46, "leituras": 0, "escritas": 137}, {"n": 47, "vezes": 47, "leituras": 0, "escritas": 140}, {"n": 48, "vezes": 48, "leituras": 0, "escritas": 143}, {"n": 49, "vezes": 49, "leituras": 0, "escritas": 146}, {"n": 50, "vezes": 50, "leituras": 0, "escritas": 149}, {"n": 51, "vezes": 51, "leituras": 0, "escritas": 152}, {"n": 52, "vezes": 52, "leituras": 0, "escritas": 155}, {"n": 53, "vezes": 53, "leituras": 0, "escritas": 158}, {"n": 54, "vezes": 54, "leituras": 0, "escritas": 161}, {"n": 55, "vezes": 55, "leituras": 0, "escritas": 164}, {"n": 56, "vezes": 56, "leituras": 0, "escritas": 167}, {"n": 57, "vezes": 57, "leituras": 0, "escritas": 170}, {"n": 58, "vezes": 58, "leituras": 0, "escritas": 173}, {"n": 59, "vezes": 59, "leituras": 0, "escritas": 176}, {"n": 60, "vezes": 60, "leituras": 0, "escritas": 179}]}, "inserir-fim-pior-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 2, "leituras": 0, "escritas": 3}, {"n": 100, "k": 2, "leituras": 0, "escritas": 3}, {"n": 1000, "k": 2, "leituras": 0, "escritas": 3}], "serie": []}, "inserir-meio-dinamica": {"estrutura": "dinamica", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 3}, {"n": 100, "leituras": 50, "escritas": 3}, {"n": 1000, "leituras": 500, "escritas": 3}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 2}, {"n": 2, "leituras": 1, "escritas": 3}, {"n": 3, "leituras": 1, "escritas": 3}, {"n": 4, "leituras": 2, "escritas": 3}, {"n": 5, "leituras": 2, "escritas": 3}, {"n": 6, "leituras": 3, "escritas": 3}, {"n": 7, "leituras": 3, "escritas": 3}, {"n": 8, "leituras": 4, "escritas": 3}, {"n": 9, "leituras": 4, "escritas": 3}, {"n": 10, "leituras": 5, "escritas": 3}, {"n": 11, "leituras": 5, "escritas": 3}, {"n": 12, "leituras": 6, "escritas": 3}, {"n": 13, "leituras": 6, "escritas": 3}, {"n": 14, "leituras": 7, "escritas": 3}, {"n": 15, "leituras": 7, "escritas": 3}, {"n": 16, "leituras": 8, "escritas": 3}, {"n": 17, "leituras": 8, "escritas": 3}, {"n": 18, "leituras": 9, "escritas": 3}, {"n": 19, "leituras": 9, "escritas": 3}, {"n": 20, "leituras": 10, "escritas": 3}, {"n": 21, "leituras": 10, "escritas": 3}, {"n": 22, "leituras": 11, "escritas": 3}, {"n": 23, "leituras": 11, "escritas": 3}, {"n": 24, "leituras": 12, "escritas": 3}, {"n": 25, "leituras": 12, "escritas": 3}, {"n": 26, "leituras": 13, "escritas": 3}, {"n": 27, "leituras": 13, "escritas": 3}, {"n": 28, "leituras": 14, "escritas": 3}, {"n": 29, "leituras": 14, "escritas": 3}, {"n": 30, "leituras": 15, "escritas": 3}, {"n": 31, "leituras": 15, "escritas": 3}, {"n": 32, "leituras": 16, "escritas": 3}, {"n": 33, "leituras": 16, "escritas": 3}, {"n": 34, "leituras": 17, "escritas": 3}, {"n": 35, "leituras": 17, "escritas": 3}, {"n": 36, "leituras": 18, "escritas": 3}, {"n": 37, "leituras": 18, "escritas": 3}, {"n": 38, "leituras": 19, "escritas": 3}, {"n": 39, "leituras": 19, "escritas": 3}, {"n": 40, "leituras": 20, "escritas": 3}, {"n": 41, "leituras": 20, "escritas": 3}, {"n": 42, "leituras": 21, "escritas": 3}, {"n": 43, "leituras": 21, "escritas": 3}, {"n": 44, "leituras": 22, "escritas": 3}, {"n": 45, "leituras": 22, "escritas": 3}, {"n": 46, "leituras": 23, "escritas": 3}, {"n": 47, "leituras": 23, "escritas": 3}, {"n": 48, "leituras": 24, "escritas": 3}, {"n": 49, "leituras": 24, "escritas": 3}, {"n": 50, "leituras": 25, "escritas": 3}, {"n": 51, "leituras": 25, "escritas": 3}, {"n": 52, "leituras": 26, "escritas": 3}, {"n": 53, "leituras": 26, "escritas": 3}, {"n": 54, "leituras": 27, "escritas": 3}, {"n": 55, "leituras": 27, "escritas": 3}, {"n": 56, "leituras": 28, "escritas": 3}, {"n": 57, "leituras": 28, "escritas": 3}, {"n": 58, "leituras": 29, "escritas": 3}, {"n": 59, "leituras": 29, "escritas": 3}, {"n": 60, "leituras": 30, "escritas": 3}]}, "remover-inicio-dinamica": {"estrutura": "dinamica", "chamada": "remover_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 2, "escritas": 0}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 2, "escritas": 0}, {"n": 4, "leituras": 2, "escritas": 0}, {"n": 5, "leituras": 2, "escritas": 0}, {"n": 6, "leituras": 2, "escritas": 0}, {"n": 7, "leituras": 2, "escritas": 0}, {"n": 8, "leituras": 2, "escritas": 0}, {"n": 9, "leituras": 2, "escritas": 0}, {"n": 10, "leituras": 2, "escritas": 0}, {"n": 11, "leituras": 2, "escritas": 0}, {"n": 12, "leituras": 2, "escritas": 0}, {"n": 13, "leituras": 2, "escritas": 0}, {"n": 14, "leituras": 2, "escritas": 0}, {"n": 15, "leituras": 2, "escritas": 0}, {"n": 16, "leituras": 2, "escritas": 0}, {"n": 17, "leituras": 2, "escritas": 0}, {"n": 18, "leituras": 2, "escritas": 0}, {"n": 19, "leituras": 2, "escritas": 0}, {"n": 20, "leituras": 2, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 2, "escritas": 0}, {"n": 23, "leituras": 2, "escritas": 0}, {"n": 24, "leituras": 2, "escritas": 0}, {"n": 25, "leituras": 2, "escritas": 0}, {"n": 26, "leituras": 2, "escritas": 0}, {"n": 27, "leituras": 2, "escritas": 0}, {"n": 28, "leituras": 2, "escritas": 0}, {"n": 29, "leituras": 2, "escritas": 0}, {"n": 30, "leituras": 2, "escritas": 0}, {"n": 31, "leituras": 2, "escritas": 0}, {"n": 32, "leituras": 2, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 2, "escritas": 0}, {"n": 35, "leituras": 2, "escritas": 0}, {"n": 36, "leituras": 2, "escritas": 0}, {"n": 37, "leituras": 2, "escritas": 0}, {"n": 38, "leituras": 2, "escritas": 0}, {"n": 39, "leituras": 2, "escritas": 0}, {"n": 40, "leituras": 2, "escritas": 0}, {"n": 41, "leituras": 2, "escritas": 0}, {"n": 42, "leituras": 2, "escritas": 0}, {"n": 43, "leituras": 2, "escritas": 0}, {"n": 44, "leituras": 2, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 2, "escritas": 0}, {"n": 47, "leituras": 2, "escritas": 0}, {"n": 48, "leituras": 2, "escritas": 0}, {"n": 49, "leituras": 2, "escritas": 0}, {"n": 50, "leituras": 2, "escritas": 0}, {"n": 51, "leituras": 2, "escritas": 0}, {"n": 52, "leituras": 2, "escritas": 0}, {"n": 53, "leituras": 2, "escritas": 0}, {"n": 54, "leituras": 2, "escritas": 0}, {"n": 55, "leituras": 2, "escritas": 0}, {"n": 56, "leituras": 2, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 2, "escritas": 0}, {"n": 60, "leituras": 2, "escritas": 0}]}, "remover-fim-dinamica": {"estrutura": "dinamica", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 11, "escritas": 1}, {"n": 100, "leituras": 101, "escritas": 1}, {"n": 1000, "leituras": 1001, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 3, "escritas": 1}, {"n": 3, "leituras": 4, "escritas": 1}, {"n": 4, "leituras": 5, "escritas": 1}, {"n": 5, "leituras": 6, "escritas": 1}, {"n": 6, "leituras": 7, "escritas": 1}, {"n": 7, "leituras": 8, "escritas": 1}, {"n": 8, "leituras": 9, "escritas": 1}, {"n": 9, "leituras": 10, "escritas": 1}, {"n": 10, "leituras": 11, "escritas": 1}, {"n": 11, "leituras": 12, "escritas": 1}, {"n": 12, "leituras": 13, "escritas": 1}, {"n": 13, "leituras": 14, "escritas": 1}, {"n": 14, "leituras": 15, "escritas": 1}, {"n": 15, "leituras": 16, "escritas": 1}, {"n": 16, "leituras": 17, "escritas": 1}, {"n": 17, "leituras": 18, "escritas": 1}, {"n": 18, "leituras": 19, "escritas": 1}, {"n": 19, "leituras": 20, "escritas": 1}, {"n": 20, "leituras": 21, "escritas": 1}, {"n": 21, "leituras": 22, "escritas": 1}, {"n": 22, "leituras": 23, "escritas": 1}, {"n": 23, "leituras": 24, "escritas": 1}, {"n": 24, "leituras": 25, "escritas": 1}, {"n": 25, "leituras": 26, "escritas": 1}, {"n": 26, "leituras": 27, "escritas": 1}, {"n": 27, "leituras": 28, "escritas": 1}, {"n": 28, "leituras": 29, "escritas": 1}, {"n": 29, "leituras": 30, "escritas": 1}, {"n": 30, "leituras": 31, "escritas": 1}, {"n": 31, "leituras": 32, "escritas": 1}, {"n": 32, "leituras": 33, "escritas": 1}, {"n": 33, "leituras": 34, "escritas": 1}, {"n": 34, "leituras": 35, "escritas": 1}, {"n": 35, "leituras": 36, "escritas": 1}, {"n": 36, "leituras": 37, "escritas": 1}, {"n": 37, "leituras": 38, "escritas": 1}, {"n": 38, "leituras": 39, "escritas": 1}, {"n": 39, "leituras": 40, "escritas": 1}, {"n": 40, "leituras": 41, "escritas": 1}, {"n": 41, "leituras": 42, "escritas": 1}, {"n": 42, "leituras": 43, "escritas": 1}, {"n": 43, "leituras": 44, "escritas": 1}, {"n": 44, "leituras": 45, "escritas": 1}, {"n": 45, "leituras": 46, "escritas": 1}, {"n": 46, "leituras": 47, "escritas": 1}, {"n": 47, "leituras": 48, "escritas": 1}, {"n": 48, "leituras": 49, "escritas": 1}, {"n": 49, "leituras": 50, "escritas": 1}, {"n": 50, "leituras": 51, "escritas": 1}, {"n": 51, "leituras": 52, "escritas": 1}, {"n": 52, "leituras": 53, "escritas": 1}, {"n": 53, "leituras": 54, "escritas": 1}, {"n": 54, "leituras": 55, "escritas": 1}, {"n": 55, "leituras": 56, "escritas": 1}, {"n": 56, "leituras": 57, "escritas": 1}, {"n": 57, "leituras": 58, "escritas": 1}, {"n": 58, "leituras": 59, "escritas": 1}, {"n": 59, "leituras": 60, "escritas": 1}, {"n": 60, "leituras": 61, "escritas": 1}]}, "buscar-ausente-dinamica": {"estrutura": "dinamica", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 20, "escritas": 0}, {"n": 100, "leituras": 200, "escritas": 0}, {"n": 1000, "leituras": 2000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 4, "escritas": 0}, {"n": 3, "leituras": 6, "escritas": 0}, {"n": 4, "leituras": 8, "escritas": 0}, {"n": 5, "leituras": 10, "escritas": 0}, {"n": 6, "leituras": 12, "escritas": 0}, {"n": 7, "leituras": 14, "escritas": 0}, {"n": 8, "leituras": 16, "escritas": 0}, {"n": 9, "leituras": 18, "escritas": 0}, {"n": 10, "leituras": 20, "escritas": 0}, {"n": 11, "leituras": 22, "escritas": 0}, {"n": 12, "leituras": 24, "escritas": 0}, {"n": 13, "leituras": 26, "escritas": 0}, {"n": 14, "leituras": 28, "escritas": 0}, {"n": 15, "leituras": 30, "escritas": 0}, {"n": 16, "leituras": 32, "escritas": 0}, {"n": 17, "leituras": 34, "escritas": 0}, {"n": 18, "leituras": 36, "escritas": 0}, {"n": 19, "leituras": 38, "escritas": 0}, {"n": 20, "leituras": 40, "escritas": 0}, {"n": 21, "leituras": 42, "escritas": 0}, {"n": 22, "leituras": 44, "escritas": 0}, {"n": 23, "leituras": 46, "escritas": 0}, {"n": 24, "leituras": 48, "escritas": 0}, {"n": 25, "leituras": 50, "escritas": 0}, {"n": 26, "leituras": 52, "escritas": 0}, {"n": 27, "leituras": 54, "escritas": 0}, {"n": 28, "leituras": 56, "escritas": 0}, {"n": 29, "leituras": 58, "escritas": 0}, {"n": 30, "leituras": 60, "escritas": 0}, {"n": 31, "leituras": 62, "escritas": 0}, {"n": 32, "leituras": 64, "escritas": 0}, {"n": 33, "leituras": 66, "escritas": 0}, {"n": 34, "leituras": 68, "escritas": 0}, {"n": 35, "leituras": 70, "escritas": 0}, {"n": 36, "leituras": 72, "escritas": 0}, {"n": 37, "leituras": 74, "escritas": 0}, {"n": 38, "leituras": 76, "escritas": 0}, {"n": 39, "leituras": 78, "escritas": 0}, {"n": 40, "leituras": 80, "escritas": 0}, {"n": 41, "leituras": 82, "escritas": 0}, {"n": 42, "leituras": 84, "escritas": 0}, {"n": 43, "leituras": 86, "escritas": 0}, {"n": 44, "leituras": 88, "escritas": 0}, {"n": 45, "leituras": 90, "escritas": 0}, {"n": 46, "leituras": 92, "escritas": 0}, {"n": 47, "leituras": 94, "escritas": 0}, {"n": 48, "leituras": 96, "escritas": 0}, {"n": 49, "leituras": 98, "escritas": 0}, {"n": 50, "leituras": 100, "escritas": 0}, {"n": 51, "leituras": 102, "escritas": 0}, {"n": 52, "leituras": 104, "escritas": 0}, {"n": 53, "leituras": 106, "escritas": 0}, {"n": 54, "leituras": 108, "escritas": 0}, {"n": 55, "leituras": 110, "escritas": 0}, {"n": 56, "leituras": 112, "escritas": 0}, {"n": 57, "leituras": 114, "escritas": 0}, {"n": 58, "leituras": 116, "escritas": 0}, {"n": 59, "leituras": 118, "escritas": 0}, {"n": 60, "leituras": 120, "escritas": 0}]}}, "capacidade": {"estatica": [{"n": 0, "casas": 2}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 8}, {"n": 4, "casas": 8}, {"n": 5, "casas": 16}, {"n": 6, "casas": 16}, {"n": 7, "casas": 16}, {"n": 8, "casas": 16}, {"n": 9, "casas": 32}, {"n": 10, "casas": 32}, {"n": 11, "casas": 32}, {"n": 12, "casas": 32}, {"n": 13, "casas": 32}, {"n": 14, "casas": 32}, {"n": 15, "casas": 32}, {"n": 16, "casas": 32}, {"n": 17, "casas": 64}, {"n": 18, "casas": 64}, {"n": 19, "casas": 64}, {"n": 20, "casas": 64}, {"n": 21, "casas": 64}, {"n": 22, "casas": 64}, {"n": 23, "casas": 64}, {"n": 24, "casas": 64}, {"n": 25, "casas": 64}, {"n": 26, "casas": 64}, {"n": 27, "casas": 64}, {"n": 28, "casas": 64}, {"n": 29, "casas": 64}, {"n": 30, "casas": 64}, {"n": 31, "casas": 64}, {"n": 32, "casas": 64}, {"n": 33, "casas": 128}, {"n": 34, "casas": 128}, {"n": 35, "casas": 128}, {"n": 36, "casas": 128}, {"n": 37, "casas": 128}, {"n": 38, "casas": 128}, {"n": 39, "casas": 128}, {"n": 40, "casas": 128}, {"n": 41, "casas": 128}, {"n": 42, "casas": 128}, {"n": 43, "casas": 128}, {"n": 44, "casas": 128}, {"n": 45, "casas": 128}, {"n": 46, "casas": 128}, {"n": 47, "casas": 128}, {"n": 48, "casas": 128}, {"n": 49, "casas": 128}, {"n": 50, "casas": 128}, {"n": 51, "casas": 128}, {"n": 52, "casas": 128}, {"n": 53, "casas": 128}, {"n": 54, "casas": 128}, {"n": 55, "casas": 128}, {"n": 56, "casas": 128}, {"n": 57, "casas": 128}, {"n": 58, "casas": 128}, {"n": 59, "casas": 128}, {"n": 60, "casas": 128}], "dinamica": [{"n": 0, "casas": 0}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 6}, {"n": 4, "casas": 8}, {"n": 5, "casas": 10}, {"n": 6, "casas": 12}, {"n": 7, "casas": 14}, {"n": 8, "casas": 16}, {"n": 9, "casas": 18}, {"n": 10, "casas": 20}, {"n": 11, "casas": 22}, {"n": 12, "casas": 24}, {"n": 13, "casas": 26}, {"n": 14, "casas": 28}, {"n": 15, "casas": 30}, {"n": 16, "casas": 32}, {"n": 17, "casas": 34}, {"n": 18, "casas": 36}, {"n": 19, "casas": 38}, {"n": 20, "casas": 40}, {"n": 21, "casas": 42}, {"n": 22, "casas": 44}, {"n": 23, "casas": 46}, {"n": 24, "casas": 48}, {"n": 25, "casas": 50}, {"n": 26, "casas": 52}, {"n": 27, "casas": 54}, {"n": 28, "casas": 56}, {"n": 29, "casas": 58}, {"n": 30, "casas": 60}, {"n": 31, "casas": 62}, {"n": 32, "casas": 64}, {"n": 33, "casas": 66}, {"n": 34, "casas": 68}, {"n": 35, "casas": 70}, {"n": 36, "casas": 72}, {"n": 37, "casas": 74}, {"n": 38, "casas": 76}, {"n": 39, "casas": 78}, {"n": 40, "casas": 80}, {"n": 41, "casas": 82}, {"n": 42, "casas": 84}, {"n": 43, "casas": 86}, {"n": 44, "casas": 88}, {"n": 45, "casas": 90}, {"n": 46, "casas": 92}, {"n": 47, "casas": 94}, {"n": 48, "casas": 96}, {"n": 49, "casas": 98}, {"n": 50, "casas": 100}, {"n": 51, "casas": 102}, {"n": 52, "casas": 104}, {"n": 53, "casas": 106}, {"n": 54, "casas": 108}, {"n": 55, "casas": 110}, {"n": 56, "casas": 112}, {"n": 57, "casas": 114}, {"n": 58, "casas": 116}, {"n": 59, "casas": 118}, {"n": 60, "casas": 120}]}}}, {"id": "grafo", "nome": "Grafo", "variante": "três vistas: matriz de adjacência, lista de adjacência e matriz de incidência", "frase": "Pontos e as ligações entre eles, guardados de três jeitos.", "resumo": "Um grafo são vértices e arestas, cada aresta ligando dois vértices. Aqui ele não é dirigido: a aresta u–v vale nos dois sentidos. As mesmas arestas cabem em três vistas, e cada uma responde rápido a uma pergunta e devagar a outra. A matriz de adjacência diz na hora se u e v estão ligados, mas guarda V × V casas. A lista de adjacência guarda só os vizinhos de cada um e entrega os vizinhos de u sem procurar. A matriz de incidência guarda uma coluna por aresta: tudo começa varrendo a linha de u.", "placa": {"autor": "sem autoria única", "ano": "—"}, "n": "V", "eixo": "V (vértices, com E = {razao}V arestas)", "memoria": {"notacao": "O(V²), O(V + E) e O(V · E)", "porque": "A matriz de adjacência guarda V × V casas, tenha o grafo poucas arestas ou muitas. A lista de adjacência guarda uma casa por vértice (onde começa a lista dele) e duas por aresta (u na lista de v e v na lista de u), mais a folga de cada vetor, que dobra quando enche. A matriz de incidência guarda V casas por aresta."}, "variantes": {"matriz": "matriz de adjacência", "lista": "lista de adjacência", "incidencia": "matriz de incidência"}, "operacoes": [{"id": "existe-matriz", "nome": "a aresta u–v existe?", "notacao": "O(1)", "porque": "Uma leitura: a casa da linha u e coluna v."}, {"id": "existe-lista", "nome": "a aresta u–v existe?", "notacao": "O(grau)", "porque": "Busca v na lista de u, casa por casa; se não está lá, lê a lista inteira."}, {"id": "existe-incidencia", "nome": "a aresta u–v existe?", "notacao": "O(E)", "porque": "Varre a linha de u; em cada coluna com 1, olha se v também tem 1 ali."}, {"id": "vizinhos-matriz", "nome": "os vizinhos de u", "notacao": "O(V)", "porque": "Lê a linha u inteira, V casas, mesmo que u tenha poucos vizinhos."}, {"id": "vizinhos-lista", "nome": "os vizinhos de u", "notacao": "O(grau)", "porque": "Lê a lista de u: uma casa por vizinho, nada mais."}, {"id": "vizinhos-incidencia", "nome": "os vizinhos de u", "notacao": "O(E + grau · V)", "porque": "Varre a linha de u e, em cada coluna com 1, desce a coluna até achar a outra ponta."}, {"id": "grau-matriz", "nome": "o grau de u", "notacao": "O(V)", "porque": "Soma a linha u inteira."}, {"id": "grau-lista", "nome": "o grau de u", "notacao": "O(1)", "porque": "É o tamanho do vetor de u, guardado à parte: nenhuma casa lida."}, {"id": "grau-incidencia", "nome": "o grau de u", "notacao": "O(E)", "porque": "Soma a linha de u: uma casa por aresta."}, {"id": "por-matriz", "nome": "pôr a aresta u–v", "notacao": "O(1)", "porque": "Escreve 1 nas casas (u, v) e (v, u)."}, {"id": "por-lista", "nome": "pôr a aresta u–v, com folga", "notacao": "O(1) amortizado", "porque": "Anexa v na lista de u e u na lista de v. Se um dos vetores enche, dobra e copia, como no Vetor."}, {"id": "por-incidencia", "nome": "pôr a aresta u–v", "notacao": "O(V)", "porque": "Abre uma coluna nova e escreve as V casas dela: 1 em u e em v, 0 no resto."}, {"id": "tirar-matriz", "nome": "tirar a aresta u–v", "notacao": "O(1)", "porque": "Escreve 0 nas casas (u, v) e (v, u)."}, {"id": "tirar-lista", "nome": "tirar a aresta u–v", "notacao": "O(grau)", "porque": "Busca v na lista de u, tira e puxa os de depois uma casa para trás; o mesmo com u na lista de v."}, {"id": "tirar-incidencia", "nome": "tirar a aresta u–v", "notacao": "O(E + V)", "porque": "Acha a coluna da aresta varrendo a linha de u e põe a última coluna no lugar dela, V leituras e V escritas."}], "grafico": [{"id": "vizinhos-matriz", "rotulo": "vizinhos, matriz de adjacência"}, {"id": "vizinhos-lista", "rotulo": "vizinhos, lista"}, {"id": "vizinhos-incidencia", "rotulo": "vizinhos, incidência"}, {"id": "existe-matriz", "rotulo": "existe, matriz de adjacência"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando as três vistas em Python no grafo de medição: V vértices, cada um ligado aos {seguintes} seguintes dando a volta (E = {razao}V, grau {grau}), com V = {ns}. As perguntas são sobre o vértice 0, com uma aresta que não existe no existe e no pôr (o pior caso de quem procura). O número de vértices e de arestas e o tamanho de cada lista, guardados à parte, não contam.", "custo": "O custo de achar os vizinhos de um vértice nas três vistas, e o de saber se uma aresta existe na matriz de adjacência, para V de {v0} a {v1} no grafo de medição, medido uma vez por V. Os vizinhos são sempre {grau}: a lista lê só eles, a matriz de adjacência lê a linha inteira e a de incidência varre a linha e desce as colunas.", "casas": "Casas que cada vista guarda no grafo de medição, para V de {v0} a {v1} (E = {razao}V). A lista cresce como V; as duas matrizes, como V², e a de incidência {razao} vezes mais depressa que a de adjacência, porque E = {razao}V."}, "medido": {"encher": "anel", "tamanhos": [10, 100, 1000], "operacoes": {"existe-matriz": {"estrutura": "matriz", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "vizinhos-matriz": {"estrutura": "matriz", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "grau-matriz": {"estrutura": "matriz", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "por-matriz": {"estrutura": "matriz", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "tirar-matriz": {"estrutura": "matriz", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "existe-lista": {"estrutura": "lista", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 0}, {"n": 100, "leituras": 6, "escritas": 0}, {"n": 1000, "leituras": 6, "escritas": 0}], "serie": [{"n": 8, "leituras": 6, "escritas": 0}, {"n": 9, "leituras": 6, "escritas": 0}, {"n": 10, "leituras": 6, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 6, "escritas": 0}, {"n": 13, "leituras": 6, "escritas": 0}, {"n": 14, "leituras": 6, "escritas": 0}, {"n": 15, "leituras": 6, "escritas": 0}, {"n": 16, "leituras": 6, "escritas": 0}, {"n": 17, "leituras": 6, "escritas": 0}, {"n": 18, "leituras": 6, "escritas": 0}, {"n": 19, "leituras": 6, "escritas": 0}, {"n": 20, "leituras": 6, "escritas": 0}, {"n": 21, "leituras": 6, "escritas": 0}, {"n": 22, "leituras": 6, "escritas": 0}, {"n": 23, "leituras": 6, "escritas": 0}, {"n": 24, "leituras": 6, "escritas": 0}, {"n": 25, "leituras": 6, "escritas": 0}, {"n": 26, "leituras": 6, "escritas": 0}, {"n": 27, "leituras": 6, "escritas": 0}, {"n": 28, "leituras": 6, "escritas": 0}, {"n": 29, "leituras": 6, "escritas": 0}, {"n": 30, "leituras": 6, "escritas": 0}, {"n": 31, "leituras": 6, "escritas": 0}, {"n": 32, "leituras": 6, "escritas": 0}, {"n": 33, "leituras": 6, "escritas": 0}, {"n": 34, "leituras": 6, "escritas": 0}, {"n": 35, "leituras": 6, "escritas": 0}, {"n": 36, "leituras": 6, "escritas": 0}, {"n": 37, "leituras": 6, "escritas": 0}, {"n": 38, "leituras": 6, "escritas": 0}, {"n": 39, "leituras": 6, "escritas": 0}, {"n": 40, "leituras": 6, "escritas": 0}, {"n": 41, "leituras": 6, "escritas": 0}, {"n": 42, "leituras": 6, "escritas": 0}, {"n": 43, "leituras": 6, "escritas": 0}, {"n": 44, "leituras": 6, "escritas": 0}, {"n": 45, "leituras": 6, "escritas": 0}, {"n": 46, "leituras": 6, "escritas": 0}, {"n": 47, "leituras": 6, "escritas": 0}, {"n": 48, "leituras": 6, "escritas": 0}, {"n": 49, "leituras": 6, "escritas": 0}, {"n": 50, "leituras": 6, "escritas": 0}, {"n": 51, "leituras": 6, "escritas": 0}, {"n": 52, "leituras": 6, "escritas": 0}, {"n": 53, "leituras": 6, "escritas": 0}, {"n": 54, "leituras": 6, "escritas": 0}, {"n": 55, "leituras": 6, "escritas": 0}, {"n": 56, "leituras": 6, "escritas": 0}, {"n": 57, "leituras": 6, "escritas": 0}, {"n": 58, "leituras": 6, "escritas": 0}, {"n": 59, "leituras": 6, "escritas": 0}, {"n": 60, "leituras": 6, "escritas": 0}]}, "vizinhos-lista": {"estrutura": "lista", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 0}, {"n": 100, "leituras": 6, "escritas": 0}, {"n": 1000, "leituras": 6, "escritas": 0}], "serie": [{"n": 8, "leituras": 6, "escritas": 0}, {"n": 9, "leituras": 6, "escritas": 0}, {"n": 10, "leituras": 6, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 6, "escritas": 0}, {"n": 13, "leituras": 6, "escritas": 0}, {"n": 14, "leituras": 6, "escritas": 0}, {"n": 15, "leituras": 6, "escritas": 0}, {"n": 16, "leituras": 6, "escritas": 0}, {"n": 17, "leituras": 6, "escritas": 0}, {"n": 18, "leituras": 6, "escritas": 0}, {"n": 19, "leituras": 6, "escritas": 0}, {"n": 20, "leituras": 6, "escritas": 0}, {"n": 21, "leituras": 6, "escritas": 0}, {"n": 22, "leituras": 6, "escritas": 0}, {"n": 23, "leituras": 6, "escritas": 0}, {"n": 24, "leituras": 6, "escritas": 0}, {"n": 25, "leituras": 6, "escritas": 0}, {"n": 26, "leituras": 6, "escritas": 0}, {"n": 27, "leituras": 6, "escritas": 0}, {"n": 28, "leituras": 6, "escritas": 0}, {"n": 29, "leituras": 6, "escritas": 0}, {"n": 30, "leituras": 6, "escritas": 0}, {"n": 31, "leituras": 6, "escritas": 0}, {"n": 32, "leituras": 6, "escritas": 0}, {"n": 33, "leituras": 6, "escritas": 0}, {"n": 34, "leituras": 6, "escritas": 0}, {"n": 35, "leituras": 6, "escritas": 0}, {"n": 36, "leituras": 6, "escritas": 0}, {"n": 37, "leituras": 6, "escritas": 0}, {"n": 38, "leituras": 6, "escritas": 0}, {"n": 39, "leituras": 6, "escritas": 0}, {"n": 40, "leituras": 6, "escritas": 0}, {"n": 41, "leituras": 6, "escritas": 0}, {"n": 42, "leituras": 6, "escritas": 0}, {"n": 43, "leituras": 6, "escritas": 0}, {"n": 44, "leituras": 6, "escritas": 0}, {"n": 45, "leituras": 6, "escritas": 0}, {"n": 46, "leituras": 6, "escritas": 0}, {"n": 47, "leituras": 6, "escritas": 0}, {"n": 48, "leituras": 6, "escritas": 0}, {"n": 49, "leituras": 6, "escritas": 0}, {"n": 50, "leituras": 6, "escritas": 0}, {"n": 51, "leituras": 6, "escritas": 0}, {"n": 52, "leituras": 6, "escritas": 0}, {"n": 53, "leituras": 6, "escritas": 0}, {"n": 54, "leituras": 6, "escritas": 0}, {"n": 55, "leituras": 6, "escritas": 0}, {"n": 56, "leituras": 6, "escritas": 0}, {"n": 57, "leituras": 6, "escritas": 0}, {"n": 58, "leituras": 6, "escritas": 0}, {"n": 59, "leituras": 6, "escritas": 0}, {"n": 60, "leituras": 6, "escritas": 0}]}, "grau-lista": {"estrutura": "lista", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 0}, {"n": 100, "leituras": 0, "escritas": 0}, {"n": 1000, "leituras": 0, "escritas": 0}], "serie": [{"n": 8, "leituras": 0, "escritas": 0}, {"n": 9, "leituras": 0, "escritas": 0}, {"n": 10, "leituras": 0, "escritas": 0}, {"n": 11, "leituras": 0, "escritas": 0}, {"n": 12, "leituras": 0, "escritas": 0}, {"n": 13, "leituras": 0, "escritas": 0}, {"n": 14, "leituras": 0, "escritas": 0}, {"n": 15, "leituras": 0, "escritas": 0}, {"n": 16, "leituras": 0, "escritas": 0}, {"n": 17, "leituras": 0, "escritas": 0}, {"n": 18, "leituras": 0, "escritas": 0}, {"n": 19, "leituras": 0, "escritas": 0}, {"n": 20, "leituras": 0, "escritas": 0}, {"n": 21, "leituras": 0, "escritas": 0}, {"n": 22, "leituras": 0, "escritas": 0}, {"n": 23, "leituras": 0, "escritas": 0}, {"n": 24, "leituras": 0, "escritas": 0}, {"n": 25, "leituras": 0, "escritas": 0}, {"n": 26, "leituras": 0, "escritas": 0}, {"n": 27, "leituras": 0, "escritas": 0}, {"n": 28, "leituras": 0, "escritas": 0}, {"n": 29, "leituras": 0, "escritas": 0}, {"n": 30, "leituras": 0, "escritas": 0}, {"n": 31, "leituras": 0, "escritas": 0}, {"n": 32, "leituras": 0, "escritas": 0}, {"n": 33, "leituras": 0, "escritas": 0}, {"n": 34, "leituras": 0, "escritas": 0}, {"n": 35, "leituras": 0, "escritas": 0}, {"n": 36, "leituras": 0, "escritas": 0}, {"n": 37, "leituras": 0, "escritas": 0}, {"n": 38, "leituras": 0, "escritas": 0}, {"n": 39, "leituras": 0, "escritas": 0}, {"n": 40, "leituras": 0, "escritas": 0}, {"n": 41, "leituras": 0, "escritas": 0}, {"n": 42, "leituras": 0, "escritas": 0}, {"n": 43, "leituras": 0, "escritas": 0}, {"n": 44, "leituras": 0, "escritas": 0}, {"n": 45, "leituras": 0, "escritas": 0}, {"n": 46, "leituras": 0, "escritas": 0}, {"n": 47, "leituras": 0, "escritas": 0}, {"n": 48, "leituras": 0, "escritas": 0}, {"n": 49, "leituras": 0, "escritas": 0}, {"n": 50, "leituras": 0, "escritas": 0}, {"n": 51, "leituras": 0, "escritas": 0}, {"n": 52, "leituras": 0, "escritas": 0}, {"n": 53, "leituras": 0, "escritas": 0}, {"n": 54, "leituras": 0, "escritas": 0}, {"n": 55, "leituras": 0, "escritas": 0}, {"n": 56, "leituras": 0, "escritas": 0}, {"n": 57, "leituras": 0, "escritas": 0}, {"n": 58, "leituras": 0, "escritas": 0}, {"n": 59, "leituras": 0, "escritas": 0}, {"n": 60, "leituras": 0, "escritas": 0}]}, "por-lista": {"estrutura": "lista", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "tirar-lista": {"estrutura": "lista", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 14, "escritas": 10}, {"n": 100, "leituras": 14, "escritas": 10}, {"n": 1000, "leituras": 14, "escritas": 10}], "serie": [{"n": 8, "leituras": 14, "escritas": 10}, {"n": 9, "leituras": 14, "escritas": 10}, {"n": 10, "leituras": 14, "escritas": 10}, {"n": 11, "leituras": 14, "escritas": 10}, {"n": 12, "leituras": 14, "escritas": 10}, {"n": 13, "leituras": 14, "escritas": 10}, {"n": 14, "leituras": 14, "escritas": 10}, {"n": 15, "leituras": 14, "escritas": 10}, {"n": 16, "leituras": 14, "escritas": 10}, {"n": 17, "leituras": 14, "escritas": 10}, {"n": 18, "leituras": 14, "escritas": 10}, {"n": 19, "leituras": 14, "escritas": 10}, {"n": 20, "leituras": 14, "escritas": 10}, {"n": 21, "leituras": 14, "escritas": 10}, {"n": 22, "leituras": 14, "escritas": 10}, {"n": 23, "leituras": 14, "escritas": 10}, {"n": 24, "leituras": 14, "escritas": 10}, {"n": 25, "leituras": 14, "escritas": 10}, {"n": 26, "leituras": 14, "escritas": 10}, {"n": 27, "leituras": 14, "escritas": 10}, {"n": 28, "leituras": 14, "escritas": 10}, {"n": 29, "leituras": 14, "escritas": 10}, {"n": 30, "leituras": 14, "escritas": 10}, {"n": 31, "leituras": 14, "escritas": 10}, {"n": 32, "leituras": 14, "escritas": 10}, {"n": 33, "leituras": 14, "escritas": 10}, {"n": 34, "leituras": 14, "escritas": 10}, {"n": 35, "leituras": 14, "escritas": 10}, {"n": 36, "leituras": 14, "escritas": 10}, {"n": 37, "leituras": 14, "escritas": 10}, {"n": 38, "leituras": 14, "escritas": 10}, {"n": 39, "leituras": 14, "escritas": 10}, {"n": 40, "leituras": 14, "escritas": 10}, {"n": 41, "leituras": 14, "escritas": 10}, {"n": 42, "leituras": 14, "escritas": 10}, {"n": 43, "leituras": 14, "escritas": 10}, {"n": 44, "leituras": 14, "escritas": 10}, {"n": 45, "leituras": 14, "escritas": 10}, {"n": 46, "leituras": 14, "escritas": 10}, {"n": 47, "leituras": 14, "escritas": 10}, {"n": 48, "leituras": 14, "escritas": 10}, {"n": 49, "leituras": 14, "escritas": 10}, {"n": 50, "leituras": 14, "escritas": 10}, {"n": 51, "leituras": 14, "escritas": 10}, {"n": 52, "leituras": 14, "escritas": 10}, {"n": 53, "leituras": 14, "escritas": 10}, {"n": 54, "leituras": 14, "escritas": 10}, {"n": 55, "leituras": 14, "escritas": 10}, {"n": 56, "leituras": 14, "escritas": 10}, {"n": 57, "leituras": 14, "escritas": 10}, {"n": 58, "leituras": 14, "escritas": 10}, {"n": 59, "leituras": 14, "escritas": 10}, {"n": 60, "leituras": 14, "escritas": 10}]}, "existe-incidencia": {"estrutura": "incidencia", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 36, "escritas": 0}, {"n": 100, "leituras": 306, "escritas": 0}, {"n": 1000, "leituras": 3006, "escritas": 0}], "serie": [{"n": 8, "leituras": 30, "escritas": 0}, {"n": 9, "leituras": 33, "escritas": 0}, {"n": 10, "leituras": 36, "escritas": 0}, {"n": 11, "leituras": 39, "escritas": 0}, {"n": 12, "leituras": 42, "escritas": 0}, {"n": 13, "leituras": 45, "escritas": 0}, {"n": 14, "leituras": 48, "escritas": 0}, {"n": 15, "leituras": 51, "escritas": 0}, {"n": 16, "leituras": 54, "escritas": 0}, {"n": 17, "leituras": 57, "escritas": 0}, {"n": 18, "leituras": 60, "escritas": 0}, {"n": 19, "leituras": 63, "escritas": 0}, {"n": 20, "leituras": 66, "escritas": 0}, {"n": 21, "leituras": 69, "escritas": 0}, {"n": 22, "leituras": 72, "escritas": 0}, {"n": 23, "leituras": 75, "escritas": 0}, {"n": 24, "leituras": 78, "escritas": 0}, {"n": 25, "leituras": 81, "escritas": 0}, {"n": 26, "leituras": 84, "escritas": 0}, {"n": 27, "leituras": 87, "escritas": 0}, {"n": 28, "leituras": 90, "escritas": 0}, {"n": 29, "leituras": 93, "escritas": 0}, {"n": 30, "leituras": 96, "escritas": 0}, {"n": 31, "leituras": 99, "escritas": 0}, {"n": 32, "leituras": 102, "escritas": 0}, {"n": 33, "leituras": 105, "escritas": 0}, {"n": 34, "leituras": 108, "escritas": 0}, {"n": 35, "leituras": 111, "escritas": 0}, {"n": 36, "leituras": 114, "escritas": 0}, {"n": 37, "leituras": 117, "escritas": 0}, {"n": 38, "leituras": 120, "escritas": 0}, {"n": 39, "leituras": 123, "escritas": 0}, {"n": 40, "leituras": 126, "escritas": 0}, {"n": 41, "leituras": 129, "escritas": 0}, {"n": 42, "leituras": 132, "escritas": 0}, {"n": 43, "leituras": 135, "escritas": 0}, {"n": 44, "leituras": 138, "escritas": 0}, {"n": 45, "leituras": 141, "escritas": 0}, {"n": 46, "leituras": 144, "escritas": 0}, {"n": 47, "leituras": 147, "escritas": 0}, {"n": 48, "leituras": 150, "escritas": 0}, {"n": 49, "leituras": 153, "escritas": 0}, {"n": 50, "leituras": 156, "escritas": 0}, {"n": 51, "leituras": 159, "escritas": 0}, {"n": 52, "leituras": 162, "escritas": 0}, {"n": 53, "leituras": 165, "escritas": 0}, {"n": 54, "leituras": 168, "escritas": 0}, {"n": 55, "leituras": 171, "escritas": 0}, {"n": 56, "leituras": 174, "escritas": 0}, {"n": 57, "leituras": 177, "escritas": 0}, {"n": 58, "leituras": 180, "escritas": 0}, {"n": 59, "leituras": 183, "escritas": 0}, {"n": 60, "leituras": 186, "escritas": 0}]}, "vizinhos-incidencia": {"estrutura": "incidencia", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 60, "escritas": 0}, {"n": 100, "leituras": 600, "escritas": 0}, {"n": 1000, "leituras": 6000, "escritas": 0}], "serie": [{"n": 8, "leituras": 48, "escritas": 0}, {"n": 9, "leituras": 54, "escritas": 0}, {"n": 10, "leituras": 60, "escritas": 0}, {"n": 11, "leituras": 66, "escritas": 0}, {"n": 12, "leituras": 72, "escritas": 0}, {"n": 13, "leituras": 78, "escritas": 0}, {"n": 14, "leituras": 84, "escritas": 0}, {"n": 15, "leituras": 90, "escritas": 0}, {"n": 16, "leituras": 96, "escritas": 0}, {"n": 17, "leituras": 102, "escritas": 0}, {"n": 18, "leituras": 108, "escritas": 0}, {"n": 19, "leituras": 114, "escritas": 0}, {"n": 20, "leituras": 120, "escritas": 0}, {"n": 21, "leituras": 126, "escritas": 0}, {"n": 22, "leituras": 132, "escritas": 0}, {"n": 23, "leituras": 138, "escritas": 0}, {"n": 24, "leituras": 144, "escritas": 0}, {"n": 25, "leituras": 150, "escritas": 0}, {"n": 26, "leituras": 156, "escritas": 0}, {"n": 27, "leituras": 162, "escritas": 0}, {"n": 28, "leituras": 168, "escritas": 0}, {"n": 29, "leituras": 174, "escritas": 0}, {"n": 30, "leituras": 180, "escritas": 0}, {"n": 31, "leituras": 186, "escritas": 0}, {"n": 32, "leituras": 192, "escritas": 0}, {"n": 33, "leituras": 198, "escritas": 0}, {"n": 34, "leituras": 204, "escritas": 0}, {"n": 35, "leituras": 210, "escritas": 0}, {"n": 36, "leituras": 216, "escritas": 0}, {"n": 37, "leituras": 222, "escritas": 0}, {"n": 38, "leituras": 228, "escritas": 0}, {"n": 39, "leituras": 234, "escritas": 0}, {"n": 40, "leituras": 240, "escritas": 0}, {"n": 41, "leituras": 246, "escritas": 0}, {"n": 42, "leituras": 252, "escritas": 0}, {"n": 43, "leituras": 258, "escritas": 0}, {"n": 44, "leituras": 264, "escritas": 0}, {"n": 45, "leituras": 270, "escritas": 0}, {"n": 46, "leituras": 276, "escritas": 0}, {"n": 47, "leituras": 282, "escritas": 0}, {"n": 48, "leituras": 288, "escritas": 0}, {"n": 49, "leituras": 294, "escritas": 0}, {"n": 50, "leituras": 300, "escritas": 0}, {"n": 51, "leituras": 306, "escritas": 0}, {"n": 52, "leituras": 312, "escritas": 0}, {"n": 53, "leituras": 318, "escritas": 0}, {"n": 54, "leituras": 324, "escritas": 0}, {"n": 55, "leituras": 330, "escritas": 0}, {"n": 56, "leituras": 336, "escritas": 0}, {"n": 57, "leituras": 342, "escritas": 0}, {"n": 58, "leituras": 348, "escritas": 0}, {"n": 59, "leituras": 354, "escritas": 0}, {"n": 60, "leituras": 360, "escritas": 0}]}, "grau-incidencia": {"estrutura": "incidencia", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 30, "escritas": 0}, {"n": 100, "leituras": 300, "escritas": 0}, {"n": 1000, "leituras": 3000, "escritas": 0}], "serie": [{"n": 8, "leituras": 24, "escritas": 0}, {"n": 9, "leituras": 27, "escritas": 0}, {"n": 10, "leituras": 30, "escritas": 0}, {"n": 11, "leituras": 33, "escritas": 0}, {"n": 12, "leituras": 36, "escritas": 0}, {"n": 13, "leituras": 39, "escritas": 0}, {"n": 14, "leituras": 42, "escritas": 0}, {"n": 15, "leituras": 45, "escritas": 0}, {"n": 16, "leituras": 48, "escritas": 0}, {"n": 17, "leituras": 51, "escritas": 0}, {"n": 18, "leituras": 54, "escritas": 0}, {"n": 19, "leituras": 57, "escritas": 0}, {"n": 20, "leituras": 60, "escritas": 0}, {"n": 21, "leituras": 63, "escritas": 0}, {"n": 22, "leituras": 66, "escritas": 0}, {"n": 23, "leituras": 69, "escritas": 0}, {"n": 24, "leituras": 72, "escritas": 0}, {"n": 25, "leituras": 75, "escritas": 0}, {"n": 26, "leituras": 78, "escritas": 0}, {"n": 27, "leituras": 81, "escritas": 0}, {"n": 28, "leituras": 84, "escritas": 0}, {"n": 29, "leituras": 87, "escritas": 0}, {"n": 30, "leituras": 90, "escritas": 0}, {"n": 31, "leituras": 93, "escritas": 0}, {"n": 32, "leituras": 96, "escritas": 0}, {"n": 33, "leituras": 99, "escritas": 0}, {"n": 34, "leituras": 102, "escritas": 0}, {"n": 35, "leituras": 105, "escritas": 0}, {"n": 36, "leituras": 108, "escritas": 0}, {"n": 37, "leituras": 111, "escritas": 0}, {"n": 38, "leituras": 114, "escritas": 0}, {"n": 39, "leituras": 117, "escritas": 0}, {"n": 40, "leituras": 120, "escritas": 0}, {"n": 41, "leituras": 123, "escritas": 0}, {"n": 42, "leituras": 126, "escritas": 0}, {"n": 43, "leituras": 129, "escritas": 0}, {"n": 44, "leituras": 132, "escritas": 0}, {"n": 45, "leituras": 135, "escritas": 0}, {"n": 46, "leituras": 138, "escritas": 0}, {"n": 47, "leituras": 141, "escritas": 0}, {"n": 48, "leituras": 144, "escritas": 0}, {"n": 49, "leituras": 147, "escritas": 0}, {"n": 50, "leituras": 150, "escritas": 0}, {"n": 51, "leituras": 153, "escritas": 0}, {"n": 52, "leituras": 156, "escritas": 0}, {"n": 53, "leituras": 159, "escritas": 0}, {"n": 54, "leituras": 162, "escritas": 0}, {"n": 55, "leituras": 165, "escritas": 0}, {"n": 56, "leituras": 168, "escritas": 0}, {"n": 57, "leituras": 171, "escritas": 0}, {"n": 58, "leituras": 174, "escritas": 0}, {"n": 59, "leituras": 177, "escritas": 0}, {"n": 60, "leituras": 180, "escritas": 0}]}, "por-incidencia": {"estrutura": "incidencia", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 10}, {"n": 100, "leituras": 0, "escritas": 100}, {"n": 1000, "leituras": 0, "escritas": 1000}], "serie": [{"n": 8, "leituras": 0, "escritas": 8}, {"n": 9, "leituras": 0, "escritas": 9}, {"n": 10, "leituras": 0, "escritas": 10}, {"n": 11, "leituras": 0, "escritas": 11}, {"n": 12, "leituras": 0, "escritas": 12}, {"n": 13, "leituras": 0, "escritas": 13}, {"n": 14, "leituras": 0, "escritas": 14}, {"n": 15, "leituras": 0, "escritas": 15}, {"n": 16, "leituras": 0, "escritas": 16}, {"n": 17, "leituras": 0, "escritas": 17}, {"n": 18, "leituras": 0, "escritas": 18}, {"n": 19, "leituras": 0, "escritas": 19}, {"n": 20, "leituras": 0, "escritas": 20}, {"n": 21, "leituras": 0, "escritas": 21}, {"n": 22, "leituras": 0, "escritas": 22}, {"n": 23, "leituras": 0, "escritas": 23}, {"n": 24, "leituras": 0, "escritas": 24}, {"n": 25, "leituras": 0, "escritas": 25}, {"n": 26, "leituras": 0, "escritas": 26}, {"n": 27, "leituras": 0, "escritas": 27}, {"n": 28, "leituras": 0, "escritas": 28}, {"n": 29, "leituras": 0, "escritas": 29}, {"n": 30, "leituras": 0, "escritas": 30}, {"n": 31, "leituras": 0, "escritas": 31}, {"n": 32, "leituras": 0, "escritas": 32}, {"n": 33, "leituras": 0, "escritas": 33}, {"n": 34, "leituras": 0, "escritas": 34}, {"n": 35, "leituras": 0, "escritas": 35}, {"n": 36, "leituras": 0, "escritas": 36}, {"n": 37, "leituras": 0, "escritas": 37}, {"n": 38, "leituras": 0, "escritas": 38}, {"n": 39, "leituras": 0, "escritas": 39}, {"n": 40, "leituras": 0, "escritas": 40}, {"n": 41, "leituras": 0, "escritas": 41}, {"n": 42, "leituras": 0, "escritas": 42}, {"n": 43, "leituras": 0, "escritas": 43}, {"n": 44, "leituras": 0, "escritas": 44}, {"n": 45, "leituras": 0, "escritas": 45}, {"n": 46, "leituras": 0, "escritas": 46}, {"n": 47, "leituras": 0, "escritas": 47}, {"n": 48, "leituras": 0, "escritas": 48}, {"n": 49, "leituras": 0, "escritas": 49}, {"n": 50, "leituras": 0, "escritas": 50}, {"n": 51, "leituras": 0, "escritas": 51}, {"n": 52, "leituras": 0, "escritas": 52}, {"n": 53, "leituras": 0, "escritas": 53}, {"n": 54, "leituras": 0, "escritas": 54}, {"n": 55, "leituras": 0, "escritas": 55}, {"n": 56, "leituras": 0, "escritas": 56}, {"n": 57, "leituras": 0, "escritas": 57}, {"n": 58, "leituras": 0, "escritas": 58}, {"n": 59, "leituras": 0, "escritas": 59}, {"n": 60, "leituras": 0, "escritas": 60}]}, "tirar-incidencia": {"estrutura": "incidencia", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 12, "escritas": 10}, {"n": 100, "leituras": 102, "escritas": 100}, {"n": 1000, "leituras": 1002, "escritas": 1000}], "serie": [{"n": 8, "leituras": 10, "escritas": 8}, {"n": 9, "leituras": 11, "escritas": 9}, {"n": 10, "leituras": 12, "escritas": 10}, {"n": 11, "leituras": 13, "escritas": 11}, {"n": 12, "leituras": 14, "escritas": 12}, {"n": 13, "leituras": 15, "escritas": 13}, {"n": 14, "leituras": 16, "escritas": 14}, {"n": 15, "leituras": 17, "escritas": 15}, {"n": 16, "leituras": 18, "escritas": 16}, {"n": 17, "leituras": 19, "escritas": 17}, {"n": 18, "leituras": 20, "escritas": 18}, {"n": 19, "leituras": 21, "escritas": 19}, {"n": 20, "leituras": 22, "escritas": 20}, {"n": 21, "leituras": 23, "escritas": 21}, {"n": 22, "leituras": 24, "escritas": 22}, {"n": 23, "leituras": 25, "escritas": 23}, {"n": 24, "leituras": 26, "escritas": 24}, {"n": 25, "leituras": 27, "escritas": 25}, {"n": 26, "leituras": 28, "escritas": 26}, {"n": 27, "leituras": 29, "escritas": 27}, {"n": 28, "leituras": 30, "escritas": 28}, {"n": 29, "leituras": 31, "escritas": 29}, {"n": 30, "leituras": 32, "escritas": 30}, {"n": 31, "leituras": 33, "escritas": 31}, {"n": 32, "leituras": 34, "escritas": 32}, {"n": 33, "leituras": 35, "escritas": 33}, {"n": 34, "leituras": 36, "escritas": 34}, {"n": 35, "leituras": 37, "escritas": 35}, {"n": 36, "leituras": 38, "escritas": 36}, {"n": 37, "leituras": 39, "escritas": 37}, {"n": 38, "leituras": 40, "escritas": 38}, {"n": 39, "leituras": 41, "escritas": 39}, {"n": 40, "leituras": 42, "escritas": 40}, {"n": 41, "leituras": 43, "escritas": 41}, {"n": 42, "leituras": 44, "escritas": 42}, {"n": 43, "leituras": 45, "escritas": 43}, {"n": 44, "leituras": 46, "escritas": 44}, {"n": 45, "leituras": 47, "escritas": 45}, {"n": 46, "leituras": 48, "escritas": 46}, {"n": 47, "leituras": 49, "escritas": 47}, {"n": 48, "leituras": 50, "escritas": 48}, {"n": 49, "leituras": 51, "escritas": 49}, {"n": 50, "leituras": 52, "escritas": 50}, {"n": 51, "leituras": 53, "escritas": 51}, {"n": 52, "leituras": 54, "escritas": 52}, {"n": 53, "leituras": 55, "escritas": 53}, {"n": 54, "leituras": 56, "escritas": 54}, {"n": 55, "leituras": 57, "escritas": 55}, {"n": 56, "leituras": 58, "escritas": 56}, {"n": 57, "leituras": 59, "escritas": 57}, {"n": 58, "leituras": 60, "escritas": 58}, {"n": 59, "leituras": 61, "escritas": 59}, {"n": 60, "leituras": 62, "escritas": 60}]}}, "capacidade": {"matriz": [{"n": 0, "casas": 0}, {"n": 1, "casas": 1}, {"n": 2, "casas": 4}, {"n": 3, "casas": 9}, {"n": 4, "casas": 16}, {"n": 5, "casas": 25}, {"n": 6, "casas": 36}, {"n": 7, "casas": 49}, {"n": 8, "casas": 64}, {"n": 9, "casas": 81}, {"n": 10, "casas": 100}, {"n": 11, "casas": 121}, {"n": 12, "casas": 144}, {"n": 13, "casas": 169}, {"n": 14, "casas": 196}, {"n": 15, "casas": 225}, {"n": 16, "casas": 256}, {"n": 17, "casas": 289}, {"n": 18, "casas": 324}, {"n": 19, "casas": 361}, {"n": 20, "casas": 400}, {"n": 21, "casas": 441}, {"n": 22, "casas": 484}, {"n": 23, "casas": 529}, {"n": 24, "casas": 576}, {"n": 25, "casas": 625}, {"n": 26, "casas": 676}, {"n": 27, "casas": 729}, {"n": 28, "casas": 784}, {"n": 29, "casas": 841}, {"n": 30, "casas": 900}, {"n": 31, "casas": 961}, {"n": 32, "casas": 1024}, {"n": 33, "casas": 1089}, {"n": 34, "casas": 1156}, {"n": 35, "casas": 1225}, {"n": 36, "casas": 1296}, {"n": 37, "casas": 1369}, {"n": 38, "casas": 1444}, {"n": 39, "casas": 1521}, {"n": 40, "casas": 1600}, {"n": 41, "casas": 1681}, {"n": 42, "casas": 1764}, {"n": 43, "casas": 1849}, {"n": 44, "casas": 1936}, {"n": 45, "casas": 2025}, {"n": 46, "casas": 2116}, {"n": 47, "casas": 2209}, {"n": 48, "casas": 2304}, {"n": 49, "casas": 2401}, {"n": 50, "casas": 2500}, {"n": 51, "casas": 2601}, {"n": 52, "casas": 2704}, {"n": 53, "casas": 2809}, {"n": 54, "casas": 2916}, {"n": 55, "casas": 3025}, {"n": 56, "casas": 3136}, {"n": 57, "casas": 3249}, {"n": 58, "casas": 3364}, {"n": 59, "casas": 3481}, {"n": 60, "casas": 3600}], "lista": [{"n": 0, "casas": 0}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 9}, {"n": 4, "casas": 20}, {"n": 5, "casas": 25}, {"n": 6, "casas": 54}, {"n": 7, "casas": 63}, {"n": 8, "casas": 72}, {"n": 9, "casas": 81}, {"n": 10, "casas": 90}, {"n": 11, "casas": 99}, {"n": 12, "casas": 108}, {"n": 13, "casas": 117}, {"n": 14, "casas": 126}, {"n": 15, "casas": 135}, {"n": 16, "casas": 144}, {"n": 17, "casas": 153}, {"n": 18, "casas": 162}, {"n": 19, "casas": 171}, {"n": 20, "casas": 180}, {"n": 21, "casas": 189}, {"n": 22, "casas": 198}, {"n": 23, "casas": 207}, {"n": 24, "casas": 216}, {"n": 25, "casas": 225}, {"n": 26, "casas": 234}, {"n": 27, "casas": 243}, {"n": 28, "casas": 252}, {"n": 29, "casas": 261}, {"n": 30, "casas": 270}, {"n": 31, "casas": 279}, {"n": 32, "casas": 288}, {"n": 33, "casas": 297}, {"n": 34, "casas": 306}, {"n": 35, "casas": 315}, {"n": 36, "casas": 324}, {"n": 37, "casas": 333}, {"n": 38, "casas": 342}, {"n": 39, "casas": 351}, {"n": 40, "casas": 360}, {"n": 41, "casas": 369}, {"n": 42, "casas": 378}, {"n": 43, "casas": 387}, {"n": 44, "casas": 396}, {"n": 45, "casas": 405}, {"n": 46, "casas": 414}, {"n": 47, "casas": 423}, {"n": 48, "casas": 432}, {"n": 49, "casas": 441}, {"n": 50, "casas": 450}, {"n": 51, "casas": 459}, {"n": 52, "casas": 468}, {"n": 53, "casas": 477}, {"n": 54, "casas": 486}, {"n": 55, "casas": 495}, {"n": 56, "casas": 504}, {"n": 57, "casas": 513}, {"n": 58, "casas": 522}, {"n": 59, "casas": 531}, {"n": 60, "casas": 540}], "incidencia": [{"n": 0, "casas": 0}, {"n": 1, "casas": 0}, {"n": 2, "casas": 2}, {"n": 3, "casas": 9}, {"n": 4, "casas": 24}, {"n": 5, "casas": 50}, {"n": 6, "casas": 90}, {"n": 7, "casas": 147}, {"n": 8, "casas": 192}, {"n": 9, "casas": 243}, {"n": 10, "casas": 300}, {"n": 11, "casas": 363}, {"n": 12, "casas": 432}, {"n": 13, "casas": 507}, {"n": 14, "casas": 588}, {"n": 15, "casas": 675}, {"n": 16, "casas": 768}, {"n": 17, "casas": 867}, {"n": 18, "casas": 972}, {"n": 19, "casas": 1083}, {"n": 20, "casas": 1200}, {"n": 21, "casas": 1323}, {"n": 22, "casas": 1452}, {"n": 23, "casas": 1587}, {"n": 24, "casas": 1728}, {"n": 25, "casas": 1875}, {"n": 26, "casas": 2028}, {"n": 27, "casas": 2187}, {"n": 28, "casas": 2352}, {"n": 29, "casas": 2523}, {"n": 30, "casas": 2700}, {"n": 31, "casas": 2883}, {"n": 32, "casas": 3072}, {"n": 33, "casas": 3267}, {"n": 34, "casas": 3468}, {"n": 35, "casas": 3675}, {"n": 36, "casas": 3888}, {"n": 37, "casas": 4107}, {"n": 38, "casas": 4332}, {"n": 39, "casas": 4563}, {"n": 40, "casas": 4800}, {"n": 41, "casas": 5043}, {"n": 42, "casas": 5292}, {"n": 43, "casas": 5547}, {"n": 44, "casas": 5808}, {"n": 45, "casas": 6075}, {"n": 46, "casas": 6348}, {"n": 47, "casas": 6627}, {"n": 48, "casas": 6912}, {"n": 49, "casas": 7203}, {"n": 50, "casas": 7500}, {"n": 51, "casas": 7803}, {"n": 52, "casas": 8112}, {"n": 53, "casas": 8427}, {"n": 54, "casas": 8748}, {"n": 55, "casas": 9075}, {"n": 56, "casas": 9408}, {"n": 57, "casas": 9747}, {"n": 58, "casas": 10092}, {"n": 59, "casas": 10443}, {"n": 60, "casas": 10800}]}, "anel": {"seguintes": 3, "grau": 6, "razao": 3, "minimo": 8}}}, {"id": "heap", "nome": "Heap", "variante": "de mínimo, sobre um vetor dinâmico; a árvore é o próprio vetor", "frase": "Uma árvore guardada num vetor: o menor sempre no topo.", "resumo": "Todo pai é menor ou igual aos filhos, então o menor de todos mora no topo. A árvore não tem ponteiros: ela é o vetor lido por uma conta. Os filhos da casa i estão nas casas 2i + 1 e 2i + 2, e o pai está na casa ⌊(i − 1)/2⌋. Inserir põe o valor no fim e o sobe; tirar o menor leva o último para o topo e o desce. Cada um anda no máximo a altura da árvore, uns log₂ n níveis. É a fila de prioridade das faixas, e o heapsort usa o mesmo descer, com a comparação invertida.", "placa": {"autor": "J. W. J. Williams (heapsort); Robert W. Floyd (montar de baixo para cima)", "ano": "1964"}, "memoria": {"notacao": "O(n)", "porque": "As casas do vetor por baixo: uma por valor guardado, mais a folga do vetor, que dobra quando enche. Pai e filhos não guardam nada: saem da conta dos índices."}, "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando o heap em Python. Inserir, tirar e ver o menor rodam num heap já montado com 0, 1, …, n − 1: inserir −1 sobe até a raiz e tirar o menor desce até uma folha, os piores casos. As duas montagens partem do heap vazio e recebem os mesmos n valores, do maior para o menor; nelas, a tabela traz o total e o custo por valor.", "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Cheia: tirar o menor, que cresce com a altura da árvore, em degraus a cada potência de 2. Tracejadas: as duas montagens, em custo por valor (o total dividido por n). Montar de uma vez fica parado; inserir um por um cresce como log n. Inserir sozinho fica de fora: além de subir, ele paga as vezes em que as casas acabam e o vetor dobra, como no Vetor."}, "operacoes": [{"id": "inserir", "nome": "inserir", "notacao": "O(log n)", "porque": "Escreve no fim e sobe: a cada nível, lê o pai e, se o novo é menor, troca os dois (duas escritas). Sobe no máximo a altura da árvore."}, {"id": "tirar", "nome": "tirar o menor", "notacao": "O(log n)", "porque": "Lê a casa 0, leva o último para lá e o desce: a cada nível, lê os dois filhos e troca com o menor deles."}, {"id": "menor", "nome": "ver o menor", "notacao": "O(1)", "porque": "Uma leitura da casa 0: o menor está sempre no topo."}, {"id": "montar", "nome": "montar de uma vez", "notacao": "O(n)", "porque": "Põe os n valores no vetor e desce cada pai, do último até a raiz. Metade das casas são folhas e nem descem; só a raiz desce a árvore inteira. Somando as alturas, menos de n trocas."}, {"id": "inserir_todos", "nome": "inserir um por um", "notacao": "O(n log n)", "porque": "n inserções seguidas. Do maior para o menor, cada valor novo sobe até a raiz: o k-ésimo sobe log₂ k níveis."}], "grafico": [{"id": "tirar", "rotulo": "tirar o menor"}, {"id": "inserir_todos", "rotulo": "um por um"}, {"id": "montar", "rotulo": "de uma vez"}], "medido": {"encher": "inserir", "tamanhos": [10, 100, 1000], "operacoes": {"inserir": {"estrutura": "heap", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 7}, {"n": 100, "leituras": 6, "escritas": 13}, {"n": 1000, "leituras": 9, "escritas": 19}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 2, "escritas": 4}, {"n": 2, "leituras": 3, "escritas": 5}, {"n": 3, "leituras": 2, "escritas": 5}, {"n": 4, "leituras": 6, "escritas": 9}, {"n": 5, "leituras": 2, "escritas": 5}, {"n": 6, "leituras": 2, "escritas": 5}, {"n": 7, "leituras": 3, "escritas": 7}, {"n": 8, "leituras": 11, "escritas": 15}, {"n": 9, "leituras": 3, "escritas": 7}, {"n": 10, "leituras": 3, "escritas": 7}, {"n": 11, "leituras": 3, "escritas": 7}, {"n": 12, "leituras": 3, "escritas": 7}, {"n": 13, "leituras": 3, "escritas": 7}, {"n": 14, "leituras": 3, "escritas": 7}, {"n": 15, "leituras": 4, "escritas": 9}, {"n": 16, "leituras": 20, "escritas": 25}, {"n": 17, "leituras": 4, "escritas": 9}, {"n": 18, "leituras": 4, "escritas": 9}, {"n": 19, "leituras": 4, "escritas": 9}, {"n": 20, "leituras": 4, "escritas": 9}, {"n": 21, "leituras": 4, "escritas": 9}, {"n": 22, "leituras": 4, "escritas": 9}, {"n": 23, "leituras": 4, "escritas": 9}, {"n": 24, "leituras": 4, "escritas": 9}, {"n": 25, "leituras": 4, "escritas": 9}, {"n": 26, "leituras": 4, "escritas": 9}, {"n": 27, "leituras": 4, "escritas": 9}, {"n": 28, "leituras": 4, "escritas": 9}, {"n": 29, "leituras": 4, "escritas": 9}, {"n": 30, "leituras": 4, "escritas": 9}, {"n": 31, "leituras": 5, "escritas": 11}, {"n": 32, "leituras": 37, "escritas": 43}, {"n": 33, "leituras": 5, "escritas": 11}, {"n": 34, "leituras": 5, "escritas": 11}, {"n": 35, "leituras": 5, "escritas": 11}, {"n": 36, "leituras": 5, "escritas": 11}, {"n": 37, "leituras": 5, "escritas": 11}, {"n": 38, "leituras": 5, "escritas": 11}, {"n": 39, "leituras": 5, "escritas": 11}, {"n": 40, "leituras": 5, "escritas": 11}, {"n": 41, "leituras": 5, "escritas": 11}, {"n": 42, "leituras": 5, "escritas": 11}, {"n": 43, "leituras": 5, "escritas": 11}, {"n": 44, "leituras": 5, "escritas": 11}, {"n": 45, "leituras": 5, "escritas": 11}, {"n": 46, "leituras": 5, "escritas": 11}, {"n": 47, "leituras": 5, "escritas": 11}, {"n": 48, "leituras": 5, "escritas": 11}, {"n": 49, "leituras": 5, "escritas": 11}, {"n": 50, "leituras": 5, "escritas": 11}, {"n": 51, "leituras": 5, "escritas": 11}, {"n": 52, "leituras": 5, "escritas": 11}, {"n": 53, "leituras": 5, "escritas": 11}, {"n": 54, "leituras": 5, "escritas": 11}, {"n": 55, "leituras": 5, "escritas": 11}, {"n": 56, "leituras": 5, "escritas": 11}, {"n": 57, "leituras": 5, "escritas": 11}, {"n": 58, "leituras": 5, "escritas": 11}, {"n": 59, "leituras": 5, "escritas": 11}, {"n": 60, "leituras": 5, "escritas": 11}]}, "tirar": {"estrutura": "heap", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 8, "escritas": 7}, {"n": 100, "leituras": 14, "escritas": 13}, {"n": 1000, "leituras": 20, "escritas": 19}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 3}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 5}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 6, "escritas": 5}, {"n": 8, "leituras": 6, "escritas": 5}, {"n": 9, "leituras": 7, "escritas": 7}, {"n": 10, "leituras": 8, "escritas": 7}, {"n": 11, "leituras": 8, "escritas": 7}, {"n": 12, "leituras": 8, "escritas": 7}, {"n": 13, "leituras": 8, "escritas": 7}, {"n": 14, "leituras": 8, "escritas": 7}, {"n": 15, "leituras": 8, "escritas": 7}, {"n": 16, "leituras": 8, "escritas": 7}, {"n": 17, "leituras": 9, "escritas": 9}, {"n": 18, "leituras": 10, "escritas": 9}, {"n": 19, "leituras": 10, "escritas": 9}, {"n": 20, "leituras": 10, "escritas": 9}, {"n": 21, "leituras": 10, "escritas": 9}, {"n": 22, "leituras": 10, "escritas": 9}, {"n": 23, "leituras": 10, "escritas": 9}, {"n": 24, "leituras": 10, "escritas": 9}, {"n": 25, "leituras": 10, "escritas": 9}, {"n": 26, "leituras": 10, "escritas": 9}, {"n": 27, "leituras": 10, "escritas": 9}, {"n": 28, "leituras": 10, "escritas": 9}, {"n": 29, "leituras": 10, "escritas": 9}, {"n": 30, "leituras": 10, "escritas": 9}, {"n": 31, "leituras": 10, "escritas": 9}, {"n": 32, "leituras": 10, "escritas": 9}, {"n": 33, "leituras": 11, "escritas": 11}, {"n": 34, "leituras": 12, "escritas": 11}, {"n": 35, "leituras": 12, "escritas": 11}, {"n": 36, "leituras": 12, "escritas": 11}, {"n": 37, "leituras": 12, "escritas": 11}, {"n": 38, "leituras": 12, "escritas": 11}, {"n": 39, "leituras": 12, "escritas": 11}, {"n": 40, "leituras": 12, "escritas": 11}, {"n": 41, "leituras": 12, "escritas": 11}, {"n": 42, "leituras": 12, "escritas": 11}, {"n": 43, "leituras": 12, "escritas": 11}, {"n": 44, "leituras": 12, "escritas": 11}, {"n": 45, "leituras": 12, "escritas": 11}, {"n": 46, "leituras": 12, "escritas": 11}, {"n": 47, "leituras": 12, "escritas": 11}, {"n": 48, "leituras": 12, "escritas": 11}, {"n": 49, "leituras": 12, "escritas": 11}, {"n": 50, "leituras": 12, "escritas": 11}, {"n": 51, "leituras": 12, "escritas": 11}, {"n": 52, "leituras": 12, "escritas": 11}, {"n": 53, "leituras": 12, "escritas": 11}, {"n": 54, "leituras": 12, "escritas": 11}, {"n": 55, "leituras": 12, "escritas": 11}, {"n": 56, "leituras": 12, "escritas": 11}, {"n": 57, "leituras": 12, "escritas": 11}, {"n": 58, "leituras": 12, "escritas": 11}, {"n": 59, "leituras": 12, "escritas": 11}, {"n": 60, "leituras": 12, "escritas": 11}]}, "menor": {"estrutura": "heap", "chamada": "menor", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "montar": {"estrutura": "heap", "chamada": "montar", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 34, "escritas": 41}, {"n": 100, "vezes": 100, "leituras": 367, "escritas": 419}, {"n": 1000, "vezes": 1000, "leituras": 3505, "escritas": 4007}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 3, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 6, "escritas": 8}, {"n": 4, "vezes": 4, "leituras": 9, "escritas": 13}, {"n": 5, "vezes": 5, "leituras": 15, "escritas": 18}, {"n": 6, "vezes": 6, "leituras": 16, "escritas": 21}, {"n": 7, "vezes": 7, "leituras": 18, "escritas": 22}, {"n": 8, "vezes": 8, "leituras": 21, "escritas": 27}, {"n": 9, "vezes": 9, "leituras": 33, "escritas": 38}, {"n": 10, "vezes": 10, "leituras": 34, "escritas": 41}, {"n": 11, "vezes": 11, "leituras": 36, "escritas": 42}, {"n": 12, "vezes": 12, "leituras": 37, "escritas": 45}, {"n": 13, "vezes": 13, "leituras": 41, "escritas": 48}, {"n": 14, "vezes": 14, "leituras": 42, "escritas": 51}, {"n": 15, "vezes": 15, "leituras": 44, "escritas": 52}, {"n": 16, "vezes": 16, "leituras": 47, "escritas": 57}, {"n": 17, "vezes": 17, "leituras": 67, "escritas": 76}, {"n": 18, "vezes": 18, "leituras": 70, "escritas": 81}, {"n": 19, "vezes": 19, "leituras": 72, "escritas": 82}, {"n": 20, "vezes": 20, "leituras": 73, "escritas": 85}, {"n": 21, "vezes": 21, "leituras": 75, "escritas": 86}, {"n": 22, "vezes": 22, "leituras": 78, "escritas": 91}, {"n": 23, "vezes": 23, "leituras": 80, "escritas": 92}, {"n": 24, "vezes": 24, "leituras": 81, "escritas": 95}, {"n": 25, "vezes": 25, "leituras": 85, "escritas": 98}, {"n": 26, "vezes": 26, "leituras": 88, "escritas": 103}, {"n": 27, "vezes": 27, "leituras": 90, "escritas": 104}, {"n": 28, "vezes": 28, "leituras": 91, "escritas": 107}, {"n": 29, "vezes": 29, "leituras": 93, "escritas": 108}, {"n": 30, "vezes": 30, "leituras": 96, "escritas": 113}, {"n": 31, "vezes": 31, "leituras": 98, "escritas": 114}, {"n": 32, "vezes": 32, "leituras": 101, "escritas": 119}, {"n": 33, "vezes": 33, "leituras": 137, "escritas": 154}, {"n": 34, "vezes": 34, "leituras": 141, "escritas": 161}, {"n": 35, "vezes": 35, "leituras": 144, "escritas": 162}, {"n": 36, "vezes": 36, "leituras": 145, "escritas": 165}, {"n": 37, "vezes": 37, "leituras": 147, "escritas": 166}, {"n": 38, "vezes": 38, "leituras": 149, "escritas": 171}, {"n": 39, "vezes": 39, "leituras": 152, "escritas": 172}, {"n": 40, "vezes": 40, "leituras": 153, "escritas": 175}, {"n": 41, "vezes": 41, "leituras": 155, "escritas": 176}, {"n": 42, "vezes": 42, "leituras": 159, "escritas": 183}, {"n": 43, "vezes": 43, "leituras": 162, "escritas": 184}, {"n": 44, "vezes": 44, "leituras": 163, "escritas": 187}, {"n": 45, "vezes": 45, "leituras": 165, "escritas": 188}, {"n": 46, "vezes": 46, "leituras": 167, "escritas": 193}, {"n": 47, "vezes": 47, "leituras": 170, "escritas": 194}, {"n": 48, "vezes": 48, "leituras": 171, "escritas": 197}, {"n": 49, "vezes": 49, "leituras": 175, "escritas": 200}, {"n": 50, "vezes": 50, "leituras": 179, "escritas": 207}, {"n": 51, "vezes": 51, "leituras": 182, "escritas": 208}, {"n": 52, "vezes": 52, "leituras": 183, "escritas": 211}, {"n": 53, "vezes": 53, "leituras": 185, "escritas": 212}, {"n": 54, "vezes": 54, "leituras": 187, "escritas": 217}, {"n": 55, "vezes": 55, "leituras": 190, "escritas": 218}, {"n": 56, "vezes": 56, "leituras": 191, "escritas": 221}, {"n": 57, "vezes": 57, "leituras": 193, "escritas": 222}, {"n": 58, "vezes": 58, "leituras": 197, "escritas": 229}, {"n": 59, "vezes": 59, "leituras": 200, "escritas": 230}, {"n": 60, "vezes": 60, "leituras": 201, "escritas": 233}]}, "inserir_todos": {"estrutura": "heap", "chamada": "inserir_todos", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 34, "escritas": 63}, {"n": 100, "vezes": 100, "leituras": 607, "escritas": 1187}, {"n": 1000, "vezes": 1000, "leituras": 9010, "escritas": 17997}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 2, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 5, "escritas": 10}, {"n": 4, "vezes": 4, "leituras": 7, "escritas": 15}, {"n": 5, "vezes": 5, "leituras": 13, "escritas": 24}, {"n": 6, "vezes": 6, "leituras": 15, "escritas": 29}, {"n": 7, "vezes": 7, "leituras": 17, "escritas": 34}, {"n": 8, "vezes": 8, "leituras": 20, "escritas": 41}, {"n": 9, "vezes": 9, "leituras": 31, "escritas": 56}, {"n": 10, "vezes": 10, "leituras": 34, "escritas": 63}, {"n": 11, "vezes": 11, "leituras": 37, "escritas": 70}, {"n": 12, "vezes": 12, "leituras": 40, "escritas": 77}, {"n": 13, "vezes": 13, "leituras": 43, "escritas": 84}, {"n": 14, "vezes": 14, "leituras": 46, "escritas": 91}, {"n": 15, "vezes": 15, "leituras": 49, "escritas": 98}, {"n": 16, "vezes": 16, "leituras": 53, "escritas": 107}, {"n": 17, "vezes": 17, "leituras": 73, "escritas": 132}, {"n": 18, "vezes": 18, "leituras": 77, "escritas": 141}, {"n": 19, "vezes": 19, "leituras": 81, "escritas": 150}, {"n": 20, "vezes": 20, "leituras": 85, "escritas": 159}, {"n": 21, "vezes": 21, "leituras": 89, "escritas": 168}, {"n": 22, "vezes": 22, "leituras": 93, "escritas": 177}, {"n": 23, "vezes": 23, "leituras": 97, "escritas": 186}, {"n": 24, "vezes": 24, "leituras": 101, "escritas": 195}, {"n": 25, "vezes": 25, "leituras": 105, "escritas": 204}, {"n": 26, "vezes": 26, "leituras": 109, "escritas": 213}, {"n": 27, "vezes": 27, "leituras": 113, "escritas": 222}, {"n": 28, "vezes": 28, "leituras": 117, "escritas": 231}, {"n": 29, "vezes": 29, "leituras": 121, "escritas": 240}, {"n": 30, "vezes": 30, "leituras": 125, "escritas": 249}, {"n": 31, "vezes": 31, "leituras": 129, "escritas": 258}, {"n": 32, "vezes": 32, "leituras": 134, "escritas": 269}, {"n": 33, "vezes": 33, "leituras": 171, "escritas": 312}, {"n": 34, "vezes": 34, "leituras": 176, "escritas": 323}, {"n": 35, "vezes": 35, "leituras": 181, "escritas": 334}, {"n": 36, "vezes": 36, "leituras": 186, "escritas": 345}, {"n": 37, "vezes": 37, "leituras": 191, "escritas": 356}, {"n": 38, "vezes": 38, "leituras": 196, "escritas": 367}, {"n": 39, "vezes": 39, "leituras": 201, "escritas": 378}, {"n": 40, "vezes": 40, "leituras": 206, "escritas": 389}, {"n": 41, "vezes": 41, "leituras": 211, "escritas": 400}, {"n": 42, "vezes": 42, "leituras": 216, "escritas": 411}, {"n": 43, "vezes": 43, "leituras": 221, "escritas": 422}, {"n": 44, "vezes": 44, "leituras": 226, "escritas": 433}, {"n": 45, "vezes": 45, "leituras": 231, "escritas": 444}, {"n": 46, "vezes": 46, "leituras": 236, "escritas": 455}, {"n": 47, "vezes": 47, "leituras": 241, "escritas": 466}, {"n": 48, "vezes": 48, "leituras": 246, "escritas": 477}, {"n": 49, "vezes": 49, "leituras": 251, "escritas": 488}, {"n": 50, "vezes": 50, "leituras": 256, "escritas": 499}, {"n": 51, "vezes": 51, "leituras": 261, "escritas": 510}, {"n": 52, "vezes": 52, "leituras": 266, "escritas": 521}, {"n": 53, "vezes": 53, "leituras": 271, "escritas": 532}, {"n": 54, "vezes": 54, "leituras": 276, "escritas": 543}, {"n": 55, "vezes": 55, "leituras": 281, "escritas": 554}, {"n": 56, "vezes": 56, "leituras": 286, "escritas": 565}, {"n": 57, "vezes": 57, "leituras": 291, "escritas": 576}, {"n": 58, "vezes": 58, "leituras": 296, "escritas": 587}, {"n": 59, "vezes": 59, "leituras": 301, "escritas": 598}, {"n": 60, "vezes": 60, "leituras": 306, "escritas": 609}]}}, "capacidade": {"heap": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "dicionario", "nome": "Dicionário", "variante": "tabela de dispersão em duas versões: encadeamento (uma corrente por casa) e sondagem linear (a casa seguinte)", "frase": "Acha pela chave sem procurar, até as chaves colidirem.", "resumo": "Em vez de procurar a chave casa por casa, o dicionário calcula onde ela mora: uma função de dispersão transforma a chave num número de casa. Ler, pôr e tirar viram uma conta e uma visita, sem depender de quantas chaves já existem. O problema é que duas chaves podem cair na mesma casa, uma colisão. No encadeamento, cada casa guarda o início de uma corrente de nós, e as chaves que colidem entram na mesma corrente. Na sondagem linear, a chave que encontra a casa ocupada tenta a seguinte, até achar uma vazia. As duas mantêm a ocupação α = n/m abaixo de 3/4: quando ia passar, a tabela dobra e cada chave é redistribuída. A dispersão aqui é a multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits); uma palavra vira número antes, pelo polinômio de base 31 sobre as letras.", "placa": {"autor": "Hans Peter Luhn (a ideia, num memorando da IBM); Gene Amdahl, Elaine McGraw, Nathaniel Rochester e Arthur Samuel (a sondagem linear, no montador do IBM 701)", "ano": "1953–1954"}, "memoria": {"notacao": "O(n)", "porque": "A tabela reserva m casas e dobra quando α passaria de 3/4, então, pondo chaves (passadas as primeiras), m fica entre 4n/3 e 8n/3: proporcional a n. Remover não encolhe a tabela. O encadeamento guarda m inícios de corrente e mais três casas por chave (chave, valor e próx). A sondagem guarda só as m casas de chave e valor, sem ponteiro, mas sempre com folga: um quarto delas, no mínimo, fica vazio."}, "variantes": {"encadeamento": "encadeamento", "sondagem": "sondagem"}, "operacoes": [{"id": "ler-sondagem", "nome": "ler uma chave que está", "notacao": "O(1) médio", "porque": "Calcula a casa e lê a chave guardada lá; se for outra, tenta a seguinte, até achar a chave. Com α ≤ 3/4, olha poucas casas em média, mas cair num bloco comprido de casas ocupadas custa mais. Depois lê o valor."}, {"id": "ler-encadeamento", "nome": "ler uma chave que está", "notacao": "O(1 + α) médio", "porque": "Calcula a casa, lê o início da corrente e segue os próx comparando as chaves. A corrente tem α nós em média."}, {"id": "ler-ausente-sondagem", "nome": "ler uma chave que não está", "notacao": "O(1) médio", "porque": "Só pode parar numa casa vazia: atravessa o bloco de casas ocupadas que começa na casa da chave. Com a tabela quase cheia, esses blocos crescem depressa."}, {"id": "ler-ausente-encadeamento", "nome": "ler uma chave que não está", "notacao": "O(1 + α) médio", "porque": "Percorre a corrente inteira da casa até o próx nulo. Uma corrente vazia custa só a leitura do início."}, {"id": "por-novo-sondagem", "nome": "pôr uma chave nova, com folga", "notacao": "O(1) médio", "porque": "Procura a chave até uma casa vazia (é preciso saber que ela não está) e escreve a chave e o valor nessa casa."}, {"id": "por-novo-encadeamento", "nome": "pôr uma chave nova, com folga", "notacao": "O(1 + α) médio", "porque": "Procura a chave na corrente inteira e, sem achar, cria um nó com a chave, o valor e o próx apontando para o antigo início, que passa a ser o nó novo."}, {"id": "por-pior-sondagem", "nome": "pôr, o mais caro de n seguidas", "notacao": "O(n)", "porque": "Quando α passaria de 3/4, a tabela dobra: lê cada casa velha e põe cada chave na primeira casa vazia a partir da sua casa nova."}, {"id": "por-pior-encadeamento", "nome": "pôr, o mais caro de n seguidas", "notacao": "O(n)", "porque": "Na dobra, cada nó sai da corrente velha e entra no começo da corrente da sua casa nova. Os nós não são copiados, só religados."}, {"id": "por-media-sondagem", "nome": "pôr, média de n seguidas", "notacao": "O(1) amortizado", "porque": "As dobras ficam cada vez mais raras, como no Vetor: o custo médio não cresce com n."}, {"id": "por-media-encadeamento", "nome": "pôr, média de n seguidas", "notacao": "O(1) amortizado", "porque": "O mesmo: cada dobra custa proporcional a n, mas acontece só quando n dobra."}, {"id": "por-existente-sondagem", "nome": "pôr numa chave que já está", "notacao": "O(1) médio", "porque": "Acha a chave e troca só o valor. No encadeamento, o mesmo, depois de seguir a corrente até ela."}, {"id": "remover-sondagem", "nome": "remover uma chave", "notacao": "O(1) médio", "porque": "Acha a casa e escreve uma lápide no lugar da chave. Esvaziar a casa quebraria a busca de quem passou por ela para chegar mais adiante; a lápide é pulada na busca e reaproveitada pelo próximo pôr."}, {"id": "remover-encadeamento", "nome": "remover uma chave", "notacao": "O(1 + α) médio", "porque": "Segue a corrente guardando o nó anterior e faz o anterior (ou o início) apontar para o seguinte. O nó é solto, sem lápide."}], "grafico": [{"id": "por-media-encadeamento", "rotulo": "pôr, média, encad."}, {"id": "por-media-sondagem", "rotulo": "pôr, média, sondagem"}, {"id": "ler-encadeamento", "rotulo": "ler, encadeamento"}, {"id": "ler-sondagem", "rotulo": "ler, sondagem"}, {"id": "ler-ausente-sondagem", "rotulo": "ler ausente, sondagem"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas (a chave, o valor, o próx de um nó ou o início de uma corrente), contadas rodando as duas versões em Python com n chaves já guardadas, para n = {ns}. Calcular a casa da chave não conta. As chaves são 0, 1, …, n − 1 embaralhados (de outro jeito, a dispersão as espalharia quase sem colisão); a chave lida e a removida são a do meio.", "custo": "O custo de cada operação com n chaves já guardadas, para n de {v0} a {v1}, medido uma vez por n, numa chave só: sobe e desce com a colisão da vez, mas não cresce com n. Tracejadas: a média de n chaves postas uma a uma a partir da tabela vazia, que paga as dobras.", "casas": "Casas guardadas depois de pôr n chaves, a partir da tabela vazia, para n de {v0} a {v1}. As duas dobram juntas, quando α passaria de 3/4. A sondagem guarda 2m (chave e valor em cada casa); o encadeamento, m inícios de corrente e três casas por chave."}, "medido": {"encher": "encher", "tamanhos": [10, 100, 1000], "operacoes": {"ler-encadeamento": {"estrutura": "encadeamento", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 0}, {"n": 100, "leituras": 3, "escritas": 0}, {"n": 1000, "leituras": 3, "escritas": 0}], "serie": [{"n": 1, "leituras": 3, "escritas": 0}, {"n": 2, "leituras": 3, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 3, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 5, "escritas": 0}, {"n": 7, "leituras": 3, "escritas": 0}, {"n": 8, "leituras": 3, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 3, "escritas": 0}, {"n": 11, "leituras": 3, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 3, "escritas": 0}, {"n": 15, "leituras": 3, "escritas": 0}, {"n": 16, "leituras": 3, "escritas": 0}, {"n": 17, "leituras": 3, "escritas": 0}, {"n": 18, "leituras": 3, "escritas": 0}, {"n": 19, "leituras": 3, "escritas": 0}, {"n": 20, "leituras": 5, "escritas": 0}, {"n": 21, "leituras": 5, "escritas": 0}, {"n": 22, "leituras": 7, "escritas": 0}, {"n": 23, "leituras": 7, "escritas": 0}, {"n": 24, "leituras": 3, "escritas": 0}, {"n": 25, "leituras": 5, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 3, "escritas": 0}, {"n": 28, "leituras": 3, "escritas": 0}, {"n": 29, "leituras": 3, "escritas": 0}, {"n": 30, "leituras": 3, "escritas": 0}, {"n": 31, "leituras": 3, "escritas": 0}, {"n": 32, "leituras": 3, "escritas": 0}, {"n": 33, "leituras": 3, "escritas": 0}, {"n": 34, "leituras": 3, "escritas": 0}, {"n": 35, "leituras": 3, "escritas": 0}, {"n": 36, "leituras": 5, "escritas": 0}, {"n": 37, "leituras": 5, "escritas": 0}, {"n": 38, "leituras": 5, "escritas": 0}, {"n": 39, "leituras": 5, "escritas": 0}, {"n": 40, "leituras": 7, "escritas": 0}, {"n": 41, "leituras": 7, "escritas": 0}, {"n": 42, "leituras": 3, "escritas": 0}, {"n": 43, "leituras": 3, "escritas": 0}, {"n": 44, "leituras": 3, "escritas": 0}, {"n": 45, "leituras": 3, "escritas": 0}, {"n": 46, "leituras": 3, "escritas": 0}, {"n": 47, "leituras": 3, "escritas": 0}, {"n": 48, "leituras": 5, "escritas": 0}, {"n": 49, "leituras": 3, "escritas": 0}, {"n": 50, "leituras": 3, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 3, "escritas": 0}, {"n": 53, "leituras": 3, "escritas": 0}, {"n": 54, "leituras": 3, "escritas": 0}, {"n": 55, "leituras": 3, "escritas": 0}, {"n": 56, "leituras": 3, "escritas": 0}, {"n": 57, "leituras": 3, "escritas": 0}, {"n": 58, "leituras": 3, "escritas": 0}, {"n": 59, "leituras": 3, "escritas": 0}, {"n": 60, "leituras": 3, "escritas": 0}]}, "ler-ausente-encadeamento": {"estrutura": "encadeamento", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 0}, {"n": 100, "leituras": 3, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 0, "leituras": 1, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 3, "escritas": 0}, {"n": 11, "leituras": 5, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 3, "escritas": 0}, {"n": 19, "leituras": 3, "escritas": 0}, {"n": 20, "leituras": 5, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 3, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 3, "escritas": 0}, {"n": 34, "leituras": 5, "escritas": 0}, {"n": 35, "leituras": 3, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 7, "escritas": 0}, {"n": 44, "leituras": 3, "escritas": 0}, {"n": 45, "leituras": 3, "escritas": 0}, {"n": 46, "leituras": 3, "escritas": 0}, {"n": 47, "leituras": 9, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 3, "escritas": 0}, {"n": 58, "leituras": 3, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "por-novo-encadeamento": {"estrutura": "encadeamento", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 4, "escritas": 4}, {"n": 100, "leituras": 4, "escritas": 4}, {"n": 1000, "leituras": 2, "escritas": 4}], "serie": [{"n": 0, "leituras": 2, "escritas": 4}, {"n": 1, "leituras": 2, "escritas": 4}, {"n": 2, "leituras": 2, "escritas": 4}, {"n": 3, "leituras": 2, "escritas": 4}, {"n": 4, "leituras": 2, "escritas": 4}, {"n": 5, "leituras": 4, "escritas": 4}, {"n": 6, "leituras": 28, "escritas": 16}, {"n": 7, "leituras": 2, "escritas": 4}, {"n": 8, "leituras": 2, "escritas": 4}, {"n": 9, "leituras": 4, "escritas": 4}, {"n": 10, "leituras": 4, "escritas": 4}, {"n": 11, "leituras": 6, "escritas": 4}, {"n": 12, "leituras": 60, "escritas": 28}, {"n": 13, "leituras": 2, "escritas": 4}, {"n": 14, "leituras": 2, "escritas": 4}, {"n": 15, "leituras": 2, "escritas": 4}, {"n": 16, "leituras": 2, "escritas": 4}, {"n": 17, "leituras": 2, "escritas": 4}, {"n": 18, "leituras": 4, "escritas": 4}, {"n": 19, "leituras": 4, "escritas": 4}, {"n": 20, "leituras": 6, "escritas": 4}, {"n": 21, "leituras": 2, "escritas": 4}, {"n": 22, "leituras": 2, "escritas": 4}, {"n": 23, "leituras": 2, "escritas": 4}, {"n": 24, "leituras": 108, "escritas": 52}, {"n": 25, "leituras": 2, "escritas": 4}, {"n": 26, "leituras": 4, "escritas": 4}, {"n": 27, "leituras": 2, "escritas": 4}, {"n": 28, "leituras": 2, "escritas": 4}, {"n": 29, "leituras": 2, "escritas": 4}, {"n": 30, "leituras": 2, "escritas": 4}, {"n": 31, "leituras": 2, "escritas": 4}, {"n": 32, "leituras": 2, "escritas": 4}, {"n": 33, "leituras": 4, "escritas": 4}, {"n": 34, "leituras": 6, "escritas": 4}, {"n": 35, "leituras": 4, "escritas": 4}, {"n": 36, "leituras": 2, "escritas": 4}, {"n": 37, "leituras": 2, "escritas": 4}, {"n": 38, "leituras": 2, "escritas": 4}, {"n": 39, "leituras": 2, "escritas": 4}, {"n": 40, "leituras": 2, "escritas": 4}, {"n": 41, "leituras": 2, "escritas": 4}, {"n": 42, "leituras": 2, "escritas": 4}, {"n": 43, "leituras": 8, "escritas": 4}, {"n": 44, "leituras": 4, "escritas": 4}, {"n": 45, "leituras": 4, "escritas": 4}, {"n": 46, "leituras": 4, "escritas": 4}, {"n": 47, "leituras": 10, "escritas": 4}, {"n": 48, "leituras": 210, "escritas": 100}, {"n": 49, "leituras": 2, "escritas": 4}, {"n": 50, "leituras": 2, "escritas": 4}, {"n": 51, "leituras": 4, "escritas": 4}, {"n": 52, "leituras": 2, "escritas": 4}, {"n": 53, "leituras": 2, "escritas": 4}, {"n": 54, "leituras": 2, "escritas": 4}, {"n": 55, "leituras": 2, "escritas": 4}, {"n": 56, "leituras": 2, "escritas": 4}, {"n": 57, "leituras": 4, "escritas": 4}, {"n": 58, "leituras": 4, "escritas": 4}, {"n": 59, "leituras": 2, "escritas": 4}, {"n": 60, "leituras": 2, "escritas": 4}]}, "por-media-encadeamento": {"estrutura": "encadeamento", "chamada": "encher", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 50, "escritas": 52}, {"n": 100, "vezes": 100, "leituras": 1102, "escritas": 772}, {"n": 1000, "vezes": 1000, "leituras": 9662, "escritas": 7060}], "serie": [{"n": 1, "vezes": 1, "leituras": 2, "escritas": 4}, {"n": 2, "vezes": 2, "leituras": 4, "escritas": 8}, {"n": 3, "vezes": 3, "leituras": 6, "escritas": 12}, {"n": 4, "vezes": 4, "leituras": 8, "escritas": 16}, {"n": 5, "vezes": 5, "leituras": 10, "escritas": 20}, {"n": 6, "vezes": 6, "leituras": 14, "escritas": 24}, {"n": 7, "vezes": 7, "leituras": 42, "escritas": 40}, {"n": 8, "vezes": 8, "leituras": 44, "escritas": 44}, {"n": 9, "vezes": 9, "leituras": 46, "escritas": 48}, {"n": 10, "vezes": 10, "leituras": 50, "escritas": 52}, {"n": 11, "vezes": 11, "leituras": 54, "escritas": 56}, {"n": 12, "vezes": 12, "leituras": 60, "escritas": 60}, {"n": 13, "vezes": 13, "leituras": 120, "escritas": 88}, {"n": 14, "vezes": 14, "leituras": 122, "escritas": 92}, {"n": 15, "vezes": 15, "leituras": 124, "escritas": 96}, {"n": 16, "vezes": 16, "leituras": 126, "escritas": 100}, {"n": 17, "vezes": 17, "leituras": 128, "escritas": 104}, {"n": 18, "vezes": 18, "leituras": 130, "escritas": 108}, {"n": 19, "vezes": 19, "leituras": 134, "escritas": 112}, {"n": 20, "vezes": 20, "leituras": 138, "escritas": 116}, {"n": 21, "vezes": 21, "leituras": 144, "escritas": 120}, {"n": 22, "vezes": 22, "leituras": 146, "escritas": 124}, {"n": 23, "vezes": 23, "leituras": 148, "escritas": 128}, {"n": 24, "vezes": 24, "leituras": 150, "escritas": 132}, {"n": 25, "vezes": 25, "leituras": 258, "escritas": 184}, {"n": 26, "vezes": 26, "leituras": 260, "escritas": 188}, {"n": 27, "vezes": 27, "leituras": 264, "escritas": 192}, {"n": 28, "vezes": 28, "leituras": 266, "escritas": 196}, {"n": 29, "vezes": 29, "leituras": 268, "escritas": 200}, {"n": 30, "vezes": 30, "leituras": 270, "escritas": 204}, {"n": 31, "vezes": 31, "leituras": 272, "escritas": 208}, {"n": 32, "vezes": 32, "leituras": 274, "escritas": 212}, {"n": 33, "vezes": 33, "leituras": 276, "escritas": 216}, {"n": 34, "vezes": 34, "leituras": 280, "escritas": 220}, {"n": 35, "vezes": 35, "leituras": 286, "escritas": 224}, {"n": 36, "vezes": 36, "leituras": 290, "escritas": 228}, {"n": 37, "vezes": 37, "leituras": 292, "escritas": 232}, {"n": 38, "vezes": 38, "leituras": 294, "escritas": 236}, {"n": 39, "vezes": 39, "leituras": 296, "escritas": 240}, {"n": 40, "vezes": 40, "leituras": 298, "escritas": 244}, {"n": 41, "vezes": 41, "leituras": 300, "escritas": 248}, {"n": 42, "vezes": 42, "leituras": 302, "escritas": 252}, {"n": 43, "vezes": 43, "leituras": 304, "escritas": 256}, {"n": 44, "vezes": 44, "leituras": 312, "escritas": 260}, {"n": 45, "vezes": 45, "leituras": 316, "escritas": 264}, {"n": 46, "vezes": 46, "leituras": 320, "escritas": 268}, {"n": 47, "vezes": 47, "leituras": 324, "escritas": 272}, {"n": 48, "vezes": 48, "leituras": 334, "escritas": 276}, {"n": 49, "vezes": 49, "leituras": 544, "escritas": 376}, {"n": 50, "vezes": 50, "leituras": 546, "escritas": 380}, {"n": 51, "vezes": 51, "leituras": 548, "escritas": 384}, {"n": 52, "vezes": 52, "leituras": 552, "escritas": 388}, {"n": 53, "vezes": 53, "leituras": 554, "escritas": 392}, {"n": 54, "vezes": 54, "leituras": 556, "escritas": 396}, {"n": 55, "vezes": 55, "leituras": 558, "escritas": 400}, {"n": 56, "vezes": 56, "leituras": 560, "escritas": 404}, {"n": 57, "vezes": 57, "leituras": 562, "escritas": 408}, {"n": 58, "vezes": 58, "leituras": 566, "escritas": 412}, {"n": 59, "vezes": 59, "leituras": 570, "escritas": 416}, {"n": 60, "vezes": 60, "leituras": 572, "escritas": 420}]}, "por-pior-encadeamento": {"estrutura": "encadeamento", "chamada": "encher", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 7, "leituras": 28, "escritas": 16}, {"n": 100, "k": 97, "leituras": 420, "escritas": 196}, {"n": 1000, "k": 769, "leituras": 3330, "escritas": 1540}], "serie": []}, "por-existente-encadeamento": {"estrutura": "encadeamento", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 1}, {"n": 100, "leituras": 2, "escritas": 1}, {"n": 1000, "leituras": 6, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 2, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 1}, {"n": 5, "leituras": 2, "escritas": 1}, {"n": 6, "leituras": 2, "escritas": 1}, {"n": 7, "leituras": 2, "escritas": 1}, {"n": 8, "leituras": 2, "escritas": 1}, {"n": 9, "leituras": 2, "escritas": 1}, {"n": 10, "leituras": 2, "escritas": 1}, {"n": 11, "leituras": 2, "escritas": 1}, {"n": 12, "leituras": 2, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 2, "escritas": 1}, {"n": 15, "leituras": 2, "escritas": 1}, {"n": 16, "leituras": 2, "escritas": 1}, {"n": 17, "leituras": 2, "escritas": 1}, {"n": 18, "leituras": 2, "escritas": 1}, {"n": 19, "leituras": 2, "escritas": 1}, {"n": 20, "leituras": 2, "escritas": 1}, {"n": 21, "leituras": 2, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 2, "escritas": 1}, {"n": 25, "leituras": 2, "escritas": 1}, {"n": 26, "leituras": 2, "escritas": 1}, {"n": 27, "leituras": 2, "escritas": 1}, {"n": 28, "leituras": 2, "escritas": 1}, {"n": 29, "leituras": 2, "escritas": 1}, {"n": 30, "leituras": 2, "escritas": 1}, {"n": 31, "leituras": 2, "escritas": 1}, {"n": 32, "leituras": 2, "escritas": 1}, {"n": 33, "leituras": 2, "escritas": 1}, {"n": 34, "leituras": 2, "escritas": 1}, {"n": 35, "leituras": 2, "escritas": 1}, {"n": 36, "leituras": 2, "escritas": 1}, {"n": 37, "leituras": 2, "escritas": 1}, {"n": 38, "leituras": 2, "escritas": 1}, {"n": 39, "leituras": 2, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 2, "escritas": 1}, {"n": 43, "leituras": 2, "escritas": 1}, {"n": 44, "leituras": 2, "escritas": 1}, {"n": 45, "leituras": 2, "escritas": 1}, {"n": 46, "leituras": 2, "escritas": 1}, {"n": 47, "leituras": 2, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 2, "escritas": 1}, {"n": 50, "leituras": 2, "escritas": 1}, {"n": 51, "leituras": 2, "escritas": 1}, {"n": 52, "leituras": 2, "escritas": 1}, {"n": 53, "leituras": 2, "escritas": 1}, {"n": 54, "leituras": 2, "escritas": 1}, {"n": 55, "leituras": 2, "escritas": 1}, {"n": 56, "leituras": 2, "escritas": 1}, {"n": 57, "leituras": 2, "escritas": 1}, {"n": 58, "leituras": 2, "escritas": 1}, {"n": 59, "leituras": 2, "escritas": 1}, {"n": 60, "leituras": 2, "escritas": 1}]}, "remover-encadeamento": {"estrutura": "encadeamento", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 1}, {"n": 100, "leituras": 3, "escritas": 1}, {"n": 1000, "leituras": 3, "escritas": 1}], "serie": [{"n": 1, "leituras": 3, "escritas": 1}, {"n": 2, "leituras": 3, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 1}, {"n": 4, "leituras": 3, "escritas": 1}, {"n": 5, "leituras": 3, "escritas": 1}, {"n": 6, "leituras": 5, "escritas": 1}, {"n": 7, "leituras": 3, "escritas": 1}, {"n": 8, "leituras": 3, "escritas": 1}, {"n": 9, "leituras": 3, "escritas": 1}, {"n": 10, "leituras": 3, "escritas": 1}, {"n": 11, "leituras": 3, "escritas": 1}, {"n": 12, "leituras": 7, "escritas": 1}, {"n": 13, "leituras": 3, "escritas": 1}, {"n": 14, "leituras": 3, "escritas": 1}, {"n": 15, "leituras": 3, "escritas": 1}, {"n": 16, "leituras": 3, "escritas": 1}, {"n": 17, "leituras": 3, "escritas": 1}, {"n": 18, "leituras": 3, "escritas": 1}, {"n": 19, "leituras": 3, "escritas": 1}, {"n": 20, "leituras": 5, "escritas": 1}, {"n": 21, "leituras": 5, "escritas": 1}, {"n": 22, "leituras": 7, "escritas": 1}, {"n": 23, "leituras": 7, "escritas": 1}, {"n": 24, "leituras": 3, "escritas": 1}, {"n": 25, "leituras": 5, "escritas": 1}, {"n": 26, "leituras": 3, "escritas": 1}, {"n": 27, "leituras": 3, "escritas": 1}, {"n": 28, "leituras": 3, "escritas": 1}, {"n": 29, "leituras": 3, "escritas": 1}, {"n": 30, "leituras": 3, "escritas": 1}, {"n": 31, "leituras": 3, "escritas": 1}, {"n": 32, "leituras": 3, "escritas": 1}, {"n": 33, "leituras": 3, "escritas": 1}, {"n": 34, "leituras": 3, "escritas": 1}, {"n": 35, "leituras": 3, "escritas": 1}, {"n": 36, "leituras": 5, "escritas": 1}, {"n": 37, "leituras": 5, "escritas": 1}, {"n": 38, "leituras": 5, "escritas": 1}, {"n": 39, "leituras": 5, "escritas": 1}, {"n": 40, "leituras": 7, "escritas": 1}, {"n": 41, "leituras": 7, "escritas": 1}, {"n": 42, "leituras": 3, "escritas": 1}, {"n": 43, "leituras": 3, "escritas": 1}, {"n": 44, "leituras": 3, "escritas": 1}, {"n": 45, "leituras": 3, "escritas": 1}, {"n": 46, "leituras": 3, "escritas": 1}, {"n": 47, "leituras": 3, "escritas": 1}, {"n": 48, "leituras": 5, "escritas": 1}, {"n": 49, "leituras": 3, "escritas": 1}, {"n": 50, "leituras": 3, "escritas": 1}, {"n": 51, "leituras": 3, "escritas": 1}, {"n": 52, "leituras": 3, "escritas": 1}, {"n": 53, "leituras": 3, "escritas": 1}, {"n": 54, "leituras": 3, "escritas": 1}, {"n": 55, "leituras": 3, "escritas": 1}, {"n": 56, "leituras": 3, "escritas": 1}, {"n": 57, "leituras": 3, "escritas": 1}, {"n": 58, "leituras": 3, "escritas": 1}, {"n": 59, "leituras": 3, "escritas": 1}, {"n": 60, "leituras": 3, "escritas": 1}]}, "ler-sondagem": {"estrutura": "sondagem", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 2, "escritas": 0}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 2, "escritas": 0}, {"n": 4, "leituras": 2, "escritas": 0}, {"n": 5, "leituras": 2, "escritas": 0}, {"n": 6, "leituras": 2, "escritas": 0}, {"n": 7, "leituras": 2, "escritas": 0}, {"n": 8, "leituras": 2, "escritas": 0}, {"n": 9, "leituras": 2, "escritas": 0}, {"n": 10, "leituras": 2, "escritas": 0}, {"n": 11, "leituras": 2, "escritas": 0}, {"n": 12, "leituras": 2, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 2, "escritas": 0}, {"n": 15, "leituras": 2, "escritas": 0}, {"n": 16, "leituras": 2, "escritas": 0}, {"n": 17, "leituras": 2, "escritas": 0}, {"n": 18, "leituras": 2, "escritas": 0}, {"n": 19, "leituras": 2, "escritas": 0}, {"n": 20, "leituras": 2, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 3, "escritas": 0}, {"n": 23, "leituras": 3, "escritas": 0}, {"n": 24, "leituras": 5, "escritas": 0}, {"n": 25, "leituras": 4, "escritas": 0}, {"n": 26, "leituras": 2, "escritas": 0}, {"n": 27, "leituras": 2, "escritas": 0}, {"n": 28, "leituras": 2, "escritas": 0}, {"n": 29, "leituras": 2, "escritas": 0}, {"n": 30, "leituras": 2, "escritas": 0}, {"n": 31, "leituras": 2, "escritas": 0}, {"n": 32, "leituras": 2, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 2, "escritas": 0}, {"n": 35, "leituras": 2, "escritas": 0}, {"n": 36, "leituras": 2, "escritas": 0}, {"n": 37, "leituras": 2, "escritas": 0}, {"n": 38, "leituras": 2, "escritas": 0}, {"n": 39, "leituras": 2, "escritas": 0}, {"n": 40, "leituras": 3, "escritas": 0}, {"n": 41, "leituras": 3, "escritas": 0}, {"n": 42, "leituras": 2, "escritas": 0}, {"n": 43, "leituras": 2, "escritas": 0}, {"n": 44, "leituras": 2, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 2, "escritas": 0}, {"n": 47, "leituras": 2, "escritas": 0}, {"n": 48, "leituras": 3, "escritas": 0}, {"n": 49, "leituras": 2, "escritas": 0}, {"n": 50, "leituras": 2, "escritas": 0}, {"n": 51, "leituras": 2, "escritas": 0}, {"n": 52, "leituras": 2, "escritas": 0}, {"n": 53, "leituras": 2, "escritas": 0}, {"n": 54, "leituras": 2, "escritas": 0}, {"n": 55, "leituras": 2, "escritas": 0}, {"n": 56, "leituras": 2, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 2, "escritas": 0}, {"n": 60, "leituras": 2, "escritas": 0}]}, "ler-ausente-sondagem": {"estrutura": "sondagem", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 0, "leituras": 1, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 5, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 10, "escritas": 0}, {"n": 19, "leituras": 5, "escritas": 0}, {"n": 20, "leituras": 12, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 7, "escritas": 0}, {"n": 23, "leituras": 8, "escritas": 0}, {"n": 24, "leituras": 2, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 8, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 3, "escritas": 0}, {"n": 35, "leituras": 16, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 22, "escritas": 0}, {"n": 44, "leituras": 4, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 5, "escritas": 0}, {"n": 47, "leituras": 25, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "por-novo-sondagem": {"estrutura": "sondagem", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 2}, {"n": 100, "leituras": 2, "escritas": 2}, {"n": 1000, "leituras": 1, "escritas": 2}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 1, "escritas": 2}, {"n": 3, "leituras": 1, "escritas": 2}, {"n": 4, "leituras": 1, "escritas": 2}, {"n": 5, "leituras": 3, "escritas": 2}, {"n": 6, "leituras": 22, "escritas": 14}, {"n": 7, "leituras": 1, "escritas": 2}, {"n": 8, "leituras": 1, "escritas": 2}, {"n": 9, "leituras": 3, "escritas": 2}, {"n": 10, "leituras": 5, "escritas": 2}, {"n": 11, "leituras": 6, "escritas": 2}, {"n": 12, "leituras": 53, "escritas": 26}, {"n": 13, "leituras": 3, "escritas": 2}, {"n": 14, "leituras": 1, "escritas": 2}, {"n": 15, "leituras": 1, "escritas": 2}, {"n": 16, "leituras": 1, "escritas": 2}, {"n": 17, "leituras": 1, "escritas": 2}, {"n": 18, "leituras": 10, "escritas": 2}, {"n": 19, "leituras": 5, "escritas": 2}, {"n": 20, "leituras": 12, "escritas": 2}, {"n": 21, "leituras": 2, "escritas": 2}, {"n": 22, "leituras": 7, "escritas": 2}, {"n": 23, "leituras": 8, "escritas": 2}, {"n": 24, "leituras": 92, "escritas": 50}, {"n": 25, "leituras": 1, "escritas": 2}, {"n": 26, "leituras": 3, "escritas": 2}, {"n": 27, "leituras": 1, "escritas": 2}, {"n": 28, "leituras": 1, "escritas": 2}, {"n": 29, "leituras": 1, "escritas": 2}, {"n": 30, "leituras": 1, "escritas": 2}, {"n": 31, "leituras": 8, "escritas": 2}, {"n": 32, "leituras": 1, "escritas": 2}, {"n": 33, "leituras": 2, "escritas": 2}, {"n": 34, "leituras": 3, "escritas": 2}, {"n": 35, "leituras": 16, "escritas": 2}, {"n": 36, "leituras": 1, "escritas": 2}, {"n": 37, "leituras": 1, "escritas": 2}, {"n": 38, "leituras": 1, "escritas": 2}, {"n": 39, "leituras": 1, "escritas": 2}, {"n": 40, "leituras": 1, "escritas": 2}, {"n": 41, "leituras": 1, "escritas": 2}, {"n": 42, "leituras": 1, "escritas": 2}, {"n": 43, "leituras": 22, "escritas": 2}, {"n": 44, "leituras": 4, "escritas": 2}, {"n": 45, "leituras": 2, "escritas": 2}, {"n": 46, "leituras": 5, "escritas": 2}, {"n": 47, "leituras": 25, "escritas": 2}, {"n": 48, "leituras": 181, "escritas": 98}, {"n": 49, "leituras": 1, "escritas": 2}, {"n": 50, "leituras": 1, "escritas": 2}, {"n": 51, "leituras": 3, "escritas": 2}, {"n": 52, "leituras": 1, "escritas": 2}, {"n": 53, "leituras": 1, "escritas": 2}, {"n": 54, "leituras": 1, "escritas": 2}, {"n": 55, "leituras": 1, "escritas": 2}, {"n": 56, "leituras": 1, "escritas": 2}, {"n": 57, "leituras": 2, "escritas": 2}, {"n": 58, "leituras": 2, "escritas": 2}, {"n": 59, "leituras": 1, "escritas": 2}, {"n": 60, "leituras": 1, "escritas": 2}]}, "por-media-sondagem": {"estrutura": "sondagem", "chamada": "encher", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 35, "escritas": 32}, {"n": 100, "vezes": 100, "leituras": 964, "escritas": 572}, {"n": 1000, "vezes": 1000, "leituras": 8769, "escritas": 5060}], "serie": [{"n": 1, "vezes": 1, "leituras": 1, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 2, "escritas": 4}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 4, "escritas": 8}, {"n": 5, "vezes": 5, "leituras": 5, "escritas": 10}, {"n": 6, "vezes": 6, "leituras": 8, "escritas": 12}, {"n": 7, "vezes": 7, "leituras": 30, "escritas": 26}, {"n": 8, "vezes": 8, "leituras": 31, "escritas": 28}, {"n": 9, "vezes": 9, "leituras": 32, "escritas": 30}, {"n": 10, "vezes": 10, "leituras": 35, "escritas": 32}, {"n": 11, "vezes": 11, "leituras": 40, "escritas": 34}, {"n": 12, "vezes": 12, "leituras": 46, "escritas": 36}, {"n": 13, "vezes": 13, "leituras": 99, "escritas": 62}, {"n": 14, "vezes": 14, "leituras": 102, "escritas": 64}, {"n": 15, "vezes": 15, "leituras": 103, "escritas": 66}, {"n": 16, "vezes": 16, "leituras": 104, "escritas": 68}, {"n": 17, "vezes": 17, "leituras": 105, "escritas": 70}, {"n": 18, "vezes": 18, "leituras": 106, "escritas": 72}, {"n": 19, "vezes": 19, "leituras": 116, "escritas": 74}, {"n": 20, "vezes": 20, "leituras": 121, "escritas": 76}, {"n": 21, "vezes": 21, "leituras": 133, "escritas": 78}, {"n": 22, "vezes": 22, "leituras": 135, "escritas": 80}, {"n": 23, "vezes": 23, "leituras": 142, "escritas": 82}, {"n": 24, "vezes": 24, "leituras": 150, "escritas": 84}, {"n": 25, "vezes": 25, "leituras": 242, "escritas": 134}, {"n": 26, "vezes": 26, "leituras": 243, "escritas": 136}, {"n": 27, "vezes": 27, "leituras": 246, "escritas": 138}, {"n": 28, "vezes": 28, "leituras": 247, "escritas": 140}, {"n": 29, "vezes": 29, "leituras": 248, "escritas": 142}, {"n": 30, "vezes": 30, "leituras": 249, "escritas": 144}, {"n": 31, "vezes": 31, "leituras": 250, "escritas": 146}, {"n": 32, "vezes": 32, "leituras": 258, "escritas": 148}, {"n": 33, "vezes": 33, "leituras": 259, "escritas": 150}, {"n": 34, "vezes": 34, "leituras": 261, "escritas": 152}, {"n": 35, "vezes": 35, "leituras": 264, "escritas": 154}, {"n": 36, "vezes": 36, "leituras": 280, "escritas": 156}, {"n": 37, "vezes": 37, "leituras": 281, "escritas": 158}, {"n": 38, "vezes": 38, "leituras": 282, "escritas": 160}, {"n": 39, "vezes": 39, "leituras": 283, "escritas": 162}, {"n": 40, "vezes": 40, "leituras": 284, "escritas": 164}, {"n": 41, "vezes": 41, "leituras": 285, "escritas": 166}, {"n": 42, "vezes": 42, "leituras": 286, "escritas": 168}, {"n": 43, "vezes": 43, "leituras": 287, "escritas": 170}, {"n": 44, "vezes": 44, "leituras": 309, "escritas": 172}, {"n": 45, "vezes": 45, "leituras": 313, "escritas": 174}, {"n": 46, "vezes": 46, "leituras": 315, "escritas": 176}, {"n": 47, "vezes": 47, "leituras": 320, "escritas": 178}, {"n": 48, "vezes": 48, "leituras": 345, "escritas": 180}, {"n": 49, "vezes": 49, "leituras": 526, "escritas": 278}, {"n": 50, "vezes": 50, "leituras": 527, "escritas": 280}, {"n": 51, "vezes": 51, "leituras": 528, "escritas": 282}, {"n": 52, "vezes": 52, "leituras": 531, "escritas": 284}, {"n": 53, "vezes": 53, "leituras": 532, "escritas": 286}, {"n": 54, "vezes": 54, "leituras": 533, "escritas": 288}, {"n": 55, "vezes": 55, "leituras": 534, "escritas": 290}, {"n": 56, "vezes": 56, "leituras": 535, "escritas": 292}, {"n": 57, "vezes": 57, "leituras": 536, "escritas": 294}, {"n": 58, "vezes": 58, "leituras": 538, "escritas": 296}, {"n": 59, "vezes": 59, "leituras": 540, "escritas": 298}, {"n": 60, "vezes": 60, "leituras": 541, "escritas": 300}]}, "por-pior-sondagem": {"estrutura": "sondagem", "chamada": "encher", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 7, "leituras": 22, "escritas": 14}, {"n": 100, "k": 97, "leituras": 338, "escritas": 194}, {"n": 1000, "k": 769, "leituras": 2806, "escritas": 1538}], "serie": []}, "por-existente-sondagem": {"estrutura": "sondagem", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 1}, {"n": 100, "leituras": 1, "escritas": 1}, {"n": 1000, "leituras": 1, "escritas": 1}], "serie": [{"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 1, "escritas": 1}, {"n": 5, "leituras": 1, "escritas": 1}, {"n": 6, "leituras": 1, "escritas": 1}, {"n": 7, "leituras": 1, "escritas": 1}, {"n": 8, "leituras": 1, "escritas": 1}, {"n": 9, "leituras": 1, "escritas": 1}, {"n": 10, "leituras": 1, "escritas": 1}, {"n": 11, "leituras": 1, "escritas": 1}, {"n": 12, "leituras": 1, "escritas": 1}, {"n": 13, "leituras": 1, "escritas": 1}, {"n": 14, "leituras": 1, "escritas": 1}, {"n": 15, "leituras": 1, "escritas": 1}, {"n": 16, "leituras": 1, "escritas": 1}, {"n": 17, "leituras": 1, "escritas": 1}, {"n": 18, "leituras": 1, "escritas": 1}, {"n": 19, "leituras": 1, "escritas": 1}, {"n": 20, "leituras": 1, "escritas": 1}, {"n": 21, "leituras": 1, "escritas": 1}, {"n": 22, "leituras": 1, "escritas": 1}, {"n": 23, "leituras": 1, "escritas": 1}, {"n": 24, "leituras": 1, "escritas": 1}, {"n": 25, "leituras": 1, "escritas": 1}, {"n": 26, "leituras": 1, "escritas": 1}, {"n": 27, "leituras": 1, "escritas": 1}, {"n": 28, "leituras": 1, "escritas": 1}, {"n": 29, "leituras": 1, "escritas": 1}, {"n": 30, "leituras": 1, "escritas": 1}, {"n": 31, "leituras": 1, "escritas": 1}, {"n": 32, "leituras": 1, "escritas": 1}, {"n": 33, "leituras": 1, "escritas": 1}, {"n": 34, "leituras": 1, "escritas": 1}, {"n": 35, "leituras": 1, "escritas": 1}, {"n": 36, "leituras": 1, "escritas": 1}, {"n": 37, "leituras": 1, "escritas": 1}, {"n": 38, "leituras": 1, "escritas": 1}, {"n": 39, "leituras": 1, "escritas": 1}, {"n": 40, "leituras": 1, "escritas": 1}, {"n": 41, "leituras": 1, "escritas": 1}, {"n": 42, "leituras": 1, "escritas": 1}, {"n": 43, "leituras": 1, "escritas": 1}, {"n": 44, "leituras": 1, "escritas": 1}, {"n": 45, "leituras": 1, "escritas": 1}, {"n": 46, "leituras": 1, "escritas": 1}, {"n": 47, "leituras": 1, "escritas": 1}, {"n": 48, "leituras": 1, "escritas": 1}, {"n": 49, "leituras": 1, "escritas": 1}, {"n": 50, "leituras": 1, "escritas": 1}, {"n": 51, "leituras": 1, "escritas": 1}, {"n": 52, "leituras": 1, "escritas": 1}, {"n": 53, "leituras": 1, "escritas": 1}, {"n": 54, "leituras": 1, "escritas": 1}, {"n": 55, "leituras": 1, "escritas": 1}, {"n": 56, "leituras": 1, "escritas": 1}, {"n": 57, "leituras": 1, "escritas": 1}, {"n": 58, "leituras": 1, "escritas": 1}, {"n": 59, "leituras": 1, "escritas": 1}, {"n": 60, "leituras": 1, "escritas": 1}]}, "remover-sondagem": {"estrutura": "sondagem", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 1}, {"n": 100, "leituras": 1, "escritas": 1}, {"n": 1000, "leituras": 1, "escritas": 1}], "serie": [{"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 1, "escritas": 1}, {"n": 5, "leituras": 1, "escritas": 1}, {"n": 6, "leituras": 1, "escritas": 1}, {"n": 7, "leituras": 1, "escritas": 1}, {"n": 8, "leituras": 1, "escritas": 1}, {"n": 9, "leituras": 1, "escritas": 1}, {"n": 10, "leituras": 1, "escritas": 1}, {"n": 11, "leituras": 1, "escritas": 1}, {"n": 12, "leituras": 1, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 1, "escritas": 1}, {"n": 15, "leituras": 1, "escritas": 1}, {"n": 16, "leituras": 1, "escritas": 1}, {"n": 17, "leituras": 1, "escritas": 1}, {"n": 18, "leituras": 1, "escritas": 1}, {"n": 19, "leituras": 1, "escritas": 1}, {"n": 20, "leituras": 1, "escritas": 1}, {"n": 21, "leituras": 1, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 4, "escritas": 1}, {"n": 25, "leituras": 3, "escritas": 1}, {"n": 26, "leituras": 1, "escritas": 1}, {"n": 27, "leituras": 1, "escritas": 1}, {"n": 28, "leituras": 1, "escritas": 1}, {"n": 29, "leituras": 1, "escritas": 1}, {"n": 30, "leituras": 1, "escritas": 1}, {"n": 31, "leituras": 1, "escritas": 1}, {"n": 32, "leituras": 1, "escritas": 1}, {"n": 33, "leituras": 1, "escritas": 1}, {"n": 34, "leituras": 1, "escritas": 1}, {"n": 35, "leituras": 1, "escritas": 1}, {"n": 36, "leituras": 1, "escritas": 1}, {"n": 37, "leituras": 1, "escritas": 1}, {"n": 38, "leituras": 1, "escritas": 1}, {"n": 39, "leituras": 1, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 1, "escritas": 1}, {"n": 43, "leituras": 1, "escritas": 1}, {"n": 44, "leituras": 1, "escritas": 1}, {"n": 45, "leituras": 1, "escritas": 1}, {"n": 46, "leituras": 1, "escritas": 1}, {"n": 47, "leituras": 1, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 1, "escritas": 1}, {"n": 50, "leituras": 1, "escritas": 1}, {"n": 51, "leituras": 1, "escritas": 1}, {"n": 52, "leituras": 1, "escritas": 1}, {"n": 53, "leituras": 1, "escritas": 1}, {"n": 54, "leituras": 1, "escritas": 1}, {"n": 55, "leituras": 1, "escritas": 1}, {"n": 56, "leituras": 1, "escritas": 1}, {"n": 57, "leituras": 1, "escritas": 1}, {"n": 58, "leituras": 1, "escritas": 1}, {"n": 59, "leituras": 1, "escritas": 1}, {"n": 60, "leituras": 1, "escritas": 1}]}}, "capacidade": {"encadeamento": [{"n": 0, "casas": 8}, {"n": 1, "casas": 11}, {"n": 2, "casas": 14}, {"n": 3, "casas": 17}, {"n": 4, "casas": 20}, {"n": 5, "casas": 23}, {"n": 6, "casas": 26}, {"n": 7, "casas": 37}, {"n": 8, "casas": 40}, {"n": 9, "casas": 43}, {"n": 10, "casas": 46}, {"n": 11, "casas": 49}, {"n": 12, "casas": 52}, {"n": 13, "casas": 71}, {"n": 14, "casas": 74}, {"n": 15, "casas": 77}, {"n": 16, "casas": 80}, {"n": 17, "casas": 83}, {"n": 18, "casas": 86}, {"n": 19, "casas": 89}, {"n": 20, "casas": 92}, {"n": 21, "casas": 95}, {"n": 22, "casas": 98}, {"n": 23, "casas": 101}, {"n": 24, "casas": 104}, {"n": 25, "casas": 139}, {"n": 26, "casas": 142}, {"n": 27, "casas": 145}, {"n": 28, "casas": 148}, {"n": 29, "casas": 151}, {"n": 30, "casas": 154}, {"n": 31, "casas": 157}, {"n": 32, "casas": 160}, {"n": 33, "casas": 163}, {"n": 34, "casas": 166}, {"n": 35, "casas": 169}, {"n": 36, "casas": 172}, {"n": 37, "casas": 175}, {"n": 38, "casas": 178}, {"n": 39, "casas": 181}, {"n": 40, "casas": 184}, {"n": 41, "casas": 187}, {"n": 42, "casas": 190}, {"n": 43, "casas": 193}, {"n": 44, "casas": 196}, {"n": 45, "casas": 199}, {"n": 46, "casas": 202}, {"n": 47, "casas": 205}, {"n": 48, "casas": 208}, {"n": 49, "casas": 275}, {"n": 50, "casas": 278}, {"n": 51, "casas": 281}, {"n": 52, "casas": 284}, {"n": 53, "casas": 287}, {"n": 54, "casas": 290}, {"n": 55, "casas": 293}, {"n": 56, "casas": 296}, {"n": 57, "casas": 299}, {"n": 58, "casas": 302}, {"n": 59, "casas": 305}, {"n": 60, "casas": 308}], "sondagem": [{"n": 0, "casas": 16}, {"n": 1, "casas": 16}, {"n": 2, "casas": 16}, {"n": 3, "casas": 16}, {"n": 4, "casas": 16}, {"n": 5, "casas": 16}, {"n": 6, "casas": 16}, {"n": 7, "casas": 32}, {"n": 8, "casas": 32}, {"n": 9, "casas": 32}, {"n": 10, "casas": 32}, {"n": 11, "casas": 32}, {"n": 12, "casas": 32}, {"n": 13, "casas": 64}, {"n": 14, "casas": 64}, {"n": 15, "casas": 64}, {"n": 16, "casas": 64}, {"n": 17, "casas": 64}, {"n": 18, "casas": 64}, {"n": 19, "casas": 64}, {"n": 20, "casas": 64}, {"n": 21, "casas": 64}, {"n": 22, "casas": 64}, {"n": 23, "casas": 64}, {"n": 24, "casas": 64}, {"n": 25, "casas": 128}, {"n": 26, "casas": 128}, {"n": 27, "casas": 128}, {"n": 28, "casas": 128}, {"n": 29, "casas": 128}, {"n": 30, "casas": 128}, {"n": 31, "casas": 128}, {"n": 32, "casas": 128}, {"n": 33, "casas": 128}, {"n": 34, "casas": 128}, {"n": 35, "casas": 128}, {"n": 36, "casas": 128}, {"n": 37, "casas": 128}, {"n": 38, "casas": 128}, {"n": 39, "casas": 128}, {"n": 40, "casas": 128}, {"n": 41, "casas": 128}, {"n": 42, "casas": 128}, {"n": 43, "casas": 128}, {"n": 44, "casas": 128}, {"n": 45, "casas": 128}, {"n": 46, "casas": 128}, {"n": 47, "casas": 128}, {"n": 48, "casas": 128}, {"n": 49, "casas": 256}, {"n": 50, "casas": 256}, {"n": 51, "casas": 256}, {"n": 52, "casas": 256}, {"n": 53, "casas": 256}, {"n": 54, "casas": 256}, {"n": 55, "casas": 256}, {"n": 56, "casas": 256}, {"n": 57, "casas": 256}, {"n": 58, "casas": 256}, {"n": 59, "casas": 256}, {"n": 60, "casas": 256}]}}}];
+window.INSTRUMENTOS = [{"id": "vetor", "nome": "Vetor", "variante": "dinâmico, com capacidade que dobra quando enche", "frase": "Casas numeradas, uma ao lado da outra.", "resumo": "Guarda os valores em casas contíguas, numeradas a partir de 0. Qualquer casa se alcança direto pelo número dela. O preço aparece quando o meio muda: abrir ou fechar uma casa no começo obriga todos os vizinhos a andar uma casa. E, quando as casas reservadas acabam, o vetor reserva o dobro e copia tudo.", "placa": {"autor": "sem autoria única", "ano": "—"}, "memoria": {"notacao": "O(n)", "porque": "Uma casa por valor, mais a folga: logo depois de dobrar, até metade das casas reservadas está vazia. Depois de n anexações a partir de uma casa, a capacidade fica entre n e 2n. Remover não devolve casas."}, "operacoes": [{"id": "ler", "nome": "ler v[i]", "notacao": "O(1)", "porque": "O endereço da casa i se calcula direto (onde o vetor começa + i): uma leitura, sem passar pelas outras casas."}, {"id": "escrever", "nome": "escrever em v[i]", "notacao": "O(1)", "porque": "Pelo mesmo endereço calculado: uma escrita."}, {"id": "anexar", "nome": "anexar no fim, com folga", "notacao": "O(1)", "porque": "Se ainda sobra casa reservada, é só escrever na primeira livre."}, {"id": "anexar-pior", "nome": "anexar no fim, a mais cara de n seguidas", "notacao": "O(n)", "porque": "Quando o vetor enche, reserva o dobro de casas e copia cada valor (uma leitura e uma escrita por valor) antes de escrever o novo."}, {"id": "anexar-media", "nome": "anexar no fim, média de n seguidas", "notacao": "O(1) amortizado", "porque": "Como a capacidade dobra, as cópias ficam cada vez mais raras: somadas, dão menos de 2n valores copiados ao longo de n anexações. Dividido por n, o custo médio não cresce com n."}, {"id": "inserir-inicio", "nome": "inserir na posição 0", "notacao": "O(n)", "porque": "Cada valor anda uma casa para a direita (uma leitura e uma escrita) antes de a casa 0 ficar livre."}, {"id": "remover-inicio", "nome": "remover da posição 0", "notacao": "O(n)", "porque": "Lê o valor da casa 0 e puxa cada vizinho uma casa para a esquerda."}, {"id": "remover-fim", "nome": "remover do fim", "notacao": "O(1)", "porque": "Lê a última casa; ninguém precisa andar."}, {"id": "buscar", "nome": "buscar um valor que não está lá", "notacao": "O(n)", "porque": "Sem ordem, a busca sequencial lê casa por casa; um valor ausente obriga a ler todas."}], "grafico": [{"id": "anexar", "rotulo": "anexar"}, {"id": "anexar-media", "rotulo": "anexar, média"}, {"id": "inserir-inicio", "rotulo": "inserir em 0"}, {"id": "buscar", "rotulo": "buscar ausente"}, {"id": "ler", "rotulo": "ler v[i]"}], "medido": {"encher": "anexar", "tamanhos": [10, 100, 1000], "operacoes": {"ler": {"estrutura": "vetor", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "escrever": {"estrutura": "vetor", "chamada": "escrever", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 1, "leituras": 0, "escritas": 1}, {"n": 2, "leituras": 0, "escritas": 1}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 0, "escritas": 1}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 0, "escritas": 1}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 0, "escritas": 1}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 0, "escritas": 1}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "anexar": {"estrutura": "vetor", "chamada": "anexar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "anexar-media": {"estrutura": "vetor", "chamada": "anexar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "anexar-pior": {"estrutura": "vetor", "chamada": "anexar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "inserir-inicio": {"estrutura": "vetor", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 11}, {"n": 100, "leituras": 100, "escritas": 101}, {"n": 1000, "leituras": 1000, "escritas": 1001}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 2, "escritas": 3}, {"n": 2, "leituras": 4, "escritas": 5}, {"n": 3, "leituras": 3, "escritas": 4}, {"n": 4, "leituras": 8, "escritas": 9}, {"n": 5, "leituras": 5, "escritas": 6}, {"n": 6, "leituras": 6, "escritas": 7}, {"n": 7, "leituras": 7, "escritas": 8}, {"n": 8, "leituras": 16, "escritas": 17}, {"n": 9, "leituras": 9, "escritas": 10}, {"n": 10, "leituras": 10, "escritas": 11}, {"n": 11, "leituras": 11, "escritas": 12}, {"n": 12, "leituras": 12, "escritas": 13}, {"n": 13, "leituras": 13, "escritas": 14}, {"n": 14, "leituras": 14, "escritas": 15}, {"n": 15, "leituras": 15, "escritas": 16}, {"n": 16, "leituras": 32, "escritas": 33}, {"n": 17, "leituras": 17, "escritas": 18}, {"n": 18, "leituras": 18, "escritas": 19}, {"n": 19, "leituras": 19, "escritas": 20}, {"n": 20, "leituras": 20, "escritas": 21}, {"n": 21, "leituras": 21, "escritas": 22}, {"n": 22, "leituras": 22, "escritas": 23}, {"n": 23, "leituras": 23, "escritas": 24}, {"n": 24, "leituras": 24, "escritas": 25}, {"n": 25, "leituras": 25, "escritas": 26}, {"n": 26, "leituras": 26, "escritas": 27}, {"n": 27, "leituras": 27, "escritas": 28}, {"n": 28, "leituras": 28, "escritas": 29}, {"n": 29, "leituras": 29, "escritas": 30}, {"n": 30, "leituras": 30, "escritas": 31}, {"n": 31, "leituras": 31, "escritas": 32}, {"n": 32, "leituras": 64, "escritas": 65}, {"n": 33, "leituras": 33, "escritas": 34}, {"n": 34, "leituras": 34, "escritas": 35}, {"n": 35, "leituras": 35, "escritas": 36}, {"n": 36, "leituras": 36, "escritas": 37}, {"n": 37, "leituras": 37, "escritas": 38}, {"n": 38, "leituras": 38, "escritas": 39}, {"n": 39, "leituras": 39, "escritas": 40}, {"n": 40, "leituras": 40, "escritas": 41}, {"n": 41, "leituras": 41, "escritas": 42}, {"n": 42, "leituras": 42, "escritas": 43}, {"n": 43, "leituras": 43, "escritas": 44}, {"n": 44, "leituras": 44, "escritas": 45}, {"n": 45, "leituras": 45, "escritas": 46}, {"n": 46, "leituras": 46, "escritas": 47}, {"n": 47, "leituras": 47, "escritas": 48}, {"n": 48, "leituras": 48, "escritas": 49}, {"n": 49, "leituras": 49, "escritas": 50}, {"n": 50, "leituras": 50, "escritas": 51}, {"n": 51, "leituras": 51, "escritas": 52}, {"n": 52, "leituras": 52, "escritas": 53}, {"n": 53, "leituras": 53, "escritas": 54}, {"n": 54, "leituras": 54, "escritas": 55}, {"n": 55, "leituras": 55, "escritas": 56}, {"n": 56, "leituras": 56, "escritas": 57}, {"n": 57, "leituras": 57, "escritas": 58}, {"n": 58, "leituras": 58, "escritas": 59}, {"n": 59, "leituras": 59, "escritas": 60}, {"n": 60, "leituras": 60, "escritas": 61}]}, "remover-inicio": {"estrutura": "vetor", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 9}, {"n": 100, "leituras": 100, "escritas": 99}, {"n": 1000, "leituras": 1000, "escritas": 999}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 2}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 4}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 7, "escritas": 6}, {"n": 8, "leituras": 8, "escritas": 7}, {"n": 9, "leituras": 9, "escritas": 8}, {"n": 10, "leituras": 10, "escritas": 9}, {"n": 11, "leituras": 11, "escritas": 10}, {"n": 12, "leituras": 12, "escritas": 11}, {"n": 13, "leituras": 13, "escritas": 12}, {"n": 14, "leituras": 14, "escritas": 13}, {"n": 15, "leituras": 15, "escritas": 14}, {"n": 16, "leituras": 16, "escritas": 15}, {"n": 17, "leituras": 17, "escritas": 16}, {"n": 18, "leituras": 18, "escritas": 17}, {"n": 19, "leituras": 19, "escritas": 18}, {"n": 20, "leituras": 20, "escritas": 19}, {"n": 21, "leituras": 21, "escritas": 20}, {"n": 22, "leituras": 22, "escritas": 21}, {"n": 23, "leituras": 23, "escritas": 22}, {"n": 24, "leituras": 24, "escritas": 23}, {"n": 25, "leituras": 25, "escritas": 24}, {"n": 26, "leituras": 26, "escritas": 25}, {"n": 27, "leituras": 27, "escritas": 26}, {"n": 28, "leituras": 28, "escritas": 27}, {"n": 29, "leituras": 29, "escritas": 28}, {"n": 30, "leituras": 30, "escritas": 29}, {"n": 31, "leituras": 31, "escritas": 30}, {"n": 32, "leituras": 32, "escritas": 31}, {"n": 33, "leituras": 33, "escritas": 32}, {"n": 34, "leituras": 34, "escritas": 33}, {"n": 35, "leituras": 35, "escritas": 34}, {"n": 36, "leituras": 36, "escritas": 35}, {"n": 37, "leituras": 37, "escritas": 36}, {"n": 38, "leituras": 38, "escritas": 37}, {"n": 39, "leituras": 39, "escritas": 38}, {"n": 40, "leituras": 40, "escritas": 39}, {"n": 41, "leituras": 41, "escritas": 40}, {"n": 42, "leituras": 42, "escritas": 41}, {"n": 43, "leituras": 43, "escritas": 42}, {"n": 44, "leituras": 44, "escritas": 43}, {"n": 45, "leituras": 45, "escritas": 44}, {"n": 46, "leituras": 46, "escritas": 45}, {"n": 47, "leituras": 47, "escritas": 46}, {"n": 48, "leituras": 48, "escritas": 47}, {"n": 49, "leituras": 49, "escritas": 48}, {"n": 50, "leituras": 50, "escritas": 49}, {"n": 51, "leituras": 51, "escritas": 50}, {"n": 52, "leituras": 52, "escritas": 51}, {"n": 53, "leituras": 53, "escritas": 52}, {"n": 54, "leituras": 54, "escritas": 53}, {"n": 55, "leituras": 55, "escritas": 54}, {"n": 56, "leituras": 56, "escritas": 55}, {"n": 57, "leituras": 57, "escritas": 56}, {"n": 58, "leituras": 58, "escritas": 57}, {"n": 59, "leituras": 59, "escritas": 58}, {"n": 60, "leituras": 60, "escritas": 59}]}, "remover-fim": {"estrutura": "vetor", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "buscar": {"estrutura": "vetor", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}}, "capacidade": {"vetor": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "matriz", "nome": "Matriz", "variante": "guardada linha a linha, num bloco só", "frase": "Uma tabela de casas, guardada como uma fileira só.", "resumo": "A memória do computador é uma fileira de casas numeradas, sem linhas nem colunas. A matriz cabe nela deitada: primeiro a linha 0 inteira, depois a linha 1, e assim por diante. Com colunas casas por linha, a casa (i, j) mora no endereço i·colunas + j. É só uma conta, então ler ou escrever qualquer casa custa 1, como no Vetor. Percorrer uma linha lê casas vizinhas; percorrer uma coluna pula colunas casas de uma para a outra, mas lê o mesmo tanto. Transpor troca linhas por colunas e precisa de um bloco novo, porque as casas mudam de endereço.", "placa": {"autor": "sem autoria única (o C guarda linha a linha; o Fortran, coluna a coluna)", "ano": "—"}, "n": "n", "eixo": "n (lado da matriz: n × n casas)", "rotulo_casas": "casas do bloco", "memoria": {"notacao": "O(linhas · colunas)", "porque": "Uma casa por valor, sem folga: o bloco tem exatamente linhas × colunas casas, e as dimensões ficam guardadas à parte. Numa matriz n × n, são n² casas. Transpor reserva um bloco novo do mesmo tamanho e solta o antigo."}, "operacoes": [{"id": "ler", "nome": "ler a[i][j]", "notacao": "O(1)", "porque": "O endereço i·colunas + j se calcula direto: uma leitura, sem passar pelas outras casas."}, {"id": "escrever", "nome": "escrever em a[i][j]", "notacao": "O(1)", "porque": "Pelo mesmo endereço calculado: uma escrita."}, {"id": "linha", "nome": "percorrer a linha i", "notacao": "O(colunas)", "porque": "Lê as colunas casas da linha i, que estão lado a lado no bloco."}, {"id": "coluna", "nome": "percorrer a coluna j", "notacao": "O(linhas)", "porque": "Lê uma casa de cada linha, pulando colunas casas de uma para a outra. Conta igual à linha: aqui só se contam as casas lidas."}, {"id": "transpor", "nome": "transpor", "notacao": "O(linhas · colunas)", "porque": "Num bloco novo de colunas × linhas, a casa (i, j) vai para (j, i): uma leitura e uma escrita por casa."}, {"id": "criar", "nome": "criar n × n de zeros", "notacao": "O(linhas · colunas)", "porque": "Reserva o bloco e escreve 0 em cada casa."}], "grafico": [{"id": "ler", "rotulo": "ler a[i][j]"}, {"id": "linha", "rotulo": "linha"}, {"id": "coluna", "rotulo": "coluna"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando a matriz em Python na matriz de medição: n × n casas, com n = {ns}. As perguntas são sobre a linha e a coluna do meio. As dimensões, guardadas à parte, e a conta do endereço não contam.", "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Ler uma casa não sai do chão: o endereço é uma conta. A linha e a coluna sobem juntas, n leituras cada; o salto de n em n casas da coluna não aparece aqui, porque só se contam as casas lidas (na máquina de verdade, a linha costuma ser mais rápida, pelo cache). Transpor e criar, com n² casas, ficam na tabela.", "casas": "Casas do bloco para a matriz n × n, com n de {v0} a {v1}: exatamente n², sem folga."}, "medido": {"encher": "quadrada", "tamanhos": [10, 100, 1000], "operacoes": {"ler": {"estrutura": "linha_a_linha", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "escrever": {"estrutura": "linha_a_linha", "chamada": "escrever", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 1, "leituras": 0, "escritas": 1}, {"n": 2, "leituras": 0, "escritas": 1}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 0, "escritas": 1}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 0, "escritas": 1}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 0, "escritas": 1}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 0, "escritas": 1}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "linha": {"estrutura": "linha_a_linha", "chamada": "linha", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "coluna": {"estrutura": "linha_a_linha", "chamada": "coluna", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "transpor": {"estrutura": "linha_a_linha", "chamada": "transpor", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 100, "escritas": 100}, {"n": 100, "leituras": 10000, "escritas": 10000}, {"n": 1000, "leituras": 1000000, "escritas": 1000000}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 4, "escritas": 4}, {"n": 3, "leituras": 9, "escritas": 9}, {"n": 4, "leituras": 16, "escritas": 16}, {"n": 5, "leituras": 25, "escritas": 25}, {"n": 6, "leituras": 36, "escritas": 36}, {"n": 7, "leituras": 49, "escritas": 49}, {"n": 8, "leituras": 64, "escritas": 64}, {"n": 9, "leituras": 81, "escritas": 81}, {"n": 10, "leituras": 100, "escritas": 100}, {"n": 11, "leituras": 121, "escritas": 121}, {"n": 12, "leituras": 144, "escritas": 144}, {"n": 13, "leituras": 169, "escritas": 169}, {"n": 14, "leituras": 196, "escritas": 196}, {"n": 15, "leituras": 225, "escritas": 225}, {"n": 16, "leituras": 256, "escritas": 256}, {"n": 17, "leituras": 289, "escritas": 289}, {"n": 18, "leituras": 324, "escritas": 324}, {"n": 19, "leituras": 361, "escritas": 361}, {"n": 20, "leituras": 400, "escritas": 400}, {"n": 21, "leituras": 441, "escritas": 441}, {"n": 22, "leituras": 484, "escritas": 484}, {"n": 23, "leituras": 529, "escritas": 529}, {"n": 24, "leituras": 576, "escritas": 576}, {"n": 25, "leituras": 625, "escritas": 625}, {"n": 26, "leituras": 676, "escritas": 676}, {"n": 27, "leituras": 729, "escritas": 729}, {"n": 28, "leituras": 784, "escritas": 784}, {"n": 29, "leituras": 841, "escritas": 841}, {"n": 30, "leituras": 900, "escritas": 900}, {"n": 31, "leituras": 961, "escritas": 961}, {"n": 32, "leituras": 1024, "escritas": 1024}, {"n": 33, "leituras": 1089, "escritas": 1089}, {"n": 34, "leituras": 1156, "escritas": 1156}, {"n": 35, "leituras": 1225, "escritas": 1225}, {"n": 36, "leituras": 1296, "escritas": 1296}, {"n": 37, "leituras": 1369, "escritas": 1369}, {"n": 38, "leituras": 1444, "escritas": 1444}, {"n": 39, "leituras": 1521, "escritas": 1521}, {"n": 40, "leituras": 1600, "escritas": 1600}, {"n": 41, "leituras": 1681, "escritas": 1681}, {"n": 42, "leituras": 1764, "escritas": 1764}, {"n": 43, "leituras": 1849, "escritas": 1849}, {"n": 44, "leituras": 1936, "escritas": 1936}, {"n": 45, "leituras": 2025, "escritas": 2025}, {"n": 46, "leituras": 2116, "escritas": 2116}, {"n": 47, "leituras": 2209, "escritas": 2209}, {"n": 48, "leituras": 2304, "escritas": 2304}, {"n": 49, "leituras": 2401, "escritas": 2401}, {"n": 50, "leituras": 2500, "escritas": 2500}, {"n": 51, "leituras": 2601, "escritas": 2601}, {"n": 52, "leituras": 2704, "escritas": 2704}, {"n": 53, "leituras": 2809, "escritas": 2809}, {"n": 54, "leituras": 2916, "escritas": 2916}, {"n": 55, "leituras": 3025, "escritas": 3025}, {"n": 56, "leituras": 3136, "escritas": 3136}, {"n": 57, "leituras": 3249, "escritas": 3249}, {"n": 58, "leituras": 3364, "escritas": 3364}, {"n": 59, "leituras": 3481, "escritas": 3481}, {"n": 60, "leituras": 3600, "escritas": 3600}]}, "criar": {"estrutura": "linha_a_linha", "chamada": "criar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 100}, {"n": 100, "leituras": 0, "escritas": 10000}, {"n": 1000, "leituras": 0, "escritas": 1000000}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 1}, {"n": 2, "leituras": 0, "escritas": 4}, {"n": 3, "leituras": 0, "escritas": 9}, {"n": 4, "leituras": 0, "escritas": 16}, {"n": 5, "leituras": 0, "escritas": 25}, {"n": 6, "leituras": 0, "escritas": 36}, {"n": 7, "leituras": 0, "escritas": 49}, {"n": 8, "leituras": 0, "escritas": 64}, {"n": 9, "leituras": 0, "escritas": 81}, {"n": 10, "leituras": 0, "escritas": 100}, {"n": 11, "leituras": 0, "escritas": 121}, {"n": 12, "leituras": 0, "escritas": 144}, {"n": 13, "leituras": 0, "escritas": 169}, {"n": 14, "leituras": 0, "escritas": 196}, {"n": 15, "leituras": 0, "escritas": 225}, {"n": 16, "leituras": 0, "escritas": 256}, {"n": 17, "leituras": 0, "escritas": 289}, {"n": 18, "leituras": 0, "escritas": 324}, {"n": 19, "leituras": 0, "escritas": 361}, {"n": 20, "leituras": 0, "escritas": 400}, {"n": 21, "leituras": 0, "escritas": 441}, {"n": 22, "leituras": 0, "escritas": 484}, {"n": 23, "leituras": 0, "escritas": 529}, {"n": 24, "leituras": 0, "escritas": 576}, {"n": 25, "leituras": 0, "escritas": 625}, {"n": 26, "leituras": 0, "escritas": 676}, {"n": 27, "leituras": 0, "escritas": 729}, {"n": 28, "leituras": 0, "escritas": 784}, {"n": 29, "leituras": 0, "escritas": 841}, {"n": 30, "leituras": 0, "escritas": 900}, {"n": 31, "leituras": 0, "escritas": 961}, {"n": 32, "leituras": 0, "escritas": 1024}, {"n": 33, "leituras": 0, "escritas": 1089}, {"n": 34, "leituras": 0, "escritas": 1156}, {"n": 35, "leituras": 0, "escritas": 1225}, {"n": 36, "leituras": 0, "escritas": 1296}, {"n": 37, "leituras": 0, "escritas": 1369}, {"n": 38, "leituras": 0, "escritas": 1444}, {"n": 39, "leituras": 0, "escritas": 1521}, {"n": 40, "leituras": 0, "escritas": 1600}, {"n": 41, "leituras": 0, "escritas": 1681}, {"n": 42, "leituras": 0, "escritas": 1764}, {"n": 43, "leituras": 0, "escritas": 1849}, {"n": 44, "leituras": 0, "escritas": 1936}, {"n": 45, "leituras": 0, "escritas": 2025}, {"n": 46, "leituras": 0, "escritas": 2116}, {"n": 47, "leituras": 0, "escritas": 2209}, {"n": 48, "leituras": 0, "escritas": 2304}, {"n": 49, "leituras": 0, "escritas": 2401}, {"n": 50, "leituras": 0, "escritas": 2500}, {"n": 51, "leituras": 0, "escritas": 2601}, {"n": 52, "leituras": 0, "escritas": 2704}, {"n": 53, "leituras": 0, "escritas": 2809}, {"n": 54, "leituras": 0, "escritas": 2916}, {"n": 55, "leituras": 0, "escritas": 3025}, {"n": 56, "leituras": 0, "escritas": 3136}, {"n": 57, "leituras": 0, "escritas": 3249}, {"n": 58, "leituras": 0, "escritas": 3364}, {"n": 59, "leituras": 0, "escritas": 3481}, {"n": 60, "leituras": 0, "escritas": 3600}]}}, "capacidade": {"linha_a_linha": [{"n": 0, "casas": 0}, {"n": 1, "casas": 1}, {"n": 2, "casas": 4}, {"n": 3, "casas": 9}, {"n": 4, "casas": 16}, {"n": 5, "casas": 25}, {"n": 6, "casas": 36}, {"n": 7, "casas": 49}, {"n": 8, "casas": 64}, {"n": 9, "casas": 81}, {"n": 10, "casas": 100}, {"n": 11, "casas": 121}, {"n": 12, "casas": 144}, {"n": 13, "casas": 169}, {"n": 14, "casas": 196}, {"n": 15, "casas": 225}, {"n": 16, "casas": 256}, {"n": 17, "casas": 289}, {"n": 18, "casas": 324}, {"n": 19, "casas": 361}, {"n": 20, "casas": 400}, {"n": 21, "casas": 441}, {"n": 22, "casas": 484}, {"n": 23, "casas": 529}, {"n": 24, "casas": 576}, {"n": 25, "casas": 625}, {"n": 26, "casas": 676}, {"n": 27, "casas": 729}, {"n": 28, "casas": 784}, {"n": 29, "casas": 841}, {"n": 30, "casas": 900}, {"n": 31, "casas": 961}, {"n": 32, "casas": 1024}, {"n": 33, "casas": 1089}, {"n": 34, "casas": 1156}, {"n": 35, "casas": 1225}, {"n": 36, "casas": 1296}, {"n": 37, "casas": 1369}, {"n": 38, "casas": 1444}, {"n": 39, "casas": 1521}, {"n": 40, "casas": 1600}, {"n": 41, "casas": 1681}, {"n": 42, "casas": 1764}, {"n": 43, "casas": 1849}, {"n": 44, "casas": 1936}, {"n": 45, "casas": 2025}, {"n": 46, "casas": 2116}, {"n": 47, "casas": 2209}, {"n": 48, "casas": 2304}, {"n": 49, "casas": 2401}, {"n": 50, "casas": 2500}, {"n": 51, "casas": 2601}, {"n": 52, "casas": 2704}, {"n": 53, "casas": 2809}, {"n": 54, "casas": 2916}, {"n": 55, "casas": 3025}, {"n": 56, "casas": 3136}, {"n": 57, "casas": 3249}, {"n": 58, "casas": 3364}, {"n": 59, "casas": 3481}, {"n": 60, "casas": 3600}]}}}, {"id": "texto", "nome": "Texto", "variante": "um vetor de caracteres, em duas versões: concatenar no laço e juntar no fim", "frase": "Letras numa fileira de casas, uma por casa.", "resumo": "Um texto é um vetor de caracteres: a letra i mora na casa i, e ler qualquer uma custa 1. A diferença aparece ao montar um texto aos poucos. Em Python, como em Java e em JavaScript, o texto pronto não muda: texto + letra cria um texto novo e copia todas as letras do antigo. Num laço, isso copia 1, depois 2, depois 3 letras… e montar n letras custa perto de n²/2 cópias. O jeito barato é guardar os pedaços numa lista, que cresce como o Vetor, e juntar tudo uma vez só no fim (o \"\".join do Python): cada letra é copiada uma vez.", "placa": {"autor": "sem autoria única", "ano": "—"}, "memoria": {"notacao": "O(n)", "porque": "Uma casa por letra. O texto imutável tem exatamente n casas, mas a cada acréscimo reserva um bloco novo e solta o antigo. A lista de pedaços tem a folga do Vetor, que dobra quando enche; juntar reserva mais n casas para o texto pronto."}, "variantes": {"imutavel": "concatenar no laço", "pedacos": "juntar no fim"}, "operacoes": [{"id": "acrescentar-imutavel", "nome": "acrescentar uma letra", "notacao": "O(n)", "porque": "texto ← texto + letra: reserva n + 1 casas novas, copia as n letras (uma leitura e uma escrita cada) e escreve a nova."}, {"id": "acrescentar-pedacos", "nome": "acrescentar uma letra, com folga", "notacao": "O(1)", "porque": "Anexa o pedaço no fim da lista: uma escrita."}, {"id": "acrescentar-media-imutavel", "nome": "acrescentar, média de n seguidas", "notacao": "O(n)", "porque": "Cada acréscimo copia tudo o que já existe: 1, 2, 3, … letras. A média cresce com n."}, {"id": "acrescentar-media-pedacos", "nome": "acrescentar, média de n seguidas", "notacao": "O(1) amortizado", "porque": "Como no Vetor, as cópias ao dobrar ficam cada vez mais raras: a média não cresce com n."}, {"id": "montar-imutavel", "nome": "montar n letras", "notacao": "O(n²)", "porque": "n acréscimos, cada um copiando o texto inteiro: perto de n² leituras e escritas no total."}, {"id": "montar-pedacos", "nome": "montar n letras e juntar", "notacao": "O(n)", "porque": "n anexações (mais as cópias ao dobrar) e uma junção no fim, que copia cada letra uma vez."}, {"id": "juntar-imutavel", "nome": "juntar", "notacao": "O(1)", "porque": "O texto já é um bloco só: não há o que copiar."}, {"id": "juntar-pedacos", "nome": "juntar", "notacao": "O(n)", "porque": "Reserva um bloco de n casas e copia cada pedaço uma vez."}, {"id": "ler-imutavel", "nome": "ler a letra i", "notacao": "O(1)", "porque": "A letra i mora na casa i: uma leitura. Na lista de pedaços, o mesmo."}, {"id": "comprimento-imutavel", "nome": "comprimento", "notacao": "O(1)", "porque": "O tamanho fica guardado à parte: nenhuma casa lida. Na lista de pedaços, o mesmo."}, {"id": "fatiar-imutavel", "nome": "fatiar t[a:b]", "notacao": "O(b − a)", "porque": "Um texto novo com as letras de a até b − 1: lê e escreve cada uma. Na lista de pedaços, o mesmo."}, {"id": "comparar-imutavel", "nome": "comparar com outro texto", "notacao": "O(n)", "porque": "Se os tamanhos diferem, já não é igual. Se não, compara letra a letra até a primeira diferença; iguais, lê as n. Na lista de pedaços, o mesmo."}], "grafico": [{"id": "acrescentar-imutavel", "rotulo": "acrescentar, concatenando"}, {"id": "acrescentar-pedacos", "rotulo": "acrescentar, pedaços"}, {"id": "montar-imutavel", "rotulo": "montar, concatenando"}, {"id": "montar-pedacos", "rotulo": "montar e juntar, pedaços"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando os dois textos em Python, já montados com n letras (a, b, c, …), para n = {ns}. As montagens partem do texto vazio e recebem as n letras; nelas, a tabela traz o total e o custo por letra. O tamanho, guardado à parte, não conta.", "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Acrescentar concatenando sobe em linha reta (copia o texto todo); com pedaços, não sai do chão, fora as vezes em que a lista dobra. Tracejadas: as montagens, em custo por letra (o total dividido por n). Concatenando, o custo por letra cresce com n, então o total cresce como n²; com pedaços e uma junção no fim, fica parado.", "casas": "Casas guardadas depois de acrescentar n letras, a partir do texto vazio, para n de {v0} a {v1}. O texto imutável tem exatamente n; a lista de pedaços sobe em degraus, com a folga do Vetor."}, "medido": {"encher": "letras", "tamanhos": [10, 100, 1000], "operacoes": {"acrescentar-imutavel": {"estrutura": "imutavel", "chamada": "acrescentar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 11}, {"n": 100, "leituras": 100, "escritas": 101}, {"n": 1000, "leituras": 1000, "escritas": 1001}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 3, "escritas": 4}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 5, "escritas": 6}, {"n": 6, "leituras": 6, "escritas": 7}, {"n": 7, "leituras": 7, "escritas": 8}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 9, "escritas": 10}, {"n": 10, "leituras": 10, "escritas": 11}, {"n": 11, "leituras": 11, "escritas": 12}, {"n": 12, "leituras": 12, "escritas": 13}, {"n": 13, "leituras": 13, "escritas": 14}, {"n": 14, "leituras": 14, "escritas": 15}, {"n": 15, "leituras": 15, "escritas": 16}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 17, "escritas": 18}, {"n": 18, "leituras": 18, "escritas": 19}, {"n": 19, "leituras": 19, "escritas": 20}, {"n": 20, "leituras": 20, "escritas": 21}, {"n": 21, "leituras": 21, "escritas": 22}, {"n": 22, "leituras": 22, "escritas": 23}, {"n": 23, "leituras": 23, "escritas": 24}, {"n": 24, "leituras": 24, "escritas": 25}, {"n": 25, "leituras": 25, "escritas": 26}, {"n": 26, "leituras": 26, "escritas": 27}, {"n": 27, "leituras": 27, "escritas": 28}, {"n": 28, "leituras": 28, "escritas": 29}, {"n": 29, "leituras": 29, "escritas": 30}, {"n": 30, "leituras": 30, "escritas": 31}, {"n": 31, "leituras": 31, "escritas": 32}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 33, "escritas": 34}, {"n": 34, "leituras": 34, "escritas": 35}, {"n": 35, "leituras": 35, "escritas": 36}, {"n": 36, "leituras": 36, "escritas": 37}, {"n": 37, "leituras": 37, "escritas": 38}, {"n": 38, "leituras": 38, "escritas": 39}, {"n": 39, "leituras": 39, "escritas": 40}, {"n": 40, "leituras": 40, "escritas": 41}, {"n": 41, "leituras": 41, "escritas": 42}, {"n": 42, "leituras": 42, "escritas": 43}, {"n": 43, "leituras": 43, "escritas": 44}, {"n": 44, "leituras": 44, "escritas": 45}, {"n": 45, "leituras": 45, "escritas": 46}, {"n": 46, "leituras": 46, "escritas": 47}, {"n": 47, "leituras": 47, "escritas": 48}, {"n": 48, "leituras": 48, "escritas": 49}, {"n": 49, "leituras": 49, "escritas": 50}, {"n": 50, "leituras": 50, "escritas": 51}, {"n": 51, "leituras": 51, "escritas": 52}, {"n": 52, "leituras": 52, "escritas": 53}, {"n": 53, "leituras": 53, "escritas": 54}, {"n": 54, "leituras": 54, "escritas": 55}, {"n": 55, "leituras": 55, "escritas": 56}, {"n": 56, "leituras": 56, "escritas": 57}, {"n": 57, "leituras": 57, "escritas": 58}, {"n": 58, "leituras": 58, "escritas": 59}, {"n": 59, "leituras": 59, "escritas": 60}, {"n": 60, "leituras": 60, "escritas": 61}]}, "acrescentar-media-imutavel": {"estrutura": "imutavel", "chamada": "acrescentar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 45, "escritas": 55}, {"n": 100, "vezes": 100, "leituras": 4950, "escritas": 5050}, {"n": 1000, "vezes": 1000, "leituras": 499500, "escritas": 500500}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 6, "escritas": 10}, {"n": 5, "vezes": 5, "leituras": 10, "escritas": 15}, {"n": 6, "vezes": 6, "leituras": 15, "escritas": 21}, {"n": 7, "vezes": 7, "leituras": 21, "escritas": 28}, {"n": 8, "vezes": 8, "leituras": 28, "escritas": 36}, {"n": 9, "vezes": 9, "leituras": 36, "escritas": 45}, {"n": 10, "vezes": 10, "leituras": 45, "escritas": 55}, {"n": 11, "vezes": 11, "leituras": 55, "escritas": 66}, {"n": 12, "vezes": 12, "leituras": 66, "escritas": 78}, {"n": 13, "vezes": 13, "leituras": 78, "escritas": 91}, {"n": 14, "vezes": 14, "leituras": 91, "escritas": 105}, {"n": 15, "vezes": 15, "leituras": 105, "escritas": 120}, {"n": 16, "vezes": 16, "leituras": 120, "escritas": 136}, {"n": 17, "vezes": 17, "leituras": 136, "escritas": 153}, {"n": 18, "vezes": 18, "leituras": 153, "escritas": 171}, {"n": 19, "vezes": 19, "leituras": 171, "escritas": 190}, {"n": 20, "vezes": 20, "leituras": 190, "escritas": 210}, {"n": 21, "vezes": 21, "leituras": 210, "escritas": 231}, {"n": 22, "vezes": 22, "leituras": 231, "escritas": 253}, {"n": 23, "vezes": 23, "leituras": 253, "escritas": 276}, {"n": 24, "vezes": 24, "leituras": 276, "escritas": 300}, {"n": 25, "vezes": 25, "leituras": 300, "escritas": 325}, {"n": 26, "vezes": 26, "leituras": 325, "escritas": 351}, {"n": 27, "vezes": 27, "leituras": 351, "escritas": 378}, {"n": 28, "vezes": 28, "leituras": 378, "escritas": 406}, {"n": 29, "vezes": 29, "leituras": 406, "escritas": 435}, {"n": 30, "vezes": 30, "leituras": 435, "escritas": 465}, {"n": 31, "vezes": 31, "leituras": 465, "escritas": 496}, {"n": 32, "vezes": 32, "leituras": 496, "escritas": 528}, {"n": 33, "vezes": 33, "leituras": 528, "escritas": 561}, {"n": 34, "vezes": 34, "leituras": 561, "escritas": 595}, {"n": 35, "vezes": 35, "leituras": 595, "escritas": 630}, {"n": 36, "vezes": 36, "leituras": 630, "escritas": 666}, {"n": 37, "vezes": 37, "leituras": 666, "escritas": 703}, {"n": 38, "vezes": 38, "leituras": 703, "escritas": 741}, {"n": 39, "vezes": 39, "leituras": 741, "escritas": 780}, {"n": 40, "vezes": 40, "leituras": 780, "escritas": 820}, {"n": 41, "vezes": 41, "leituras": 820, "escritas": 861}, {"n": 42, "vezes": 42, "leituras": 861, "escritas": 903}, {"n": 43, "vezes": 43, "leituras": 903, "escritas": 946}, {"n": 44, "vezes": 44, "leituras": 946, "escritas": 990}, {"n": 45, "vezes": 45, "leituras": 990, "escritas": 1035}, {"n": 46, "vezes": 46, "leituras": 1035, "escritas": 1081}, {"n": 47, "vezes": 47, "leituras": 1081, "escritas": 1128}, {"n": 48, "vezes": 48, "leituras": 1128, "escritas": 1176}, {"n": 49, "vezes": 49, "leituras": 1176, "escritas": 1225}, {"n": 50, "vezes": 50, "leituras": 1225, "escritas": 1275}, {"n": 51, "vezes": 51, "leituras": 1275, "escritas": 1326}, {"n": 52, "vezes": 52, "leituras": 1326, "escritas": 1378}, {"n": 53, "vezes": 53, "leituras": 1378, "escritas": 1431}, {"n": 54, "vezes": 54, "leituras": 1431, "escritas": 1485}, {"n": 55, "vezes": 55, "leituras": 1485, "escritas": 1540}, {"n": 56, "vezes": 56, "leituras": 1540, "escritas": 1596}, {"n": 57, "vezes": 57, "leituras": 1596, "escritas": 1653}, {"n": 58, "vezes": 58, "leituras": 1653, "escritas": 1711}, {"n": 59, "vezes": 59, "leituras": 1711, "escritas": 1770}, {"n": 60, "vezes": 60, "leituras": 1770, "escritas": 1830}]}, "montar-imutavel": {"estrutura": "imutavel", "chamada": "montar", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 45, "escritas": 55}, {"n": 100, "vezes": 100, "leituras": 4950, "escritas": 5050}, {"n": 1000, "vezes": 1000, "leituras": 499500, "escritas": 500500}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 6, "escritas": 10}, {"n": 5, "vezes": 5, "leituras": 10, "escritas": 15}, {"n": 6, "vezes": 6, "leituras": 15, "escritas": 21}, {"n": 7, "vezes": 7, "leituras": 21, "escritas": 28}, {"n": 8, "vezes": 8, "leituras": 28, "escritas": 36}, {"n": 9, "vezes": 9, "leituras": 36, "escritas": 45}, {"n": 10, "vezes": 10, "leituras": 45, "escritas": 55}, {"n": 11, "vezes": 11, "leituras": 55, "escritas": 66}, {"n": 12, "vezes": 12, "leituras": 66, "escritas": 78}, {"n": 13, "vezes": 13, "leituras": 78, "escritas": 91}, {"n": 14, "vezes": 14, "leituras": 91, "escritas": 105}, {"n": 15, "vezes": 15, "leituras": 105, "escritas": 120}, {"n": 16, "vezes": 16, "leituras": 120, "escritas": 136}, {"n": 17, "vezes": 17, "leituras": 136, "escritas": 153}, {"n": 18, "vezes": 18, "leituras": 153, "escritas": 171}, {"n": 19, "vezes": 19, "leituras": 171, "escritas": 190}, {"n": 20, "vezes": 20, "leituras": 190, "escritas": 210}, {"n": 21, "vezes": 21, "leituras": 210, "escritas": 231}, {"n": 22, "vezes": 22, "leituras": 231, "escritas": 253}, {"n": 23, "vezes": 23, "leituras": 253, "escritas": 276}, {"n": 24, "vezes": 24, "leituras": 276, "escritas": 300}, {"n": 25, "vezes": 25, "leituras": 300, "escritas": 325}, {"n": 26, "vezes": 26, "leituras": 325, "escritas": 351}, {"n": 27, "vezes": 27, "leituras": 351, "escritas": 378}, {"n": 28, "vezes": 28, "leituras": 378, "escritas": 406}, {"n": 29, "vezes": 29, "leituras": 406, "escritas": 435}, {"n": 30, "vezes": 30, "leituras": 435, "escritas": 465}, {"n": 31, "vezes": 31, "leituras": 465, "escritas": 496}, {"n": 32, "vezes": 32, "leituras": 496, "escritas": 528}, {"n": 33, "vezes": 33, "leituras": 528, "escritas": 561}, {"n": 34, "vezes": 34, "leituras": 561, "escritas": 595}, {"n": 35, "vezes": 35, "leituras": 595, "escritas": 630}, {"n": 36, "vezes": 36, "leituras": 630, "escritas": 666}, {"n": 37, "vezes": 37, "leituras": 666, "escritas": 703}, {"n": 38, "vezes": 38, "leituras": 703, "escritas": 741}, {"n": 39, "vezes": 39, "leituras": 741, "escritas": 780}, {"n": 40, "vezes": 40, "leituras": 780, "escritas": 820}, {"n": 41, "vezes": 41, "leituras": 820, "escritas": 861}, {"n": 42, "vezes": 42, "leituras": 861, "escritas": 903}, {"n": 43, "vezes": 43, "leituras": 903, "escritas": 946}, {"n": 44, "vezes": 44, "leituras": 946, "escritas": 990}, {"n": 45, "vezes": 45, "leituras": 990, "escritas": 1035}, {"n": 46, "vezes": 46, "leituras": 1035, "escritas": 1081}, {"n": 47, "vezes": 47, "leituras": 1081, "escritas": 1128}, {"n": 48, "vezes": 48, "leituras": 1128, "escritas": 1176}, {"n": 49, "vezes": 49, "leituras": 1176, "escritas": 1225}, {"n": 50, "vezes": 50, "leituras": 1225, "escritas": 1275}, {"n": 51, "vezes": 51, "leituras": 1275, "escritas": 1326}, {"n": 52, "vezes": 52, "leituras": 1326, "escritas": 1378}, {"n": 53, "vezes": 53, "leituras": 1378, "escritas": 1431}, {"n": 54, "vezes": 54, "leituras": 1431, "escritas": 1485}, {"n": 55, "vezes": 55, "leituras": 1485, "escritas": 1540}, {"n": 56, "vezes": 56, "leituras": 1540, "escritas": 1596}, {"n": 57, "vezes": 57, "leituras": 1596, "escritas": 1653}, {"n": 58, "vezes": 58, "leituras": 1653, "escritas": 1711}, {"n": 59, "vezes": 59, "leituras": 1711, "escritas": 1770}, {"n": 60, "vezes": 60, "leituras": 1770, "escritas": 1830}]}, "juntar-imutavel": {"estrutura": "imutavel", "chamada": "juntar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 0}, {"n": 100, "leituras": 0, "escritas": 0}, {"n": 1000, "leituras": 0, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 0}, {"n": 2, "leituras": 0, "escritas": 0}, {"n": 3, "leituras": 0, "escritas": 0}, {"n": 4, "leituras": 0, "escritas": 0}, {"n": 5, "leituras": 0, "escritas": 0}, {"n": 6, "leituras": 0, "escritas": 0}, {"n": 7, "leituras": 0, "escritas": 0}, {"n": 8, "leituras": 0, "escritas": 0}, {"n": 9, "leituras": 0, "escritas": 0}, {"n": 10, "leituras": 0, "escritas": 0}, {"n": 11, "leituras": 0, "escritas": 0}, {"n": 12, "leituras": 0, "escritas": 0}, {"n": 13, "leituras": 0, "escritas": 0}, {"n": 14, "leituras": 0, "escritas": 0}, {"n": 15, "leituras": 0, "escritas": 0}, {"n": 16, "leituras": 0, "escritas": 0}, {"n": 17, "leituras": 0, "escritas": 0}, {"n": 18, "leituras": 0, "escritas": 0}, {"n": 19, "leituras": 0, "escritas": 0}, {"n": 20, "leituras": 0, "escritas": 0}, {"n": 21, "leituras": 0, "escritas": 0}, {"n": 22, "leituras": 0, "escritas": 0}, {"n": 23, "leituras": 0, "escritas": 0}, {"n": 24, "leituras": 0, "escritas": 0}, {"n": 25, "leituras": 0, "escritas": 0}, {"n": 26, "leituras": 0, "escritas": 0}, {"n": 27, "leituras": 0, "escritas": 0}, {"n": 28, "leituras": 0, "escritas": 0}, {"n": 29, "leituras": 0, "escritas": 0}, {"n": 30, "leituras": 0, "escritas": 0}, {"n": 31, "leituras": 0, "escritas": 0}, {"n": 32, "leituras": 0, "escritas": 0}, {"n": 33, "leituras": 0, "escritas": 0}, {"n": 34, "leituras": 0, "escritas": 0}, {"n": 35, "leituras": 0, "escritas": 0}, {"n": 36, "leituras": 0, "escritas": 0}, {"n": 37, "leituras": 0, "escritas": 0}, {"n": 38, "leituras": 0, "escritas": 0}, {"n": 39, "leituras": 0, "escritas": 0}, {"n": 40, "leituras": 0, "escritas": 0}, {"n": 41, "leituras": 0, "escritas": 0}, {"n": 42, "leituras": 0, "escritas": 0}, {"n": 43, "leituras": 0, "escritas": 0}, {"n": 44, "leituras": 0, "escritas": 0}, {"n": 45, "leituras": 0, "escritas": 0}, {"n": 46, "leituras": 0, "escritas": 0}, {"n": 47, "leituras": 0, "escritas": 0}, {"n": 48, "leituras": 0, "escritas": 0}, {"n": 49, "leituras": 0, "escritas": 0}, {"n": 50, "leituras": 0, "escritas": 0}, {"n": 51, "leituras": 0, "escritas": 0}, {"n": 52, "leituras": 0, "escritas": 0}, {"n": 53, "leituras": 0, "escritas": 0}, {"n": 54, "leituras": 0, "escritas": 0}, {"n": 55, "leituras": 0, "escritas": 0}, {"n": 56, "leituras": 0, "escritas": 0}, {"n": 57, "leituras": 0, "escritas": 0}, {"n": 58, "leituras": 0, "escritas": 0}, {"n": 59, "leituras": 0, "escritas": 0}, {"n": 60, "leituras": 0, "escritas": 0}]}, "ler-imutavel": {"estrutura": "imutavel", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "comprimento-imutavel": {"estrutura": "imutavel", "chamada": "comprimento", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 0}, {"n": 100, "leituras": 0, "escritas": 0}, {"n": 1000, "leituras": 0, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 0}, {"n": 2, "leituras": 0, "escritas": 0}, {"n": 3, "leituras": 0, "escritas": 0}, {"n": 4, "leituras": 0, "escritas": 0}, {"n": 5, "leituras": 0, "escritas": 0}, {"n": 6, "leituras": 0, "escritas": 0}, {"n": 7, "leituras": 0, "escritas": 0}, {"n": 8, "leituras": 0, "escritas": 0}, {"n": 9, "leituras": 0, "escritas": 0}, {"n": 10, "leituras": 0, "escritas": 0}, {"n": 11, "leituras": 0, "escritas": 0}, {"n": 12, "leituras": 0, "escritas": 0}, {"n": 13, "leituras": 0, "escritas": 0}, {"n": 14, "leituras": 0, "escritas": 0}, {"n": 15, "leituras": 0, "escritas": 0}, {"n": 16, "leituras": 0, "escritas": 0}, {"n": 17, "leituras": 0, "escritas": 0}, {"n": 18, "leituras": 0, "escritas": 0}, {"n": 19, "leituras": 0, "escritas": 0}, {"n": 20, "leituras": 0, "escritas": 0}, {"n": 21, "leituras": 0, "escritas": 0}, {"n": 22, "leituras": 0, "escritas": 0}, {"n": 23, "leituras": 0, "escritas": 0}, {"n": 24, "leituras": 0, "escritas": 0}, {"n": 25, "leituras": 0, "escritas": 0}, {"n": 26, "leituras": 0, "escritas": 0}, {"n": 27, "leituras": 0, "escritas": 0}, {"n": 28, "leituras": 0, "escritas": 0}, {"n": 29, "leituras": 0, "escritas": 0}, {"n": 30, "leituras": 0, "escritas": 0}, {"n": 31, "leituras": 0, "escritas": 0}, {"n": 32, "leituras": 0, "escritas": 0}, {"n": 33, "leituras": 0, "escritas": 0}, {"n": 34, "leituras": 0, "escritas": 0}, {"n": 35, "leituras": 0, "escritas": 0}, {"n": 36, "leituras": 0, "escritas": 0}, {"n": 37, "leituras": 0, "escritas": 0}, {"n": 38, "leituras": 0, "escritas": 0}, {"n": 39, "leituras": 0, "escritas": 0}, {"n": 40, "leituras": 0, "escritas": 0}, {"n": 41, "leituras": 0, "escritas": 0}, {"n": 42, "leituras": 0, "escritas": 0}, {"n": 43, "leituras": 0, "escritas": 0}, {"n": 44, "leituras": 0, "escritas": 0}, {"n": 45, "leituras": 0, "escritas": 0}, {"n": 46, "leituras": 0, "escritas": 0}, {"n": 47, "leituras": 0, "escritas": 0}, {"n": 48, "leituras": 0, "escritas": 0}, {"n": 49, "leituras": 0, "escritas": 0}, {"n": 50, "leituras": 0, "escritas": 0}, {"n": 51, "leituras": 0, "escritas": 0}, {"n": 52, "leituras": 0, "escritas": 0}, {"n": 53, "leituras": 0, "escritas": 0}, {"n": 54, "leituras": 0, "escritas": 0}, {"n": 55, "leituras": 0, "escritas": 0}, {"n": 56, "leituras": 0, "escritas": 0}, {"n": 57, "leituras": 0, "escritas": 0}, {"n": 58, "leituras": 0, "escritas": 0}, {"n": 59, "leituras": 0, "escritas": 0}, {"n": 60, "leituras": 0, "escritas": 0}]}, "fatiar-imutavel": {"estrutura": "imutavel", "chamada": "fatiar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 5}, {"n": 100, "leituras": 50, "escritas": 50}, {"n": 1000, "leituras": 500, "escritas": 500}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 2}, {"n": 5, "leituras": 2, "escritas": 2}, {"n": 6, "leituras": 3, "escritas": 3}, {"n": 7, "leituras": 3, "escritas": 3}, {"n": 8, "leituras": 4, "escritas": 4}, {"n": 9, "leituras": 4, "escritas": 4}, {"n": 10, "leituras": 5, "escritas": 5}, {"n": 11, "leituras": 5, "escritas": 5}, {"n": 12, "leituras": 6, "escritas": 6}, {"n": 13, "leituras": 6, "escritas": 6}, {"n": 14, "leituras": 7, "escritas": 7}, {"n": 15, "leituras": 7, "escritas": 7}, {"n": 16, "leituras": 8, "escritas": 8}, {"n": 17, "leituras": 8, "escritas": 8}, {"n": 18, "leituras": 9, "escritas": 9}, {"n": 19, "leituras": 9, "escritas": 9}, {"n": 20, "leituras": 10, "escritas": 10}, {"n": 21, "leituras": 10, "escritas": 10}, {"n": 22, "leituras": 11, "escritas": 11}, {"n": 23, "leituras": 11, "escritas": 11}, {"n": 24, "leituras": 12, "escritas": 12}, {"n": 25, "leituras": 12, "escritas": 12}, {"n": 26, "leituras": 13, "escritas": 13}, {"n": 27, "leituras": 13, "escritas": 13}, {"n": 28, "leituras": 14, "escritas": 14}, {"n": 29, "leituras": 14, "escritas": 14}, {"n": 30, "leituras": 15, "escritas": 15}, {"n": 31, "leituras": 15, "escritas": 15}, {"n": 32, "leituras": 16, "escritas": 16}, {"n": 33, "leituras": 16, "escritas": 16}, {"n": 34, "leituras": 17, "escritas": 17}, {"n": 35, "leituras": 17, "escritas": 17}, {"n": 36, "leituras": 18, "escritas": 18}, {"n": 37, "leituras": 18, "escritas": 18}, {"n": 38, "leituras": 19, "escritas": 19}, {"n": 39, "leituras": 19, "escritas": 19}, {"n": 40, "leituras": 20, "escritas": 20}, {"n": 41, "leituras": 20, "escritas": 20}, {"n": 42, "leituras": 21, "escritas": 21}, {"n": 43, "leituras": 21, "escritas": 21}, {"n": 44, "leituras": 22, "escritas": 22}, {"n": 45, "leituras": 22, "escritas": 22}, {"n": 46, "leituras": 23, "escritas": 23}, {"n": 47, "leituras": 23, "escritas": 23}, {"n": 48, "leituras": 24, "escritas": 24}, {"n": 49, "leituras": 24, "escritas": 24}, {"n": 50, "leituras": 25, "escritas": 25}, {"n": 51, "leituras": 25, "escritas": 25}, {"n": 52, "leituras": 26, "escritas": 26}, {"n": 53, "leituras": 26, "escritas": 26}, {"n": 54, "leituras": 27, "escritas": 27}, {"n": 55, "leituras": 27, "escritas": 27}, {"n": 56, "leituras": 28, "escritas": 28}, {"n": 57, "leituras": 28, "escritas": 28}, {"n": 58, "leituras": 29, "escritas": 29}, {"n": 59, "leituras": 29, "escritas": 29}, {"n": 60, "leituras": 30, "escritas": 30}]}, "comparar-imutavel": {"estrutura": "imutavel", "chamada": "comparar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "acrescentar-pedacos": {"estrutura": "pedacos", "chamada": "acrescentar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "acrescentar-media-pedacos": {"estrutura": "pedacos", "chamada": "acrescentar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "montar-pedacos": {"estrutura": "pedacos", "chamada": "montar", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 25, "escritas": 35}, {"n": 100, "vezes": 100, "leituras": 227, "escritas": 327}, {"n": 1000, "vezes": 1000, "leituras": 2023, "escritas": 3023}], "serie": [{"n": 1, "vezes": 1, "leituras": 1, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 3, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 6, "escritas": 9}, {"n": 4, "vezes": 4, "leituras": 7, "escritas": 11}, {"n": 5, "vezes": 5, "leituras": 12, "escritas": 17}, {"n": 6, "vezes": 6, "leituras": 13, "escritas": 19}, {"n": 7, "vezes": 7, "leituras": 14, "escritas": 21}, {"n": 8, "vezes": 8, "leituras": 15, "escritas": 23}, {"n": 9, "vezes": 9, "leituras": 24, "escritas": 33}, {"n": 10, "vezes": 10, "leituras": 25, "escritas": 35}, {"n": 11, "vezes": 11, "leituras": 26, "escritas": 37}, {"n": 12, "vezes": 12, "leituras": 27, "escritas": 39}, {"n": 13, "vezes": 13, "leituras": 28, "escritas": 41}, {"n": 14, "vezes": 14, "leituras": 29, "escritas": 43}, {"n": 15, "vezes": 15, "leituras": 30, "escritas": 45}, {"n": 16, "vezes": 16, "leituras": 31, "escritas": 47}, {"n": 17, "vezes": 17, "leituras": 48, "escritas": 65}, {"n": 18, "vezes": 18, "leituras": 49, "escritas": 67}, {"n": 19, "vezes": 19, "leituras": 50, "escritas": 69}, {"n": 20, "vezes": 20, "leituras": 51, "escritas": 71}, {"n": 21, "vezes": 21, "leituras": 52, "escritas": 73}, {"n": 22, "vezes": 22, "leituras": 53, "escritas": 75}, {"n": 23, "vezes": 23, "leituras": 54, "escritas": 77}, {"n": 24, "vezes": 24, "leituras": 55, "escritas": 79}, {"n": 25, "vezes": 25, "leituras": 56, "escritas": 81}, {"n": 26, "vezes": 26, "leituras": 57, "escritas": 83}, {"n": 27, "vezes": 27, "leituras": 58, "escritas": 85}, {"n": 28, "vezes": 28, "leituras": 59, "escritas": 87}, {"n": 29, "vezes": 29, "leituras": 60, "escritas": 89}, {"n": 30, "vezes": 30, "leituras": 61, "escritas": 91}, {"n": 31, "vezes": 31, "leituras": 62, "escritas": 93}, {"n": 32, "vezes": 32, "leituras": 63, "escritas": 95}, {"n": 33, "vezes": 33, "leituras": 96, "escritas": 129}, {"n": 34, "vezes": 34, "leituras": 97, "escritas": 131}, {"n": 35, "vezes": 35, "leituras": 98, "escritas": 133}, {"n": 36, "vezes": 36, "leituras": 99, "escritas": 135}, {"n": 37, "vezes": 37, "leituras": 100, "escritas": 137}, {"n": 38, "vezes": 38, "leituras": 101, "escritas": 139}, {"n": 39, "vezes": 39, "leituras": 102, "escritas": 141}, {"n": 40, "vezes": 40, "leituras": 103, "escritas": 143}, {"n": 41, "vezes": 41, "leituras": 104, "escritas": 145}, {"n": 42, "vezes": 42, "leituras": 105, "escritas": 147}, {"n": 43, "vezes": 43, "leituras": 106, "escritas": 149}, {"n": 44, "vezes": 44, "leituras": 107, "escritas": 151}, {"n": 45, "vezes": 45, "leituras": 108, "escritas": 153}, {"n": 46, "vezes": 46, "leituras": 109, "escritas": 155}, {"n": 47, "vezes": 47, "leituras": 110, "escritas": 157}, {"n": 48, "vezes": 48, "leituras": 111, "escritas": 159}, {"n": 49, "vezes": 49, "leituras": 112, "escritas": 161}, {"n": 50, "vezes": 50, "leituras": 113, "escritas": 163}, {"n": 51, "vezes": 51, "leituras": 114, "escritas": 165}, {"n": 52, "vezes": 52, "leituras": 115, "escritas": 167}, {"n": 53, "vezes": 53, "leituras": 116, "escritas": 169}, {"n": 54, "vezes": 54, "leituras": 117, "escritas": 171}, {"n": 55, "vezes": 55, "leituras": 118, "escritas": 173}, {"n": 56, "vezes": 56, "leituras": 119, "escritas": 175}, {"n": 57, "vezes": 57, "leituras": 120, "escritas": 177}, {"n": 58, "vezes": 58, "leituras": 121, "escritas": 179}, {"n": 59, "vezes": 59, "leituras": 122, "escritas": 181}, {"n": 60, "vezes": 60, "leituras": 123, "escritas": 183}]}, "juntar-pedacos": {"estrutura": "pedacos", "chamada": "juntar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 10}, {"n": 100, "leituras": 100, "escritas": 100}, {"n": 1000, "leituras": 1000, "escritas": 1000}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 2, "escritas": 2}, {"n": 3, "leituras": 3, "escritas": 3}, {"n": 4, "leituras": 4, "escritas": 4}, {"n": 5, "leituras": 5, "escritas": 5}, {"n": 6, "leituras": 6, "escritas": 6}, {"n": 7, "leituras": 7, "escritas": 7}, {"n": 8, "leituras": 8, "escritas": 8}, {"n": 9, "leituras": 9, "escritas": 9}, {"n": 10, "leituras": 10, "escritas": 10}, {"n": 11, "leituras": 11, "escritas": 11}, {"n": 12, "leituras": 12, "escritas": 12}, {"n": 13, "leituras": 13, "escritas": 13}, {"n": 14, "leituras": 14, "escritas": 14}, {"n": 15, "leituras": 15, "escritas": 15}, {"n": 16, "leituras": 16, "escritas": 16}, {"n": 17, "leituras": 17, "escritas": 17}, {"n": 18, "leituras": 18, "escritas": 18}, {"n": 19, "leituras": 19, "escritas": 19}, {"n": 20, "leituras": 20, "escritas": 20}, {"n": 21, "leituras": 21, "escritas": 21}, {"n": 22, "leituras": 22, "escritas": 22}, {"n": 23, "leituras": 23, "escritas": 23}, {"n": 24, "leituras": 24, "escritas": 24}, {"n": 25, "leituras": 25, "escritas": 25}, {"n": 26, "leituras": 26, "escritas": 26}, {"n": 27, "leituras": 27, "escritas": 27}, {"n": 28, "leituras": 28, "escritas": 28}, {"n": 29, "leituras": 29, "escritas": 29}, {"n": 30, "leituras": 30, "escritas": 30}, {"n": 31, "leituras": 31, "escritas": 31}, {"n": 32, "leituras": 32, "escritas": 32}, {"n": 33, "leituras": 33, "escritas": 33}, {"n": 34, "leituras": 34, "escritas": 34}, {"n": 35, "leituras": 35, "escritas": 35}, {"n": 36, "leituras": 36, "escritas": 36}, {"n": 37, "leituras": 37, "escritas": 37}, {"n": 38, "leituras": 38, "escritas": 38}, {"n": 39, "leituras": 39, "escritas": 39}, {"n": 40, "leituras": 40, "escritas": 40}, {"n": 41, "leituras": 41, "escritas": 41}, {"n": 42, "leituras": 42, "escritas": 42}, {"n": 43, "leituras": 43, "escritas": 43}, {"n": 44, "leituras": 44, "escritas": 44}, {"n": 45, "leituras": 45, "escritas": 45}, {"n": 46, "leituras": 46, "escritas": 46}, {"n": 47, "leituras": 47, "escritas": 47}, {"n": 48, "leituras": 48, "escritas": 48}, {"n": 49, "leituras": 49, "escritas": 49}, {"n": 50, "leituras": 50, "escritas": 50}, {"n": 51, "leituras": 51, "escritas": 51}, {"n": 52, "leituras": 52, "escritas": 52}, {"n": 53, "leituras": 53, "escritas": 53}, {"n": 54, "leituras": 54, "escritas": 54}, {"n": 55, "leituras": 55, "escritas": 55}, {"n": 56, "leituras": 56, "escritas": 56}, {"n": 57, "leituras": 57, "escritas": 57}, {"n": 58, "leituras": 58, "escritas": 58}, {"n": 59, "leituras": 59, "escritas": 59}, {"n": 60, "leituras": 60, "escritas": 60}]}, "ler-pedacos": {"estrutura": "pedacos", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "comprimento-pedacos": {"estrutura": "pedacos", "chamada": "comprimento", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 0}, {"n": 100, "leituras": 0, "escritas": 0}, {"n": 1000, "leituras": 0, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 0}, {"n": 2, "leituras": 0, "escritas": 0}, {"n": 3, "leituras": 0, "escritas": 0}, {"n": 4, "leituras": 0, "escritas": 0}, {"n": 5, "leituras": 0, "escritas": 0}, {"n": 6, "leituras": 0, "escritas": 0}, {"n": 7, "leituras": 0, "escritas": 0}, {"n": 8, "leituras": 0, "escritas": 0}, {"n": 9, "leituras": 0, "escritas": 0}, {"n": 10, "leituras": 0, "escritas": 0}, {"n": 11, "leituras": 0, "escritas": 0}, {"n": 12, "leituras": 0, "escritas": 0}, {"n": 13, "leituras": 0, "escritas": 0}, {"n": 14, "leituras": 0, "escritas": 0}, {"n": 15, "leituras": 0, "escritas": 0}, {"n": 16, "leituras": 0, "escritas": 0}, {"n": 17, "leituras": 0, "escritas": 0}, {"n": 18, "leituras": 0, "escritas": 0}, {"n": 19, "leituras": 0, "escritas": 0}, {"n": 20, "leituras": 0, "escritas": 0}, {"n": 21, "leituras": 0, "escritas": 0}, {"n": 22, "leituras": 0, "escritas": 0}, {"n": 23, "leituras": 0, "escritas": 0}, {"n": 24, "leituras": 0, "escritas": 0}, {"n": 25, "leituras": 0, "escritas": 0}, {"n": 26, "leituras": 0, "escritas": 0}, {"n": 27, "leituras": 0, "escritas": 0}, {"n": 28, "leituras": 0, "escritas": 0}, {"n": 29, "leituras": 0, "escritas": 0}, {"n": 30, "leituras": 0, "escritas": 0}, {"n": 31, "leituras": 0, "escritas": 0}, {"n": 32, "leituras": 0, "escritas": 0}, {"n": 33, "leituras": 0, "escritas": 0}, {"n": 34, "leituras": 0, "escritas": 0}, {"n": 35, "leituras": 0, "escritas": 0}, {"n": 36, "leituras": 0, "escritas": 0}, {"n": 37, "leituras": 0, "escritas": 0}, {"n": 38, "leituras": 0, "escritas": 0}, {"n": 39, "leituras": 0, "escritas": 0}, {"n": 40, "leituras": 0, "escritas": 0}, {"n": 41, "leituras": 0, "escritas": 0}, {"n": 42, "leituras": 0, "escritas": 0}, {"n": 43, "leituras": 0, "escritas": 0}, {"n": 44, "leituras": 0, "escritas": 0}, {"n": 45, "leituras": 0, "escritas": 0}, {"n": 46, "leituras": 0, "escritas": 0}, {"n": 47, "leituras": 0, "escritas": 0}, {"n": 48, "leituras": 0, "escritas": 0}, {"n": 49, "leituras": 0, "escritas": 0}, {"n": 50, "leituras": 0, "escritas": 0}, {"n": 51, "leituras": 0, "escritas": 0}, {"n": 52, "leituras": 0, "escritas": 0}, {"n": 53, "leituras": 0, "escritas": 0}, {"n": 54, "leituras": 0, "escritas": 0}, {"n": 55, "leituras": 0, "escritas": 0}, {"n": 56, "leituras": 0, "escritas": 0}, {"n": 57, "leituras": 0, "escritas": 0}, {"n": 58, "leituras": 0, "escritas": 0}, {"n": 59, "leituras": 0, "escritas": 0}, {"n": 60, "leituras": 0, "escritas": 0}]}, "fatiar-pedacos": {"estrutura": "pedacos", "chamada": "fatiar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 5}, {"n": 100, "leituras": 50, "escritas": 50}, {"n": 1000, "leituras": 500, "escritas": 500}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 0, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 2}, {"n": 5, "leituras": 2, "escritas": 2}, {"n": 6, "leituras": 3, "escritas": 3}, {"n": 7, "leituras": 3, "escritas": 3}, {"n": 8, "leituras": 4, "escritas": 4}, {"n": 9, "leituras": 4, "escritas": 4}, {"n": 10, "leituras": 5, "escritas": 5}, {"n": 11, "leituras": 5, "escritas": 5}, {"n": 12, "leituras": 6, "escritas": 6}, {"n": 13, "leituras": 6, "escritas": 6}, {"n": 14, "leituras": 7, "escritas": 7}, {"n": 15, "leituras": 7, "escritas": 7}, {"n": 16, "leituras": 8, "escritas": 8}, {"n": 17, "leituras": 8, "escritas": 8}, {"n": 18, "leituras": 9, "escritas": 9}, {"n": 19, "leituras": 9, "escritas": 9}, {"n": 20, "leituras": 10, "escritas": 10}, {"n": 21, "leituras": 10, "escritas": 10}, {"n": 22, "leituras": 11, "escritas": 11}, {"n": 23, "leituras": 11, "escritas": 11}, {"n": 24, "leituras": 12, "escritas": 12}, {"n": 25, "leituras": 12, "escritas": 12}, {"n": 26, "leituras": 13, "escritas": 13}, {"n": 27, "leituras": 13, "escritas": 13}, {"n": 28, "leituras": 14, "escritas": 14}, {"n": 29, "leituras": 14, "escritas": 14}, {"n": 30, "leituras": 15, "escritas": 15}, {"n": 31, "leituras": 15, "escritas": 15}, {"n": 32, "leituras": 16, "escritas": 16}, {"n": 33, "leituras": 16, "escritas": 16}, {"n": 34, "leituras": 17, "escritas": 17}, {"n": 35, "leituras": 17, "escritas": 17}, {"n": 36, "leituras": 18, "escritas": 18}, {"n": 37, "leituras": 18, "escritas": 18}, {"n": 38, "leituras": 19, "escritas": 19}, {"n": 39, "leituras": 19, "escritas": 19}, {"n": 40, "leituras": 20, "escritas": 20}, {"n": 41, "leituras": 20, "escritas": 20}, {"n": 42, "leituras": 21, "escritas": 21}, {"n": 43, "leituras": 21, "escritas": 21}, {"n": 44, "leituras": 22, "escritas": 22}, {"n": 45, "leituras": 22, "escritas": 22}, {"n": 46, "leituras": 23, "escritas": 23}, {"n": 47, "leituras": 23, "escritas": 23}, {"n": 48, "leituras": 24, "escritas": 24}, {"n": 49, "leituras": 24, "escritas": 24}, {"n": 50, "leituras": 25, "escritas": 25}, {"n": 51, "leituras": 25, "escritas": 25}, {"n": 52, "leituras": 26, "escritas": 26}, {"n": 53, "leituras": 26, "escritas": 26}, {"n": 54, "leituras": 27, "escritas": 27}, {"n": 55, "leituras": 27, "escritas": 27}, {"n": 56, "leituras": 28, "escritas": 28}, {"n": 57, "leituras": 28, "escritas": 28}, {"n": 58, "leituras": 29, "escritas": 29}, {"n": 59, "leituras": 29, "escritas": 29}, {"n": 60, "leituras": 30, "escritas": 30}]}, "comparar-pedacos": {"estrutura": "pedacos", "chamada": "comparar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}}, "capacidade": {"imutavel": [{"n": 0, "casas": 0}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 3}, {"n": 4, "casas": 4}, {"n": 5, "casas": 5}, {"n": 6, "casas": 6}, {"n": 7, "casas": 7}, {"n": 8, "casas": 8}, {"n": 9, "casas": 9}, {"n": 10, "casas": 10}, {"n": 11, "casas": 11}, {"n": 12, "casas": 12}, {"n": 13, "casas": 13}, {"n": 14, "casas": 14}, {"n": 15, "casas": 15}, {"n": 16, "casas": 16}, {"n": 17, "casas": 17}, {"n": 18, "casas": 18}, {"n": 19, "casas": 19}, {"n": 20, "casas": 20}, {"n": 21, "casas": 21}, {"n": 22, "casas": 22}, {"n": 23, "casas": 23}, {"n": 24, "casas": 24}, {"n": 25, "casas": 25}, {"n": 26, "casas": 26}, {"n": 27, "casas": 27}, {"n": 28, "casas": 28}, {"n": 29, "casas": 29}, {"n": 30, "casas": 30}, {"n": 31, "casas": 31}, {"n": 32, "casas": 32}, {"n": 33, "casas": 33}, {"n": 34, "casas": 34}, {"n": 35, "casas": 35}, {"n": 36, "casas": 36}, {"n": 37, "casas": 37}, {"n": 38, "casas": 38}, {"n": 39, "casas": 39}, {"n": 40, "casas": 40}, {"n": 41, "casas": 41}, {"n": 42, "casas": 42}, {"n": 43, "casas": 43}, {"n": 44, "casas": 44}, {"n": 45, "casas": 45}, {"n": 46, "casas": 46}, {"n": 47, "casas": 47}, {"n": 48, "casas": 48}, {"n": 49, "casas": 49}, {"n": 50, "casas": 50}, {"n": 51, "casas": 51}, {"n": 52, "casas": 52}, {"n": 53, "casas": 53}, {"n": 54, "casas": 54}, {"n": 55, "casas": 55}, {"n": 56, "casas": 56}, {"n": 57, "casas": 57}, {"n": 58, "casas": 58}, {"n": 59, "casas": 59}, {"n": 60, "casas": 60}], "pedacos": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "pilha", "nome": "Pilha", "variante": "sobre um vetor dinâmico; o topo é o fim do vetor", "frase": "O último que entra é o primeiro que sai.", "resumo": "Só se mexe no topo: empilhar põe um valor em cima, desempilhar tira o de cima. Montada sobre o vetor, com o topo no fim dele, nenhum valor precisa andar. É a mesma ideia da pilha de chamadas: cada chamada recursiva empilha um nível, e cada retorno desempilha.", "placa": {"autor": "Alan Turing; Friedrich L. Bauer e Klaus Samelson", "ano": "1946 (Turing, \"bury\" e \"unbury\"); 1955, com pedido de patente em 1957 (Bauer e Samelson)"}, "memoria": {"notacao": "O(n)", "porque": "As casas do vetor por baixo: uma por valor empilhado, mais a folga do vetor, que dobra quando enche. Desempilhar não devolve casas."}, "operacoes": [{"id": "empilhar", "nome": "empilhar, com folga", "notacao": "O(1)", "porque": "Anexa no fim do vetor: uma escrita."}, {"id": "empilhar-pior", "nome": "empilhar, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando o vetor de baixo enche, ele dobra e copia todos os valores."}, {"id": "empilhar-media", "nome": "empilhar, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras, como no vetor: o custo médio não cresce com n."}, {"id": "desempilhar", "nome": "desempilhar", "notacao": "O(1)", "porque": "Lê a última casa e diminui o tamanho; ninguém anda."}, {"id": "topo", "nome": "ver o topo", "notacao": "O(1)", "porque": "Uma leitura da última casa."}], "grafico": [{"id": "empilhar", "rotulo": "empilhar"}, {"id": "empilhar-media", "rotulo": "empilhar, média"}, {"id": "desempilhar", "rotulo": "desempilhar"}], "medido": {"encher": "empilhar", "tamanhos": [10, 100, 1000], "operacoes": {"empilhar": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "empilhar-media": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "empilhar-pior": {"estrutura": "pilha", "chamada": "empilhar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desempilhar": {"estrutura": "pilha", "chamada": "desempilhar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "topo": {"estrutura": "pilha", "chamada": "topo", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"pilha": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "fila", "nome": "Fila", "variante": "duas versões: ingênua e circular", "frase": "O primeiro que entra é o primeiro que sai.", "resumo": "Entra-se pelo fim e sai-se pelo começo. Na fila ingênua, o primeiro mora na casa 0 do vetor, e cada saída puxa todos os outros uma casa para a frente. Na fila circular, ninguém anda: quem anda é o marcador do início, que dá a volta quando chega ao fim do vetor.", "placa": {"autor": "sem autoria única", "ano": "—"}, "memoria": {"notacao": "O(n)", "porque": "Nas duas, uma casa por valor na fila mais a folga do vetor, que dobra quando enche; desenfileirar não devolve casas. A circular guarda também onde a fila começa."}, "variantes": {"ingenua": "ingênua", "circular": "circular"}, "operacoes": [{"id": "enfileirar-ingenua", "nome": "enfileirar, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois do último."}, {"id": "enfileirar-circular", "nome": "enfileirar, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois do último, dando a volta se passar do fim do vetor."}, {"id": "enfileirar-pior-circular", "nome": "enfileirar, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando enche, dobra e copia a fila na ordem, a partir da casa 0. Na ingênua, o mesmo."}, {"id": "enfileirar-media-circular", "nome": "enfileirar, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n. Na ingênua, o mesmo."}, {"id": "desenfileirar-ingenua", "nome": "desenfileirar", "notacao": "O(n)", "porque": "Tira o valor da casa 0 e puxa cada um dos outros uma casa para a frente."}, {"id": "desenfileirar-circular", "nome": "desenfileirar", "notacao": "O(1)", "porque": "Lê a casa do início e anda o marcador do início uma casa. Ninguém se desloca."}, {"id": "primeiro-ingenua", "nome": "ver o primeiro", "notacao": "O(1)", "porque": "Uma leitura da casa 0."}, {"id": "primeiro-circular", "nome": "ver o primeiro", "notacao": "O(1)", "porque": "Uma leitura da casa do início."}], "grafico": [{"id": "desenfileirar-ingenua", "rotulo": "desenfileirar, ingênua"}, {"id": "desenfileirar-circular", "rotulo": "desenfileirar, circular"}, {"id": "enfileirar-circular", "rotulo": "enfileirar"}, {"id": "enfileirar-media-circular", "rotulo": "enfileirar, média"}], "medido": {"encher": "enfileirar", "tamanhos": [10, 100, 1000], "operacoes": {"enfileirar-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "enfileirar-media-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "enfileirar-pior-ingenua": {"estrutura": "ingenua", "chamada": "enfileirar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desenfileirar-ingenua": {"estrutura": "ingenua", "chamada": "desenfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 9}, {"n": 100, "leituras": 100, "escritas": 99}, {"n": 1000, "leituras": 1000, "escritas": 999}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 2}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 4}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 7, "escritas": 6}, {"n": 8, "leituras": 8, "escritas": 7}, {"n": 9, "leituras": 9, "escritas": 8}, {"n": 10, "leituras": 10, "escritas": 9}, {"n": 11, "leituras": 11, "escritas": 10}, {"n": 12, "leituras": 12, "escritas": 11}, {"n": 13, "leituras": 13, "escritas": 12}, {"n": 14, "leituras": 14, "escritas": 13}, {"n": 15, "leituras": 15, "escritas": 14}, {"n": 16, "leituras": 16, "escritas": 15}, {"n": 17, "leituras": 17, "escritas": 16}, {"n": 18, "leituras": 18, "escritas": 17}, {"n": 19, "leituras": 19, "escritas": 18}, {"n": 20, "leituras": 20, "escritas": 19}, {"n": 21, "leituras": 21, "escritas": 20}, {"n": 22, "leituras": 22, "escritas": 21}, {"n": 23, "leituras": 23, "escritas": 22}, {"n": 24, "leituras": 24, "escritas": 23}, {"n": 25, "leituras": 25, "escritas": 24}, {"n": 26, "leituras": 26, "escritas": 25}, {"n": 27, "leituras": 27, "escritas": 26}, {"n": 28, "leituras": 28, "escritas": 27}, {"n": 29, "leituras": 29, "escritas": 28}, {"n": 30, "leituras": 30, "escritas": 29}, {"n": 31, "leituras": 31, "escritas": 30}, {"n": 32, "leituras": 32, "escritas": 31}, {"n": 33, "leituras": 33, "escritas": 32}, {"n": 34, "leituras": 34, "escritas": 33}, {"n": 35, "leituras": 35, "escritas": 34}, {"n": 36, "leituras": 36, "escritas": 35}, {"n": 37, "leituras": 37, "escritas": 36}, {"n": 38, "leituras": 38, "escritas": 37}, {"n": 39, "leituras": 39, "escritas": 38}, {"n": 40, "leituras": 40, "escritas": 39}, {"n": 41, "leituras": 41, "escritas": 40}, {"n": 42, "leituras": 42, "escritas": 41}, {"n": 43, "leituras": 43, "escritas": 42}, {"n": 44, "leituras": 44, "escritas": 43}, {"n": 45, "leituras": 45, "escritas": 44}, {"n": 46, "leituras": 46, "escritas": 45}, {"n": 47, "leituras": 47, "escritas": 46}, {"n": 48, "leituras": 48, "escritas": 47}, {"n": 49, "leituras": 49, "escritas": 48}, {"n": 50, "leituras": 50, "escritas": 49}, {"n": 51, "leituras": 51, "escritas": 50}, {"n": 52, "leituras": 52, "escritas": 51}, {"n": 53, "leituras": 53, "escritas": 52}, {"n": 54, "leituras": 54, "escritas": 53}, {"n": 55, "leituras": 55, "escritas": 54}, {"n": 56, "leituras": 56, "escritas": 55}, {"n": 57, "leituras": 57, "escritas": 56}, {"n": 58, "leituras": 58, "escritas": 57}, {"n": 59, "leituras": 59, "escritas": 58}, {"n": 60, "leituras": 60, "escritas": 59}]}, "primeiro-ingenua": {"estrutura": "ingenua", "chamada": "primeiro", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "enfileirar-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "enfileirar-media-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "enfileirar-pior-circular": {"estrutura": "circular", "chamada": "enfileirar", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "desenfileirar-circular": {"estrutura": "circular", "chamada": "desenfileirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "primeiro-circular": {"estrutura": "circular", "chamada": "primeiro", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"ingenua": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}], "circular": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "deque", "nome": "Deque", "variante": "circular, com capacidade que dobra quando enche", "frase": "Uma fila que abre pelas duas pontas.", "resumo": "Põe-se e tira-se pela frente e por trás. É a fila circular com as duas pontas abertas: os valores moram em casas próprias, e ninguém anda; quem anda são os marcadores. Pôr na frente recua o início uma casa, dando a volta no começo do vetor; tirar de trás só lê a última casa. Serve de pilha e de fila ao mesmo tempo, e é o que a janela deslizante precisa: entra por trás, sai pelas duas pontas.", "placa": {"autor": "o nome é de E. J. Schweppe; Donald Knuth o registrou em The Art of Computer Programming", "ano": "1968"}, "memoria": {"notacao": "O(n)", "porque": "Uma casa por valor, mais a folga do vetor, que dobra quando enche; tirar não devolve casas. O início e o tamanho ficam guardados à parte."}, "operacoes": [{"id": "por-tras", "nome": "pôr atrás, com folga", "notacao": "O(1)", "porque": "Escreve na casa logo depois da última, dando a volta se passar do fim do vetor."}, {"id": "por-frente", "nome": "pôr na frente, com folga", "notacao": "O(1)", "porque": "Recua o início uma casa (do 0, vai para a última casa do vetor) e escreve ali."}, {"id": "por-tras-pior", "nome": "pôr, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Quando enche, dobra e copia o deque na ordem, a partir da casa 0. Na frente, o mesmo."}, {"id": "por-tras-media", "nome": "pôr atrás, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."}, {"id": "por-frente-media", "nome": "pôr na frente, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As mesmas cópias, nas mesmas vezes: o vetor enche igual por qualquer ponta."}, {"id": "tirar-frente", "nome": "tirar da frente", "notacao": "O(1)", "porque": "Lê a casa do início e anda o início uma casa. Ninguém se desloca."}, {"id": "tirar-tras", "nome": "tirar de trás", "notacao": "O(1)", "porque": "Lê a última casa (início + tamanho − 1, dando a volta) e diminui o tamanho."}, {"id": "frente", "nome": "ver a frente", "notacao": "O(1)", "porque": "Uma leitura da casa do início."}, {"id": "fundo", "nome": "ver o fundo", "notacao": "O(1)", "porque": "Uma leitura da última casa."}], "grafico": [{"id": "por-tras-media", "rotulo": "pôr atrás, média"}, {"id": "por-tras", "rotulo": "pôr atrás"}, {"id": "tirar-tras", "rotulo": "tirar de trás"}], "medido": {"encher": "por_tras", "tamanhos": [10, 100, 1000], "operacoes": {"por-tras": {"estrutura": "deque", "chamada": "por_tras", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "por-tras-media": {"estrutura": "deque", "chamada": "por_tras", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "por-tras-pior": {"estrutura": "deque", "chamada": "por_tras", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 8, "escritas": 9}, {"n": 100, "k": 65, "leituras": 64, "escritas": 65}, {"n": 1000, "k": 513, "leituras": 512, "escritas": 513}], "serie": []}, "por-frente": {"estrutura": "deque", "chamada": "por_frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 1}, {"n": 100, "leituras": 0, "escritas": 1}, {"n": 1000, "leituras": 0, "escritas": 1}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 2, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 1}, {"n": 4, "leituras": 4, "escritas": 5}, {"n": 5, "leituras": 0, "escritas": 1}, {"n": 6, "leituras": 0, "escritas": 1}, {"n": 7, "leituras": 0, "escritas": 1}, {"n": 8, "leituras": 8, "escritas": 9}, {"n": 9, "leituras": 0, "escritas": 1}, {"n": 10, "leituras": 0, "escritas": 1}, {"n": 11, "leituras": 0, "escritas": 1}, {"n": 12, "leituras": 0, "escritas": 1}, {"n": 13, "leituras": 0, "escritas": 1}, {"n": 14, "leituras": 0, "escritas": 1}, {"n": 15, "leituras": 0, "escritas": 1}, {"n": 16, "leituras": 16, "escritas": 17}, {"n": 17, "leituras": 0, "escritas": 1}, {"n": 18, "leituras": 0, "escritas": 1}, {"n": 19, "leituras": 0, "escritas": 1}, {"n": 20, "leituras": 0, "escritas": 1}, {"n": 21, "leituras": 0, "escritas": 1}, {"n": 22, "leituras": 0, "escritas": 1}, {"n": 23, "leituras": 0, "escritas": 1}, {"n": 24, "leituras": 0, "escritas": 1}, {"n": 25, "leituras": 0, "escritas": 1}, {"n": 26, "leituras": 0, "escritas": 1}, {"n": 27, "leituras": 0, "escritas": 1}, {"n": 28, "leituras": 0, "escritas": 1}, {"n": 29, "leituras": 0, "escritas": 1}, {"n": 30, "leituras": 0, "escritas": 1}, {"n": 31, "leituras": 0, "escritas": 1}, {"n": 32, "leituras": 32, "escritas": 33}, {"n": 33, "leituras": 0, "escritas": 1}, {"n": 34, "leituras": 0, "escritas": 1}, {"n": 35, "leituras": 0, "escritas": 1}, {"n": 36, "leituras": 0, "escritas": 1}, {"n": 37, "leituras": 0, "escritas": 1}, {"n": 38, "leituras": 0, "escritas": 1}, {"n": 39, "leituras": 0, "escritas": 1}, {"n": 40, "leituras": 0, "escritas": 1}, {"n": 41, "leituras": 0, "escritas": 1}, {"n": 42, "leituras": 0, "escritas": 1}, {"n": 43, "leituras": 0, "escritas": 1}, {"n": 44, "leituras": 0, "escritas": 1}, {"n": 45, "leituras": 0, "escritas": 1}, {"n": 46, "leituras": 0, "escritas": 1}, {"n": 47, "leituras": 0, "escritas": 1}, {"n": 48, "leituras": 0, "escritas": 1}, {"n": 49, "leituras": 0, "escritas": 1}, {"n": 50, "leituras": 0, "escritas": 1}, {"n": 51, "leituras": 0, "escritas": 1}, {"n": 52, "leituras": 0, "escritas": 1}, {"n": 53, "leituras": 0, "escritas": 1}, {"n": 54, "leituras": 0, "escritas": 1}, {"n": 55, "leituras": 0, "escritas": 1}, {"n": 56, "leituras": 0, "escritas": 1}, {"n": 57, "leituras": 0, "escritas": 1}, {"n": 58, "leituras": 0, "escritas": 1}, {"n": 59, "leituras": 0, "escritas": 1}, {"n": 60, "leituras": 0, "escritas": 1}]}, "por-frente-media": {"estrutura": "deque", "chamada": "por_frente", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 100, "vezes": 100, "leituras": 127, "escritas": 227}, {"n": 1000, "vezes": 1000, "leituras": 1023, "escritas": 2023}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 1, "escritas": 3}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 3, "escritas": 7}, {"n": 5, "vezes": 5, "leituras": 7, "escritas": 12}, {"n": 6, "vezes": 6, "leituras": 7, "escritas": 13}, {"n": 7, "vezes": 7, "leituras": 7, "escritas": 14}, {"n": 8, "vezes": 8, "leituras": 7, "escritas": 15}, {"n": 9, "vezes": 9, "leituras": 15, "escritas": 24}, {"n": 10, "vezes": 10, "leituras": 15, "escritas": 25}, {"n": 11, "vezes": 11, "leituras": 15, "escritas": 26}, {"n": 12, "vezes": 12, "leituras": 15, "escritas": 27}, {"n": 13, "vezes": 13, "leituras": 15, "escritas": 28}, {"n": 14, "vezes": 14, "leituras": 15, "escritas": 29}, {"n": 15, "vezes": 15, "leituras": 15, "escritas": 30}, {"n": 16, "vezes": 16, "leituras": 15, "escritas": 31}, {"n": 17, "vezes": 17, "leituras": 31, "escritas": 48}, {"n": 18, "vezes": 18, "leituras": 31, "escritas": 49}, {"n": 19, "vezes": 19, "leituras": 31, "escritas": 50}, {"n": 20, "vezes": 20, "leituras": 31, "escritas": 51}, {"n": 21, "vezes": 21, "leituras": 31, "escritas": 52}, {"n": 22, "vezes": 22, "leituras": 31, "escritas": 53}, {"n": 23, "vezes": 23, "leituras": 31, "escritas": 54}, {"n": 24, "vezes": 24, "leituras": 31, "escritas": 55}, {"n": 25, "vezes": 25, "leituras": 31, "escritas": 56}, {"n": 26, "vezes": 26, "leituras": 31, "escritas": 57}, {"n": 27, "vezes": 27, "leituras": 31, "escritas": 58}, {"n": 28, "vezes": 28, "leituras": 31, "escritas": 59}, {"n": 29, "vezes": 29, "leituras": 31, "escritas": 60}, {"n": 30, "vezes": 30, "leituras": 31, "escritas": 61}, {"n": 31, "vezes": 31, "leituras": 31, "escritas": 62}, {"n": 32, "vezes": 32, "leituras": 31, "escritas": 63}, {"n": 33, "vezes": 33, "leituras": 63, "escritas": 96}, {"n": 34, "vezes": 34, "leituras": 63, "escritas": 97}, {"n": 35, "vezes": 35, "leituras": 63, "escritas": 98}, {"n": 36, "vezes": 36, "leituras": 63, "escritas": 99}, {"n": 37, "vezes": 37, "leituras": 63, "escritas": 100}, {"n": 38, "vezes": 38, "leituras": 63, "escritas": 101}, {"n": 39, "vezes": 39, "leituras": 63, "escritas": 102}, {"n": 40, "vezes": 40, "leituras": 63, "escritas": 103}, {"n": 41, "vezes": 41, "leituras": 63, "escritas": 104}, {"n": 42, "vezes": 42, "leituras": 63, "escritas": 105}, {"n": 43, "vezes": 43, "leituras": 63, "escritas": 106}, {"n": 44, "vezes": 44, "leituras": 63, "escritas": 107}, {"n": 45, "vezes": 45, "leituras": 63, "escritas": 108}, {"n": 46, "vezes": 46, "leituras": 63, "escritas": 109}, {"n": 47, "vezes": 47, "leituras": 63, "escritas": 110}, {"n": 48, "vezes": 48, "leituras": 63, "escritas": 111}, {"n": 49, "vezes": 49, "leituras": 63, "escritas": 112}, {"n": 50, "vezes": 50, "leituras": 63, "escritas": 113}, {"n": 51, "vezes": 51, "leituras": 63, "escritas": 114}, {"n": 52, "vezes": 52, "leituras": 63, "escritas": 115}, {"n": 53, "vezes": 53, "leituras": 63, "escritas": 116}, {"n": 54, "vezes": 54, "leituras": 63, "escritas": 117}, {"n": 55, "vezes": 55, "leituras": 63, "escritas": 118}, {"n": 56, "vezes": 56, "leituras": 63, "escritas": 119}, {"n": 57, "vezes": 57, "leituras": 63, "escritas": 120}, {"n": 58, "vezes": 58, "leituras": 63, "escritas": 121}, {"n": 59, "vezes": 59, "leituras": 63, "escritas": 122}, {"n": 60, "vezes": 60, "leituras": 63, "escritas": 123}]}, "tirar-frente": {"estrutura": "deque", "chamada": "tirar_frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "tirar-tras": {"estrutura": "deque", "chamada": "tirar_tras", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "frente": {"estrutura": "deque", "chamada": "frente", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "fundo": {"estrutura": "deque", "chamada": "fundo", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}}, "capacidade": {"deque": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "lista", "nome": "Lista encadeada", "variante": "duas versões: estática (vetor + índice do próximo) e dinâmica (nós e ponteiros)", "frase": "Cada valor sabe quem vem depois dele.", "resumo": "Os valores não precisam morar em ordem: cada um guarda, ao lado de si, onde está o seguinte. Inserir ou tirar no começo é só trocar um ponteiro, sem ninguém andar. O preço é a posição: para chegar ao i-ésimo, é preciso seguir os ponteiros um por um desde o início. Na estática, tudo mora em dois vetores (valor e próx), e as casas vagas formam uma segunda lista, a dos livres. Na dinâmica, cada valor mora num nó pedido à memória na hora, e o próx guarda o endereço do nó seguinte.", "placa": {"autor": "Allen Newell, Cliff Shaw e Herbert Simon (a lista ligada da linguagem IPL)", "ano": "1955–1956"}, "memoria": {"notacao": "O(n)", "porque": "As duas guardam duas casas por valor: o valor e o próx. A estática reserva o vetor inteiro, com a folga das casas livres, e dobra quando enche, como o Vetor; remover devolve a casa para a lista de livres, mas não encolhe o vetor. A dinâmica pede um nó por valor e solta o nó ao remover: nunca tem folga, mas paga o ponteiro de cada valor."}, "variantes": {"estatica": "estática", "dinamica": "dinâmica"}, "operacoes": [{"id": "ler-ultima-dinamica", "nome": "ler a posição i (a última)", "notacao": "O(n)", "porque": "Não há endereço calculado: segue i próx desde o início e lê o valor. Na estática, o mesmo, com índices no lugar de endereços."}, {"id": "inserir-inicio-estatica", "nome": "inserir no início, com folga", "notacao": "O(1)", "porque": "Tira uma casa dos livres (lê o próx dela), escreve o valor e aponta o próx para o antigo início. Sem casa livre, antes dobra o vetor, como no fim."}, {"id": "inserir-inicio-dinamica", "nome": "inserir no início", "notacao": "O(1)", "porque": "Pede um nó, escreve o valor e aponta o próx para o antigo início. Ninguém anda, ao contrário do Vetor."}, {"id": "inserir-fim-estatica", "nome": "inserir no fim, com folga", "notacao": "O(1)", "porque": "Como no início, e mais uma escrita: o próx do antigo fim, guardado à parte, passa a apontar para a casa nova."}, {"id": "inserir-fim-pior-estatica", "nome": "inserir no fim, o mais caro de n seguidos", "notacao": "O(n)", "porque": "Sem casa livre, dobra: copia o valor e o próx de cada casa no mesmo índice e encadeia as casas novas na lista de livres."}, {"id": "inserir-fim-media-estatica", "nome": "inserir no fim, média de n seguidos", "notacao": "O(1) amortizado", "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."}, {"id": "inserir-fim-dinamica", "nome": "inserir no fim", "notacao": "O(1)", "porque": "Pede um nó, escreve o valor, o próx nulo e o próx do antigo fim. Nunca copia: o mais caro de n seguidos custa o mesmo."}, {"id": "inserir-meio-dinamica", "nome": "inserir no meio", "notacao": "O(n)", "porque": "Anda até o nó anterior à posição e troca dois ponteiros. A troca é O(1); a caminhada é que custa. Na estática, o mesmo, mais a lista de livres."}, {"id": "remover-inicio-estatica", "nome": "remover do início", "notacao": "O(1)", "porque": "Lê o valor e o próx do primeiro e devolve a casa para os livres (uma escrita no próx dela)."}, {"id": "remover-inicio-dinamica", "nome": "remover do início", "notacao": "O(1)", "porque": "Lê o valor e o próx do primeiro; o início passa a ser o seguinte, e o nó é solto."}, {"id": "remover-fim-dinamica", "nome": "remover do fim", "notacao": "O(n)", "porque": "O fim está guardado, mas quem vem antes dele não: é preciso andar até o penúltimo para apagar o próx dele. Na estática, o mesmo."}, {"id": "buscar-ausente-dinamica", "nome": "buscar um valor que não está", "notacao": "O(n)", "porque": "Lê o valor e o próx de cada nó até o fim. Na estática, o mesmo."}], "grafico": [{"id": "remover-fim-dinamica", "rotulo": "remover do fim"}, {"id": "ler-ultima-dinamica", "rotulo": "ler a última"}, {"id": "inserir-fim-media-estatica", "rotulo": "média, estática"}, {"id": "inserir-fim-media-dinamica", "rotulo": "média, dinâmica"}, {"id": "inserir-inicio-dinamica", "rotulo": "inserir no início"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas (o valor ou o próx de uma posição), contadas rodando as duas listas em Python com n valores já guardados, para n = {ns}. Seguir um ponteiro é ler um próx. O início, o fim, a cabeça dos livres e o tamanho, guardados à parte, não contam; pedir e soltar um nó da dinâmica também não.", "custo": "O custo de cada operação com n valores já guardados, para n de {v0} a {v1}, medido uma vez por n (na dinâmica; com folga, a estática custa o mesmo ou 1 a mais, pela lista de livres, e quando o vetor está cheio paga também a cópia). Remover do fim e ler a última sobem em linha reta: seguem todos os ponteiros. Inserir no início não sai do chão. Tracejadas: a média de n inserções seguidas no fim a partir da lista vazia; a da estática paga as cópias, a da dinâmica nunca copia.", "casas": "Casas guardadas depois de pôr n valores no fim, a partir da lista vazia, para n de {v0} a {v1}. A dinâmica guarda exatamente 2n; a estática sobe em degraus, com a folga das casas livres."}, "medido": {"encher": "inserir_fim", "tamanhos": [10, 100, 1000], "operacoes": {"ler-ultima-estatica": {"estrutura": "estatica", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "inserir-inicio-estatica": {"estrutura": "estatica", "chamada": "inserir_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 2}, {"n": 100, "leituras": 1, "escritas": 2}, {"n": 1000, "leituras": 1, "escritas": 2}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 5}, {"n": 2, "leituras": 5, "escritas": 8}, {"n": 3, "leituras": 1, "escritas": 2}, {"n": 4, "leituras": 9, "escritas": 14}, {"n": 5, "leituras": 1, "escritas": 2}, {"n": 6, "leituras": 1, "escritas": 2}, {"n": 7, "leituras": 1, "escritas": 2}, {"n": 8, "leituras": 17, "escritas": 26}, {"n": 9, "leituras": 1, "escritas": 2}, {"n": 10, "leituras": 1, "escritas": 2}, {"n": 11, "leituras": 1, "escritas": 2}, {"n": 12, "leituras": 1, "escritas": 2}, {"n": 13, "leituras": 1, "escritas": 2}, {"n": 14, "leituras": 1, "escritas": 2}, {"n": 15, "leituras": 1, "escritas": 2}, {"n": 16, "leituras": 33, "escritas": 50}, {"n": 17, "leituras": 1, "escritas": 2}, {"n": 18, "leituras": 1, "escritas": 2}, {"n": 19, "leituras": 1, "escritas": 2}, {"n": 20, "leituras": 1, "escritas": 2}, {"n": 21, "leituras": 1, "escritas": 2}, {"n": 22, "leituras": 1, "escritas": 2}, {"n": 23, "leituras": 1, "escritas": 2}, {"n": 24, "leituras": 1, "escritas": 2}, {"n": 25, "leituras": 1, "escritas": 2}, {"n": 26, "leituras": 1, "escritas": 2}, {"n": 27, "leituras": 1, "escritas": 2}, {"n": 28, "leituras": 1, "escritas": 2}, {"n": 29, "leituras": 1, "escritas": 2}, {"n": 30, "leituras": 1, "escritas": 2}, {"n": 31, "leituras": 1, "escritas": 2}, {"n": 32, "leituras": 65, "escritas": 98}, {"n": 33, "leituras": 1, "escritas": 2}, {"n": 34, "leituras": 1, "escritas": 2}, {"n": 35, "leituras": 1, "escritas": 2}, {"n": 36, "leituras": 1, "escritas": 2}, {"n": 37, "leituras": 1, "escritas": 2}, {"n": 38, "leituras": 1, "escritas": 2}, {"n": 39, "leituras": 1, "escritas": 2}, {"n": 40, "leituras": 1, "escritas": 2}, {"n": 41, "leituras": 1, "escritas": 2}, {"n": 42, "leituras": 1, "escritas": 2}, {"n": 43, "leituras": 1, "escritas": 2}, {"n": 44, "leituras": 1, "escritas": 2}, {"n": 45, "leituras": 1, "escritas": 2}, {"n": 46, "leituras": 1, "escritas": 2}, {"n": 47, "leituras": 1, "escritas": 2}, {"n": 48, "leituras": 1, "escritas": 2}, {"n": 49, "leituras": 1, "escritas": 2}, {"n": 50, "leituras": 1, "escritas": 2}, {"n": 51, "leituras": 1, "escritas": 2}, {"n": 52, "leituras": 1, "escritas": 2}, {"n": 53, "leituras": 1, "escritas": 2}, {"n": 54, "leituras": 1, "escritas": 2}, {"n": 55, "leituras": 1, "escritas": 2}, {"n": 56, "leituras": 1, "escritas": 2}, {"n": 57, "leituras": 1, "escritas": 2}, {"n": 58, "leituras": 1, "escritas": 2}, {"n": 59, "leituras": 1, "escritas": 2}, {"n": 60, "leituras": 1, "escritas": 2}]}, "inserir-fim-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 3}, {"n": 100, "leituras": 1, "escritas": 3}, {"n": 1000, "leituras": 1, "escritas": 3}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 6}, {"n": 2, "leituras": 5, "escritas": 9}, {"n": 3, "leituras": 1, "escritas": 3}, {"n": 4, "leituras": 9, "escritas": 15}, {"n": 5, "leituras": 1, "escritas": 3}, {"n": 6, "leituras": 1, "escritas": 3}, {"n": 7, "leituras": 1, "escritas": 3}, {"n": 8, "leituras": 17, "escritas": 27}, {"n": 9, "leituras": 1, "escritas": 3}, {"n": 10, "leituras": 1, "escritas": 3}, {"n": 11, "leituras": 1, "escritas": 3}, {"n": 12, "leituras": 1, "escritas": 3}, {"n": 13, "leituras": 1, "escritas": 3}, {"n": 14, "leituras": 1, "escritas": 3}, {"n": 15, "leituras": 1, "escritas": 3}, {"n": 16, "leituras": 33, "escritas": 51}, {"n": 17, "leituras": 1, "escritas": 3}, {"n": 18, "leituras": 1, "escritas": 3}, {"n": 19, "leituras": 1, "escritas": 3}, {"n": 20, "leituras": 1, "escritas": 3}, {"n": 21, "leituras": 1, "escritas": 3}, {"n": 22, "leituras": 1, "escritas": 3}, {"n": 23, "leituras": 1, "escritas": 3}, {"n": 24, "leituras": 1, "escritas": 3}, {"n": 25, "leituras": 1, "escritas": 3}, {"n": 26, "leituras": 1, "escritas": 3}, {"n": 27, "leituras": 1, "escritas": 3}, {"n": 28, "leituras": 1, "escritas": 3}, {"n": 29, "leituras": 1, "escritas": 3}, {"n": 30, "leituras": 1, "escritas": 3}, {"n": 31, "leituras": 1, "escritas": 3}, {"n": 32, "leituras": 65, "escritas": 99}, {"n": 33, "leituras": 1, "escritas": 3}, {"n": 34, "leituras": 1, "escritas": 3}, {"n": 35, "leituras": 1, "escritas": 3}, {"n": 36, "leituras": 1, "escritas": 3}, {"n": 37, "leituras": 1, "escritas": 3}, {"n": 38, "leituras": 1, "escritas": 3}, {"n": 39, "leituras": 1, "escritas": 3}, {"n": 40, "leituras": 1, "escritas": 3}, {"n": 41, "leituras": 1, "escritas": 3}, {"n": 42, "leituras": 1, "escritas": 3}, {"n": 43, "leituras": 1, "escritas": 3}, {"n": 44, "leituras": 1, "escritas": 3}, {"n": 45, "leituras": 1, "escritas": 3}, {"n": 46, "leituras": 1, "escritas": 3}, {"n": 47, "leituras": 1, "escritas": 3}, {"n": 48, "leituras": 1, "escritas": 3}, {"n": 49, "leituras": 1, "escritas": 3}, {"n": 50, "leituras": 1, "escritas": 3}, {"n": 51, "leituras": 1, "escritas": 3}, {"n": 52, "leituras": 1, "escritas": 3}, {"n": 53, "leituras": 1, "escritas": 3}, {"n": 54, "leituras": 1, "escritas": 3}, {"n": 55, "leituras": 1, "escritas": 3}, {"n": 56, "leituras": 1, "escritas": 3}, {"n": 57, "leituras": 1, "escritas": 3}, {"n": 58, "leituras": 1, "escritas": 3}, {"n": 59, "leituras": 1, "escritas": 3}, {"n": 60, "leituras": 1, "escritas": 3}]}, "inserir-fim-media-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 40, "escritas": 74}, {"n": 100, "vezes": 100, "leituras": 354, "escritas": 680}, {"n": 1000, "vezes": 1000, "leituras": 3046, "escritas": 6068}], "serie": [{"n": 1, "vezes": 1, "leituras": 1, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 4, "escritas": 8}, {"n": 3, "vezes": 3, "leituras": 9, "escritas": 17}, {"n": 4, "vezes": 4, "leituras": 10, "escritas": 20}, {"n": 5, "vezes": 5, "leituras": 19, "escritas": 35}, {"n": 6, "vezes": 6, "leituras": 20, "escritas": 38}, {"n": 7, "vezes": 7, "leituras": 21, "escritas": 41}, {"n": 8, "vezes": 8, "leituras": 22, "escritas": 44}, {"n": 9, "vezes": 9, "leituras": 39, "escritas": 71}, {"n": 10, "vezes": 10, "leituras": 40, "escritas": 74}, {"n": 11, "vezes": 11, "leituras": 41, "escritas": 77}, {"n": 12, "vezes": 12, "leituras": 42, "escritas": 80}, {"n": 13, "vezes": 13, "leituras": 43, "escritas": 83}, {"n": 14, "vezes": 14, "leituras": 44, "escritas": 86}, {"n": 15, "vezes": 15, "leituras": 45, "escritas": 89}, {"n": 16, "vezes": 16, "leituras": 46, "escritas": 92}, {"n": 17, "vezes": 17, "leituras": 79, "escritas": 143}, {"n": 18, "vezes": 18, "leituras": 80, "escritas": 146}, {"n": 19, "vezes": 19, "leituras": 81, "escritas": 149}, {"n": 20, "vezes": 20, "leituras": 82, "escritas": 152}, {"n": 21, "vezes": 21, "leituras": 83, "escritas": 155}, {"n": 22, "vezes": 22, "leituras": 84, "escritas": 158}, {"n": 23, "vezes": 23, "leituras": 85, "escritas": 161}, {"n": 24, "vezes": 24, "leituras": 86, "escritas": 164}, {"n": 25, "vezes": 25, "leituras": 87, "escritas": 167}, {"n": 26, "vezes": 26, "leituras": 88, "escritas": 170}, {"n": 27, "vezes": 27, "leituras": 89, "escritas": 173}, {"n": 28, "vezes": 28, "leituras": 90, "escritas": 176}, {"n": 29, "vezes": 29, "leituras": 91, "escritas": 179}, {"n": 30, "vezes": 30, "leituras": 92, "escritas": 182}, {"n": 31, "vezes": 31, "leituras": 93, "escritas": 185}, {"n": 32, "vezes": 32, "leituras": 94, "escritas": 188}, {"n": 33, "vezes": 33, "leituras": 159, "escritas": 287}, {"n": 34, "vezes": 34, "leituras": 160, "escritas": 290}, {"n": 35, "vezes": 35, "leituras": 161, "escritas": 293}, {"n": 36, "vezes": 36, "leituras": 162, "escritas": 296}, {"n": 37, "vezes": 37, "leituras": 163, "escritas": 299}, {"n": 38, "vezes": 38, "leituras": 164, "escritas": 302}, {"n": 39, "vezes": 39, "leituras": 165, "escritas": 305}, {"n": 40, "vezes": 40, "leituras": 166, "escritas": 308}, {"n": 41, "vezes": 41, "leituras": 167, "escritas": 311}, {"n": 42, "vezes": 42, "leituras": 168, "escritas": 314}, {"n": 43, "vezes": 43, "leituras": 169, "escritas": 317}, {"n": 44, "vezes": 44, "leituras": 170, "escritas": 320}, {"n": 45, "vezes": 45, "leituras": 171, "escritas": 323}, {"n": 46, "vezes": 46, "leituras": 172, "escritas": 326}, {"n": 47, "vezes": 47, "leituras": 173, "escritas": 329}, {"n": 48, "vezes": 48, "leituras": 174, "escritas": 332}, {"n": 49, "vezes": 49, "leituras": 175, "escritas": 335}, {"n": 50, "vezes": 50, "leituras": 176, "escritas": 338}, {"n": 51, "vezes": 51, "leituras": 177, "escritas": 341}, {"n": 52, "vezes": 52, "leituras": 178, "escritas": 344}, {"n": 53, "vezes": 53, "leituras": 179, "escritas": 347}, {"n": 54, "vezes": 54, "leituras": 180, "escritas": 350}, {"n": 55, "vezes": 55, "leituras": 181, "escritas": 353}, {"n": 56, "vezes": 56, "leituras": 182, "escritas": 356}, {"n": 57, "vezes": 57, "leituras": 183, "escritas": 359}, {"n": 58, "vezes": 58, "leituras": 184, "escritas": 362}, {"n": 59, "vezes": 59, "leituras": 185, "escritas": 365}, {"n": 60, "vezes": 60, "leituras": 186, "escritas": 368}]}, "inserir-fim-pior-estatica": {"estrutura": "estatica", "chamada": "inserir_fim", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 9, "leituras": 17, "escritas": 27}, {"n": 100, "k": 65, "leituras": 129, "escritas": 195}, {"n": 1000, "k": 513, "leituras": 1025, "escritas": 1539}], "serie": []}, "inserir-meio-estatica": {"estrutura": "estatica", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 3}, {"n": 100, "leituras": 51, "escritas": 3}, {"n": 1000, "leituras": 501, "escritas": 3}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 3, "escritas": 5}, {"n": 2, "leituras": 6, "escritas": 9}, {"n": 3, "leituras": 2, "escritas": 3}, {"n": 4, "leituras": 11, "escritas": 15}, {"n": 5, "leituras": 3, "escritas": 3}, {"n": 6, "leituras": 4, "escritas": 3}, {"n": 7, "leituras": 4, "escritas": 3}, {"n": 8, "leituras": 21, "escritas": 27}, {"n": 9, "leituras": 5, "escritas": 3}, {"n": 10, "leituras": 6, "escritas": 3}, {"n": 11, "leituras": 6, "escritas": 3}, {"n": 12, "leituras": 7, "escritas": 3}, {"n": 13, "leituras": 7, "escritas": 3}, {"n": 14, "leituras": 8, "escritas": 3}, {"n": 15, "leituras": 8, "escritas": 3}, {"n": 16, "leituras": 41, "escritas": 51}, {"n": 17, "leituras": 9, "escritas": 3}, {"n": 18, "leituras": 10, "escritas": 3}, {"n": 19, "leituras": 10, "escritas": 3}, {"n": 20, "leituras": 11, "escritas": 3}, {"n": 21, "leituras": 11, "escritas": 3}, {"n": 22, "leituras": 12, "escritas": 3}, {"n": 23, "leituras": 12, "escritas": 3}, {"n": 24, "leituras": 13, "escritas": 3}, {"n": 25, "leituras": 13, "escritas": 3}, {"n": 26, "leituras": 14, "escritas": 3}, {"n": 27, "leituras": 14, "escritas": 3}, {"n": 28, "leituras": 15, "escritas": 3}, {"n": 29, "leituras": 15, "escritas": 3}, {"n": 30, "leituras": 16, "escritas": 3}, {"n": 31, "leituras": 16, "escritas": 3}, {"n": 32, "leituras": 81, "escritas": 99}, {"n": 33, "leituras": 17, "escritas": 3}, {"n": 34, "leituras": 18, "escritas": 3}, {"n": 35, "leituras": 18, "escritas": 3}, {"n": 36, "leituras": 19, "escritas": 3}, {"n": 37, "leituras": 19, "escritas": 3}, {"n": 38, "leituras": 20, "escritas": 3}, {"n": 39, "leituras": 20, "escritas": 3}, {"n": 40, "leituras": 21, "escritas": 3}, {"n": 41, "leituras": 21, "escritas": 3}, {"n": 42, "leituras": 22, "escritas": 3}, {"n": 43, "leituras": 22, "escritas": 3}, {"n": 44, "leituras": 23, "escritas": 3}, {"n": 45, "leituras": 23, "escritas": 3}, {"n": 46, "leituras": 24, "escritas": 3}, {"n": 47, "leituras": 24, "escritas": 3}, {"n": 48, "leituras": 25, "escritas": 3}, {"n": 49, "leituras": 25, "escritas": 3}, {"n": 50, "leituras": 26, "escritas": 3}, {"n": 51, "leituras": 26, "escritas": 3}, {"n": 52, "leituras": 27, "escritas": 3}, {"n": 53, "leituras": 27, "escritas": 3}, {"n": 54, "leituras": 28, "escritas": 3}, {"n": 55, "leituras": 28, "escritas": 3}, {"n": 56, "leituras": 29, "escritas": 3}, {"n": 57, "leituras": 29, "escritas": 3}, {"n": 58, "leituras": 30, "escritas": 3}, {"n": 59, "leituras": 30, "escritas": 3}, {"n": 60, "leituras": 31, "escritas": 3}]}, "remover-inicio-estatica": {"estrutura": "estatica", "chamada": "remover_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 1}, {"n": 100, "leituras": 2, "escritas": 1}, {"n": 1000, "leituras": 2, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 2, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 1}, {"n": 5, "leituras": 2, "escritas": 1}, {"n": 6, "leituras": 2, "escritas": 1}, {"n": 7, "leituras": 2, "escritas": 1}, {"n": 8, "leituras": 2, "escritas": 1}, {"n": 9, "leituras": 2, "escritas": 1}, {"n": 10, "leituras": 2, "escritas": 1}, {"n": 11, "leituras": 2, "escritas": 1}, {"n": 12, "leituras": 2, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 2, "escritas": 1}, {"n": 15, "leituras": 2, "escritas": 1}, {"n": 16, "leituras": 2, "escritas": 1}, {"n": 17, "leituras": 2, "escritas": 1}, {"n": 18, "leituras": 2, "escritas": 1}, {"n": 19, "leituras": 2, "escritas": 1}, {"n": 20, "leituras": 2, "escritas": 1}, {"n": 21, "leituras": 2, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 2, "escritas": 1}, {"n": 25, "leituras": 2, "escritas": 1}, {"n": 26, "leituras": 2, "escritas": 1}, {"n": 27, "leituras": 2, "escritas": 1}, {"n": 28, "leituras": 2, "escritas": 1}, {"n": 29, "leituras": 2, "escritas": 1}, {"n": 30, "leituras": 2, "escritas": 1}, {"n": 31, "leituras": 2, "escritas": 1}, {"n": 32, "leituras": 2, "escritas": 1}, {"n": 33, "leituras": 2, "escritas": 1}, {"n": 34, "leituras": 2, "escritas": 1}, {"n": 35, "leituras": 2, "escritas": 1}, {"n": 36, "leituras": 2, "escritas": 1}, {"n": 37, "leituras": 2, "escritas": 1}, {"n": 38, "leituras": 2, "escritas": 1}, {"n": 39, "leituras": 2, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 2, "escritas": 1}, {"n": 43, "leituras": 2, "escritas": 1}, {"n": 44, "leituras": 2, "escritas": 1}, {"n": 45, "leituras": 2, "escritas": 1}, {"n": 46, "leituras": 2, "escritas": 1}, {"n": 47, "leituras": 2, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 2, "escritas": 1}, {"n": 50, "leituras": 2, "escritas": 1}, {"n": 51, "leituras": 2, "escritas": 1}, {"n": 52, "leituras": 2, "escritas": 1}, {"n": 53, "leituras": 2, "escritas": 1}, {"n": 54, "leituras": 2, "escritas": 1}, {"n": 55, "leituras": 2, "escritas": 1}, {"n": 56, "leituras": 2, "escritas": 1}, {"n": 57, "leituras": 2, "escritas": 1}, {"n": 58, "leituras": 2, "escritas": 1}, {"n": 59, "leituras": 2, "escritas": 1}, {"n": 60, "leituras": 2, "escritas": 1}]}, "remover-fim-estatica": {"estrutura": "estatica", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 11, "escritas": 2}, {"n": 100, "leituras": 101, "escritas": 2}, {"n": 1000, "leituras": 1001, "escritas": 2}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 3, "escritas": 2}, {"n": 3, "leituras": 4, "escritas": 2}, {"n": 4, "leituras": 5, "escritas": 2}, {"n": 5, "leituras": 6, "escritas": 2}, {"n": 6, "leituras": 7, "escritas": 2}, {"n": 7, "leituras": 8, "escritas": 2}, {"n": 8, "leituras": 9, "escritas": 2}, {"n": 9, "leituras": 10, "escritas": 2}, {"n": 10, "leituras": 11, "escritas": 2}, {"n": 11, "leituras": 12, "escritas": 2}, {"n": 12, "leituras": 13, "escritas": 2}, {"n": 13, "leituras": 14, "escritas": 2}, {"n": 14, "leituras": 15, "escritas": 2}, {"n": 15, "leituras": 16, "escritas": 2}, {"n": 16, "leituras": 17, "escritas": 2}, {"n": 17, "leituras": 18, "escritas": 2}, {"n": 18, "leituras": 19, "escritas": 2}, {"n": 19, "leituras": 20, "escritas": 2}, {"n": 20, "leituras": 21, "escritas": 2}, {"n": 21, "leituras": 22, "escritas": 2}, {"n": 22, "leituras": 23, "escritas": 2}, {"n": 23, "leituras": 24, "escritas": 2}, {"n": 24, "leituras": 25, "escritas": 2}, {"n": 25, "leituras": 26, "escritas": 2}, {"n": 26, "leituras": 27, "escritas": 2}, {"n": 27, "leituras": 28, "escritas": 2}, {"n": 28, "leituras": 29, "escritas": 2}, {"n": 29, "leituras": 30, "escritas": 2}, {"n": 30, "leituras": 31, "escritas": 2}, {"n": 31, "leituras": 32, "escritas": 2}, {"n": 32, "leituras": 33, "escritas": 2}, {"n": 33, "leituras": 34, "escritas": 2}, {"n": 34, "leituras": 35, "escritas": 2}, {"n": 35, "leituras": 36, "escritas": 2}, {"n": 36, "leituras": 37, "escritas": 2}, {"n": 37, "leituras": 38, "escritas": 2}, {"n": 38, "leituras": 39, "escritas": 2}, {"n": 39, "leituras": 40, "escritas": 2}, {"n": 40, "leituras": 41, "escritas": 2}, {"n": 41, "leituras": 42, "escritas": 2}, {"n": 42, "leituras": 43, "escritas": 2}, {"n": 43, "leituras": 44, "escritas": 2}, {"n": 44, "leituras": 45, "escritas": 2}, {"n": 45, "leituras": 46, "escritas": 2}, {"n": 46, "leituras": 47, "escritas": 2}, {"n": 47, "leituras": 48, "escritas": 2}, {"n": 48, "leituras": 49, "escritas": 2}, {"n": 49, "leituras": 50, "escritas": 2}, {"n": 50, "leituras": 51, "escritas": 2}, {"n": 51, "leituras": 52, "escritas": 2}, {"n": 52, "leituras": 53, "escritas": 2}, {"n": 53, "leituras": 54, "escritas": 2}, {"n": 54, "leituras": 55, "escritas": 2}, {"n": 55, "leituras": 56, "escritas": 2}, {"n": 56, "leituras": 57, "escritas": 2}, {"n": 57, "leituras": 58, "escritas": 2}, {"n": 58, "leituras": 59, "escritas": 2}, {"n": 59, "leituras": 60, "escritas": 2}, {"n": 60, "leituras": 61, "escritas": 2}]}, "buscar-ausente-estatica": {"estrutura": "estatica", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 20, "escritas": 0}, {"n": 100, "leituras": 200, "escritas": 0}, {"n": 1000, "leituras": 2000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 4, "escritas": 0}, {"n": 3, "leituras": 6, "escritas": 0}, {"n": 4, "leituras": 8, "escritas": 0}, {"n": 5, "leituras": 10, "escritas": 0}, {"n": 6, "leituras": 12, "escritas": 0}, {"n": 7, "leituras": 14, "escritas": 0}, {"n": 8, "leituras": 16, "escritas": 0}, {"n": 9, "leituras": 18, "escritas": 0}, {"n": 10, "leituras": 20, "escritas": 0}, {"n": 11, "leituras": 22, "escritas": 0}, {"n": 12, "leituras": 24, "escritas": 0}, {"n": 13, "leituras": 26, "escritas": 0}, {"n": 14, "leituras": 28, "escritas": 0}, {"n": 15, "leituras": 30, "escritas": 0}, {"n": 16, "leituras": 32, "escritas": 0}, {"n": 17, "leituras": 34, "escritas": 0}, {"n": 18, "leituras": 36, "escritas": 0}, {"n": 19, "leituras": 38, "escritas": 0}, {"n": 20, "leituras": 40, "escritas": 0}, {"n": 21, "leituras": 42, "escritas": 0}, {"n": 22, "leituras": 44, "escritas": 0}, {"n": 23, "leituras": 46, "escritas": 0}, {"n": 24, "leituras": 48, "escritas": 0}, {"n": 25, "leituras": 50, "escritas": 0}, {"n": 26, "leituras": 52, "escritas": 0}, {"n": 27, "leituras": 54, "escritas": 0}, {"n": 28, "leituras": 56, "escritas": 0}, {"n": 29, "leituras": 58, "escritas": 0}, {"n": 30, "leituras": 60, "escritas": 0}, {"n": 31, "leituras": 62, "escritas": 0}, {"n": 32, "leituras": 64, "escritas": 0}, {"n": 33, "leituras": 66, "escritas": 0}, {"n": 34, "leituras": 68, "escritas": 0}, {"n": 35, "leituras": 70, "escritas": 0}, {"n": 36, "leituras": 72, "escritas": 0}, {"n": 37, "leituras": 74, "escritas": 0}, {"n": 38, "leituras": 76, "escritas": 0}, {"n": 39, "leituras": 78, "escritas": 0}, {"n": 40, "leituras": 80, "escritas": 0}, {"n": 41, "leituras": 82, "escritas": 0}, {"n": 42, "leituras": 84, "escritas": 0}, {"n": 43, "leituras": 86, "escritas": 0}, {"n": 44, "leituras": 88, "escritas": 0}, {"n": 45, "leituras": 90, "escritas": 0}, {"n": 46, "leituras": 92, "escritas": 0}, {"n": 47, "leituras": 94, "escritas": 0}, {"n": 48, "leituras": 96, "escritas": 0}, {"n": 49, "leituras": 98, "escritas": 0}, {"n": 50, "leituras": 100, "escritas": 0}, {"n": 51, "leituras": 102, "escritas": 0}, {"n": 52, "leituras": 104, "escritas": 0}, {"n": 53, "leituras": 106, "escritas": 0}, {"n": 54, "leituras": 108, "escritas": 0}, {"n": 55, "leituras": 110, "escritas": 0}, {"n": 56, "leituras": 112, "escritas": 0}, {"n": 57, "leituras": 114, "escritas": 0}, {"n": 58, "leituras": 116, "escritas": 0}, {"n": 59, "leituras": 118, "escritas": 0}, {"n": 60, "leituras": 120, "escritas": 0}]}, "ler-ultima-dinamica": {"estrutura": "dinamica", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 4, "escritas": 0}, {"n": 5, "leituras": 5, "escritas": 0}, {"n": 6, "leituras": 6, "escritas": 0}, {"n": 7, "leituras": 7, "escritas": 0}, {"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "inserir-inicio-dinamica": {"estrutura": "dinamica", "chamada": "inserir_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 2}, {"n": 2, "leituras": 0, "escritas": 2}, {"n": 3, "leituras": 0, "escritas": 2}, {"n": 4, "leituras": 0, "escritas": 2}, {"n": 5, "leituras": 0, "escritas": 2}, {"n": 6, "leituras": 0, "escritas": 2}, {"n": 7, "leituras": 0, "escritas": 2}, {"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "inserir-fim-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 3}, {"n": 100, "leituras": 0, "escritas": 3}, {"n": 1000, "leituras": 0, "escritas": 3}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 3}, {"n": 2, "leituras": 0, "escritas": 3}, {"n": 3, "leituras": 0, "escritas": 3}, {"n": 4, "leituras": 0, "escritas": 3}, {"n": 5, "leituras": 0, "escritas": 3}, {"n": 6, "leituras": 0, "escritas": 3}, {"n": 7, "leituras": 0, "escritas": 3}, {"n": 8, "leituras": 0, "escritas": 3}, {"n": 9, "leituras": 0, "escritas": 3}, {"n": 10, "leituras": 0, "escritas": 3}, {"n": 11, "leituras": 0, "escritas": 3}, {"n": 12, "leituras": 0, "escritas": 3}, {"n": 13, "leituras": 0, "escritas": 3}, {"n": 14, "leituras": 0, "escritas": 3}, {"n": 15, "leituras": 0, "escritas": 3}, {"n": 16, "leituras": 0, "escritas": 3}, {"n": 17, "leituras": 0, "escritas": 3}, {"n": 18, "leituras": 0, "escritas": 3}, {"n": 19, "leituras": 0, "escritas": 3}, {"n": 20, "leituras": 0, "escritas": 3}, {"n": 21, "leituras": 0, "escritas": 3}, {"n": 22, "leituras": 0, "escritas": 3}, {"n": 23, "leituras": 0, "escritas": 3}, {"n": 24, "leituras": 0, "escritas": 3}, {"n": 25, "leituras": 0, "escritas": 3}, {"n": 26, "leituras": 0, "escritas": 3}, {"n": 27, "leituras": 0, "escritas": 3}, {"n": 28, "leituras": 0, "escritas": 3}, {"n": 29, "leituras": 0, "escritas": 3}, {"n": 30, "leituras": 0, "escritas": 3}, {"n": 31, "leituras": 0, "escritas": 3}, {"n": 32, "leituras": 0, "escritas": 3}, {"n": 33, "leituras": 0, "escritas": 3}, {"n": 34, "leituras": 0, "escritas": 3}, {"n": 35, "leituras": 0, "escritas": 3}, {"n": 36, "leituras": 0, "escritas": 3}, {"n": 37, "leituras": 0, "escritas": 3}, {"n": 38, "leituras": 0, "escritas": 3}, {"n": 39, "leituras": 0, "escritas": 3}, {"n": 40, "leituras": 0, "escritas": 3}, {"n": 41, "leituras": 0, "escritas": 3}, {"n": 42, "leituras": 0, "escritas": 3}, {"n": 43, "leituras": 0, "escritas": 3}, {"n": 44, "leituras": 0, "escritas": 3}, {"n": 45, "leituras": 0, "escritas": 3}, {"n": 46, "leituras": 0, "escritas": 3}, {"n": 47, "leituras": 0, "escritas": 3}, {"n": 48, "leituras": 0, "escritas": 3}, {"n": 49, "leituras": 0, "escritas": 3}, {"n": 50, "leituras": 0, "escritas": 3}, {"n": 51, "leituras": 0, "escritas": 3}, {"n": 52, "leituras": 0, "escritas": 3}, {"n": 53, "leituras": 0, "escritas": 3}, {"n": 54, "leituras": 0, "escritas": 3}, {"n": 55, "leituras": 0, "escritas": 3}, {"n": 56, "leituras": 0, "escritas": 3}, {"n": 57, "leituras": 0, "escritas": 3}, {"n": 58, "leituras": 0, "escritas": 3}, {"n": 59, "leituras": 0, "escritas": 3}, {"n": 60, "leituras": 0, "escritas": 3}]}, "inserir-fim-media-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 0, "escritas": 29}, {"n": 100, "vezes": 100, "leituras": 0, "escritas": 299}, {"n": 1000, "vezes": 1000, "leituras": 0, "escritas": 2999}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 0, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 0, "escritas": 8}, {"n": 4, "vezes": 4, "leituras": 0, "escritas": 11}, {"n": 5, "vezes": 5, "leituras": 0, "escritas": 14}, {"n": 6, "vezes": 6, "leituras": 0, "escritas": 17}, {"n": 7, "vezes": 7, "leituras": 0, "escritas": 20}, {"n": 8, "vezes": 8, "leituras": 0, "escritas": 23}, {"n": 9, "vezes": 9, "leituras": 0, "escritas": 26}, {"n": 10, "vezes": 10, "leituras": 0, "escritas": 29}, {"n": 11, "vezes": 11, "leituras": 0, "escritas": 32}, {"n": 12, "vezes": 12, "leituras": 0, "escritas": 35}, {"n": 13, "vezes": 13, "leituras": 0, "escritas": 38}, {"n": 14, "vezes": 14, "leituras": 0, "escritas": 41}, {"n": 15, "vezes": 15, "leituras": 0, "escritas": 44}, {"n": 16, "vezes": 16, "leituras": 0, "escritas": 47}, {"n": 17, "vezes": 17, "leituras": 0, "escritas": 50}, {"n": 18, "vezes": 18, "leituras": 0, "escritas": 53}, {"n": 19, "vezes": 19, "leituras": 0, "escritas": 56}, {"n": 20, "vezes": 20, "leituras": 0, "escritas": 59}, {"n": 21, "vezes": 21, "leituras": 0, "escritas": 62}, {"n": 22, "vezes": 22, "leituras": 0, "escritas": 65}, {"n": 23, "vezes": 23, "leituras": 0, "escritas": 68}, {"n": 24, "vezes": 24, "leituras": 0, "escritas": 71}, {"n": 25, "vezes": 25, "leituras": 0, "escritas": 74}, {"n": 26, "vezes": 26, "leituras": 0, "escritas": 77}, {"n": 27, "vezes": 27, "leituras": 0, "escritas": 80}, {"n": 28, "vezes": 28, "leituras": 0, "escritas": 83}, {"n": 29, "vezes": 29, "leituras": 0, "escritas": 86}, {"n": 30, "vezes": 30, "leituras": 0, "escritas": 89}, {"n": 31, "vezes": 31, "leituras": 0, "escritas": 92}, {"n": 32, "vezes": 32, "leituras": 0, "escritas": 95}, {"n": 33, "vezes": 33, "leituras": 0, "escritas": 98}, {"n": 34, "vezes": 34, "leituras": 0, "escritas": 101}, {"n": 35, "vezes": 35, "leituras": 0, "escritas": 104}, {"n": 36, "vezes": 36, "leituras": 0, "escritas": 107}, {"n": 37, "vezes": 37, "leituras": 0, "escritas": 110}, {"n": 38, "vezes": 38, "leituras": 0, "escritas": 113}, {"n": 39, "vezes": 39, "leituras": 0, "escritas": 116}, {"n": 40, "vezes": 40, "leituras": 0, "escritas": 119}, {"n": 41, "vezes": 41, "leituras": 0, "escritas": 122}, {"n": 42, "vezes": 42, "leituras": 0, "escritas": 125}, {"n": 43, "vezes": 43, "leituras": 0, "escritas": 128}, {"n": 44, "vezes": 44, "leituras": 0, "escritas": 131}, {"n": 45, "vezes": 45, "leituras": 0, "escritas": 134}, {"n": 46, "vezes": 46, "leituras": 0, "escritas": 137}, {"n": 47, "vezes": 47, "leituras": 0, "escritas": 140}, {"n": 48, "vezes": 48, "leituras": 0, "escritas": 143}, {"n": 49, "vezes": 49, "leituras": 0, "escritas": 146}, {"n": 50, "vezes": 50, "leituras": 0, "escritas": 149}, {"n": 51, "vezes": 51, "leituras": 0, "escritas": 152}, {"n": 52, "vezes": 52, "leituras": 0, "escritas": 155}, {"n": 53, "vezes": 53, "leituras": 0, "escritas": 158}, {"n": 54, "vezes": 54, "leituras": 0, "escritas": 161}, {"n": 55, "vezes": 55, "leituras": 0, "escritas": 164}, {"n": 56, "vezes": 56, "leituras": 0, "escritas": 167}, {"n": 57, "vezes": 57, "leituras": 0, "escritas": 170}, {"n": 58, "vezes": 58, "leituras": 0, "escritas": 173}, {"n": 59, "vezes": 59, "leituras": 0, "escritas": 176}, {"n": 60, "vezes": 60, "leituras": 0, "escritas": 179}]}, "inserir-fim-pior-dinamica": {"estrutura": "dinamica", "chamada": "inserir_fim", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 2, "leituras": 0, "escritas": 3}, {"n": 100, "k": 2, "leituras": 0, "escritas": 3}, {"n": 1000, "k": 2, "leituras": 0, "escritas": 3}], "serie": []}, "inserir-meio-dinamica": {"estrutura": "dinamica", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 3}, {"n": 100, "leituras": 50, "escritas": 3}, {"n": 1000, "leituras": 500, "escritas": 3}], "serie": [{"n": 0, "leituras": 0, "escritas": 2}, {"n": 1, "leituras": 0, "escritas": 2}, {"n": 2, "leituras": 1, "escritas": 3}, {"n": 3, "leituras": 1, "escritas": 3}, {"n": 4, "leituras": 2, "escritas": 3}, {"n": 5, "leituras": 2, "escritas": 3}, {"n": 6, "leituras": 3, "escritas": 3}, {"n": 7, "leituras": 3, "escritas": 3}, {"n": 8, "leituras": 4, "escritas": 3}, {"n": 9, "leituras": 4, "escritas": 3}, {"n": 10, "leituras": 5, "escritas": 3}, {"n": 11, "leituras": 5, "escritas": 3}, {"n": 12, "leituras": 6, "escritas": 3}, {"n": 13, "leituras": 6, "escritas": 3}, {"n": 14, "leituras": 7, "escritas": 3}, {"n": 15, "leituras": 7, "escritas": 3}, {"n": 16, "leituras": 8, "escritas": 3}, {"n": 17, "leituras": 8, "escritas": 3}, {"n": 18, "leituras": 9, "escritas": 3}, {"n": 19, "leituras": 9, "escritas": 3}, {"n": 20, "leituras": 10, "escritas": 3}, {"n": 21, "leituras": 10, "escritas": 3}, {"n": 22, "leituras": 11, "escritas": 3}, {"n": 23, "leituras": 11, "escritas": 3}, {"n": 24, "leituras": 12, "escritas": 3}, {"n": 25, "leituras": 12, "escritas": 3}, {"n": 26, "leituras": 13, "escritas": 3}, {"n": 27, "leituras": 13, "escritas": 3}, {"n": 28, "leituras": 14, "escritas": 3}, {"n": 29, "leituras": 14, "escritas": 3}, {"n": 30, "leituras": 15, "escritas": 3}, {"n": 31, "leituras": 15, "escritas": 3}, {"n": 32, "leituras": 16, "escritas": 3}, {"n": 33, "leituras": 16, "escritas": 3}, {"n": 34, "leituras": 17, "escritas": 3}, {"n": 35, "leituras": 17, "escritas": 3}, {"n": 36, "leituras": 18, "escritas": 3}, {"n": 37, "leituras": 18, "escritas": 3}, {"n": 38, "leituras": 19, "escritas": 3}, {"n": 39, "leituras": 19, "escritas": 3}, {"n": 40, "leituras": 20, "escritas": 3}, {"n": 41, "leituras": 20, "escritas": 3}, {"n": 42, "leituras": 21, "escritas": 3}, {"n": 43, "leituras": 21, "escritas": 3}, {"n": 44, "leituras": 22, "escritas": 3}, {"n": 45, "leituras": 22, "escritas": 3}, {"n": 46, "leituras": 23, "escritas": 3}, {"n": 47, "leituras": 23, "escritas": 3}, {"n": 48, "leituras": 24, "escritas": 3}, {"n": 49, "leituras": 24, "escritas": 3}, {"n": 50, "leituras": 25, "escritas": 3}, {"n": 51, "leituras": 25, "escritas": 3}, {"n": 52, "leituras": 26, "escritas": 3}, {"n": 53, "leituras": 26, "escritas": 3}, {"n": 54, "leituras": 27, "escritas": 3}, {"n": 55, "leituras": 27, "escritas": 3}, {"n": 56, "leituras": 28, "escritas": 3}, {"n": 57, "leituras": 28, "escritas": 3}, {"n": 58, "leituras": 29, "escritas": 3}, {"n": 59, "leituras": 29, "escritas": 3}, {"n": 60, "leituras": 30, "escritas": 3}]}, "remover-inicio-dinamica": {"estrutura": "dinamica", "chamada": "remover_inicio", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 2, "escritas": 0}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 2, "escritas": 0}, {"n": 4, "leituras": 2, "escritas": 0}, {"n": 5, "leituras": 2, "escritas": 0}, {"n": 6, "leituras": 2, "escritas": 0}, {"n": 7, "leituras": 2, "escritas": 0}, {"n": 8, "leituras": 2, "escritas": 0}, {"n": 9, "leituras": 2, "escritas": 0}, {"n": 10, "leituras": 2, "escritas": 0}, {"n": 11, "leituras": 2, "escritas": 0}, {"n": 12, "leituras": 2, "escritas": 0}, {"n": 13, "leituras": 2, "escritas": 0}, {"n": 14, "leituras": 2, "escritas": 0}, {"n": 15, "leituras": 2, "escritas": 0}, {"n": 16, "leituras": 2, "escritas": 0}, {"n": 17, "leituras": 2, "escritas": 0}, {"n": 18, "leituras": 2, "escritas": 0}, {"n": 19, "leituras": 2, "escritas": 0}, {"n": 20, "leituras": 2, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 2, "escritas": 0}, {"n": 23, "leituras": 2, "escritas": 0}, {"n": 24, "leituras": 2, "escritas": 0}, {"n": 25, "leituras": 2, "escritas": 0}, {"n": 26, "leituras": 2, "escritas": 0}, {"n": 27, "leituras": 2, "escritas": 0}, {"n": 28, "leituras": 2, "escritas": 0}, {"n": 29, "leituras": 2, "escritas": 0}, {"n": 30, "leituras": 2, "escritas": 0}, {"n": 31, "leituras": 2, "escritas": 0}, {"n": 32, "leituras": 2, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 2, "escritas": 0}, {"n": 35, "leituras": 2, "escritas": 0}, {"n": 36, "leituras": 2, "escritas": 0}, {"n": 37, "leituras": 2, "escritas": 0}, {"n": 38, "leituras": 2, "escritas": 0}, {"n": 39, "leituras": 2, "escritas": 0}, {"n": 40, "leituras": 2, "escritas": 0}, {"n": 41, "leituras": 2, "escritas": 0}, {"n": 42, "leituras": 2, "escritas": 0}, {"n": 43, "leituras": 2, "escritas": 0}, {"n": 44, "leituras": 2, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 2, "escritas": 0}, {"n": 47, "leituras": 2, "escritas": 0}, {"n": 48, "leituras": 2, "escritas": 0}, {"n": 49, "leituras": 2, "escritas": 0}, {"n": 50, "leituras": 2, "escritas": 0}, {"n": 51, "leituras": 2, "escritas": 0}, {"n": 52, "leituras": 2, "escritas": 0}, {"n": 53, "leituras": 2, "escritas": 0}, {"n": 54, "leituras": 2, "escritas": 0}, {"n": 55, "leituras": 2, "escritas": 0}, {"n": 56, "leituras": 2, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 2, "escritas": 0}, {"n": 60, "leituras": 2, "escritas": 0}]}, "remover-fim-dinamica": {"estrutura": "dinamica", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 11, "escritas": 1}, {"n": 100, "leituras": 101, "escritas": 1}, {"n": 1000, "leituras": 1001, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 3, "escritas": 1}, {"n": 3, "leituras": 4, "escritas": 1}, {"n": 4, "leituras": 5, "escritas": 1}, {"n": 5, "leituras": 6, "escritas": 1}, {"n": 6, "leituras": 7, "escritas": 1}, {"n": 7, "leituras": 8, "escritas": 1}, {"n": 8, "leituras": 9, "escritas": 1}, {"n": 9, "leituras": 10, "escritas": 1}, {"n": 10, "leituras": 11, "escritas": 1}, {"n": 11, "leituras": 12, "escritas": 1}, {"n": 12, "leituras": 13, "escritas": 1}, {"n": 13, "leituras": 14, "escritas": 1}, {"n": 14, "leituras": 15, "escritas": 1}, {"n": 15, "leituras": 16, "escritas": 1}, {"n": 16, "leituras": 17, "escritas": 1}, {"n": 17, "leituras": 18, "escritas": 1}, {"n": 18, "leituras": 19, "escritas": 1}, {"n": 19, "leituras": 20, "escritas": 1}, {"n": 20, "leituras": 21, "escritas": 1}, {"n": 21, "leituras": 22, "escritas": 1}, {"n": 22, "leituras": 23, "escritas": 1}, {"n": 23, "leituras": 24, "escritas": 1}, {"n": 24, "leituras": 25, "escritas": 1}, {"n": 25, "leituras": 26, "escritas": 1}, {"n": 26, "leituras": 27, "escritas": 1}, {"n": 27, "leituras": 28, "escritas": 1}, {"n": 28, "leituras": 29, "escritas": 1}, {"n": 29, "leituras": 30, "escritas": 1}, {"n": 30, "leituras": 31, "escritas": 1}, {"n": 31, "leituras": 32, "escritas": 1}, {"n": 32, "leituras": 33, "escritas": 1}, {"n": 33, "leituras": 34, "escritas": 1}, {"n": 34, "leituras": 35, "escritas": 1}, {"n": 35, "leituras": 36, "escritas": 1}, {"n": 36, "leituras": 37, "escritas": 1}, {"n": 37, "leituras": 38, "escritas": 1}, {"n": 38, "leituras": 39, "escritas": 1}, {"n": 39, "leituras": 40, "escritas": 1}, {"n": 40, "leituras": 41, "escritas": 1}, {"n": 41, "leituras": 42, "escritas": 1}, {"n": 42, "leituras": 43, "escritas": 1}, {"n": 43, "leituras": 44, "escritas": 1}, {"n": 44, "leituras": 45, "escritas": 1}, {"n": 45, "leituras": 46, "escritas": 1}, {"n": 46, "leituras": 47, "escritas": 1}, {"n": 47, "leituras": 48, "escritas": 1}, {"n": 48, "leituras": 49, "escritas": 1}, {"n": 49, "leituras": 50, "escritas": 1}, {"n": 50, "leituras": 51, "escritas": 1}, {"n": 51, "leituras": 52, "escritas": 1}, {"n": 52, "leituras": 53, "escritas": 1}, {"n": 53, "leituras": 54, "escritas": 1}, {"n": 54, "leituras": 55, "escritas": 1}, {"n": 55, "leituras": 56, "escritas": 1}, {"n": 56, "leituras": 57, "escritas": 1}, {"n": 57, "leituras": 58, "escritas": 1}, {"n": 58, "leituras": 59, "escritas": 1}, {"n": 59, "leituras": 60, "escritas": 1}, {"n": 60, "leituras": 61, "escritas": 1}]}, "buscar-ausente-dinamica": {"estrutura": "dinamica", "chamada": "buscar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 20, "escritas": 0}, {"n": 100, "leituras": 200, "escritas": 0}, {"n": 1000, "leituras": 2000, "escritas": 0}], "serie": [{"n": 0, "leituras": 0, "escritas": 0}, {"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 4, "escritas": 0}, {"n": 3, "leituras": 6, "escritas": 0}, {"n": 4, "leituras": 8, "escritas": 0}, {"n": 5, "leituras": 10, "escritas": 0}, {"n": 6, "leituras": 12, "escritas": 0}, {"n": 7, "leituras": 14, "escritas": 0}, {"n": 8, "leituras": 16, "escritas": 0}, {"n": 9, "leituras": 18, "escritas": 0}, {"n": 10, "leituras": 20, "escritas": 0}, {"n": 11, "leituras": 22, "escritas": 0}, {"n": 12, "leituras": 24, "escritas": 0}, {"n": 13, "leituras": 26, "escritas": 0}, {"n": 14, "leituras": 28, "escritas": 0}, {"n": 15, "leituras": 30, "escritas": 0}, {"n": 16, "leituras": 32, "escritas": 0}, {"n": 17, "leituras": 34, "escritas": 0}, {"n": 18, "leituras": 36, "escritas": 0}, {"n": 19, "leituras": 38, "escritas": 0}, {"n": 20, "leituras": 40, "escritas": 0}, {"n": 21, "leituras": 42, "escritas": 0}, {"n": 22, "leituras": 44, "escritas": 0}, {"n": 23, "leituras": 46, "escritas": 0}, {"n": 24, "leituras": 48, "escritas": 0}, {"n": 25, "leituras": 50, "escritas": 0}, {"n": 26, "leituras": 52, "escritas": 0}, {"n": 27, "leituras": 54, "escritas": 0}, {"n": 28, "leituras": 56, "escritas": 0}, {"n": 29, "leituras": 58, "escritas": 0}, {"n": 30, "leituras": 60, "escritas": 0}, {"n": 31, "leituras": 62, "escritas": 0}, {"n": 32, "leituras": 64, "escritas": 0}, {"n": 33, "leituras": 66, "escritas": 0}, {"n": 34, "leituras": 68, "escritas": 0}, {"n": 35, "leituras": 70, "escritas": 0}, {"n": 36, "leituras": 72, "escritas": 0}, {"n": 37, "leituras": 74, "escritas": 0}, {"n": 38, "leituras": 76, "escritas": 0}, {"n": 39, "leituras": 78, "escritas": 0}, {"n": 40, "leituras": 80, "escritas": 0}, {"n": 41, "leituras": 82, "escritas": 0}, {"n": 42, "leituras": 84, "escritas": 0}, {"n": 43, "leituras": 86, "escritas": 0}, {"n": 44, "leituras": 88, "escritas": 0}, {"n": 45, "leituras": 90, "escritas": 0}, {"n": 46, "leituras": 92, "escritas": 0}, {"n": 47, "leituras": 94, "escritas": 0}, {"n": 48, "leituras": 96, "escritas": 0}, {"n": 49, "leituras": 98, "escritas": 0}, {"n": 50, "leituras": 100, "escritas": 0}, {"n": 51, "leituras": 102, "escritas": 0}, {"n": 52, "leituras": 104, "escritas": 0}, {"n": 53, "leituras": 106, "escritas": 0}, {"n": 54, "leituras": 108, "escritas": 0}, {"n": 55, "leituras": 110, "escritas": 0}, {"n": 56, "leituras": 112, "escritas": 0}, {"n": 57, "leituras": 114, "escritas": 0}, {"n": 58, "leituras": 116, "escritas": 0}, {"n": 59, "leituras": 118, "escritas": 0}, {"n": 60, "leituras": 120, "escritas": 0}]}}, "capacidade": {"estatica": [{"n": 0, "casas": 2}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 8}, {"n": 4, "casas": 8}, {"n": 5, "casas": 16}, {"n": 6, "casas": 16}, {"n": 7, "casas": 16}, {"n": 8, "casas": 16}, {"n": 9, "casas": 32}, {"n": 10, "casas": 32}, {"n": 11, "casas": 32}, {"n": 12, "casas": 32}, {"n": 13, "casas": 32}, {"n": 14, "casas": 32}, {"n": 15, "casas": 32}, {"n": 16, "casas": 32}, {"n": 17, "casas": 64}, {"n": 18, "casas": 64}, {"n": 19, "casas": 64}, {"n": 20, "casas": 64}, {"n": 21, "casas": 64}, {"n": 22, "casas": 64}, {"n": 23, "casas": 64}, {"n": 24, "casas": 64}, {"n": 25, "casas": 64}, {"n": 26, "casas": 64}, {"n": 27, "casas": 64}, {"n": 28, "casas": 64}, {"n": 29, "casas": 64}, {"n": 30, "casas": 64}, {"n": 31, "casas": 64}, {"n": 32, "casas": 64}, {"n": 33, "casas": 128}, {"n": 34, "casas": 128}, {"n": 35, "casas": 128}, {"n": 36, "casas": 128}, {"n": 37, "casas": 128}, {"n": 38, "casas": 128}, {"n": 39, "casas": 128}, {"n": 40, "casas": 128}, {"n": 41, "casas": 128}, {"n": 42, "casas": 128}, {"n": 43, "casas": 128}, {"n": 44, "casas": 128}, {"n": 45, "casas": 128}, {"n": 46, "casas": 128}, {"n": 47, "casas": 128}, {"n": 48, "casas": 128}, {"n": 49, "casas": 128}, {"n": 50, "casas": 128}, {"n": 51, "casas": 128}, {"n": 52, "casas": 128}, {"n": 53, "casas": 128}, {"n": 54, "casas": 128}, {"n": 55, "casas": 128}, {"n": 56, "casas": 128}, {"n": 57, "casas": 128}, {"n": 58, "casas": 128}, {"n": 59, "casas": 128}, {"n": 60, "casas": 128}], "dinamica": [{"n": 0, "casas": 0}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 6}, {"n": 4, "casas": 8}, {"n": 5, "casas": 10}, {"n": 6, "casas": 12}, {"n": 7, "casas": 14}, {"n": 8, "casas": 16}, {"n": 9, "casas": 18}, {"n": 10, "casas": 20}, {"n": 11, "casas": 22}, {"n": 12, "casas": 24}, {"n": 13, "casas": 26}, {"n": 14, "casas": 28}, {"n": 15, "casas": 30}, {"n": 16, "casas": 32}, {"n": 17, "casas": 34}, {"n": 18, "casas": 36}, {"n": 19, "casas": 38}, {"n": 20, "casas": 40}, {"n": 21, "casas": 42}, {"n": 22, "casas": 44}, {"n": 23, "casas": 46}, {"n": 24, "casas": 48}, {"n": 25, "casas": 50}, {"n": 26, "casas": 52}, {"n": 27, "casas": 54}, {"n": 28, "casas": 56}, {"n": 29, "casas": 58}, {"n": 30, "casas": 60}, {"n": 31, "casas": 62}, {"n": 32, "casas": 64}, {"n": 33, "casas": 66}, {"n": 34, "casas": 68}, {"n": 35, "casas": 70}, {"n": 36, "casas": 72}, {"n": 37, "casas": 74}, {"n": 38, "casas": 76}, {"n": 39, "casas": 78}, {"n": 40, "casas": 80}, {"n": 41, "casas": 82}, {"n": 42, "casas": 84}, {"n": 43, "casas": 86}, {"n": 44, "casas": 88}, {"n": 45, "casas": 90}, {"n": 46, "casas": 92}, {"n": 47, "casas": 94}, {"n": 48, "casas": 96}, {"n": 49, "casas": 98}, {"n": 50, "casas": 100}, {"n": 51, "casas": 102}, {"n": 52, "casas": 104}, {"n": 53, "casas": 106}, {"n": 54, "casas": 108}, {"n": 55, "casas": 110}, {"n": 56, "casas": 112}, {"n": 57, "casas": 114}, {"n": 58, "casas": 116}, {"n": 59, "casas": 118}, {"n": 60, "casas": 120}]}}}, {"id": "grafo", "nome": "Grafo", "variante": "três vistas: matriz de adjacência, lista de adjacência e matriz de incidência", "frase": "Pontos e as ligações entre eles, guardados de três jeitos.", "resumo": "Um grafo são vértices e arestas, cada aresta ligando dois vértices. Aqui ele não é dirigido: a aresta u–v vale nos dois sentidos. As mesmas arestas cabem em três vistas, e cada uma responde rápido a uma pergunta e devagar a outra. A matriz de adjacência diz na hora se u e v estão ligados, mas guarda V × V casas. A lista de adjacência guarda só os vizinhos de cada um e entrega os vizinhos de u sem procurar. A matriz de incidência guarda uma coluna por aresta: tudo começa varrendo a linha de u.", "placa": {"autor": "sem autoria única", "ano": "—"}, "n": "V", "eixo": "V (vértices, com E = {razao}V arestas)", "memoria": {"notacao": "O(V²), O(V + E) e O(V · E)", "porque": "A matriz de adjacência guarda V × V casas, tenha o grafo poucas arestas ou muitas. A lista de adjacência guarda uma casa por vértice (onde começa a lista dele) e duas por aresta (u na lista de v e v na lista de u), mais a folga de cada vetor, que dobra quando enche. A matriz de incidência guarda V casas por aresta."}, "variantes": {"matriz": "matriz de adjacência", "lista": "lista de adjacência", "incidencia": "matriz de incidência"}, "operacoes": [{"id": "existe-matriz", "nome": "a aresta u–v existe?", "notacao": "O(1)", "porque": "Uma leitura: a casa da linha u e coluna v."}, {"id": "existe-lista", "nome": "a aresta u–v existe?", "notacao": "O(grau)", "porque": "Busca v na lista de u, casa por casa; se não está lá, lê a lista inteira."}, {"id": "existe-incidencia", "nome": "a aresta u–v existe?", "notacao": "O(E)", "porque": "Varre a linha de u; em cada coluna com 1, olha se v também tem 1 ali."}, {"id": "vizinhos-matriz", "nome": "os vizinhos de u", "notacao": "O(V)", "porque": "Lê a linha u inteira, V casas, mesmo que u tenha poucos vizinhos."}, {"id": "vizinhos-lista", "nome": "os vizinhos de u", "notacao": "O(grau)", "porque": "Lê a lista de u: uma casa por vizinho, nada mais."}, {"id": "vizinhos-incidencia", "nome": "os vizinhos de u", "notacao": "O(E + grau · V)", "porque": "Varre a linha de u e, em cada coluna com 1, desce a coluna até achar a outra ponta."}, {"id": "grau-matriz", "nome": "o grau de u", "notacao": "O(V)", "porque": "Soma a linha u inteira."}, {"id": "grau-lista", "nome": "o grau de u", "notacao": "O(1)", "porque": "É o tamanho do vetor de u, guardado à parte: nenhuma casa lida."}, {"id": "grau-incidencia", "nome": "o grau de u", "notacao": "O(E)", "porque": "Soma a linha de u: uma casa por aresta."}, {"id": "por-matriz", "nome": "pôr a aresta u–v", "notacao": "O(1)", "porque": "Escreve 1 nas casas (u, v) e (v, u)."}, {"id": "por-lista", "nome": "pôr a aresta u–v, com folga", "notacao": "O(1) amortizado", "porque": "Anexa v na lista de u e u na lista de v. Se um dos vetores enche, dobra e copia, como no Vetor."}, {"id": "por-incidencia", "nome": "pôr a aresta u–v", "notacao": "O(V)", "porque": "Abre uma coluna nova e escreve as V casas dela: 1 em u e em v, 0 no resto."}, {"id": "tirar-matriz", "nome": "tirar a aresta u–v", "notacao": "O(1)", "porque": "Escreve 0 nas casas (u, v) e (v, u)."}, {"id": "tirar-lista", "nome": "tirar a aresta u–v", "notacao": "O(grau)", "porque": "Busca v na lista de u, tira e puxa os de depois uma casa para trás; o mesmo com u na lista de v."}, {"id": "tirar-incidencia", "nome": "tirar a aresta u–v", "notacao": "O(E + V)", "porque": "Acha a coluna da aresta varrendo a linha de u e põe a última coluna no lugar dela, V leituras e V escritas."}], "grafico": [{"id": "vizinhos-matriz", "rotulo": "vizinhos, matriz de adjacência"}, {"id": "vizinhos-lista", "rotulo": "vizinhos, lista"}, {"id": "vizinhos-incidencia", "rotulo": "vizinhos, incidência"}, {"id": "existe-matriz", "rotulo": "existe, matriz de adjacência"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando as três vistas em Python no grafo de medição: V vértices, cada um ligado aos {seguintes} seguintes dando a volta (E = {razao}V, grau {grau}), com V = {ns}. As perguntas são sobre o vértice 0, com uma aresta que não existe no existe e no pôr (o pior caso de quem procura). O número de vértices e de arestas e o tamanho de cada lista, guardados à parte, não contam.", "custo": "O custo de achar os vizinhos de um vértice nas três vistas, e o de saber se uma aresta existe na matriz de adjacência, para V de {v0} a {v1} no grafo de medição, medido uma vez por V. Os vizinhos são sempre {grau}: a lista lê só eles, a matriz de adjacência lê a linha inteira e a de incidência varre a linha e desce as colunas.", "casas": "Casas que cada vista guarda no grafo de medição, para V de {v0} a {v1} (E = {razao}V). A lista cresce como V; as duas matrizes, como V², e a de incidência {razao} vezes mais depressa que a de adjacência, porque E = {razao}V."}, "medido": {"encher": "anel", "tamanhos": [10, 100, 1000], "operacoes": {"existe-matriz": {"estrutura": "matriz", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "vizinhos-matriz": {"estrutura": "matriz", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "grau-matriz": {"estrutura": "matriz", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 10, "escritas": 0}, {"n": 100, "leituras": 100, "escritas": 0}, {"n": 1000, "leituras": 1000, "escritas": 0}], "serie": [{"n": 8, "leituras": 8, "escritas": 0}, {"n": 9, "leituras": 9, "escritas": 0}, {"n": 10, "leituras": 10, "escritas": 0}, {"n": 11, "leituras": 11, "escritas": 0}, {"n": 12, "leituras": 12, "escritas": 0}, {"n": 13, "leituras": 13, "escritas": 0}, {"n": 14, "leituras": 14, "escritas": 0}, {"n": 15, "leituras": 15, "escritas": 0}, {"n": 16, "leituras": 16, "escritas": 0}, {"n": 17, "leituras": 17, "escritas": 0}, {"n": 18, "leituras": 18, "escritas": 0}, {"n": 19, "leituras": 19, "escritas": 0}, {"n": 20, "leituras": 20, "escritas": 0}, {"n": 21, "leituras": 21, "escritas": 0}, {"n": 22, "leituras": 22, "escritas": 0}, {"n": 23, "leituras": 23, "escritas": 0}, {"n": 24, "leituras": 24, "escritas": 0}, {"n": 25, "leituras": 25, "escritas": 0}, {"n": 26, "leituras": 26, "escritas": 0}, {"n": 27, "leituras": 27, "escritas": 0}, {"n": 28, "leituras": 28, "escritas": 0}, {"n": 29, "leituras": 29, "escritas": 0}, {"n": 30, "leituras": 30, "escritas": 0}, {"n": 31, "leituras": 31, "escritas": 0}, {"n": 32, "leituras": 32, "escritas": 0}, {"n": 33, "leituras": 33, "escritas": 0}, {"n": 34, "leituras": 34, "escritas": 0}, {"n": 35, "leituras": 35, "escritas": 0}, {"n": 36, "leituras": 36, "escritas": 0}, {"n": 37, "leituras": 37, "escritas": 0}, {"n": 38, "leituras": 38, "escritas": 0}, {"n": 39, "leituras": 39, "escritas": 0}, {"n": 40, "leituras": 40, "escritas": 0}, {"n": 41, "leituras": 41, "escritas": 0}, {"n": 42, "leituras": 42, "escritas": 0}, {"n": 43, "leituras": 43, "escritas": 0}, {"n": 44, "leituras": 44, "escritas": 0}, {"n": 45, "leituras": 45, "escritas": 0}, {"n": 46, "leituras": 46, "escritas": 0}, {"n": 47, "leituras": 47, "escritas": 0}, {"n": 48, "leituras": 48, "escritas": 0}, {"n": 49, "leituras": 49, "escritas": 0}, {"n": 50, "leituras": 50, "escritas": 0}, {"n": 51, "leituras": 51, "escritas": 0}, {"n": 52, "leituras": 52, "escritas": 0}, {"n": 53, "leituras": 53, "escritas": 0}, {"n": 54, "leituras": 54, "escritas": 0}, {"n": 55, "leituras": 55, "escritas": 0}, {"n": 56, "leituras": 56, "escritas": 0}, {"n": 57, "leituras": 57, "escritas": 0}, {"n": 58, "leituras": 58, "escritas": 0}, {"n": 59, "leituras": 59, "escritas": 0}, {"n": 60, "leituras": 60, "escritas": 0}]}, "por-matriz": {"estrutura": "matriz", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "tirar-matriz": {"estrutura": "matriz", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "existe-lista": {"estrutura": "lista", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 0}, {"n": 100, "leituras": 6, "escritas": 0}, {"n": 1000, "leituras": 6, "escritas": 0}], "serie": [{"n": 8, "leituras": 6, "escritas": 0}, {"n": 9, "leituras": 6, "escritas": 0}, {"n": 10, "leituras": 6, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 6, "escritas": 0}, {"n": 13, "leituras": 6, "escritas": 0}, {"n": 14, "leituras": 6, "escritas": 0}, {"n": 15, "leituras": 6, "escritas": 0}, {"n": 16, "leituras": 6, "escritas": 0}, {"n": 17, "leituras": 6, "escritas": 0}, {"n": 18, "leituras": 6, "escritas": 0}, {"n": 19, "leituras": 6, "escritas": 0}, {"n": 20, "leituras": 6, "escritas": 0}, {"n": 21, "leituras": 6, "escritas": 0}, {"n": 22, "leituras": 6, "escritas": 0}, {"n": 23, "leituras": 6, "escritas": 0}, {"n": 24, "leituras": 6, "escritas": 0}, {"n": 25, "leituras": 6, "escritas": 0}, {"n": 26, "leituras": 6, "escritas": 0}, {"n": 27, "leituras": 6, "escritas": 0}, {"n": 28, "leituras": 6, "escritas": 0}, {"n": 29, "leituras": 6, "escritas": 0}, {"n": 30, "leituras": 6, "escritas": 0}, {"n": 31, "leituras": 6, "escritas": 0}, {"n": 32, "leituras": 6, "escritas": 0}, {"n": 33, "leituras": 6, "escritas": 0}, {"n": 34, "leituras": 6, "escritas": 0}, {"n": 35, "leituras": 6, "escritas": 0}, {"n": 36, "leituras": 6, "escritas": 0}, {"n": 37, "leituras": 6, "escritas": 0}, {"n": 38, "leituras": 6, "escritas": 0}, {"n": 39, "leituras": 6, "escritas": 0}, {"n": 40, "leituras": 6, "escritas": 0}, {"n": 41, "leituras": 6, "escritas": 0}, {"n": 42, "leituras": 6, "escritas": 0}, {"n": 43, "leituras": 6, "escritas": 0}, {"n": 44, "leituras": 6, "escritas": 0}, {"n": 45, "leituras": 6, "escritas": 0}, {"n": 46, "leituras": 6, "escritas": 0}, {"n": 47, "leituras": 6, "escritas": 0}, {"n": 48, "leituras": 6, "escritas": 0}, {"n": 49, "leituras": 6, "escritas": 0}, {"n": 50, "leituras": 6, "escritas": 0}, {"n": 51, "leituras": 6, "escritas": 0}, {"n": 52, "leituras": 6, "escritas": 0}, {"n": 53, "leituras": 6, "escritas": 0}, {"n": 54, "leituras": 6, "escritas": 0}, {"n": 55, "leituras": 6, "escritas": 0}, {"n": 56, "leituras": 6, "escritas": 0}, {"n": 57, "leituras": 6, "escritas": 0}, {"n": 58, "leituras": 6, "escritas": 0}, {"n": 59, "leituras": 6, "escritas": 0}, {"n": 60, "leituras": 6, "escritas": 0}]}, "vizinhos-lista": {"estrutura": "lista", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 6, "escritas": 0}, {"n": 100, "leituras": 6, "escritas": 0}, {"n": 1000, "leituras": 6, "escritas": 0}], "serie": [{"n": 8, "leituras": 6, "escritas": 0}, {"n": 9, "leituras": 6, "escritas": 0}, {"n": 10, "leituras": 6, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 6, "escritas": 0}, {"n": 13, "leituras": 6, "escritas": 0}, {"n": 14, "leituras": 6, "escritas": 0}, {"n": 15, "leituras": 6, "escritas": 0}, {"n": 16, "leituras": 6, "escritas": 0}, {"n": 17, "leituras": 6, "escritas": 0}, {"n": 18, "leituras": 6, "escritas": 0}, {"n": 19, "leituras": 6, "escritas": 0}, {"n": 20, "leituras": 6, "escritas": 0}, {"n": 21, "leituras": 6, "escritas": 0}, {"n": 22, "leituras": 6, "escritas": 0}, {"n": 23, "leituras": 6, "escritas": 0}, {"n": 24, "leituras": 6, "escritas": 0}, {"n": 25, "leituras": 6, "escritas": 0}, {"n": 26, "leituras": 6, "escritas": 0}, {"n": 27, "leituras": 6, "escritas": 0}, {"n": 28, "leituras": 6, "escritas": 0}, {"n": 29, "leituras": 6, "escritas": 0}, {"n": 30, "leituras": 6, "escritas": 0}, {"n": 31, "leituras": 6, "escritas": 0}, {"n": 32, "leituras": 6, "escritas": 0}, {"n": 33, "leituras": 6, "escritas": 0}, {"n": 34, "leituras": 6, "escritas": 0}, {"n": 35, "leituras": 6, "escritas": 0}, {"n": 36, "leituras": 6, "escritas": 0}, {"n": 37, "leituras": 6, "escritas": 0}, {"n": 38, "leituras": 6, "escritas": 0}, {"n": 39, "leituras": 6, "escritas": 0}, {"n": 40, "leituras": 6, "escritas": 0}, {"n": 41, "leituras": 6, "escritas": 0}, {"n": 42, "leituras": 6, "escritas": 0}, {"n": 43, "leituras": 6, "escritas": 0}, {"n": 44, "leituras": 6, "escritas": 0}, {"n": 45, "leituras": 6, "escritas": 0}, {"n": 46, "leituras": 6, "escritas": 0}, {"n": 47, "leituras": 6, "escritas": 0}, {"n": 48, "leituras": 6, "escritas": 0}, {"n": 49, "leituras": 6, "escritas": 0}, {"n": 50, "leituras": 6, "escritas": 0}, {"n": 51, "leituras": 6, "escritas": 0}, {"n": 52, "leituras": 6, "escritas": 0}, {"n": 53, "leituras": 6, "escritas": 0}, {"n": 54, "leituras": 6, "escritas": 0}, {"n": 55, "leituras": 6, "escritas": 0}, {"n": 56, "leituras": 6, "escritas": 0}, {"n": 57, "leituras": 6, "escritas": 0}, {"n": 58, "leituras": 6, "escritas": 0}, {"n": 59, "leituras": 6, "escritas": 0}, {"n": 60, "leituras": 6, "escritas": 0}]}, "grau-lista": {"estrutura": "lista", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 0}, {"n": 100, "leituras": 0, "escritas": 0}, {"n": 1000, "leituras": 0, "escritas": 0}], "serie": [{"n": 8, "leituras": 0, "escritas": 0}, {"n": 9, "leituras": 0, "escritas": 0}, {"n": 10, "leituras": 0, "escritas": 0}, {"n": 11, "leituras": 0, "escritas": 0}, {"n": 12, "leituras": 0, "escritas": 0}, {"n": 13, "leituras": 0, "escritas": 0}, {"n": 14, "leituras": 0, "escritas": 0}, {"n": 15, "leituras": 0, "escritas": 0}, {"n": 16, "leituras": 0, "escritas": 0}, {"n": 17, "leituras": 0, "escritas": 0}, {"n": 18, "leituras": 0, "escritas": 0}, {"n": 19, "leituras": 0, "escritas": 0}, {"n": 20, "leituras": 0, "escritas": 0}, {"n": 21, "leituras": 0, "escritas": 0}, {"n": 22, "leituras": 0, "escritas": 0}, {"n": 23, "leituras": 0, "escritas": 0}, {"n": 24, "leituras": 0, "escritas": 0}, {"n": 25, "leituras": 0, "escritas": 0}, {"n": 26, "leituras": 0, "escritas": 0}, {"n": 27, "leituras": 0, "escritas": 0}, {"n": 28, "leituras": 0, "escritas": 0}, {"n": 29, "leituras": 0, "escritas": 0}, {"n": 30, "leituras": 0, "escritas": 0}, {"n": 31, "leituras": 0, "escritas": 0}, {"n": 32, "leituras": 0, "escritas": 0}, {"n": 33, "leituras": 0, "escritas": 0}, {"n": 34, "leituras": 0, "escritas": 0}, {"n": 35, "leituras": 0, "escritas": 0}, {"n": 36, "leituras": 0, "escritas": 0}, {"n": 37, "leituras": 0, "escritas": 0}, {"n": 38, "leituras": 0, "escritas": 0}, {"n": 39, "leituras": 0, "escritas": 0}, {"n": 40, "leituras": 0, "escritas": 0}, {"n": 41, "leituras": 0, "escritas": 0}, {"n": 42, "leituras": 0, "escritas": 0}, {"n": 43, "leituras": 0, "escritas": 0}, {"n": 44, "leituras": 0, "escritas": 0}, {"n": 45, "leituras": 0, "escritas": 0}, {"n": 46, "leituras": 0, "escritas": 0}, {"n": 47, "leituras": 0, "escritas": 0}, {"n": 48, "leituras": 0, "escritas": 0}, {"n": 49, "leituras": 0, "escritas": 0}, {"n": 50, "leituras": 0, "escritas": 0}, {"n": 51, "leituras": 0, "escritas": 0}, {"n": 52, "leituras": 0, "escritas": 0}, {"n": 53, "leituras": 0, "escritas": 0}, {"n": 54, "leituras": 0, "escritas": 0}, {"n": 55, "leituras": 0, "escritas": 0}, {"n": 56, "leituras": 0, "escritas": 0}, {"n": 57, "leituras": 0, "escritas": 0}, {"n": 58, "leituras": 0, "escritas": 0}, {"n": 59, "leituras": 0, "escritas": 0}, {"n": 60, "leituras": 0, "escritas": 0}]}, "por-lista": {"estrutura": "lista", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 2}, {"n": 100, "leituras": 0, "escritas": 2}, {"n": 1000, "leituras": 0, "escritas": 2}], "serie": [{"n": 8, "leituras": 0, "escritas": 2}, {"n": 9, "leituras": 0, "escritas": 2}, {"n": 10, "leituras": 0, "escritas": 2}, {"n": 11, "leituras": 0, "escritas": 2}, {"n": 12, "leituras": 0, "escritas": 2}, {"n": 13, "leituras": 0, "escritas": 2}, {"n": 14, "leituras": 0, "escritas": 2}, {"n": 15, "leituras": 0, "escritas": 2}, {"n": 16, "leituras": 0, "escritas": 2}, {"n": 17, "leituras": 0, "escritas": 2}, {"n": 18, "leituras": 0, "escritas": 2}, {"n": 19, "leituras": 0, "escritas": 2}, {"n": 20, "leituras": 0, "escritas": 2}, {"n": 21, "leituras": 0, "escritas": 2}, {"n": 22, "leituras": 0, "escritas": 2}, {"n": 23, "leituras": 0, "escritas": 2}, {"n": 24, "leituras": 0, "escritas": 2}, {"n": 25, "leituras": 0, "escritas": 2}, {"n": 26, "leituras": 0, "escritas": 2}, {"n": 27, "leituras": 0, "escritas": 2}, {"n": 28, "leituras": 0, "escritas": 2}, {"n": 29, "leituras": 0, "escritas": 2}, {"n": 30, "leituras": 0, "escritas": 2}, {"n": 31, "leituras": 0, "escritas": 2}, {"n": 32, "leituras": 0, "escritas": 2}, {"n": 33, "leituras": 0, "escritas": 2}, {"n": 34, "leituras": 0, "escritas": 2}, {"n": 35, "leituras": 0, "escritas": 2}, {"n": 36, "leituras": 0, "escritas": 2}, {"n": 37, "leituras": 0, "escritas": 2}, {"n": 38, "leituras": 0, "escritas": 2}, {"n": 39, "leituras": 0, "escritas": 2}, {"n": 40, "leituras": 0, "escritas": 2}, {"n": 41, "leituras": 0, "escritas": 2}, {"n": 42, "leituras": 0, "escritas": 2}, {"n": 43, "leituras": 0, "escritas": 2}, {"n": 44, "leituras": 0, "escritas": 2}, {"n": 45, "leituras": 0, "escritas": 2}, {"n": 46, "leituras": 0, "escritas": 2}, {"n": 47, "leituras": 0, "escritas": 2}, {"n": 48, "leituras": 0, "escritas": 2}, {"n": 49, "leituras": 0, "escritas": 2}, {"n": 50, "leituras": 0, "escritas": 2}, {"n": 51, "leituras": 0, "escritas": 2}, {"n": 52, "leituras": 0, "escritas": 2}, {"n": 53, "leituras": 0, "escritas": 2}, {"n": 54, "leituras": 0, "escritas": 2}, {"n": 55, "leituras": 0, "escritas": 2}, {"n": 56, "leituras": 0, "escritas": 2}, {"n": 57, "leituras": 0, "escritas": 2}, {"n": 58, "leituras": 0, "escritas": 2}, {"n": 59, "leituras": 0, "escritas": 2}, {"n": 60, "leituras": 0, "escritas": 2}]}, "tirar-lista": {"estrutura": "lista", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 14, "escritas": 10}, {"n": 100, "leituras": 14, "escritas": 10}, {"n": 1000, "leituras": 14, "escritas": 10}], "serie": [{"n": 8, "leituras": 14, "escritas": 10}, {"n": 9, "leituras": 14, "escritas": 10}, {"n": 10, "leituras": 14, "escritas": 10}, {"n": 11, "leituras": 14, "escritas": 10}, {"n": 12, "leituras": 14, "escritas": 10}, {"n": 13, "leituras": 14, "escritas": 10}, {"n": 14, "leituras": 14, "escritas": 10}, {"n": 15, "leituras": 14, "escritas": 10}, {"n": 16, "leituras": 14, "escritas": 10}, {"n": 17, "leituras": 14, "escritas": 10}, {"n": 18, "leituras": 14, "escritas": 10}, {"n": 19, "leituras": 14, "escritas": 10}, {"n": 20, "leituras": 14, "escritas": 10}, {"n": 21, "leituras": 14, "escritas": 10}, {"n": 22, "leituras": 14, "escritas": 10}, {"n": 23, "leituras": 14, "escritas": 10}, {"n": 24, "leituras": 14, "escritas": 10}, {"n": 25, "leituras": 14, "escritas": 10}, {"n": 26, "leituras": 14, "escritas": 10}, {"n": 27, "leituras": 14, "escritas": 10}, {"n": 28, "leituras": 14, "escritas": 10}, {"n": 29, "leituras": 14, "escritas": 10}, {"n": 30, "leituras": 14, "escritas": 10}, {"n": 31, "leituras": 14, "escritas": 10}, {"n": 32, "leituras": 14, "escritas": 10}, {"n": 33, "leituras": 14, "escritas": 10}, {"n": 34, "leituras": 14, "escritas": 10}, {"n": 35, "leituras": 14, "escritas": 10}, {"n": 36, "leituras": 14, "escritas": 10}, {"n": 37, "leituras": 14, "escritas": 10}, {"n": 38, "leituras": 14, "escritas": 10}, {"n": 39, "leituras": 14, "escritas": 10}, {"n": 40, "leituras": 14, "escritas": 10}, {"n": 41, "leituras": 14, "escritas": 10}, {"n": 42, "leituras": 14, "escritas": 10}, {"n": 43, "leituras": 14, "escritas": 10}, {"n": 44, "leituras": 14, "escritas": 10}, {"n": 45, "leituras": 14, "escritas": 10}, {"n": 46, "leituras": 14, "escritas": 10}, {"n": 47, "leituras": 14, "escritas": 10}, {"n": 48, "leituras": 14, "escritas": 10}, {"n": 49, "leituras": 14, "escritas": 10}, {"n": 50, "leituras": 14, "escritas": 10}, {"n": 51, "leituras": 14, "escritas": 10}, {"n": 52, "leituras": 14, "escritas": 10}, {"n": 53, "leituras": 14, "escritas": 10}, {"n": 54, "leituras": 14, "escritas": 10}, {"n": 55, "leituras": 14, "escritas": 10}, {"n": 56, "leituras": 14, "escritas": 10}, {"n": 57, "leituras": 14, "escritas": 10}, {"n": 58, "leituras": 14, "escritas": 10}, {"n": 59, "leituras": 14, "escritas": 10}, {"n": 60, "leituras": 14, "escritas": 10}]}, "existe-incidencia": {"estrutura": "incidencia", "chamada": "existe", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 36, "escritas": 0}, {"n": 100, "leituras": 306, "escritas": 0}, {"n": 1000, "leituras": 3006, "escritas": 0}], "serie": [{"n": 8, "leituras": 30, "escritas": 0}, {"n": 9, "leituras": 33, "escritas": 0}, {"n": 10, "leituras": 36, "escritas": 0}, {"n": 11, "leituras": 39, "escritas": 0}, {"n": 12, "leituras": 42, "escritas": 0}, {"n": 13, "leituras": 45, "escritas": 0}, {"n": 14, "leituras": 48, "escritas": 0}, {"n": 15, "leituras": 51, "escritas": 0}, {"n": 16, "leituras": 54, "escritas": 0}, {"n": 17, "leituras": 57, "escritas": 0}, {"n": 18, "leituras": 60, "escritas": 0}, {"n": 19, "leituras": 63, "escritas": 0}, {"n": 20, "leituras": 66, "escritas": 0}, {"n": 21, "leituras": 69, "escritas": 0}, {"n": 22, "leituras": 72, "escritas": 0}, {"n": 23, "leituras": 75, "escritas": 0}, {"n": 24, "leituras": 78, "escritas": 0}, {"n": 25, "leituras": 81, "escritas": 0}, {"n": 26, "leituras": 84, "escritas": 0}, {"n": 27, "leituras": 87, "escritas": 0}, {"n": 28, "leituras": 90, "escritas": 0}, {"n": 29, "leituras": 93, "escritas": 0}, {"n": 30, "leituras": 96, "escritas": 0}, {"n": 31, "leituras": 99, "escritas": 0}, {"n": 32, "leituras": 102, "escritas": 0}, {"n": 33, "leituras": 105, "escritas": 0}, {"n": 34, "leituras": 108, "escritas": 0}, {"n": 35, "leituras": 111, "escritas": 0}, {"n": 36, "leituras": 114, "escritas": 0}, {"n": 37, "leituras": 117, "escritas": 0}, {"n": 38, "leituras": 120, "escritas": 0}, {"n": 39, "leituras": 123, "escritas": 0}, {"n": 40, "leituras": 126, "escritas": 0}, {"n": 41, "leituras": 129, "escritas": 0}, {"n": 42, "leituras": 132, "escritas": 0}, {"n": 43, "leituras": 135, "escritas": 0}, {"n": 44, "leituras": 138, "escritas": 0}, {"n": 45, "leituras": 141, "escritas": 0}, {"n": 46, "leituras": 144, "escritas": 0}, {"n": 47, "leituras": 147, "escritas": 0}, {"n": 48, "leituras": 150, "escritas": 0}, {"n": 49, "leituras": 153, "escritas": 0}, {"n": 50, "leituras": 156, "escritas": 0}, {"n": 51, "leituras": 159, "escritas": 0}, {"n": 52, "leituras": 162, "escritas": 0}, {"n": 53, "leituras": 165, "escritas": 0}, {"n": 54, "leituras": 168, "escritas": 0}, {"n": 55, "leituras": 171, "escritas": 0}, {"n": 56, "leituras": 174, "escritas": 0}, {"n": 57, "leituras": 177, "escritas": 0}, {"n": 58, "leituras": 180, "escritas": 0}, {"n": 59, "leituras": 183, "escritas": 0}, {"n": 60, "leituras": 186, "escritas": 0}]}, "vizinhos-incidencia": {"estrutura": "incidencia", "chamada": "vizinhos", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 60, "escritas": 0}, {"n": 100, "leituras": 600, "escritas": 0}, {"n": 1000, "leituras": 6000, "escritas": 0}], "serie": [{"n": 8, "leituras": 48, "escritas": 0}, {"n": 9, "leituras": 54, "escritas": 0}, {"n": 10, "leituras": 60, "escritas": 0}, {"n": 11, "leituras": 66, "escritas": 0}, {"n": 12, "leituras": 72, "escritas": 0}, {"n": 13, "leituras": 78, "escritas": 0}, {"n": 14, "leituras": 84, "escritas": 0}, {"n": 15, "leituras": 90, "escritas": 0}, {"n": 16, "leituras": 96, "escritas": 0}, {"n": 17, "leituras": 102, "escritas": 0}, {"n": 18, "leituras": 108, "escritas": 0}, {"n": 19, "leituras": 114, "escritas": 0}, {"n": 20, "leituras": 120, "escritas": 0}, {"n": 21, "leituras": 126, "escritas": 0}, {"n": 22, "leituras": 132, "escritas": 0}, {"n": 23, "leituras": 138, "escritas": 0}, {"n": 24, "leituras": 144, "escritas": 0}, {"n": 25, "leituras": 150, "escritas": 0}, {"n": 26, "leituras": 156, "escritas": 0}, {"n": 27, "leituras": 162, "escritas": 0}, {"n": 28, "leituras": 168, "escritas": 0}, {"n": 29, "leituras": 174, "escritas": 0}, {"n": 30, "leituras": 180, "escritas": 0}, {"n": 31, "leituras": 186, "escritas": 0}, {"n": 32, "leituras": 192, "escritas": 0}, {"n": 33, "leituras": 198, "escritas": 0}, {"n": 34, "leituras": 204, "escritas": 0}, {"n": 35, "leituras": 210, "escritas": 0}, {"n": 36, "leituras": 216, "escritas": 0}, {"n": 37, "leituras": 222, "escritas": 0}, {"n": 38, "leituras": 228, "escritas": 0}, {"n": 39, "leituras": 234, "escritas": 0}, {"n": 40, "leituras": 240, "escritas": 0}, {"n": 41, "leituras": 246, "escritas": 0}, {"n": 42, "leituras": 252, "escritas": 0}, {"n": 43, "leituras": 258, "escritas": 0}, {"n": 44, "leituras": 264, "escritas": 0}, {"n": 45, "leituras": 270, "escritas": 0}, {"n": 46, "leituras": 276, "escritas": 0}, {"n": 47, "leituras": 282, "escritas": 0}, {"n": 48, "leituras": 288, "escritas": 0}, {"n": 49, "leituras": 294, "escritas": 0}, {"n": 50, "leituras": 300, "escritas": 0}, {"n": 51, "leituras": 306, "escritas": 0}, {"n": 52, "leituras": 312, "escritas": 0}, {"n": 53, "leituras": 318, "escritas": 0}, {"n": 54, "leituras": 324, "escritas": 0}, {"n": 55, "leituras": 330, "escritas": 0}, {"n": 56, "leituras": 336, "escritas": 0}, {"n": 57, "leituras": 342, "escritas": 0}, {"n": 58, "leituras": 348, "escritas": 0}, {"n": 59, "leituras": 354, "escritas": 0}, {"n": 60, "leituras": 360, "escritas": 0}]}, "grau-incidencia": {"estrutura": "incidencia", "chamada": "grau", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 30, "escritas": 0}, {"n": 100, "leituras": 300, "escritas": 0}, {"n": 1000, "leituras": 3000, "escritas": 0}], "serie": [{"n": 8, "leituras": 24, "escritas": 0}, {"n": 9, "leituras": 27, "escritas": 0}, {"n": 10, "leituras": 30, "escritas": 0}, {"n": 11, "leituras": 33, "escritas": 0}, {"n": 12, "leituras": 36, "escritas": 0}, {"n": 13, "leituras": 39, "escritas": 0}, {"n": 14, "leituras": 42, "escritas": 0}, {"n": 15, "leituras": 45, "escritas": 0}, {"n": 16, "leituras": 48, "escritas": 0}, {"n": 17, "leituras": 51, "escritas": 0}, {"n": 18, "leituras": 54, "escritas": 0}, {"n": 19, "leituras": 57, "escritas": 0}, {"n": 20, "leituras": 60, "escritas": 0}, {"n": 21, "leituras": 63, "escritas": 0}, {"n": 22, "leituras": 66, "escritas": 0}, {"n": 23, "leituras": 69, "escritas": 0}, {"n": 24, "leituras": 72, "escritas": 0}, {"n": 25, "leituras": 75, "escritas": 0}, {"n": 26, "leituras": 78, "escritas": 0}, {"n": 27, "leituras": 81, "escritas": 0}, {"n": 28, "leituras": 84, "escritas": 0}, {"n": 29, "leituras": 87, "escritas": 0}, {"n": 30, "leituras": 90, "escritas": 0}, {"n": 31, "leituras": 93, "escritas": 0}, {"n": 32, "leituras": 96, "escritas": 0}, {"n": 33, "leituras": 99, "escritas": 0}, {"n": 34, "leituras": 102, "escritas": 0}, {"n": 35, "leituras": 105, "escritas": 0}, {"n": 36, "leituras": 108, "escritas": 0}, {"n": 37, "leituras": 111, "escritas": 0}, {"n": 38, "leituras": 114, "escritas": 0}, {"n": 39, "leituras": 117, "escritas": 0}, {"n": 40, "leituras": 120, "escritas": 0}, {"n": 41, "leituras": 123, "escritas": 0}, {"n": 42, "leituras": 126, "escritas": 0}, {"n": 43, "leituras": 129, "escritas": 0}, {"n": 44, "leituras": 132, "escritas": 0}, {"n": 45, "leituras": 135, "escritas": 0}, {"n": 46, "leituras": 138, "escritas": 0}, {"n": 47, "leituras": 141, "escritas": 0}, {"n": 48, "leituras": 144, "escritas": 0}, {"n": 49, "leituras": 147, "escritas": 0}, {"n": 50, "leituras": 150, "escritas": 0}, {"n": 51, "leituras": 153, "escritas": 0}, {"n": 52, "leituras": 156, "escritas": 0}, {"n": 53, "leituras": 159, "escritas": 0}, {"n": 54, "leituras": 162, "escritas": 0}, {"n": 55, "leituras": 165, "escritas": 0}, {"n": 56, "leituras": 168, "escritas": 0}, {"n": 57, "leituras": 171, "escritas": 0}, {"n": 58, "leituras": 174, "escritas": 0}, {"n": 59, "leituras": 177, "escritas": 0}, {"n": 60, "leituras": 180, "escritas": 0}]}, "por-incidencia": {"estrutura": "incidencia", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 0, "escritas": 10}, {"n": 100, "leituras": 0, "escritas": 100}, {"n": 1000, "leituras": 0, "escritas": 1000}], "serie": [{"n": 8, "leituras": 0, "escritas": 8}, {"n": 9, "leituras": 0, "escritas": 9}, {"n": 10, "leituras": 0, "escritas": 10}, {"n": 11, "leituras": 0, "escritas": 11}, {"n": 12, "leituras": 0, "escritas": 12}, {"n": 13, "leituras": 0, "escritas": 13}, {"n": 14, "leituras": 0, "escritas": 14}, {"n": 15, "leituras": 0, "escritas": 15}, {"n": 16, "leituras": 0, "escritas": 16}, {"n": 17, "leituras": 0, "escritas": 17}, {"n": 18, "leituras": 0, "escritas": 18}, {"n": 19, "leituras": 0, "escritas": 19}, {"n": 20, "leituras": 0, "escritas": 20}, {"n": 21, "leituras": 0, "escritas": 21}, {"n": 22, "leituras": 0, "escritas": 22}, {"n": 23, "leituras": 0, "escritas": 23}, {"n": 24, "leituras": 0, "escritas": 24}, {"n": 25, "leituras": 0, "escritas": 25}, {"n": 26, "leituras": 0, "escritas": 26}, {"n": 27, "leituras": 0, "escritas": 27}, {"n": 28, "leituras": 0, "escritas": 28}, {"n": 29, "leituras": 0, "escritas": 29}, {"n": 30, "leituras": 0, "escritas": 30}, {"n": 31, "leituras": 0, "escritas": 31}, {"n": 32, "leituras": 0, "escritas": 32}, {"n": 33, "leituras": 0, "escritas": 33}, {"n": 34, "leituras": 0, "escritas": 34}, {"n": 35, "leituras": 0, "escritas": 35}, {"n": 36, "leituras": 0, "escritas": 36}, {"n": 37, "leituras": 0, "escritas": 37}, {"n": 38, "leituras": 0, "escritas": 38}, {"n": 39, "leituras": 0, "escritas": 39}, {"n": 40, "leituras": 0, "escritas": 40}, {"n": 41, "leituras": 0, "escritas": 41}, {"n": 42, "leituras": 0, "escritas": 42}, {"n": 43, "leituras": 0, "escritas": 43}, {"n": 44, "leituras": 0, "escritas": 44}, {"n": 45, "leituras": 0, "escritas": 45}, {"n": 46, "leituras": 0, "escritas": 46}, {"n": 47, "leituras": 0, "escritas": 47}, {"n": 48, "leituras": 0, "escritas": 48}, {"n": 49, "leituras": 0, "escritas": 49}, {"n": 50, "leituras": 0, "escritas": 50}, {"n": 51, "leituras": 0, "escritas": 51}, {"n": 52, "leituras": 0, "escritas": 52}, {"n": 53, "leituras": 0, "escritas": 53}, {"n": 54, "leituras": 0, "escritas": 54}, {"n": 55, "leituras": 0, "escritas": 55}, {"n": 56, "leituras": 0, "escritas": 56}, {"n": 57, "leituras": 0, "escritas": 57}, {"n": 58, "leituras": 0, "escritas": 58}, {"n": 59, "leituras": 0, "escritas": 59}, {"n": 60, "leituras": 0, "escritas": 60}]}, "tirar-incidencia": {"estrutura": "incidencia", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 12, "escritas": 10}, {"n": 100, "leituras": 102, "escritas": 100}, {"n": 1000, "leituras": 1002, "escritas": 1000}], "serie": [{"n": 8, "leituras": 10, "escritas": 8}, {"n": 9, "leituras": 11, "escritas": 9}, {"n": 10, "leituras": 12, "escritas": 10}, {"n": 11, "leituras": 13, "escritas": 11}, {"n": 12, "leituras": 14, "escritas": 12}, {"n": 13, "leituras": 15, "escritas": 13}, {"n": 14, "leituras": 16, "escritas": 14}, {"n": 15, "leituras": 17, "escritas": 15}, {"n": 16, "leituras": 18, "escritas": 16}, {"n": 17, "leituras": 19, "escritas": 17}, {"n": 18, "leituras": 20, "escritas": 18}, {"n": 19, "leituras": 21, "escritas": 19}, {"n": 20, "leituras": 22, "escritas": 20}, {"n": 21, "leituras": 23, "escritas": 21}, {"n": 22, "leituras": 24, "escritas": 22}, {"n": 23, "leituras": 25, "escritas": 23}, {"n": 24, "leituras": 26, "escritas": 24}, {"n": 25, "leituras": 27, "escritas": 25}, {"n": 26, "leituras": 28, "escritas": 26}, {"n": 27, "leituras": 29, "escritas": 27}, {"n": 28, "leituras": 30, "escritas": 28}, {"n": 29, "leituras": 31, "escritas": 29}, {"n": 30, "leituras": 32, "escritas": 30}, {"n": 31, "leituras": 33, "escritas": 31}, {"n": 32, "leituras": 34, "escritas": 32}, {"n": 33, "leituras": 35, "escritas": 33}, {"n": 34, "leituras": 36, "escritas": 34}, {"n": 35, "leituras": 37, "escritas": 35}, {"n": 36, "leituras": 38, "escritas": 36}, {"n": 37, "leituras": 39, "escritas": 37}, {"n": 38, "leituras": 40, "escritas": 38}, {"n": 39, "leituras": 41, "escritas": 39}, {"n": 40, "leituras": 42, "escritas": 40}, {"n": 41, "leituras": 43, "escritas": 41}, {"n": 42, "leituras": 44, "escritas": 42}, {"n": 43, "leituras": 45, "escritas": 43}, {"n": 44, "leituras": 46, "escritas": 44}, {"n": 45, "leituras": 47, "escritas": 45}, {"n": 46, "leituras": 48, "escritas": 46}, {"n": 47, "leituras": 49, "escritas": 47}, {"n": 48, "leituras": 50, "escritas": 48}, {"n": 49, "leituras": 51, "escritas": 49}, {"n": 50, "leituras": 52, "escritas": 50}, {"n": 51, "leituras": 53, "escritas": 51}, {"n": 52, "leituras": 54, "escritas": 52}, {"n": 53, "leituras": 55, "escritas": 53}, {"n": 54, "leituras": 56, "escritas": 54}, {"n": 55, "leituras": 57, "escritas": 55}, {"n": 56, "leituras": 58, "escritas": 56}, {"n": 57, "leituras": 59, "escritas": 57}, {"n": 58, "leituras": 60, "escritas": 58}, {"n": 59, "leituras": 61, "escritas": 59}, {"n": 60, "leituras": 62, "escritas": 60}]}}, "capacidade": {"matriz": [{"n": 0, "casas": 0}, {"n": 1, "casas": 1}, {"n": 2, "casas": 4}, {"n": 3, "casas": 9}, {"n": 4, "casas": 16}, {"n": 5, "casas": 25}, {"n": 6, "casas": 36}, {"n": 7, "casas": 49}, {"n": 8, "casas": 64}, {"n": 9, "casas": 81}, {"n": 10, "casas": 100}, {"n": 11, "casas": 121}, {"n": 12, "casas": 144}, {"n": 13, "casas": 169}, {"n": 14, "casas": 196}, {"n": 15, "casas": 225}, {"n": 16, "casas": 256}, {"n": 17, "casas": 289}, {"n": 18, "casas": 324}, {"n": 19, "casas": 361}, {"n": 20, "casas": 400}, {"n": 21, "casas": 441}, {"n": 22, "casas": 484}, {"n": 23, "casas": 529}, {"n": 24, "casas": 576}, {"n": 25, "casas": 625}, {"n": 26, "casas": 676}, {"n": 27, "casas": 729}, {"n": 28, "casas": 784}, {"n": 29, "casas": 841}, {"n": 30, "casas": 900}, {"n": 31, "casas": 961}, {"n": 32, "casas": 1024}, {"n": 33, "casas": 1089}, {"n": 34, "casas": 1156}, {"n": 35, "casas": 1225}, {"n": 36, "casas": 1296}, {"n": 37, "casas": 1369}, {"n": 38, "casas": 1444}, {"n": 39, "casas": 1521}, {"n": 40, "casas": 1600}, {"n": 41, "casas": 1681}, {"n": 42, "casas": 1764}, {"n": 43, "casas": 1849}, {"n": 44, "casas": 1936}, {"n": 45, "casas": 2025}, {"n": 46, "casas": 2116}, {"n": 47, "casas": 2209}, {"n": 48, "casas": 2304}, {"n": 49, "casas": 2401}, {"n": 50, "casas": 2500}, {"n": 51, "casas": 2601}, {"n": 52, "casas": 2704}, {"n": 53, "casas": 2809}, {"n": 54, "casas": 2916}, {"n": 55, "casas": 3025}, {"n": 56, "casas": 3136}, {"n": 57, "casas": 3249}, {"n": 58, "casas": 3364}, {"n": 59, "casas": 3481}, {"n": 60, "casas": 3600}], "lista": [{"n": 0, "casas": 0}, {"n": 1, "casas": 2}, {"n": 2, "casas": 4}, {"n": 3, "casas": 9}, {"n": 4, "casas": 20}, {"n": 5, "casas": 25}, {"n": 6, "casas": 54}, {"n": 7, "casas": 63}, {"n": 8, "casas": 72}, {"n": 9, "casas": 81}, {"n": 10, "casas": 90}, {"n": 11, "casas": 99}, {"n": 12, "casas": 108}, {"n": 13, "casas": 117}, {"n": 14, "casas": 126}, {"n": 15, "casas": 135}, {"n": 16, "casas": 144}, {"n": 17, "casas": 153}, {"n": 18, "casas": 162}, {"n": 19, "casas": 171}, {"n": 20, "casas": 180}, {"n": 21, "casas": 189}, {"n": 22, "casas": 198}, {"n": 23, "casas": 207}, {"n": 24, "casas": 216}, {"n": 25, "casas": 225}, {"n": 26, "casas": 234}, {"n": 27, "casas": 243}, {"n": 28, "casas": 252}, {"n": 29, "casas": 261}, {"n": 30, "casas": 270}, {"n": 31, "casas": 279}, {"n": 32, "casas": 288}, {"n": 33, "casas": 297}, {"n": 34, "casas": 306}, {"n": 35, "casas": 315}, {"n": 36, "casas": 324}, {"n": 37, "casas": 333}, {"n": 38, "casas": 342}, {"n": 39, "casas": 351}, {"n": 40, "casas": 360}, {"n": 41, "casas": 369}, {"n": 42, "casas": 378}, {"n": 43, "casas": 387}, {"n": 44, "casas": 396}, {"n": 45, "casas": 405}, {"n": 46, "casas": 414}, {"n": 47, "casas": 423}, {"n": 48, "casas": 432}, {"n": 49, "casas": 441}, {"n": 50, "casas": 450}, {"n": 51, "casas": 459}, {"n": 52, "casas": 468}, {"n": 53, "casas": 477}, {"n": 54, "casas": 486}, {"n": 55, "casas": 495}, {"n": 56, "casas": 504}, {"n": 57, "casas": 513}, {"n": 58, "casas": 522}, {"n": 59, "casas": 531}, {"n": 60, "casas": 540}], "incidencia": [{"n": 0, "casas": 0}, {"n": 1, "casas": 0}, {"n": 2, "casas": 2}, {"n": 3, "casas": 9}, {"n": 4, "casas": 24}, {"n": 5, "casas": 50}, {"n": 6, "casas": 90}, {"n": 7, "casas": 147}, {"n": 8, "casas": 192}, {"n": 9, "casas": 243}, {"n": 10, "casas": 300}, {"n": 11, "casas": 363}, {"n": 12, "casas": 432}, {"n": 13, "casas": 507}, {"n": 14, "casas": 588}, {"n": 15, "casas": 675}, {"n": 16, "casas": 768}, {"n": 17, "casas": 867}, {"n": 18, "casas": 972}, {"n": 19, "casas": 1083}, {"n": 20, "casas": 1200}, {"n": 21, "casas": 1323}, {"n": 22, "casas": 1452}, {"n": 23, "casas": 1587}, {"n": 24, "casas": 1728}, {"n": 25, "casas": 1875}, {"n": 26, "casas": 2028}, {"n": 27, "casas": 2187}, {"n": 28, "casas": 2352}, {"n": 29, "casas": 2523}, {"n": 30, "casas": 2700}, {"n": 31, "casas": 2883}, {"n": 32, "casas": 3072}, {"n": 33, "casas": 3267}, {"n": 34, "casas": 3468}, {"n": 35, "casas": 3675}, {"n": 36, "casas": 3888}, {"n": 37, "casas": 4107}, {"n": 38, "casas": 4332}, {"n": 39, "casas": 4563}, {"n": 40, "casas": 4800}, {"n": 41, "casas": 5043}, {"n": 42, "casas": 5292}, {"n": 43, "casas": 5547}, {"n": 44, "casas": 5808}, {"n": 45, "casas": 6075}, {"n": 46, "casas": 6348}, {"n": 47, "casas": 6627}, {"n": 48, "casas": 6912}, {"n": 49, "casas": 7203}, {"n": 50, "casas": 7500}, {"n": 51, "casas": 7803}, {"n": 52, "casas": 8112}, {"n": 53, "casas": 8427}, {"n": 54, "casas": 8748}, {"n": 55, "casas": 9075}, {"n": 56, "casas": 9408}, {"n": 57, "casas": 9747}, {"n": 58, "casas": 10092}, {"n": 59, "casas": 10443}, {"n": 60, "casas": 10800}]}, "anel": {"seguintes": 3, "grau": 6, "razao": 3, "minimo": 8}}}, {"id": "heap", "nome": "Heap", "variante": "de mínimo, sobre um vetor dinâmico; a árvore é o próprio vetor", "frase": "Uma árvore guardada num vetor: o menor sempre no topo.", "resumo": "Todo pai é menor ou igual aos filhos, então o menor de todos mora no topo. A árvore não tem ponteiros: ela é o vetor lido por uma conta. Os filhos da casa i estão nas casas 2i + 1 e 2i + 2, e o pai está na casa ⌊(i − 1)/2⌋. Inserir põe o valor no fim e o sobe; tirar o menor leva o último para o topo e o desce. Cada um anda no máximo a altura da árvore, uns log₂ n níveis. É a fila de prioridade das faixas, e o heapsort usa o mesmo descer, com a comparação invertida.", "placa": {"autor": "J. W. J. Williams (heapsort); Robert W. Floyd (montar de baixo para cima)", "ano": "1964"}, "memoria": {"notacao": "O(n)", "porque": "As casas do vetor por baixo: uma por valor guardado, mais a folga do vetor, que dobra quando enche. Pai e filhos não guardam nada: saem da conta dos índices."}, "legendas": {"operacoes": "Custo = leituras + escritas de casas, contadas rodando o heap em Python. Inserir, tirar e ver o menor rodam num heap já montado com 0, 1, …, n − 1: inserir −1 sobe até a raiz e tirar o menor desce até uma folha, os piores casos. As duas montagens partem do heap vazio e recebem os mesmos n valores, do maior para o menor; nelas, a tabela traz o total e o custo por valor.", "custo": "O custo para n de {v0} a {v1}, medido uma vez por n. Cheia: tirar o menor, que cresce com a altura da árvore, em degraus a cada potência de 2. Tracejadas: as duas montagens, em custo por valor (o total dividido por n). Montar de uma vez fica parado; inserir um por um cresce como log n. Inserir sozinho fica de fora: além de subir, ele paga as vezes em que as casas acabam e o vetor dobra, como no Vetor."}, "operacoes": [{"id": "inserir", "nome": "inserir", "notacao": "O(log n)", "porque": "Escreve no fim e sobe: a cada nível, lê o pai e, se o novo é menor, troca os dois (duas escritas). Sobe no máximo a altura da árvore."}, {"id": "tirar", "nome": "tirar o menor", "notacao": "O(log n)", "porque": "Lê a casa 0, leva o último para lá e o desce: a cada nível, lê os dois filhos e troca com o menor deles."}, {"id": "menor", "nome": "ver o menor", "notacao": "O(1)", "porque": "Uma leitura da casa 0: o menor está sempre no topo."}, {"id": "montar", "nome": "montar de uma vez", "notacao": "O(n)", "porque": "Põe os n valores no vetor e desce cada pai, do último até a raiz. Metade das casas são folhas e nem descem; só a raiz desce a árvore inteira. Somando as alturas, menos de n trocas."}, {"id": "inserir_todos", "nome": "inserir um por um", "notacao": "O(n log n)", "porque": "n inserções seguidas. Do maior para o menor, cada valor novo sobe até a raiz: o k-ésimo sobe log₂ k níveis."}], "grafico": [{"id": "tirar", "rotulo": "tirar o menor"}, {"id": "inserir_todos", "rotulo": "um por um"}, {"id": "montar", "rotulo": "de uma vez"}], "medido": {"encher": "inserir", "tamanhos": [10, 100, 1000], "operacoes": {"inserir": {"estrutura": "heap", "chamada": "inserir", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 7}, {"n": 100, "leituras": 6, "escritas": 13}, {"n": 1000, "leituras": 9, "escritas": 19}], "serie": [{"n": 0, "leituras": 0, "escritas": 1}, {"n": 1, "leituras": 2, "escritas": 4}, {"n": 2, "leituras": 3, "escritas": 5}, {"n": 3, "leituras": 2, "escritas": 5}, {"n": 4, "leituras": 6, "escritas": 9}, {"n": 5, "leituras": 2, "escritas": 5}, {"n": 6, "leituras": 2, "escritas": 5}, {"n": 7, "leituras": 3, "escritas": 7}, {"n": 8, "leituras": 11, "escritas": 15}, {"n": 9, "leituras": 3, "escritas": 7}, {"n": 10, "leituras": 3, "escritas": 7}, {"n": 11, "leituras": 3, "escritas": 7}, {"n": 12, "leituras": 3, "escritas": 7}, {"n": 13, "leituras": 3, "escritas": 7}, {"n": 14, "leituras": 3, "escritas": 7}, {"n": 15, "leituras": 4, "escritas": 9}, {"n": 16, "leituras": 20, "escritas": 25}, {"n": 17, "leituras": 4, "escritas": 9}, {"n": 18, "leituras": 4, "escritas": 9}, {"n": 19, "leituras": 4, "escritas": 9}, {"n": 20, "leituras": 4, "escritas": 9}, {"n": 21, "leituras": 4, "escritas": 9}, {"n": 22, "leituras": 4, "escritas": 9}, {"n": 23, "leituras": 4, "escritas": 9}, {"n": 24, "leituras": 4, "escritas": 9}, {"n": 25, "leituras": 4, "escritas": 9}, {"n": 26, "leituras": 4, "escritas": 9}, {"n": 27, "leituras": 4, "escritas": 9}, {"n": 28, "leituras": 4, "escritas": 9}, {"n": 29, "leituras": 4, "escritas": 9}, {"n": 30, "leituras": 4, "escritas": 9}, {"n": 31, "leituras": 5, "escritas": 11}, {"n": 32, "leituras": 37, "escritas": 43}, {"n": 33, "leituras": 5, "escritas": 11}, {"n": 34, "leituras": 5, "escritas": 11}, {"n": 35, "leituras": 5, "escritas": 11}, {"n": 36, "leituras": 5, "escritas": 11}, {"n": 37, "leituras": 5, "escritas": 11}, {"n": 38, "leituras": 5, "escritas": 11}, {"n": 39, "leituras": 5, "escritas": 11}, {"n": 40, "leituras": 5, "escritas": 11}, {"n": 41, "leituras": 5, "escritas": 11}, {"n": 42, "leituras": 5, "escritas": 11}, {"n": 43, "leituras": 5, "escritas": 11}, {"n": 44, "leituras": 5, "escritas": 11}, {"n": 45, "leituras": 5, "escritas": 11}, {"n": 46, "leituras": 5, "escritas": 11}, {"n": 47, "leituras": 5, "escritas": 11}, {"n": 48, "leituras": 5, "escritas": 11}, {"n": 49, "leituras": 5, "escritas": 11}, {"n": 50, "leituras": 5, "escritas": 11}, {"n": 51, "leituras": 5, "escritas": 11}, {"n": 52, "leituras": 5, "escritas": 11}, {"n": 53, "leituras": 5, "escritas": 11}, {"n": 54, "leituras": 5, "escritas": 11}, {"n": 55, "leituras": 5, "escritas": 11}, {"n": 56, "leituras": 5, "escritas": 11}, {"n": 57, "leituras": 5, "escritas": 11}, {"n": 58, "leituras": 5, "escritas": 11}, {"n": 59, "leituras": 5, "escritas": 11}, {"n": 60, "leituras": 5, "escritas": 11}]}, "tirar": {"estrutura": "heap", "chamada": "tirar", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 8, "escritas": 7}, {"n": 100, "leituras": 14, "escritas": 13}, {"n": 1000, "leituras": 20, "escritas": 19}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 3}, {"n": 4, "leituras": 4, "escritas": 3}, {"n": 5, "leituras": 5, "escritas": 5}, {"n": 6, "leituras": 6, "escritas": 5}, {"n": 7, "leituras": 6, "escritas": 5}, {"n": 8, "leituras": 6, "escritas": 5}, {"n": 9, "leituras": 7, "escritas": 7}, {"n": 10, "leituras": 8, "escritas": 7}, {"n": 11, "leituras": 8, "escritas": 7}, {"n": 12, "leituras": 8, "escritas": 7}, {"n": 13, "leituras": 8, "escritas": 7}, {"n": 14, "leituras": 8, "escritas": 7}, {"n": 15, "leituras": 8, "escritas": 7}, {"n": 16, "leituras": 8, "escritas": 7}, {"n": 17, "leituras": 9, "escritas": 9}, {"n": 18, "leituras": 10, "escritas": 9}, {"n": 19, "leituras": 10, "escritas": 9}, {"n": 20, "leituras": 10, "escritas": 9}, {"n": 21, "leituras": 10, "escritas": 9}, {"n": 22, "leituras": 10, "escritas": 9}, {"n": 23, "leituras": 10, "escritas": 9}, {"n": 24, "leituras": 10, "escritas": 9}, {"n": 25, "leituras": 10, "escritas": 9}, {"n": 26, "leituras": 10, "escritas": 9}, {"n": 27, "leituras": 10, "escritas": 9}, {"n": 28, "leituras": 10, "escritas": 9}, {"n": 29, "leituras": 10, "escritas": 9}, {"n": 30, "leituras": 10, "escritas": 9}, {"n": 31, "leituras": 10, "escritas": 9}, {"n": 32, "leituras": 10, "escritas": 9}, {"n": 33, "leituras": 11, "escritas": 11}, {"n": 34, "leituras": 12, "escritas": 11}, {"n": 35, "leituras": 12, "escritas": 11}, {"n": 36, "leituras": 12, "escritas": 11}, {"n": 37, "leituras": 12, "escritas": 11}, {"n": 38, "leituras": 12, "escritas": 11}, {"n": 39, "leituras": 12, "escritas": 11}, {"n": 40, "leituras": 12, "escritas": 11}, {"n": 41, "leituras": 12, "escritas": 11}, {"n": 42, "leituras": 12, "escritas": 11}, {"n": 43, "leituras": 12, "escritas": 11}, {"n": 44, "leituras": 12, "escritas": 11}, {"n": 45, "leituras": 12, "escritas": 11}, {"n": 46, "leituras": 12, "escritas": 11}, {"n": 47, "leituras": 12, "escritas": 11}, {"n": 48, "leituras": 12, "escritas": 11}, {"n": 49, "leituras": 12, "escritas": 11}, {"n": 50, "leituras": 12, "escritas": 11}, {"n": 51, "leituras": 12, "escritas": 11}, {"n": 52, "leituras": 12, "escritas": 11}, {"n": 53, "leituras": 12, "escritas": 11}, {"n": 54, "leituras": 12, "escritas": 11}, {"n": 55, "leituras": 12, "escritas": 11}, {"n": 56, "leituras": 12, "escritas": 11}, {"n": 57, "leituras": 12, "escritas": 11}, {"n": 58, "leituras": 12, "escritas": 11}, {"n": 59, "leituras": 12, "escritas": 11}, {"n": 60, "leituras": 12, "escritas": 11}]}, "menor": {"estrutura": "heap", "chamada": "menor", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 0}, {"n": 100, "leituras": 1, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 1, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 1, "escritas": 0}, {"n": 10, "leituras": 1, "escritas": 0}, {"n": 11, "leituras": 1, "escritas": 0}, {"n": 12, "leituras": 1, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 1, "escritas": 0}, {"n": 19, "leituras": 1, "escritas": 0}, {"n": 20, "leituras": 1, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 1, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 1, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 1, "escritas": 0}, {"n": 34, "leituras": 1, "escritas": 0}, {"n": 35, "leituras": 1, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 1, "escritas": 0}, {"n": 44, "leituras": 1, "escritas": 0}, {"n": 45, "leituras": 1, "escritas": 0}, {"n": 46, "leituras": 1, "escritas": 0}, {"n": 47, "leituras": 1, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 1, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 1, "escritas": 0}, {"n": 58, "leituras": 1, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "montar": {"estrutura": "heap", "chamada": "montar", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 34, "escritas": 41}, {"n": 100, "vezes": 100, "leituras": 367, "escritas": 419}, {"n": 1000, "vezes": 1000, "leituras": 3505, "escritas": 4007}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 3, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 6, "escritas": 8}, {"n": 4, "vezes": 4, "leituras": 9, "escritas": 13}, {"n": 5, "vezes": 5, "leituras": 15, "escritas": 18}, {"n": 6, "vezes": 6, "leituras": 16, "escritas": 21}, {"n": 7, "vezes": 7, "leituras": 18, "escritas": 22}, {"n": 8, "vezes": 8, "leituras": 21, "escritas": 27}, {"n": 9, "vezes": 9, "leituras": 33, "escritas": 38}, {"n": 10, "vezes": 10, "leituras": 34, "escritas": 41}, {"n": 11, "vezes": 11, "leituras": 36, "escritas": 42}, {"n": 12, "vezes": 12, "leituras": 37, "escritas": 45}, {"n": 13, "vezes": 13, "leituras": 41, "escritas": 48}, {"n": 14, "vezes": 14, "leituras": 42, "escritas": 51}, {"n": 15, "vezes": 15, "leituras": 44, "escritas": 52}, {"n": 16, "vezes": 16, "leituras": 47, "escritas": 57}, {"n": 17, "vezes": 17, "leituras": 67, "escritas": 76}, {"n": 18, "vezes": 18, "leituras": 70, "escritas": 81}, {"n": 19, "vezes": 19, "leituras": 72, "escritas": 82}, {"n": 20, "vezes": 20, "leituras": 73, "escritas": 85}, {"n": 21, "vezes": 21, "leituras": 75, "escritas": 86}, {"n": 22, "vezes": 22, "leituras": 78, "escritas": 91}, {"n": 23, "vezes": 23, "leituras": 80, "escritas": 92}, {"n": 24, "vezes": 24, "leituras": 81, "escritas": 95}, {"n": 25, "vezes": 25, "leituras": 85, "escritas": 98}, {"n": 26, "vezes": 26, "leituras": 88, "escritas": 103}, {"n": 27, "vezes": 27, "leituras": 90, "escritas": 104}, {"n": 28, "vezes": 28, "leituras": 91, "escritas": 107}, {"n": 29, "vezes": 29, "leituras": 93, "escritas": 108}, {"n": 30, "vezes": 30, "leituras": 96, "escritas": 113}, {"n": 31, "vezes": 31, "leituras": 98, "escritas": 114}, {"n": 32, "vezes": 32, "leituras": 101, "escritas": 119}, {"n": 33, "vezes": 33, "leituras": 137, "escritas": 154}, {"n": 34, "vezes": 34, "leituras": 141, "escritas": 161}, {"n": 35, "vezes": 35, "leituras": 144, "escritas": 162}, {"n": 36, "vezes": 36, "leituras": 145, "escritas": 165}, {"n": 37, "vezes": 37, "leituras": 147, "escritas": 166}, {"n": 38, "vezes": 38, "leituras": 149, "escritas": 171}, {"n": 39, "vezes": 39, "leituras": 152, "escritas": 172}, {"n": 40, "vezes": 40, "leituras": 153, "escritas": 175}, {"n": 41, "vezes": 41, "leituras": 155, "escritas": 176}, {"n": 42, "vezes": 42, "leituras": 159, "escritas": 183}, {"n": 43, "vezes": 43, "leituras": 162, "escritas": 184}, {"n": 44, "vezes": 44, "leituras": 163, "escritas": 187}, {"n": 45, "vezes": 45, "leituras": 165, "escritas": 188}, {"n": 46, "vezes": 46, "leituras": 167, "escritas": 193}, {"n": 47, "vezes": 47, "leituras": 170, "escritas": 194}, {"n": 48, "vezes": 48, "leituras": 171, "escritas": 197}, {"n": 49, "vezes": 49, "leituras": 175, "escritas": 200}, {"n": 50, "vezes": 50, "leituras": 179, "escritas": 207}, {"n": 51, "vezes": 51, "leituras": 182, "escritas": 208}, {"n": 52, "vezes": 52, "leituras": 183, "escritas": 211}, {"n": 53, "vezes": 53, "leituras": 185, "escritas": 212}, {"n": 54, "vezes": 54, "leituras": 187, "escritas": 217}, {"n": 55, "vezes": 55, "leituras": 190, "escritas": 218}, {"n": 56, "vezes": 56, "leituras": 191, "escritas": 221}, {"n": 57, "vezes": 57, "leituras": 193, "escritas": 222}, {"n": 58, "vezes": 58, "leituras": 197, "escritas": 229}, {"n": 59, "vezes": 59, "leituras": 200, "escritas": 230}, {"n": 60, "vezes": 60, "leituras": 201, "escritas": 233}]}, "inserir_todos": {"estrutura": "heap", "chamada": "inserir_todos", "seguidas": null, "vazia": true, "tabela": [{"n": 10, "vezes": 10, "leituras": 34, "escritas": 63}, {"n": 100, "vezes": 100, "leituras": 607, "escritas": 1187}, {"n": 1000, "vezes": 1000, "leituras": 9010, "escritas": 17997}], "serie": [{"n": 1, "vezes": 1, "leituras": 0, "escritas": 1}, {"n": 2, "vezes": 2, "leituras": 2, "escritas": 5}, {"n": 3, "vezes": 3, "leituras": 5, "escritas": 10}, {"n": 4, "vezes": 4, "leituras": 7, "escritas": 15}, {"n": 5, "vezes": 5, "leituras": 13, "escritas": 24}, {"n": 6, "vezes": 6, "leituras": 15, "escritas": 29}, {"n": 7, "vezes": 7, "leituras": 17, "escritas": 34}, {"n": 8, "vezes": 8, "leituras": 20, "escritas": 41}, {"n": 9, "vezes": 9, "leituras": 31, "escritas": 56}, {"n": 10, "vezes": 10, "leituras": 34, "escritas": 63}, {"n": 11, "vezes": 11, "leituras": 37, "escritas": 70}, {"n": 12, "vezes": 12, "leituras": 40, "escritas": 77}, {"n": 13, "vezes": 13, "leituras": 43, "escritas": 84}, {"n": 14, "vezes": 14, "leituras": 46, "escritas": 91}, {"n": 15, "vezes": 15, "leituras": 49, "escritas": 98}, {"n": 16, "vezes": 16, "leituras": 53, "escritas": 107}, {"n": 17, "vezes": 17, "leituras": 73, "escritas": 132}, {"n": 18, "vezes": 18, "leituras": 77, "escritas": 141}, {"n": 19, "vezes": 19, "leituras": 81, "escritas": 150}, {"n": 20, "vezes": 20, "leituras": 85, "escritas": 159}, {"n": 21, "vezes": 21, "leituras": 89, "escritas": 168}, {"n": 22, "vezes": 22, "leituras": 93, "escritas": 177}, {"n": 23, "vezes": 23, "leituras": 97, "escritas": 186}, {"n": 24, "vezes": 24, "leituras": 101, "escritas": 195}, {"n": 25, "vezes": 25, "leituras": 105, "escritas": 204}, {"n": 26, "vezes": 26, "leituras": 109, "escritas": 213}, {"n": 27, "vezes": 27, "leituras": 113, "escritas": 222}, {"n": 28, "vezes": 28, "leituras": 117, "escritas": 231}, {"n": 29, "vezes": 29, "leituras": 121, "escritas": 240}, {"n": 30, "vezes": 30, "leituras": 125, "escritas": 249}, {"n": 31, "vezes": 31, "leituras": 129, "escritas": 258}, {"n": 32, "vezes": 32, "leituras": 134, "escritas": 269}, {"n": 33, "vezes": 33, "leituras": 171, "escritas": 312}, {"n": 34, "vezes": 34, "leituras": 176, "escritas": 323}, {"n": 35, "vezes": 35, "leituras": 181, "escritas": 334}, {"n": 36, "vezes": 36, "leituras": 186, "escritas": 345}, {"n": 37, "vezes": 37, "leituras": 191, "escritas": 356}, {"n": 38, "vezes": 38, "leituras": 196, "escritas": 367}, {"n": 39, "vezes": 39, "leituras": 201, "escritas": 378}, {"n": 40, "vezes": 40, "leituras": 206, "escritas": 389}, {"n": 41, "vezes": 41, "leituras": 211, "escritas": 400}, {"n": 42, "vezes": 42, "leituras": 216, "escritas": 411}, {"n": 43, "vezes": 43, "leituras": 221, "escritas": 422}, {"n": 44, "vezes": 44, "leituras": 226, "escritas": 433}, {"n": 45, "vezes": 45, "leituras": 231, "escritas": 444}, {"n": 46, "vezes": 46, "leituras": 236, "escritas": 455}, {"n": 47, "vezes": 47, "leituras": 241, "escritas": 466}, {"n": 48, "vezes": 48, "leituras": 246, "escritas": 477}, {"n": 49, "vezes": 49, "leituras": 251, "escritas": 488}, {"n": 50, "vezes": 50, "leituras": 256, "escritas": 499}, {"n": 51, "vezes": 51, "leituras": 261, "escritas": 510}, {"n": 52, "vezes": 52, "leituras": 266, "escritas": 521}, {"n": 53, "vezes": 53, "leituras": 271, "escritas": 532}, {"n": 54, "vezes": 54, "leituras": 276, "escritas": 543}, {"n": 55, "vezes": 55, "leituras": 281, "escritas": 554}, {"n": 56, "vezes": 56, "leituras": 286, "escritas": 565}, {"n": 57, "vezes": 57, "leituras": 291, "escritas": 576}, {"n": 58, "vezes": 58, "leituras": 296, "escritas": 587}, {"n": 59, "vezes": 59, "leituras": 301, "escritas": 598}, {"n": 60, "vezes": 60, "leituras": 306, "escritas": 609}]}}, "capacidade": {"heap": [{"n": 0, "casas": 1}, {"n": 1, "casas": 1}, {"n": 2, "casas": 2}, {"n": 3, "casas": 4}, {"n": 4, "casas": 4}, {"n": 5, "casas": 8}, {"n": 6, "casas": 8}, {"n": 7, "casas": 8}, {"n": 8, "casas": 8}, {"n": 9, "casas": 16}, {"n": 10, "casas": 16}, {"n": 11, "casas": 16}, {"n": 12, "casas": 16}, {"n": 13, "casas": 16}, {"n": 14, "casas": 16}, {"n": 15, "casas": 16}, {"n": 16, "casas": 16}, {"n": 17, "casas": 32}, {"n": 18, "casas": 32}, {"n": 19, "casas": 32}, {"n": 20, "casas": 32}, {"n": 21, "casas": 32}, {"n": 22, "casas": 32}, {"n": 23, "casas": 32}, {"n": 24, "casas": 32}, {"n": 25, "casas": 32}, {"n": 26, "casas": 32}, {"n": 27, "casas": 32}, {"n": 28, "casas": 32}, {"n": 29, "casas": 32}, {"n": 30, "casas": 32}, {"n": 31, "casas": 32}, {"n": 32, "casas": 32}, {"n": 33, "casas": 64}, {"n": 34, "casas": 64}, {"n": 35, "casas": 64}, {"n": 36, "casas": 64}, {"n": 37, "casas": 64}, {"n": 38, "casas": 64}, {"n": 39, "casas": 64}, {"n": 40, "casas": 64}, {"n": 41, "casas": 64}, {"n": 42, "casas": 64}, {"n": 43, "casas": 64}, {"n": 44, "casas": 64}, {"n": 45, "casas": 64}, {"n": 46, "casas": 64}, {"n": 47, "casas": 64}, {"n": 48, "casas": 64}, {"n": 49, "casas": 64}, {"n": 50, "casas": 64}, {"n": 51, "casas": 64}, {"n": 52, "casas": 64}, {"n": 53, "casas": 64}, {"n": 54, "casas": 64}, {"n": 55, "casas": 64}, {"n": 56, "casas": 64}, {"n": 57, "casas": 64}, {"n": 58, "casas": 64}, {"n": 59, "casas": 64}, {"n": 60, "casas": 64}]}}}, {"id": "dicionario", "nome": "Dicionário", "variante": "tabela de dispersão em duas versões: encadeamento (uma corrente por casa) e sondagem linear (a casa seguinte)", "frase": "Acha pela chave sem procurar, até as chaves colidirem.", "resumo": "Em vez de procurar a chave casa por casa, o dicionário calcula onde ela mora: uma função de dispersão transforma a chave num número de casa. Ler, pôr e tirar viram uma conta e uma visita, sem depender de quantas chaves já existem. O problema é que duas chaves podem cair na mesma casa, uma colisão. No encadeamento, cada casa guarda o início de uma corrente de nós, e as chaves que colidem entram na mesma corrente. Na sondagem linear, a chave que encontra a casa ocupada tenta a seguinte, até achar uma vazia. As duas mantêm a ocupação α = n/m abaixo de 3/4: quando ia passar, a tabela dobra e cada chave é redistribuída. A dispersão aqui é a multiplicativa de Knuth (os bits de cima de chave × 2654435769, em 32 bits); uma palavra vira número antes, pelo polinômio de base 31 sobre as letras.", "placa": {"autor": "Hans Peter Luhn (a ideia, num memorando da IBM); Gene Amdahl, Elaine McGraw, Nathaniel Rochester e Arthur Samuel (a sondagem linear, no montador do IBM 701)", "ano": "1953–1954"}, "memoria": {"notacao": "O(n)", "porque": "A tabela reserva m casas e dobra quando α passaria de 3/4, então, pondo chaves (passadas as primeiras), m fica entre 4n/3 e 8n/3: proporcional a n. Remover não encolhe a tabela. O encadeamento guarda m inícios de corrente e mais três casas por chave (chave, valor e próx). A sondagem guarda só as m casas de chave e valor, sem ponteiro, mas sempre com folga: um quarto delas, no mínimo, fica vazio."}, "variantes": {"encadeamento": "encadeamento", "sondagem": "sondagem"}, "operacoes": [{"id": "ler-sondagem", "nome": "ler uma chave que está", "notacao": "O(1) médio", "porque": "Calcula a casa e lê a chave guardada lá; se for outra, tenta a seguinte, até achar a chave. Com α ≤ 3/4, olha poucas casas em média, mas cair num bloco comprido de casas ocupadas custa mais. Depois lê o valor."}, {"id": "ler-encadeamento", "nome": "ler uma chave que está", "notacao": "O(1 + α) médio", "porque": "Calcula a casa, lê o início da corrente e segue os próx comparando as chaves. A corrente tem α nós em média."}, {"id": "ler-ausente-sondagem", "nome": "ler uma chave que não está", "notacao": "O(1) médio", "porque": "Só pode parar numa casa vazia: atravessa o bloco de casas ocupadas que começa na casa da chave. Com a tabela quase cheia, esses blocos crescem depressa."}, {"id": "ler-ausente-encadeamento", "nome": "ler uma chave que não está", "notacao": "O(1 + α) médio", "porque": "Percorre a corrente inteira da casa até o próx nulo. Uma corrente vazia custa só a leitura do início."}, {"id": "por-novo-sondagem", "nome": "pôr uma chave nova, com folga", "notacao": "O(1) médio", "porque": "Procura a chave até uma casa vazia (é preciso saber que ela não está) e escreve a chave e o valor nessa casa."}, {"id": "por-novo-encadeamento", "nome": "pôr uma chave nova, com folga", "notacao": "O(1 + α) médio", "porque": "Procura a chave na corrente inteira e, sem achar, cria um nó com a chave, o valor e o próx apontando para o antigo início, que passa a ser o nó novo."}, {"id": "por-pior-sondagem", "nome": "pôr, o mais caro de n seguidas", "notacao": "O(n)", "porque": "Quando α passaria de 3/4, a tabela dobra: lê cada casa velha e põe cada chave na primeira casa vazia a partir da sua casa nova."}, {"id": "por-pior-encadeamento", "nome": "pôr, o mais caro de n seguidas", "notacao": "O(n)", "porque": "Na dobra, cada nó sai da corrente velha e entra no começo da corrente da sua casa nova. Os nós não são copiados, só religados."}, {"id": "por-media-sondagem", "nome": "pôr, média de n seguidas", "notacao": "O(1) amortizado", "porque": "As dobras ficam cada vez mais raras, como no Vetor: o custo médio não cresce com n."}, {"id": "por-media-encadeamento", "nome": "pôr, média de n seguidas", "notacao": "O(1) amortizado", "porque": "O mesmo: cada dobra custa proporcional a n, mas acontece só quando n dobra."}, {"id": "por-existente-sondagem", "nome": "pôr numa chave que já está", "notacao": "O(1) médio", "porque": "Acha a chave e troca só o valor. No encadeamento, o mesmo, depois de seguir a corrente até ela."}, {"id": "remover-sondagem", "nome": "remover uma chave", "notacao": "O(1) médio", "porque": "Acha a casa e escreve uma lápide no lugar da chave. Esvaziar a casa quebraria a busca de quem passou por ela para chegar mais adiante; a lápide é pulada na busca e reaproveitada pelo próximo pôr."}, {"id": "remover-encadeamento", "nome": "remover uma chave", "notacao": "O(1 + α) médio", "porque": "Segue a corrente guardando o nó anterior e faz o anterior (ou o início) apontar para o seguinte. O nó é solto, sem lápide."}], "grafico": [{"id": "por-media-encadeamento", "rotulo": "pôr, média, encad."}, {"id": "por-media-sondagem", "rotulo": "pôr, média, sondagem"}, {"id": "ler-encadeamento", "rotulo": "ler, encadeamento"}, {"id": "ler-sondagem", "rotulo": "ler, sondagem"}, {"id": "ler-ausente-sondagem", "rotulo": "ler ausente, sondagem"}], "legendas": {"operacoes": "Custo = leituras + escritas de casas (a chave, o valor, o próx de um nó ou o início de uma corrente), contadas rodando as duas versões em Python com n chaves já guardadas, para n = {ns}. Calcular a casa da chave não conta. As chaves são 0, 1, …, n − 1 embaralhados (de outro jeito, a dispersão as espalharia quase sem colisão); a chave lida e a removida são a do meio.", "custo": "O custo de cada operação com n chaves já guardadas, para n de {v0} a {v1}, medido uma vez por n, numa chave só: sobe e desce com a colisão da vez, mas não cresce com n. Tracejadas: a média de n chaves postas uma a uma a partir da tabela vazia, que paga as dobras.", "casas": "Casas guardadas depois de pôr n chaves, a partir da tabela vazia, para n de {v0} a {v1}. As duas dobram juntas, quando α passaria de 3/4. A sondagem guarda 2m (chave e valor em cada casa); o encadeamento, m inícios de corrente e três casas por chave."}, "medido": {"encher": "encher", "tamanhos": [10, 100, 1000], "operacoes": {"ler-encadeamento": {"estrutura": "encadeamento", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 0}, {"n": 100, "leituras": 3, "escritas": 0}, {"n": 1000, "leituras": 3, "escritas": 0}], "serie": [{"n": 1, "leituras": 3, "escritas": 0}, {"n": 2, "leituras": 3, "escritas": 0}, {"n": 3, "leituras": 3, "escritas": 0}, {"n": 4, "leituras": 3, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 5, "escritas": 0}, {"n": 7, "leituras": 3, "escritas": 0}, {"n": 8, "leituras": 3, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 3, "escritas": 0}, {"n": 11, "leituras": 3, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 3, "escritas": 0}, {"n": 15, "leituras": 3, "escritas": 0}, {"n": 16, "leituras": 3, "escritas": 0}, {"n": 17, "leituras": 3, "escritas": 0}, {"n": 18, "leituras": 3, "escritas": 0}, {"n": 19, "leituras": 3, "escritas": 0}, {"n": 20, "leituras": 5, "escritas": 0}, {"n": 21, "leituras": 5, "escritas": 0}, {"n": 22, "leituras": 7, "escritas": 0}, {"n": 23, "leituras": 7, "escritas": 0}, {"n": 24, "leituras": 3, "escritas": 0}, {"n": 25, "leituras": 5, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 3, "escritas": 0}, {"n": 28, "leituras": 3, "escritas": 0}, {"n": 29, "leituras": 3, "escritas": 0}, {"n": 30, "leituras": 3, "escritas": 0}, {"n": 31, "leituras": 3, "escritas": 0}, {"n": 32, "leituras": 3, "escritas": 0}, {"n": 33, "leituras": 3, "escritas": 0}, {"n": 34, "leituras": 3, "escritas": 0}, {"n": 35, "leituras": 3, "escritas": 0}, {"n": 36, "leituras": 5, "escritas": 0}, {"n": 37, "leituras": 5, "escritas": 0}, {"n": 38, "leituras": 5, "escritas": 0}, {"n": 39, "leituras": 5, "escritas": 0}, {"n": 40, "leituras": 7, "escritas": 0}, {"n": 41, "leituras": 7, "escritas": 0}, {"n": 42, "leituras": 3, "escritas": 0}, {"n": 43, "leituras": 3, "escritas": 0}, {"n": 44, "leituras": 3, "escritas": 0}, {"n": 45, "leituras": 3, "escritas": 0}, {"n": 46, "leituras": 3, "escritas": 0}, {"n": 47, "leituras": 3, "escritas": 0}, {"n": 48, "leituras": 5, "escritas": 0}, {"n": 49, "leituras": 3, "escritas": 0}, {"n": 50, "leituras": 3, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 3, "escritas": 0}, {"n": 53, "leituras": 3, "escritas": 0}, {"n": 54, "leituras": 3, "escritas": 0}, {"n": 55, "leituras": 3, "escritas": 0}, {"n": 56, "leituras": 3, "escritas": 0}, {"n": 57, "leituras": 3, "escritas": 0}, {"n": 58, "leituras": 3, "escritas": 0}, {"n": 59, "leituras": 3, "escritas": 0}, {"n": 60, "leituras": 3, "escritas": 0}]}, "ler-ausente-encadeamento": {"estrutura": "encadeamento", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 0}, {"n": 100, "leituras": 3, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 0, "leituras": 1, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 3, "escritas": 0}, {"n": 11, "leituras": 5, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 1, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 3, "escritas": 0}, {"n": 19, "leituras": 3, "escritas": 0}, {"n": 20, "leituras": 5, "escritas": 0}, {"n": 21, "leituras": 1, "escritas": 0}, {"n": 22, "leituras": 1, "escritas": 0}, {"n": 23, "leituras": 1, "escritas": 0}, {"n": 24, "leituras": 3, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 1, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 3, "escritas": 0}, {"n": 34, "leituras": 5, "escritas": 0}, {"n": 35, "leituras": 3, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 7, "escritas": 0}, {"n": 44, "leituras": 3, "escritas": 0}, {"n": 45, "leituras": 3, "escritas": 0}, {"n": 46, "leituras": 3, "escritas": 0}, {"n": 47, "leituras": 9, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 3, "escritas": 0}, {"n": 58, "leituras": 3, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "por-novo-encadeamento": {"estrutura": "encadeamento", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 4, "escritas": 4}, {"n": 100, "leituras": 4, "escritas": 4}, {"n": 1000, "leituras": 2, "escritas": 4}], "serie": [{"n": 0, "leituras": 2, "escritas": 4}, {"n": 1, "leituras": 2, "escritas": 4}, {"n": 2, "leituras": 2, "escritas": 4}, {"n": 3, "leituras": 2, "escritas": 4}, {"n": 4, "leituras": 2, "escritas": 4}, {"n": 5, "leituras": 4, "escritas": 4}, {"n": 6, "leituras": 28, "escritas": 16}, {"n": 7, "leituras": 2, "escritas": 4}, {"n": 8, "leituras": 2, "escritas": 4}, {"n": 9, "leituras": 4, "escritas": 4}, {"n": 10, "leituras": 4, "escritas": 4}, {"n": 11, "leituras": 6, "escritas": 4}, {"n": 12, "leituras": 60, "escritas": 28}, {"n": 13, "leituras": 2, "escritas": 4}, {"n": 14, "leituras": 2, "escritas": 4}, {"n": 15, "leituras": 2, "escritas": 4}, {"n": 16, "leituras": 2, "escritas": 4}, {"n": 17, "leituras": 2, "escritas": 4}, {"n": 18, "leituras": 4, "escritas": 4}, {"n": 19, "leituras": 4, "escritas": 4}, {"n": 20, "leituras": 6, "escritas": 4}, {"n": 21, "leituras": 2, "escritas": 4}, {"n": 22, "leituras": 2, "escritas": 4}, {"n": 23, "leituras": 2, "escritas": 4}, {"n": 24, "leituras": 108, "escritas": 52}, {"n": 25, "leituras": 2, "escritas": 4}, {"n": 26, "leituras": 4, "escritas": 4}, {"n": 27, "leituras": 2, "escritas": 4}, {"n": 28, "leituras": 2, "escritas": 4}, {"n": 29, "leituras": 2, "escritas": 4}, {"n": 30, "leituras": 2, "escritas": 4}, {"n": 31, "leituras": 2, "escritas": 4}, {"n": 32, "leituras": 2, "escritas": 4}, {"n": 33, "leituras": 4, "escritas": 4}, {"n": 34, "leituras": 6, "escritas": 4}, {"n": 35, "leituras": 4, "escritas": 4}, {"n": 36, "leituras": 2, "escritas": 4}, {"n": 37, "leituras": 2, "escritas": 4}, {"n": 38, "leituras": 2, "escritas": 4}, {"n": 39, "leituras": 2, "escritas": 4}, {"n": 40, "leituras": 2, "escritas": 4}, {"n": 41, "leituras": 2, "escritas": 4}, {"n": 42, "leituras": 2, "escritas": 4}, {"n": 43, "leituras": 8, "escritas": 4}, {"n": 44, "leituras": 4, "escritas": 4}, {"n": 45, "leituras": 4, "escritas": 4}, {"n": 46, "leituras": 4, "escritas": 4}, {"n": 47, "leituras": 10, "escritas": 4}, {"n": 48, "leituras": 210, "escritas": 100}, {"n": 49, "leituras": 2, "escritas": 4}, {"n": 50, "leituras": 2, "escritas": 4}, {"n": 51, "leituras": 4, "escritas": 4}, {"n": 52, "leituras": 2, "escritas": 4}, {"n": 53, "leituras": 2, "escritas": 4}, {"n": 54, "leituras": 2, "escritas": 4}, {"n": 55, "leituras": 2, "escritas": 4}, {"n": 56, "leituras": 2, "escritas": 4}, {"n": 57, "leituras": 4, "escritas": 4}, {"n": 58, "leituras": 4, "escritas": 4}, {"n": 59, "leituras": 2, "escritas": 4}, {"n": 60, "leituras": 2, "escritas": 4}]}, "por-media-encadeamento": {"estrutura": "encadeamento", "chamada": "encher", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 50, "escritas": 52}, {"n": 100, "vezes": 100, "leituras": 1102, "escritas": 772}, {"n": 1000, "vezes": 1000, "leituras": 9662, "escritas": 7060}], "serie": [{"n": 1, "vezes": 1, "leituras": 2, "escritas": 4}, {"n": 2, "vezes": 2, "leituras": 4, "escritas": 8}, {"n": 3, "vezes": 3, "leituras": 6, "escritas": 12}, {"n": 4, "vezes": 4, "leituras": 8, "escritas": 16}, {"n": 5, "vezes": 5, "leituras": 10, "escritas": 20}, {"n": 6, "vezes": 6, "leituras": 14, "escritas": 24}, {"n": 7, "vezes": 7, "leituras": 42, "escritas": 40}, {"n": 8, "vezes": 8, "leituras": 44, "escritas": 44}, {"n": 9, "vezes": 9, "leituras": 46, "escritas": 48}, {"n": 10, "vezes": 10, "leituras": 50, "escritas": 52}, {"n": 11, "vezes": 11, "leituras": 54, "escritas": 56}, {"n": 12, "vezes": 12, "leituras": 60, "escritas": 60}, {"n": 13, "vezes": 13, "leituras": 120, "escritas": 88}, {"n": 14, "vezes": 14, "leituras": 122, "escritas": 92}, {"n": 15, "vezes": 15, "leituras": 124, "escritas": 96}, {"n": 16, "vezes": 16, "leituras": 126, "escritas": 100}, {"n": 17, "vezes": 17, "leituras": 128, "escritas": 104}, {"n": 18, "vezes": 18, "leituras": 130, "escritas": 108}, {"n": 19, "vezes": 19, "leituras": 134, "escritas": 112}, {"n": 20, "vezes": 20, "leituras": 138, "escritas": 116}, {"n": 21, "vezes": 21, "leituras": 144, "escritas": 120}, {"n": 22, "vezes": 22, "leituras": 146, "escritas": 124}, {"n": 23, "vezes": 23, "leituras": 148, "escritas": 128}, {"n": 24, "vezes": 24, "leituras": 150, "escritas": 132}, {"n": 25, "vezes": 25, "leituras": 258, "escritas": 184}, {"n": 26, "vezes": 26, "leituras": 260, "escritas": 188}, {"n": 27, "vezes": 27, "leituras": 264, "escritas": 192}, {"n": 28, "vezes": 28, "leituras": 266, "escritas": 196}, {"n": 29, "vezes": 29, "leituras": 268, "escritas": 200}, {"n": 30, "vezes": 30, "leituras": 270, "escritas": 204}, {"n": 31, "vezes": 31, "leituras": 272, "escritas": 208}, {"n": 32, "vezes": 32, "leituras": 274, "escritas": 212}, {"n": 33, "vezes": 33, "leituras": 276, "escritas": 216}, {"n": 34, "vezes": 34, "leituras": 280, "escritas": 220}, {"n": 35, "vezes": 35, "leituras": 286, "escritas": 224}, {"n": 36, "vezes": 36, "leituras": 290, "escritas": 228}, {"n": 37, "vezes": 37, "leituras": 292, "escritas": 232}, {"n": 38, "vezes": 38, "leituras": 294, "escritas": 236}, {"n": 39, "vezes": 39, "leituras": 296, "escritas": 240}, {"n": 40, "vezes": 40, "leituras": 298, "escritas": 244}, {"n": 41, "vezes": 41, "leituras": 300, "escritas": 248}, {"n": 42, "vezes": 42, "leituras": 302, "escritas": 252}, {"n": 43, "vezes": 43, "leituras": 304, "escritas": 256}, {"n": 44, "vezes": 44, "leituras": 312, "escritas": 260}, {"n": 45, "vezes": 45, "leituras": 316, "escritas": 264}, {"n": 46, "vezes": 46, "leituras": 320, "escritas": 268}, {"n": 47, "vezes": 47, "leituras": 324, "escritas": 272}, {"n": 48, "vezes": 48, "leituras": 334, "escritas": 276}, {"n": 49, "vezes": 49, "leituras": 544, "escritas": 376}, {"n": 50, "vezes": 50, "leituras": 546, "escritas": 380}, {"n": 51, "vezes": 51, "leituras": 548, "escritas": 384}, {"n": 52, "vezes": 52, "leituras": 552, "escritas": 388}, {"n": 53, "vezes": 53, "leituras": 554, "escritas": 392}, {"n": 54, "vezes": 54, "leituras": 556, "escritas": 396}, {"n": 55, "vezes": 55, "leituras": 558, "escritas": 400}, {"n": 56, "vezes": 56, "leituras": 560, "escritas": 404}, {"n": 57, "vezes": 57, "leituras": 562, "escritas": 408}, {"n": 58, "vezes": 58, "leituras": 566, "escritas": 412}, {"n": 59, "vezes": 59, "leituras": 570, "escritas": 416}, {"n": 60, "vezes": 60, "leituras": 572, "escritas": 420}]}, "por-pior-encadeamento": {"estrutura": "encadeamento", "chamada": "encher", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 7, "leituras": 28, "escritas": 16}, {"n": 100, "k": 97, "leituras": 420, "escritas": 196}, {"n": 1000, "k": 769, "leituras": 3330, "escritas": 1540}], "serie": []}, "por-existente-encadeamento": {"estrutura": "encadeamento", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 1}, {"n": 100, "leituras": 2, "escritas": 1}, {"n": 1000, "leituras": 6, "escritas": 1}], "serie": [{"n": 1, "leituras": 2, "escritas": 1}, {"n": 2, "leituras": 2, "escritas": 1}, {"n": 3, "leituras": 2, "escritas": 1}, {"n": 4, "leituras": 2, "escritas": 1}, {"n": 5, "leituras": 2, "escritas": 1}, {"n": 6, "leituras": 2, "escritas": 1}, {"n": 7, "leituras": 2, "escritas": 1}, {"n": 8, "leituras": 2, "escritas": 1}, {"n": 9, "leituras": 2, "escritas": 1}, {"n": 10, "leituras": 2, "escritas": 1}, {"n": 11, "leituras": 2, "escritas": 1}, {"n": 12, "leituras": 2, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 2, "escritas": 1}, {"n": 15, "leituras": 2, "escritas": 1}, {"n": 16, "leituras": 2, "escritas": 1}, {"n": 17, "leituras": 2, "escritas": 1}, {"n": 18, "leituras": 2, "escritas": 1}, {"n": 19, "leituras": 2, "escritas": 1}, {"n": 20, "leituras": 2, "escritas": 1}, {"n": 21, "leituras": 2, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 2, "escritas": 1}, {"n": 25, "leituras": 2, "escritas": 1}, {"n": 26, "leituras": 2, "escritas": 1}, {"n": 27, "leituras": 2, "escritas": 1}, {"n": 28, "leituras": 2, "escritas": 1}, {"n": 29, "leituras": 2, "escritas": 1}, {"n": 30, "leituras": 2, "escritas": 1}, {"n": 31, "leituras": 2, "escritas": 1}, {"n": 32, "leituras": 2, "escritas": 1}, {"n": 33, "leituras": 2, "escritas": 1}, {"n": 34, "leituras": 2, "escritas": 1}, {"n": 35, "leituras": 2, "escritas": 1}, {"n": 36, "leituras": 2, "escritas": 1}, {"n": 37, "leituras": 2, "escritas": 1}, {"n": 38, "leituras": 2, "escritas": 1}, {"n": 39, "leituras": 2, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 2, "escritas": 1}, {"n": 43, "leituras": 2, "escritas": 1}, {"n": 44, "leituras": 2, "escritas": 1}, {"n": 45, "leituras": 2, "escritas": 1}, {"n": 46, "leituras": 2, "escritas": 1}, {"n": 47, "leituras": 2, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 2, "escritas": 1}, {"n": 50, "leituras": 2, "escritas": 1}, {"n": 51, "leituras": 2, "escritas": 1}, {"n": 52, "leituras": 2, "escritas": 1}, {"n": 53, "leituras": 2, "escritas": 1}, {"n": 54, "leituras": 2, "escritas": 1}, {"n": 55, "leituras": 2, "escritas": 1}, {"n": 56, "leituras": 2, "escritas": 1}, {"n": 57, "leituras": 2, "escritas": 1}, {"n": 58, "leituras": 2, "escritas": 1}, {"n": 59, "leituras": 2, "escritas": 1}, {"n": 60, "leituras": 2, "escritas": 1}]}, "remover-encadeamento": {"estrutura": "encadeamento", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 3, "escritas": 1}, {"n": 100, "leituras": 3, "escritas": 1}, {"n": 1000, "leituras": 3, "escritas": 1}], "serie": [{"n": 1, "leituras": 3, "escritas": 1}, {"n": 2, "leituras": 3, "escritas": 1}, {"n": 3, "leituras": 3, "escritas": 1}, {"n": 4, "leituras": 3, "escritas": 1}, {"n": 5, "leituras": 3, "escritas": 1}, {"n": 6, "leituras": 5, "escritas": 1}, {"n": 7, "leituras": 3, "escritas": 1}, {"n": 8, "leituras": 3, "escritas": 1}, {"n": 9, "leituras": 3, "escritas": 1}, {"n": 10, "leituras": 3, "escritas": 1}, {"n": 11, "leituras": 3, "escritas": 1}, {"n": 12, "leituras": 7, "escritas": 1}, {"n": 13, "leituras": 3, "escritas": 1}, {"n": 14, "leituras": 3, "escritas": 1}, {"n": 15, "leituras": 3, "escritas": 1}, {"n": 16, "leituras": 3, "escritas": 1}, {"n": 17, "leituras": 3, "escritas": 1}, {"n": 18, "leituras": 3, "escritas": 1}, {"n": 19, "leituras": 3, "escritas": 1}, {"n": 20, "leituras": 5, "escritas": 1}, {"n": 21, "leituras": 5, "escritas": 1}, {"n": 22, "leituras": 7, "escritas": 1}, {"n": 23, "leituras": 7, "escritas": 1}, {"n": 24, "leituras": 3, "escritas": 1}, {"n": 25, "leituras": 5, "escritas": 1}, {"n": 26, "leituras": 3, "escritas": 1}, {"n": 27, "leituras": 3, "escritas": 1}, {"n": 28, "leituras": 3, "escritas": 1}, {"n": 29, "leituras": 3, "escritas": 1}, {"n": 30, "leituras": 3, "escritas": 1}, {"n": 31, "leituras": 3, "escritas": 1}, {"n": 32, "leituras": 3, "escritas": 1}, {"n": 33, "leituras": 3, "escritas": 1}, {"n": 34, "leituras": 3, "escritas": 1}, {"n": 35, "leituras": 3, "escritas": 1}, {"n": 36, "leituras": 5, "escritas": 1}, {"n": 37, "leituras": 5, "escritas": 1}, {"n": 38, "leituras": 5, "escritas": 1}, {"n": 39, "leituras": 5, "escritas": 1}, {"n": 40, "leituras": 7, "escritas": 1}, {"n": 41, "leituras": 7, "escritas": 1}, {"n": 42, "leituras": 3, "escritas": 1}, {"n": 43, "leituras": 3, "escritas": 1}, {"n": 44, "leituras": 3, "escritas": 1}, {"n": 45, "leituras": 3, "escritas": 1}, {"n": 46, "leituras": 3, "escritas": 1}, {"n": 47, "leituras": 3, "escritas": 1}, {"n": 48, "leituras": 5, "escritas": 1}, {"n": 49, "leituras": 3, "escritas": 1}, {"n": 50, "leituras": 3, "escritas": 1}, {"n": 51, "leituras": 3, "escritas": 1}, {"n": 52, "leituras": 3, "escritas": 1}, {"n": 53, "leituras": 3, "escritas": 1}, {"n": 54, "leituras": 3, "escritas": 1}, {"n": 55, "leituras": 3, "escritas": 1}, {"n": 56, "leituras": 3, "escritas": 1}, {"n": 57, "leituras": 3, "escritas": 1}, {"n": 58, "leituras": 3, "escritas": 1}, {"n": 59, "leituras": 3, "escritas": 1}, {"n": 60, "leituras": 3, "escritas": 1}]}, "ler-sondagem": {"estrutura": "sondagem", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 2, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 2, "escritas": 0}], "serie": [{"n": 1, "leituras": 2, "escritas": 0}, {"n": 2, "leituras": 2, "escritas": 0}, {"n": 3, "leituras": 2, "escritas": 0}, {"n": 4, "leituras": 2, "escritas": 0}, {"n": 5, "leituras": 2, "escritas": 0}, {"n": 6, "leituras": 2, "escritas": 0}, {"n": 7, "leituras": 2, "escritas": 0}, {"n": 8, "leituras": 2, "escritas": 0}, {"n": 9, "leituras": 2, "escritas": 0}, {"n": 10, "leituras": 2, "escritas": 0}, {"n": 11, "leituras": 2, "escritas": 0}, {"n": 12, "leituras": 2, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 2, "escritas": 0}, {"n": 15, "leituras": 2, "escritas": 0}, {"n": 16, "leituras": 2, "escritas": 0}, {"n": 17, "leituras": 2, "escritas": 0}, {"n": 18, "leituras": 2, "escritas": 0}, {"n": 19, "leituras": 2, "escritas": 0}, {"n": 20, "leituras": 2, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 3, "escritas": 0}, {"n": 23, "leituras": 3, "escritas": 0}, {"n": 24, "leituras": 5, "escritas": 0}, {"n": 25, "leituras": 4, "escritas": 0}, {"n": 26, "leituras": 2, "escritas": 0}, {"n": 27, "leituras": 2, "escritas": 0}, {"n": 28, "leituras": 2, "escritas": 0}, {"n": 29, "leituras": 2, "escritas": 0}, {"n": 30, "leituras": 2, "escritas": 0}, {"n": 31, "leituras": 2, "escritas": 0}, {"n": 32, "leituras": 2, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 2, "escritas": 0}, {"n": 35, "leituras": 2, "escritas": 0}, {"n": 36, "leituras": 2, "escritas": 0}, {"n": 37, "leituras": 2, "escritas": 0}, {"n": 38, "leituras": 2, "escritas": 0}, {"n": 39, "leituras": 2, "escritas": 0}, {"n": 40, "leituras": 3, "escritas": 0}, {"n": 41, "leituras": 3, "escritas": 0}, {"n": 42, "leituras": 2, "escritas": 0}, {"n": 43, "leituras": 2, "escritas": 0}, {"n": 44, "leituras": 2, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 2, "escritas": 0}, {"n": 47, "leituras": 2, "escritas": 0}, {"n": 48, "leituras": 3, "escritas": 0}, {"n": 49, "leituras": 2, "escritas": 0}, {"n": 50, "leituras": 2, "escritas": 0}, {"n": 51, "leituras": 2, "escritas": 0}, {"n": 52, "leituras": 2, "escritas": 0}, {"n": 53, "leituras": 2, "escritas": 0}, {"n": 54, "leituras": 2, "escritas": 0}, {"n": 55, "leituras": 2, "escritas": 0}, {"n": 56, "leituras": 2, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 2, "escritas": 0}, {"n": 60, "leituras": 2, "escritas": 0}]}, "ler-ausente-sondagem": {"estrutura": "sondagem", "chamada": "ler", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 0}, {"n": 100, "leituras": 2, "escritas": 0}, {"n": 1000, "leituras": 1, "escritas": 0}], "serie": [{"n": 0, "leituras": 1, "escritas": 0}, {"n": 1, "leituras": 1, "escritas": 0}, {"n": 2, "leituras": 1, "escritas": 0}, {"n": 3, "leituras": 1, "escritas": 0}, {"n": 4, "leituras": 1, "escritas": 0}, {"n": 5, "leituras": 3, "escritas": 0}, {"n": 6, "leituras": 1, "escritas": 0}, {"n": 7, "leituras": 1, "escritas": 0}, {"n": 8, "leituras": 1, "escritas": 0}, {"n": 9, "leituras": 3, "escritas": 0}, {"n": 10, "leituras": 5, "escritas": 0}, {"n": 11, "leituras": 6, "escritas": 0}, {"n": 12, "leituras": 7, "escritas": 0}, {"n": 13, "leituras": 3, "escritas": 0}, {"n": 14, "leituras": 1, "escritas": 0}, {"n": 15, "leituras": 1, "escritas": 0}, {"n": 16, "leituras": 1, "escritas": 0}, {"n": 17, "leituras": 1, "escritas": 0}, {"n": 18, "leituras": 10, "escritas": 0}, {"n": 19, "leituras": 5, "escritas": 0}, {"n": 20, "leituras": 12, "escritas": 0}, {"n": 21, "leituras": 2, "escritas": 0}, {"n": 22, "leituras": 7, "escritas": 0}, {"n": 23, "leituras": 8, "escritas": 0}, {"n": 24, "leituras": 2, "escritas": 0}, {"n": 25, "leituras": 1, "escritas": 0}, {"n": 26, "leituras": 3, "escritas": 0}, {"n": 27, "leituras": 1, "escritas": 0}, {"n": 28, "leituras": 1, "escritas": 0}, {"n": 29, "leituras": 1, "escritas": 0}, {"n": 30, "leituras": 1, "escritas": 0}, {"n": 31, "leituras": 8, "escritas": 0}, {"n": 32, "leituras": 1, "escritas": 0}, {"n": 33, "leituras": 2, "escritas": 0}, {"n": 34, "leituras": 3, "escritas": 0}, {"n": 35, "leituras": 16, "escritas": 0}, {"n": 36, "leituras": 1, "escritas": 0}, {"n": 37, "leituras": 1, "escritas": 0}, {"n": 38, "leituras": 1, "escritas": 0}, {"n": 39, "leituras": 1, "escritas": 0}, {"n": 40, "leituras": 1, "escritas": 0}, {"n": 41, "leituras": 1, "escritas": 0}, {"n": 42, "leituras": 1, "escritas": 0}, {"n": 43, "leituras": 22, "escritas": 0}, {"n": 44, "leituras": 4, "escritas": 0}, {"n": 45, "leituras": 2, "escritas": 0}, {"n": 46, "leituras": 5, "escritas": 0}, {"n": 47, "leituras": 25, "escritas": 0}, {"n": 48, "leituras": 1, "escritas": 0}, {"n": 49, "leituras": 1, "escritas": 0}, {"n": 50, "leituras": 1, "escritas": 0}, {"n": 51, "leituras": 3, "escritas": 0}, {"n": 52, "leituras": 1, "escritas": 0}, {"n": 53, "leituras": 1, "escritas": 0}, {"n": 54, "leituras": 1, "escritas": 0}, {"n": 55, "leituras": 1, "escritas": 0}, {"n": 56, "leituras": 1, "escritas": 0}, {"n": 57, "leituras": 2, "escritas": 0}, {"n": 58, "leituras": 2, "escritas": 0}, {"n": 59, "leituras": 1, "escritas": 0}, {"n": 60, "leituras": 1, "escritas": 0}]}, "por-novo-sondagem": {"estrutura": "sondagem", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 5, "escritas": 2}, {"n": 100, "leituras": 2, "escritas": 2}, {"n": 1000, "leituras": 1, "escritas": 2}], "serie": [{"n": 0, "leituras": 1, "escritas": 2}, {"n": 1, "leituras": 1, "escritas": 2}, {"n": 2, "leituras": 1, "escritas": 2}, {"n": 3, "leituras": 1, "escritas": 2}, {"n": 4, "leituras": 1, "escritas": 2}, {"n": 5, "leituras": 3, "escritas": 2}, {"n": 6, "leituras": 22, "escritas": 14}, {"n": 7, "leituras": 1, "escritas": 2}, {"n": 8, "leituras": 1, "escritas": 2}, {"n": 9, "leituras": 3, "escritas": 2}, {"n": 10, "leituras": 5, "escritas": 2}, {"n": 11, "leituras": 6, "escritas": 2}, {"n": 12, "leituras": 53, "escritas": 26}, {"n": 13, "leituras": 3, "escritas": 2}, {"n": 14, "leituras": 1, "escritas": 2}, {"n": 15, "leituras": 1, "escritas": 2}, {"n": 16, "leituras": 1, "escritas": 2}, {"n": 17, "leituras": 1, "escritas": 2}, {"n": 18, "leituras": 10, "escritas": 2}, {"n": 19, "leituras": 5, "escritas": 2}, {"n": 20, "leituras": 12, "escritas": 2}, {"n": 21, "leituras": 2, "escritas": 2}, {"n": 22, "leituras": 7, "escritas": 2}, {"n": 23, "leituras": 8, "escritas": 2}, {"n": 24, "leituras": 92, "escritas": 50}, {"n": 25, "leituras": 1, "escritas": 2}, {"n": 26, "leituras": 3, "escritas": 2}, {"n": 27, "leituras": 1, "escritas": 2}, {"n": 28, "leituras": 1, "escritas": 2}, {"n": 29, "leituras": 1, "escritas": 2}, {"n": 30, "leituras": 1, "escritas": 2}, {"n": 31, "leituras": 8, "escritas": 2}, {"n": 32, "leituras": 1, "escritas": 2}, {"n": 33, "leituras": 2, "escritas": 2}, {"n": 34, "leituras": 3, "escritas": 2}, {"n": 35, "leituras": 16, "escritas": 2}, {"n": 36, "leituras": 1, "escritas": 2}, {"n": 37, "leituras": 1, "escritas": 2}, {"n": 38, "leituras": 1, "escritas": 2}, {"n": 39, "leituras": 1, "escritas": 2}, {"n": 40, "leituras": 1, "escritas": 2}, {"n": 41, "leituras": 1, "escritas": 2}, {"n": 42, "leituras": 1, "escritas": 2}, {"n": 43, "leituras": 22, "escritas": 2}, {"n": 44, "leituras": 4, "escritas": 2}, {"n": 45, "leituras": 2, "escritas": 2}, {"n": 46, "leituras": 5, "escritas": 2}, {"n": 47, "leituras": 25, "escritas": 2}, {"n": 48, "leituras": 181, "escritas": 98}, {"n": 49, "leituras": 1, "escritas": 2}, {"n": 50, "leituras": 1, "escritas": 2}, {"n": 51, "leituras": 3, "escritas": 2}, {"n": 52, "leituras": 1, "escritas": 2}, {"n": 53, "leituras": 1, "escritas": 2}, {"n": 54, "leituras": 1, "escritas": 2}, {"n": 55, "leituras": 1, "escritas": 2}, {"n": 56, "leituras": 1, "escritas": 2}, {"n": 57, "leituras": 2, "escritas": 2}, {"n": 58, "leituras": 2, "escritas": 2}, {"n": 59, "leituras": 1, "escritas": 2}, {"n": 60, "leituras": 1, "escritas": 2}]}, "por-media-sondagem": {"estrutura": "sondagem", "chamada": "encher", "seguidas": "media", "vazia": false, "tabela": [{"n": 10, "vezes": 10, "leituras": 35, "escritas": 32}, {"n": 100, "vezes": 100, "leituras": 964, "escritas": 572}, {"n": 1000, "vezes": 1000, "leituras": 8769, "escritas": 5060}], "serie": [{"n": 1, "vezes": 1, "leituras": 1, "escritas": 2}, {"n": 2, "vezes": 2, "leituras": 2, "escritas": 4}, {"n": 3, "vezes": 3, "leituras": 3, "escritas": 6}, {"n": 4, "vezes": 4, "leituras": 4, "escritas": 8}, {"n": 5, "vezes": 5, "leituras": 5, "escritas": 10}, {"n": 6, "vezes": 6, "leituras": 8, "escritas": 12}, {"n": 7, "vezes": 7, "leituras": 30, "escritas": 26}, {"n": 8, "vezes": 8, "leituras": 31, "escritas": 28}, {"n": 9, "vezes": 9, "leituras": 32, "escritas": 30}, {"n": 10, "vezes": 10, "leituras": 35, "escritas": 32}, {"n": 11, "vezes": 11, "leituras": 40, "escritas": 34}, {"n": 12, "vezes": 12, "leituras": 46, "escritas": 36}, {"n": 13, "vezes": 13, "leituras": 99, "escritas": 62}, {"n": 14, "vezes": 14, "leituras": 102, "escritas": 64}, {"n": 15, "vezes": 15, "leituras": 103, "escritas": 66}, {"n": 16, "vezes": 16, "leituras": 104, "escritas": 68}, {"n": 17, "vezes": 17, "leituras": 105, "escritas": 70}, {"n": 18, "vezes": 18, "leituras": 106, "escritas": 72}, {"n": 19, "vezes": 19, "leituras": 116, "escritas": 74}, {"n": 20, "vezes": 20, "leituras": 121, "escritas": 76}, {"n": 21, "vezes": 21, "leituras": 133, "escritas": 78}, {"n": 22, "vezes": 22, "leituras": 135, "escritas": 80}, {"n": 23, "vezes": 23, "leituras": 142, "escritas": 82}, {"n": 24, "vezes": 24, "leituras": 150, "escritas": 84}, {"n": 25, "vezes": 25, "leituras": 242, "escritas": 134}, {"n": 26, "vezes": 26, "leituras": 243, "escritas": 136}, {"n": 27, "vezes": 27, "leituras": 246, "escritas": 138}, {"n": 28, "vezes": 28, "leituras": 247, "escritas": 140}, {"n": 29, "vezes": 29, "leituras": 248, "escritas": 142}, {"n": 30, "vezes": 30, "leituras": 249, "escritas": 144}, {"n": 31, "vezes": 31, "leituras": 250, "escritas": 146}, {"n": 32, "vezes": 32, "leituras": 258, "escritas": 148}, {"n": 33, "vezes": 33, "leituras": 259, "escritas": 150}, {"n": 34, "vezes": 34, "leituras": 261, "escritas": 152}, {"n": 35, "vezes": 35, "leituras": 264, "escritas": 154}, {"n": 36, "vezes": 36, "leituras": 280, "escritas": 156}, {"n": 37, "vezes": 37, "leituras": 281, "escritas": 158}, {"n": 38, "vezes": 38, "leituras": 282, "escritas": 160}, {"n": 39, "vezes": 39, "leituras": 283, "escritas": 162}, {"n": 40, "vezes": 40, "leituras": 284, "escritas": 164}, {"n": 41, "vezes": 41, "leituras": 285, "escritas": 166}, {"n": 42, "vezes": 42, "leituras": 286, "escritas": 168}, {"n": 43, "vezes": 43, "leituras": 287, "escritas": 170}, {"n": 44, "vezes": 44, "leituras": 309, "escritas": 172}, {"n": 45, "vezes": 45, "leituras": 313, "escritas": 174}, {"n": 46, "vezes": 46, "leituras": 315, "escritas": 176}, {"n": 47, "vezes": 47, "leituras": 320, "escritas": 178}, {"n": 48, "vezes": 48, "leituras": 345, "escritas": 180}, {"n": 49, "vezes": 49, "leituras": 526, "escritas": 278}, {"n": 50, "vezes": 50, "leituras": 527, "escritas": 280}, {"n": 51, "vezes": 51, "leituras": 528, "escritas": 282}, {"n": 52, "vezes": 52, "leituras": 531, "escritas": 284}, {"n": 53, "vezes": 53, "leituras": 532, "escritas": 286}, {"n": 54, "vezes": 54, "leituras": 533, "escritas": 288}, {"n": 55, "vezes": 55, "leituras": 534, "escritas": 290}, {"n": 56, "vezes": 56, "leituras": 535, "escritas": 292}, {"n": 57, "vezes": 57, "leituras": 536, "escritas": 294}, {"n": 58, "vezes": 58, "leituras": 538, "escritas": 296}, {"n": 59, "vezes": 59, "leituras": 540, "escritas": 298}, {"n": 60, "vezes": 60, "leituras": 541, "escritas": 300}]}, "por-pior-sondagem": {"estrutura": "sondagem", "chamada": "encher", "seguidas": "pior", "vazia": false, "tabela": [{"n": 10, "k": 7, "leituras": 22, "escritas": 14}, {"n": 100, "k": 97, "leituras": 338, "escritas": 194}, {"n": 1000, "k": 769, "leituras": 2806, "escritas": 1538}], "serie": []}, "por-existente-sondagem": {"estrutura": "sondagem", "chamada": "por", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 1}, {"n": 100, "leituras": 1, "escritas": 1}, {"n": 1000, "leituras": 1, "escritas": 1}], "serie": [{"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 1, "escritas": 1}, {"n": 5, "leituras": 1, "escritas": 1}, {"n": 6, "leituras": 1, "escritas": 1}, {"n": 7, "leituras": 1, "escritas": 1}, {"n": 8, "leituras": 1, "escritas": 1}, {"n": 9, "leituras": 1, "escritas": 1}, {"n": 10, "leituras": 1, "escritas": 1}, {"n": 11, "leituras": 1, "escritas": 1}, {"n": 12, "leituras": 1, "escritas": 1}, {"n": 13, "leituras": 1, "escritas": 1}, {"n": 14, "leituras": 1, "escritas": 1}, {"n": 15, "leituras": 1, "escritas": 1}, {"n": 16, "leituras": 1, "escritas": 1}, {"n": 17, "leituras": 1, "escritas": 1}, {"n": 18, "leituras": 1, "escritas": 1}, {"n": 19, "leituras": 1, "escritas": 1}, {"n": 20, "leituras": 1, "escritas": 1}, {"n": 21, "leituras": 1, "escritas": 1}, {"n": 22, "leituras": 1, "escritas": 1}, {"n": 23, "leituras": 1, "escritas": 1}, {"n": 24, "leituras": 1, "escritas": 1}, {"n": 25, "leituras": 1, "escritas": 1}, {"n": 26, "leituras": 1, "escritas": 1}, {"n": 27, "leituras": 1, "escritas": 1}, {"n": 28, "leituras": 1, "escritas": 1}, {"n": 29, "leituras": 1, "escritas": 1}, {"n": 30, "leituras": 1, "escritas": 1}, {"n": 31, "leituras": 1, "escritas": 1}, {"n": 32, "leituras": 1, "escritas": 1}, {"n": 33, "leituras": 1, "escritas": 1}, {"n": 34, "leituras": 1, "escritas": 1}, {"n": 35, "leituras": 1, "escritas": 1}, {"n": 36, "leituras": 1, "escritas": 1}, {"n": 37, "leituras": 1, "escritas": 1}, {"n": 38, "leituras": 1, "escritas": 1}, {"n": 39, "leituras": 1, "escritas": 1}, {"n": 40, "leituras": 1, "escritas": 1}, {"n": 41, "leituras": 1, "escritas": 1}, {"n": 42, "leituras": 1, "escritas": 1}, {"n": 43, "leituras": 1, "escritas": 1}, {"n": 44, "leituras": 1, "escritas": 1}, {"n": 45, "leituras": 1, "escritas": 1}, {"n": 46, "leituras": 1, "escritas": 1}, {"n": 47, "leituras": 1, "escritas": 1}, {"n": 48, "leituras": 1, "escritas": 1}, {"n": 49, "leituras": 1, "escritas": 1}, {"n": 50, "leituras": 1, "escritas": 1}, {"n": 51, "leituras": 1, "escritas": 1}, {"n": 52, "leituras": 1, "escritas": 1}, {"n": 53, "leituras": 1, "escritas": 1}, {"n": 54, "leituras": 1, "escritas": 1}, {"n": 55, "leituras": 1, "escritas": 1}, {"n": 56, "leituras": 1, "escritas": 1}, {"n": 57, "leituras": 1, "escritas": 1}, {"n": 58, "leituras": 1, "escritas": 1}, {"n": 59, "leituras": 1, "escritas": 1}, {"n": 60, "leituras": 1, "escritas": 1}]}, "remover-sondagem": {"estrutura": "sondagem", "chamada": "remover", "seguidas": null, "vazia": false, "tabela": [{"n": 10, "leituras": 1, "escritas": 1}, {"n": 100, "leituras": 1, "escritas": 1}, {"n": 1000, "leituras": 1, "escritas": 1}], "serie": [{"n": 1, "leituras": 1, "escritas": 1}, {"n": 2, "leituras": 1, "escritas": 1}, {"n": 3, "leituras": 1, "escritas": 1}, {"n": 4, "leituras": 1, "escritas": 1}, {"n": 5, "leituras": 1, "escritas": 1}, {"n": 6, "leituras": 1, "escritas": 1}, {"n": 7, "leituras": 1, "escritas": 1}, {"n": 8, "leituras": 1, "escritas": 1}, {"n": 9, "leituras": 1, "escritas": 1}, {"n": 10, "leituras": 1, "escritas": 1}, {"n": 11, "leituras": 1, "escritas": 1}, {"n": 12, "leituras": 1, "escritas": 1}, {"n": 13, "leituras": 2, "escritas": 1}, {"n": 14, "leituras": 1, "escritas": 1}, {"n": 15, "leituras": 1, "escritas": 1}, {"n": 16, "leituras": 1, "escritas": 1}, {"n": 17, "leituras": 1, "escritas": 1}, {"n": 18, "leituras": 1, "escritas": 1}, {"n": 19, "leituras": 1, "escritas": 1}, {"n": 20, "leituras": 1, "escritas": 1}, {"n": 21, "leituras": 1, "escritas": 1}, {"n": 22, "leituras": 2, "escritas": 1}, {"n": 23, "leituras": 2, "escritas": 1}, {"n": 24, "leituras": 4, "escritas": 1}, {"n": 25, "leituras": 3, "escritas": 1}, {"n": 26, "leituras": 1, "escritas": 1}, {"n": 27, "leituras": 1, "escritas": 1}, {"n": 28, "leituras": 1, "escritas": 1}, {"n": 29, "leituras": 1, "escritas": 1}, {"n": 30, "leituras": 1, "escritas": 1}, {"n": 31, "leituras": 1, "escritas": 1}, {"n": 32, "leituras": 1, "escritas": 1}, {"n": 33, "leituras": 1, "escritas": 1}, {"n": 34, "leituras": 1, "escritas": 1}, {"n": 35, "leituras": 1, "escritas": 1}, {"n": 36, "leituras": 1, "escritas": 1}, {"n": 37, "leituras": 1, "escritas": 1}, {"n": 38, "leituras": 1, "escritas": 1}, {"n": 39, "leituras": 1, "escritas": 1}, {"n": 40, "leituras": 2, "escritas": 1}, {"n": 41, "leituras": 2, "escritas": 1}, {"n": 42, "leituras": 1, "escritas": 1}, {"n": 43, "leituras": 1, "escritas": 1}, {"n": 44, "leituras": 1, "escritas": 1}, {"n": 45, "leituras": 1, "escritas": 1}, {"n": 46, "leituras": 1, "escritas": 1}, {"n": 47, "leituras": 1, "escritas": 1}, {"n": 48, "leituras": 2, "escritas": 1}, {"n": 49, "leituras": 1, "escritas": 1}, {"n": 50, "leituras": 1, "escritas": 1}, {"n": 51, "leituras": 1, "escritas": 1}, {"n": 52, "leituras": 1, "escritas": 1}, {"n": 53, "leituras": 1, "escritas": 1}, {"n": 54, "leituras": 1, "escritas": 1}, {"n": 55, "leituras": 1, "escritas": 1}, {"n": 56, "leituras": 1, "escritas": 1}, {"n": 57, "leituras": 1, "escritas": 1}, {"n": 58, "leituras": 1, "escritas": 1}, {"n": 59, "leituras": 1, "escritas": 1}, {"n": 60, "leituras": 1, "escritas": 1}]}}, "capacidade": {"encadeamento": [{"n": 0, "casas": 8}, {"n": 1, "casas": 11}, {"n": 2, "casas": 14}, {"n": 3, "casas": 17}, {"n": 4, "casas": 20}, {"n": 5, "casas": 23}, {"n": 6, "casas": 26}, {"n": 7, "casas": 37}, {"n": 8, "casas": 40}, {"n": 9, "casas": 43}, {"n": 10, "casas": 46}, {"n": 11, "casas": 49}, {"n": 12, "casas": 52}, {"n": 13, "casas": 71}, {"n": 14, "casas": 74}, {"n": 15, "casas": 77}, {"n": 16, "casas": 80}, {"n": 17, "casas": 83}, {"n": 18, "casas": 86}, {"n": 19, "casas": 89}, {"n": 20, "casas": 92}, {"n": 21, "casas": 95}, {"n": 22, "casas": 98}, {"n": 23, "casas": 101}, {"n": 24, "casas": 104}, {"n": 25, "casas": 139}, {"n": 26, "casas": 142}, {"n": 27, "casas": 145}, {"n": 28, "casas": 148}, {"n": 29, "casas": 151}, {"n": 30, "casas": 154}, {"n": 31, "casas": 157}, {"n": 32, "casas": 160}, {"n": 33, "casas": 163}, {"n": 34, "casas": 166}, {"n": 35, "casas": 169}, {"n": 36, "casas": 172}, {"n": 37, "casas": 175}, {"n": 38, "casas": 178}, {"n": 39, "casas": 181}, {"n": 40, "casas": 184}, {"n": 41, "casas": 187}, {"n": 42, "casas": 190}, {"n": 43, "casas": 193}, {"n": 44, "casas": 196}, {"n": 45, "casas": 199}, {"n": 46, "casas": 202}, {"n": 47, "casas": 205}, {"n": 48, "casas": 208}, {"n": 49, "casas": 275}, {"n": 50, "casas": 278}, {"n": 51, "casas": 281}, {"n": 52, "casas": 284}, {"n": 53, "casas": 287}, {"n": 54, "casas": 290}, {"n": 55, "casas": 293}, {"n": 56, "casas": 296}, {"n": 57, "casas": 299}, {"n": 58, "casas": 302}, {"n": 59, "casas": 305}, {"n": 60, "casas": 308}], "sondagem": [{"n": 0, "casas": 16}, {"n": 1, "casas": 16}, {"n": 2, "casas": 16}, {"n": 3, "casas": 16}, {"n": 4, "casas": 16}, {"n": 5, "casas": 16}, {"n": 6, "casas": 16}, {"n": 7, "casas": 32}, {"n": 8, "casas": 32}, {"n": 9, "casas": 32}, {"n": 10, "casas": 32}, {"n": 11, "casas": 32}, {"n": 12, "casas": 32}, {"n": 13, "casas": 64}, {"n": 14, "casas": 64}, {"n": 15, "casas": 64}, {"n": 16, "casas": 64}, {"n": 17, "casas": 64}, {"n": 18, "casas": 64}, {"n": 19, "casas": 64}, {"n": 20, "casas": 64}, {"n": 21, "casas": 64}, {"n": 22, "casas": 64}, {"n": 23, "casas": 64}, {"n": 24, "casas": 64}, {"n": 25, "casas": 128}, {"n": 26, "casas": 128}, {"n": 27, "casas": 128}, {"n": 28, "casas": 128}, {"n": 29, "casas": 128}, {"n": 30, "casas": 128}, {"n": 31, "casas": 128}, {"n": 32, "casas": 128}, {"n": 33, "casas": 128}, {"n": 34, "casas": 128}, {"n": 35, "casas": 128}, {"n": 36, "casas": 128}, {"n": 37, "casas": 128}, {"n": 38, "casas": 128}, {"n": 39, "casas": 128}, {"n": 40, "casas": 128}, {"n": 41, "casas": 128}, {"n": 42, "casas": 128}, {"n": 43, "casas": 128}, {"n": 44, "casas": 128}, {"n": 45, "casas": 128}, {"n": 46, "casas": 128}, {"n": 47, "casas": 128}, {"n": 48, "casas": 128}, {"n": 49, "casas": 256}, {"n": 50, "casas": 256}, {"n": 51, "casas": 256}, {"n": 52, "casas": 256}, {"n": 53, "casas": 256}, {"n": 54, "casas": 256}, {"n": 55, "casas": 256}, {"n": 56, "casas": 256}, {"n": 57, "casas": 256}, {"n": 58, "casas": 256}, {"n": 59, "casas": 256}, {"n": 60, "casas": 256}]}}}];

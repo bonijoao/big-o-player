@@ -4,43 +4,7 @@
   "titulo": "Primeiros passos",
   "familia": "primeiros passos",
   "frase": "Laços, decisões e recursão: o básico, com as contas à mostra.",
-  "em_producao": [
-   {
-    "nome": "Máximo de um vetor",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Multiplicação de matrizes",
-    "tempo": "O(n³)",
-    "memoria": "O(n²)"
-   },
-   {
-    "nome": "Fatorial recursivo",
-    "tempo": "O(n)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci recursivo",
-    "tempo": "O(φⁿ)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci com memória",
-    "tempo": "O(n)",
-    "memoria": "O(n)"
-   },
-   {
-    "nome": "Fibonacci iterativo",
-    "tempo": "O(n)",
-    "memoria": "O(1)"
-   },
-   {
-    "nome": "Busca de padrão ingênua",
-    "tempo": "O(n·m)",
-    "memoria": "O(1)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "busca",

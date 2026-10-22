@@ -185,6 +185,14 @@
     repetidos: { entrada: "números", conta: (ex) => `${ex.n} números, ${ex.repetido.filter(Boolean).length} repetidos; o vetor faria ${ex.ops_vetor}, no vetor do encarte` },
     encadeamento: { entrada: "chaves", artigo: "das", conta: (ex) => `${ex.n} chaves em ${ex.m} casas (α = ${num(ex.n / ex.m, 2)}), ${num(ex.ops / ex.n, 2)} por chave, na entrada do encarte` },
     sondagem: { entrada: "chaves", artigo: "das", conta: (ex) => `${ex.n} chaves em ${ex.m} casas (α = ${num(ex.n / ex.m, 2)}), ${num(ex.ops / ex.n, 2)} por chave, na entrada do encarte` },
+    maximo: { entrada: "números", conta: (ex) => `${ex.n} números, o maior é ${ex.maximo}, que trocou ${ex.trocas} ${ex.trocas === 1 ? "vez" : "vezes"}, no vetor do encarte` },
+    matrizes: { alem: (ex) => `além das duas matrizes ${ex.n} × ${ex.n} de entrada`,
+      conta: (ex) => `${ex.n} × ${ex.n}: ${ex.n * ex.n} casas de C, ${ex.n} multiplicações em cada; ${mil(ex.casas)} casas lidas e escritas, nas matrizes do encarte` },
+    fatorial: { alem: (ex) => `níveis da pilha, para n = ${ex.n}`, conta: (ex) => `${ex.n}! = ${ex.fatorial}, com ${ex.n} chamadas` },
+    fib_recursivo: { alem: (ex) => `níveis da pilha, para n = ${ex.n}`, conta: (ex) => `fib(${ex.n}) = ${ex.fib}, com ${mil(ex.chamadas)} chamadas` },
+    fib_memoria: { alem: (ex) => `na pilha e no dicionário, para n = ${ex.n}`, conta: (ex) => `fib(${ex.n}) = ${ex.fib}, com ${ex.chamadas} chamadas e ${ex.casas} casas lidas e escritas no dicionário` },
+    fib_iterativo: { conta: (ex) => `fib(${ex.n}) = ${ex.fib}, em ${ex.n} voltas` },
+    busca_padrao: { entrada: "letras", artigo: "das", conta: (ex) => `${ex.n} letras, padrão de ${ex.m}, "${ex.padrao}" achado nas posições ${ex.achou.map((q) => q + 1).join(" e ")}, na Canção do Exílio` },
   };
   // número com vírgula decimal e um número fixo de casas
   const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
@@ -272,7 +280,7 @@
           el("h2", { text: "Memória" }),
           el("p", { class: "ordem", text: f.memoria.notacao }),
           el("p", { class: "conta", html: m.memoria.pico
-            ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>além ${(ENCARTE[m.tempo.tipo] || {}).artigo || "dos"} ${ex.n} ${entrada} de entrada</span>`
+            ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>${(ENCARTE[m.tempo.tipo] || {}).alem ? ENCARTE[m.tempo.tipo].alem(ex) : `além ${(ENCARTE[m.tempo.tipo] || {}).artigo || "dos"} ${ex.n} ${entrada} de entrada`}</span>`
             : `<b>nenhum</b> valor extra<span>${esc(f.memoria.vazio || "ordena dentro do próprio vetor")}</span>` }),
           el("p", { class: "porque", text: f.memoria.porque }),
           f.memoria.nota && el("p", { class: "nota", text: f.memoria.nota }),
@@ -472,12 +480,23 @@
       opcoes: [["padrao", "as do encarte", "as chaves do encarte"], ["sorteadas", "sorteadas", "chaves sorteadas"], ["mesma_casa", "na mesma casa", "todas na mesma casa"]] },
     sondagem: { rotulo: "chaves", ns: [4, 8, 12, 14, 15], sortear: "sortear chaves", sorteado: "sorteadas",
       opcoes: [["padrao", "as do encarte", "as chaves do encarte"], ["sorteadas", "sorteadas", "chaves sorteadas"], ["mesma_casa", "na mesma casa", "todas na mesma casa"]] },
+    maximo: { rotulo: "vetor", ns: [8, 16, 24, 32, 48, 64], sortear: "sortear vetor", sorteado: "sorteada",
+      opcoes: [["padrao", "o do encarte", "o vetor do encarte"], ["sorteada", "sorteado", "vetor sorteado"], ["crescente", "crescente", "vetor crescente"], ["decrescente", "decrescente", "vetor decrescente"]] },
+    matrizes: { rotulo: "matrizes", ns: [2, 3, 4, 5, 6], sortear: "sortear matrizes", sorteado: "sorteadas",
+      opcoes: [["padrao", "as do encarte", "as matrizes do encarte"], ["sorteadas", "sorteadas", "matrizes sorteadas"]] },
+    // o fatorial e os Fibonacci só têm o n: o menu de entrada é um só, e o n fica livre
+    fatorial: { rotulo: "calcular", ns: [3, 5, 8, 10, 15, 20], semSorteio: true, nLivre: true, opcoes: [["padrao", "n!", "o fatorial de n"]] },
+    fib_recursivo: { rotulo: "calcular", ns: [5, 8, 10, 12, 15], semSorteio: true, nLivre: true, opcoes: [["padrao", "fib(n)", "fib(n)"]] },
+    fib_memoria: { rotulo: "calcular", ns: [5, 8, 10, 15, 20], semSorteio: true, nLivre: true, opcoes: [["padrao", "fib(n)", "fib(n)"]] },
+    fib_iterativo: { rotulo: "calcular", ns: [5, 10, 15, 20, 30, 40], semSorteio: true, nLivre: true, opcoes: [["padrao", "fib(n)", "fib(n)"]] },
+    busca_padrao: { rotulo: "texto", k: "m", ns: [24, 40, 64, 96], ks: [2, 3, 4, 8], sortear: "sortear DNA", sorteado: "dna", fixos: ["pior"],
+      opcoes: [["padrao", "a do encarte", "a Canção do Exílio"], ["dna", "DNA sorteado", "DNA sorteado"], ["pior", "pior caso", "o pior caso, aaa…ab"]] },
   };
   const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
   const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];
 
   const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null }
-    : { tipo: "padrao", n: f.exemplo.n, semente: 1, ...(f.exemplo.k && tipoDe(f) === "janela" ? { k: f.exemplo.k } : {}) });
+    : { tipo: "padrao", n: f.exemplo.n, semente: 1, ...(f.exemplo.k && ENTRADAS[tipoDe(f)].ks ? { k: f.exemplo.k } : {}) });
   function duracao(f) {
     const chave = `${f.id}:${accelerando}`;
     if (!padroes[chave]) padroes[chave] = window.Palco.criar(f, cfgPadrao(f), accelerando);
@@ -664,6 +683,7 @@
     // o k: o do K-means (sem o menu de entrada) ou o da janela (junto do menu)
     const ks = km ? [2, 3, 4, 5] : ENTRADAS[tipoDe(faixa)].ks;
     palco.classList.toggle("e-com-k", !km && !!ks);
+    $("#cfg-k-rotulo").textContent = km ? "k" : ENTRADAS[tipoDe(faixa)].k || "k";
     if (ks) {
       $("#cfg-k").replaceChildren(...ks.map((k) => el("option", { text: String(k) })));
       $("#cfg-k").value = String(c.k);
@@ -675,7 +695,7 @@
       $("#cfg-tipo").replaceChildren(...E.opcoes.map(([v, t]) => el("option", { value: v, text: t })));
       const ns = E.ns.includes(c.n) ? E.ns : [...E.ns, c.n].sort((p, q) => p - q);   // o n do encarte sempre aparece
       $("#cfg-n").replaceChildren(...ns.map((n) => el("option", { text: String(n) })));
-      $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = c.tipo === "padrao" || !!E.nFixo;
+      $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = (c.tipo === "padrao" && !E.nLivre) || !!E.nFixo;
     }
     $("#cfg-sortear").textContent = km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear;
     $("#cfg-sortear").hidden = !km && !!ENTRADAS[tipoDe(faixa)].semSorteio;

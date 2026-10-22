@@ -635,9 +635,106 @@
     return operacoesDic(d);
   }
 
+  // ---------- matriz guardada linha a linha (instrumentos/matriz/matriz.py) ----------
+
+  function Matriz(reg = registro(), linhas = 0, colunas = 0) {
+    const c = casas(linhas * colunas, reg);
+    c.v.fill(0);
+    const e = {
+      reg, linhas, colunas,
+      endereco: (i, j) => i * e.colunas + j,
+      criar(l, k) {
+        c.realoca(l * k, 0, null);
+        e.linhas = l; e.colunas = k;
+        for (let a = 0; a < l * k; a++) c.escreve(a, 0);
+      },
+      ler: (i, j) => c.le(e.endereco(i, j)),
+      escrever: (i, j, x) => { c.escreve(e.endereco(i, j), x); },
+      linha(i) { const s = []; for (let j = 0; j < e.colunas; j++) s.push(c.le(e.endereco(i, j))); return s; },
+      coluna(j) { const s = []; for (let i = 0; i < e.linhas; i++) s.push(c.le(e.endereco(i, j))); return s; },
+      // um bloco novo de colunas × linhas: a casa (i, j) vai para (j, i)
+      transpor() {
+        const L = e.linhas, K = e.colunas;
+        c.realoca(L * K, L * K, (a) => { const j = Math.floor(a / L), i = a % L; return i * K + j; });
+        e.linhas = K; e.colunas = L;
+      },
+      valores: () => Array.from({ length: e.linhas }, (_, i) => c.v.slice(i * e.colunas, (i + 1) * e.colunas)),
+      casas: () => c.v.slice(),
+      carregar(v) { c.v = v.slice(); },          // valores postos de fora, sem contar (a matriz de medição)
+      get n() { return c.capacidade; },
+      get capacidade() { return c.capacidade; },
+    };
+    return e;
+  }
+
+  /** A matriz de medição: n × n, com a casa (i, j) valendo i·n + j (posta sem contar). */
+  function quadrada(n) {
+    const m = Matriz(registro(), n, n);
+    m.carregar(Array.from({ length: n * n }, (_, k) => k));
+    return m;
+  }
+
+  // ---------- dois textos (instrumentos/texto/texto.py) ----------
+
+  // o que as duas versões leem igual; `le(i)` lê uma letra contando
+  function textoComum(t, le) {
+    return Object.assign(t, {
+      ler: (i) => le(i),
+      comprimento: () => t.n,
+      // as letras de a até b − 1 num texto novo: lê e escreve cada uma
+      fatiar(a, b) {
+        let s = "";
+        for (let k = 0; k < b - a; k++) { const x = le(a + k); t.reg.escritas++; t.reg.eventos.push({ t: "fatia", k, x }); s += String(x); }
+        return s;
+      },
+      // igual a s? letra a letra até a primeira diferença
+      comparar(s) {
+        if (t.n !== s.length) return false;
+        for (let i = 0; i < t.n; i++) if (le(i) !== s[i]) return false;
+        return true;
+      },
+      montar(letras) { for (const x of letras) t.acrescentar(x); return t.juntar(); },
+    });
+  }
+
+  function TextoImutavel(reg = registro()) {
+    const c = casas(0, reg);
+    const t = {
+      reg,
+      // texto ← texto + x: um bloco novo com n + 1 casas, as n letras copiadas e a nova escrita
+      acrescentar(x) { const n = c.capacidade; c.realoca(n + 1, n, (k) => k); c.escreve(n, x); },
+      juntar: () => c.v.map(String).join(""),
+      carregar(v) { c.v = v.slice(); },          // letras postas de fora, sem contar (o texto de uma busca)
+      valores: () => c.v.slice(),
+      casas: () => c.v.slice(),
+      get n() { return c.capacidade; },
+      get capacidade() { return c.capacidade; },
+    };
+    return textoComum(t, (i) => c.le(i));
+  }
+
+  function TextoPedacos(reg = registro()) {
+    const v = Vetor(reg);
+    const t = {
+      reg,
+      acrescentar: (x) => { v.anexar(x); },
+      // um bloco do tamanho certo, com cada pedaço copiado uma vez
+      juntar() {
+        let s = "";
+        for (let k = 0; k < v.n; k++) { const x = v.ler(k); reg.escritas++; reg.eventos.push({ t: "junta", k, x }); s += String(x); }
+        return s;
+      },
+      valores: () => v.valores(),
+      casas: () => v.casas(),
+      get n() { return v.n; },
+      get capacidade() { return v.capacidade; },
+    };
+    return textoComum(t, (i) => v.ler(i));
+  }
+
   const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, deque: Deque, heap: Heap,
     estatica: ListaEstatica, dinamica: ListaDinamica, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia,
-    encadeamento: DicEncadeamento, sondagem: DicSondagem };
+    encadeamento: DicEncadeamento, sondagem: DicSondagem, linha_a_linha: Matriz, imutavel: TextoImutavel, pedacos: TextoPedacos };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
   function operar(e, chamada, args = []) {
@@ -650,6 +747,12 @@
   /** Estrutura `variante` com os valores 0, 1, …, n − 1 postos por `encher`;
    *  no grafo (encher = "anel"), n vértices e as arestas do anel. */
   function montar(variante, encher, n) {
+    if (encher === "quadrada") return quadrada(n);
+    if (encher === "letras") {
+      const t = ESTRUTURAS[variante]();
+      for (let k = 0; k < n; k++) t.acrescentar("abcdefghijklmnopqrstuvwxyz"[k % 26]);
+      return t;
+    }
     if (encher === "anel") {
       const g = ESTRUTURAS[variante](registro(), n);
       for (const [u, v] of anel(n)) g.por(u, v);
@@ -661,7 +764,7 @@
   }
 
   const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel,
-    DicEncadeamento, DicSondagem, LAPIDE, casaDe, chaveMedida, registroDic, ESTRUTURAS, operar, montar };
+    DicEncadeamento, DicSondagem, LAPIDE, casaDe, chaveMedida, registroDic, Matriz, quadrada, TextoImutavel, TextoPedacos, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);

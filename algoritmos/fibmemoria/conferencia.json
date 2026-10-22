@@ -1,0 +1,7 @@
+{
+  "referencia": "a fórmula de Binet, round(φⁿ/√5), e a mesma versão reimplementada em R",
+  "versao_r": "4.6.0",
+  "casos": 21,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 para n de 0 a 20: fib(n) bate com a fórmula de Binet, e as somas (n − 1) e o pico de memória batem com a reimplementação em R, um n por vez."
+}
