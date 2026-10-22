@@ -223,3 +223,46 @@ def montar_grafo(pasta):
         rich(d, [("visitou os ", ""), (f"{V} vértices", "b"), (": ", ""), (f"{ex['ops']} operações", "bg"), (fim, "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
+
+
+def montar_dijkstra(pasta):
+    """Dijkstra: o grafo do encarte no fim, com o peso em cada aresta, a árvore
+    de caminhos mínimos em tinta e, em cada vértice, a distância à origem em
+    verde: é o resultado."""
+    D, F = _ler(pasta)
+    ex = D["exemplo"]
+    k, V, arestas, pesos, dist = ex["k"], ex["n"], ex["arestas"], ex["pesos"], ex["dist"]
+    # a árvore: o último vértice que melhorou a distância de cada um (refeito dos eventos gravados)
+    pai, vez = {}, None
+    for e in ex["eventos"]:
+        if e[0] == "olha":
+            vez = e[1]
+        elif e[0] == "insere" and vez is not None:
+            pai[e[1]] = vez
+    arvore = {tuple(sorted((u, v))) for v, u in pai.items()}
+    GX0, GY0 = 90, 100
+    passo = min(340, 110 * (k - 1)) / max(1, k - 1)
+    raio = min(17, passo * 0.3)
+    pos = lambda u: (GX0 + (u % k) * passo, GY0 + (u // k) * passo)  # noqa: E731
+
+    def cena(d, t, im):
+        for (a, b), w in zip(arestas, pesos):
+            na = (a, b) in arvore
+            line(d, pos(a), pos(b), INK if na else PALIDO, w=3 if na else 1)
+        for (a, b), w in zip(arestas, pesos):
+            (x0, y0), (x1, y1) = pos(a), pos(b)
+            mx, my = (x0 + x1) / 2, (y0 + y1) / 2
+            d.rectangle((mx - 7, my - 8, mx + 7, my + 8), fill=(255, 255, 255))
+            texto(d, str(w), mx, my - 7, 11, GRAY, align="c")
+        for v in range(V):
+            x, y = pos(v)
+            d.ellipse((x - raio, y - raio, x + raio, y + raio), fill=CLARO, outline=GRAY, width=1)
+            texto(d, str(dist[v]), x, y - raio * 0.55, int(min(14, raio * 0.85)), GREEN, b=True, align="c")
+        _painel(d, [("acessos ao heap e à lista", str(ex["ops"]), 40, True),
+                    ("heap mais alto", f"{ex['estrutura']} pares", 20, False),
+                    ("pares descartados", str(ex["descartados"]), 20, False)])
+        rich(d, [("distâncias de ", ""), (f"{V} vértices", "b"), (": ", ""), (f"{ex['ops']} acessos", "bg"),
+                 (f", o mais longe a {max(dist)}", "")], W / 2, 34, 18)
+
+    return [(1.0, cena)], 0.5
+

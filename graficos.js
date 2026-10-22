@@ -198,6 +198,7 @@
     "n log₂ n": { nome: "n log₂ n", f: (n) => n * Math.log2(n) },
     n: { nome: "n", f: (n) => n },
     V: { nome: "V", f: (n) => n },
+    "V log₂ V": { nome: "V log₂ V", f: (n) => n * Math.log2(n) },
     "2n": { nome: "2n", f: (n) => 2 * n },
     "log₂ n": { nome: "log₂ n", f: (n) => Math.log2(n) },
   };

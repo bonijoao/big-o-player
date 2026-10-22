@@ -979,6 +979,128 @@
     };
   }
 
+  // ---------- Dijkstra ----------
+
+  function simDijkstra(faixa, k, arestas, pesos, accelerando) {
+    const V = k * k, r = Algoritmos.dijkstra(V, arestas, pesos), ideia = faixa.video.ideia;
+    const chave = (u, v) => (u < v ? `${u},${v}` : `${v},${u}`);
+    const peso = new Map(arestas.map(([u, v], j) => [chave(u, v), pesos[j]]));
+    // papel de cada vértice: 0 = não alcançado, 1 = alcançado (tem par no heap), 2 = o da vez, 3 = já saiu valendo
+    const papel = new Array(V).fill(0), num = new Array(V).fill(null), pai = new Array(V).fill(null);
+    let vez = null, ops = 0, viz = 0, desc = 0, pico = 0, casas = [], escritas = [], olhando = null, saiu = null;
+    const est = r.eventos.map((e) => {
+      escritas = [];
+      if (e.t === "tira" || e.t === "testa" || e.t === "devolva") olhando = null;
+      if (e.t === "insere") {
+        casas = e.casas; escritas = e.escritas; ops = e.acessos;
+        num[e.v] = e.d; if (papel[e.v] !== 3 && e.v !== vez) papel[e.v] = 1;
+      } else if (e.t === "tira") {
+        casas = e.casas; escritas = e.escritas; ops = e.acessos; saiu = { u: e.u, d: e.d, vencido: papel[e.u] === 3 };
+        if (!saiu.vencido) { if (vez !== null) papel[vez] = 3; vez = e.u; papel[e.u] = 2; }
+      } else if (e.t === "olha") {
+        viz++; ops = e.acessos; olhando = [e.u, e.v]; saiu = null;
+      } else if (e.t === "atribui" && e.v !== undefined) {
+        pai[e.v] = e.pai;
+      } else if (e.t === "descarta") {
+        desc++;
+      } else if (e.t === "devolva") {
+        if (vez !== null) papel[vez] = 3;
+        vez = null; saiu = null;
+      }
+      pico = Math.max(pico, casas.length);
+      return { t: e.t, linha: e.linha, vars: e.vars, nivel: 0, chamada: 0, papel: papel.slice(), num: num.slice(), pai: pai.slice(),
+        casas, escritas, olhando, saiu, ops, viz, desc, pico };
+    });
+    if (ops !== r.ops || pico !== r.estrutura || desc !== r.descartados) throw new Error("reprodução do Dijkstra não bate");
+    const pesosEv = !accelerando ? est.map(() => 1) : pesosLentos(est, { atribui: 0.6, insere: 1, tira: 1.5, compara: 0.4, testa: 0.3,
+      olha: 1, descarta: 3, devolva: 3 }, (t) => t === "olha", 6, 2.5);
+    const tl = linhaDoTempo(pesosEv);
+
+    // geometria: a grade à esquerda, o heap em pé no meio, o painel à direita
+    const GX0 = 90, GY0 = 100, LADO = Math.min(340, 110 * (k - 1)), passo = LADO / Math.max(1, k - 1);
+    const raio = Math.min(17, passo * 0.3);
+    const pos = (u) => [GX0 + (u % k) * passo, GY0 + Math.floor(u / k) * passo];
+    const SX = 500, SW = 92, STOPO = 104, sh = Math.min(26, 330 / Math.max(4, r.estrutura));
+    const maisLonge = Math.max(...r.dist);
+
+    function desenhar(ctx, u) {
+      const kk = tl.eventoEm(u), fim = u >= tl.total;
+      const s = kk >= 0 ? est[kk] : { papel: new Array(V).fill(0), num: new Array(V).fill(null), pai: new Array(V).fill(null), casas: [], escritas: [],
+        olhando: null, saiu: null, ops: 0, viz: 0, desc: 0, pico: 0 };
+      // arestas: as da árvore de caminhos mínimos em tinta, a olhada em coral; o peso no meio
+      for (const [a, b] of arestas) {
+        const [x0, y0] = pos(a), [x1, y1] = pos(b);
+        const naArvore = s.pai[b] === a || s.pai[a] === b;
+        linha(ctx, x0, y0, x1, y1, naArvore ? COR.tinta : COR.palido, naArvore ? 3 : 1.5);
+      }
+      if (s.olhando && !fim) { const [x0, y0] = pos(s.olhando[0]), [x1, y1] = pos(s.olhando[1]); linha(ctx, x0, y0, x1, y1, COR.mexeu, 4); }
+      if (passo >= 44) for (const [a, b] of arestas) {
+        const [x0, y0] = pos(a), [x1, y1] = pos(b), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+        ctx.fillStyle = "#fff"; ctx.fillRect(mx - 7, my - 8, 14, 16);
+        const aceso = s.olhando && !fim && chave(...s.olhando) === chave(a, b);
+        texto(ctx, String(peso.get(chave(a, b))), mx, my - 7, 11, aceso ? COR.mexeu : COR.cinza, aceso ? 700 : 400, "center");
+      }
+      for (let v = 0; v < V; v++) {
+        const [x, y] = pos(v), p = fim ? 3 : s.papel[v];
+        ctx.beginPath(); ctx.arc(x, y, raio, 0, 7);
+        ctx.fillStyle = p === 2 ? COR.mexeu : p === 3 ? COR.claro : "#fff"; ctx.fill();
+        ctx.strokeStyle = p === 0 ? COR.palido : p === 3 ? COR.cinza : COR.tinta; ctx.lineWidth = p === 1 ? 2.5 : 1.5; ctx.stroke();
+        const d = s.num[v] === null ? "∞" : String(s.num[v]);
+        texto(ctx, d, x, y - Math.min(8, raio * 0.5), Math.min(14, raio * 0.85), fim ? COR.verde : p === 2 ? "#fff" : p === 0 ? COR.cinza : COR.tinta, 700, "center");
+        if (raio >= 9) texto(ctx, String(v + 1), x + raio * 0.75, y - raio - 11, 10, COR.cinza);
+      }
+
+      // o heap: o vetor em pé, a casa 0 (o menor) em cima; as casas que a operação escreveu em coral
+      texto(ctx, "heap (distância, vértice)", SX + SW / 2, STOPO - 54, 12, COR.cinza, 400, "center");
+      linha(ctx, SX, STOPO - 4, SX, STOPO + Math.max(4, r.estrutura) * sh, COR.palido);
+      linha(ctx, SX + SW, STOPO - 4, SX + SW, STOPO + Math.max(4, r.estrutura) * sh, COR.palido);
+      const mex = new Set(s.escritas);
+      s.casas.forEach(([d, v], i) => {
+        const y = STOPO + i * sh, m = mex.has(i);
+        ctx.fillStyle = m ? COR.mexeu : COR.claro;
+        ctx.fillRect(SX + 4, y + 1, SW - 8, sh - 2);
+        if (sh >= 12) texto(ctx, `(${d}, ${v + 1})`, SX + SW / 2, y + sh / 2 - Math.min(8, sh * 0.36), Math.min(13, sh * 0.6), m ? "#fff" : COR.tinta, 600, "center");
+      });
+      if (s.casas.length) texto(ctx, "← o menor", SX + SW + 6, STOPO + sh / 2 - 7, 11, COR.cinza);
+      if (s.saiu && !fim) {   // o par que acabou de sair: riscado se está vencido
+        const t = `saiu (${s.saiu.d}, ${s.saiu.u + 1})`, y = STOPO - 28;
+        texto(ctx, t, SX + SW / 2, y, 12, s.saiu.vencido ? COR.cinza : COR.tinta, 600, "center");
+        if (s.saiu.vencido) {
+          ctx.font = `600 12px ${MONO}`; const w = ctx.measureText(t).width;
+          linha(ctx, SX + SW / 2 - w / 2, y + 8, SX + SW / 2 + w / 2, y + 8, COR.cinza, 1.5);
+          texto(ctx, "vencido", SX + SW + 6, y, 11, COR.cinza);
+        }
+      }
+
+      const x = 680;
+      texto(ctx, "acessos ao heap e à lista", x, 90, 13, COR.cinza);
+      texto(ctx, String(s.ops), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
+      texto(ctx, "vizinhos olhados", x, 168, 13, COR.cinza);
+      texto(ctx, `${s.viz} de ${2 * arestas.length}`, x, 184, 22, COR.tinta, 700);
+      texto(ctx, "pares descartados", x, 220, 13, COR.cinza);
+      texto(ctx, String(s.desc), x, 236, 22, COR.tinta, 700);
+      texto(ctx, "memória extra agora", x, 272, 13, COR.cinza);
+      texto(ctx, `${V} + ${s.casas.length} no heap`, x, 288, 20, COR.tinta, 700);
+      texto(ctx, `heap mais alto: ${s.pico}`, x, 314, 13, fim ? COR.verde : COR.cinza, fim ? 600 : 400);
+      texto(ctx, `V = ${V}, E = ${arestas.length}`, x, 350, 13, COR.cinza);
+      texto(ctx, "na aresta: o peso", x, 370, 13, COR.cinza);
+      texto(ctx, "no vértice: a distância à origem", x, 390, 13, COR.cinza);
+      legendaCores(ctx, [["#fff", "não alcançado", COR.palido], ["#fff", "alcançado, no heap", COR.tinta, 2], [COR.mexeu, "o da vez"], [COR.claro, "já saiu valendo", COR.cinza], [COR.tinta, "caminho mais curto"]], 500);
+
+      if (fim) legenda(ctx, [["distâncias de ", ""], [`${V} vértices`, "b"], [": ", ""], [`${r.ops} acessos`, "g"], [`, o mais longe a ${maisLonge}`, ""]]);
+      else if (kk >= 0 && s.saiu && s.saiu.vencido) legenda(ctx, [[ideia[ideia.length - 1], ""]]);
+      else legenda(ctx, [[ideia[0], ""]]);
+    }
+
+    const contagemEm = (u) => { const kk = tl.eventoEm(u); return kk >= 0 ? est[kk].ops : 0; };
+    return {
+      total: tl.total, desenhar, ...comum(tl, est, pesosEv, RITMO.grafo, accelerando),
+      resumo: { ops: r.ops, pico: r.pico, n: V }, contagemEm,
+      medidor: () => `${r.ops} acessos, V = ${V}, E = ${arestas.length}<br>heap de até ${r.estrutura}, ${r.descartados} descartados`,
+      aoVivo: (u, cfg) => `Tocando agora: ${V} vértices e ${arestas.length} arestas com pesos, ${cfg.rotulo}; ${contagemEm(u)} de ${r.ops} acessos, heap de até ${r.estrutura} pares.`,
+    };
+  }
+
   // ---------- fachada ----------
 
   /** Cria a simulação de uma faixa para uma configuração de entrada; `accelerando` liga o ritmo que acelera. */
@@ -1000,6 +1122,11 @@
     if (tipo === "grafo") {
       const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));
       return simGrafo(faixa, k, padrao ? ex.arestas : Algoritmos.grafoGrade(k, cfg.tipo, cfg.semente), accelerando);
+    }
+    if (tipo === "dijkstra") {
+      const k = padrao ? ex.k : Math.round(Math.sqrt(cfg.n));
+      const arestas = padrao ? ex.arestas : Algoritmos.grafoGrade(k, cfg.tipo, cfg.semente);
+      return simDijkstra(faixa, k, arestas, padrao ? ex.pesos : Algoritmos.pesosGrade(arestas.length, ex.faixa_pesos, cfg.semente + 1), accelerando);
     }
     if (faixa.alg === "kmeans") {
       const pontos = faixa.exemplo.pontos;

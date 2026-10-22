@@ -10422,6 +10422,1122 @@ window.GALERIA = [
    "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
    "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
   },
+  "alg": "dijkstra",
+  "id": "dijkstra",
+  "nome": "Dijkstra",
+  "variante": "grafo em grade com pesos, heap que reinsere e descarta",
+  "familia": "grafos",
+  "resumo": "Acha a distância mínima da origem a cada vértice, num grafo em que cada aresta tem um peso, o custo de atravessá-la. Um heap guarda pares (distância, vértice), e sai sempre o mais perto da origem: quando ele sai, a distância dele já é a menor possível. Então olha os vizinhos dele e, se passar por ele encurta o caminho até algum, anota a distância nova e põe o par no heap. O par antigo daquele vizinho continua lá dentro; quando sair, estará vencido e é jogado fora.",
+  "instrumentos": [
+   {
+    "id": "grafo",
+    "papel": "a lista de adjacência, com o par (vizinho, peso) em cada casa: os vizinhos de u custam grau(u) leituras"
+   },
+   {
+    "id": "heap",
+    "papel": "os pares (distância, vértice) esperando a vez; sai sempre o mais perto da origem"
+   }
+  ],
+  "tempo": {
+   "notacao": "O((V + E) log V)",
+   "porque": "Cada vértice que sai do heap valendo olha cada vizinho uma vez: somando todos, cada aresta é olhada pelas duas pontas, 2E leituras. Cada distância que melhora põe um par no heap, no máximo uma vez por aresta olhada, e cada par entra e sai uma vez, subindo ou descendo até log₂ do tamanho do heap. O total cresce como (V + E) log V.",
+   "nota": "Na grade, E fica entre V − 1 e 2V, e a conta vira V log V. O heap que diminui a prioridade de um vértice em vez de reinseri-lo, como no livro de Cormen, guarda no máximo V pares; reinserindo, ele pode guardar um por aresta, mas cada par vencido só custa uma saída a mais."
+  },
+  "memoria": {
+   "notacao": "O(V + E)",
+   "porque": "O vetor dist guarda uma distância por vértice: V casas. O heap guarda a fronteira, os vértices alcançados que ainda não saíram, mais os pares vencidos que ainda não saíram: no pior caso, um par por aresta. Na grade, isso fica bem abaixo de V; no caminho, o heap nunca passa de 1.",
+   "nomes": {
+    "dist": "distâncias (uma por vértice)",
+    "heap": "pares no heap"
+   },
+   "cresce_com_n": [
+    "dist"
+   ],
+   "vazados": "no heap, a fronteira e os pares vencidos",
+   "variavel": "V"
+  },
+  "video": {
+   "ideia": [
+    "sai do heap o mais perto; por ele, algum vizinho fica mais perto?",
+    "o par vencido sai depois e é descartado: a distância já melhorou"
+   ]
+  },
+  "graficos": {
+   "titulo": "Tempo: como cresce, e que grafo entra",
+   "texto": "As mesmas contas para grades cada vez maiores e para três grafos: sorteado, grade cheia e caminho em serpentina, todos com pesos de 1 a 9 sorteados. Em escala logarítmica, quem cresce como V sobe em linha reta, com inclinação 1. A grade cheia sobe um pouco mais inclinada: com mais arestas, o heap fica mais alto e descarta mais pares. No caminho, o heap tem um par só, e a conta é quase linear.",
+   "crescimento": "Acessos ao heap e à lista para V de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos grafos sorteados. Tracejada: V log₂ V, de referência.",
+   "distribuicao": "{vezes} grafos sorteados de {nd} vértices: o heap mais alto vai de {min} a {max} pares. A barra preta é o grafo do encarte.",
+   "rotulo": "heap mais alto (V = {nd})",
+   "memoria": "O heap mais alto para cada V, nos três grafos (nos sorteados, o maior entre eles). O vetor dist, sempre com V casas, fica de fora. No caminho, o heap nunca passa de 1; na grade cheia, ele carrega a fronteira e os pares vencidos."
+  },
+  "placa": {
+   "autor": "Edsger W. Dijkstra",
+   "ano": "1959"
+  },
+  "poster": "algoritmos/dijkstra/dijkstra.png",
+  "exemplo": {
+   "dados": "um grafo em grade 5 × 5 sorteado com a semente 27: 25 vértices e 30 arestas, cada uma com um peso de 1 a 9",
+   "n": 25,
+   "k": 5,
+   "semente": 27,
+   "caso": "sorteado",
+   "arestas": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     1,
+     6
+    ],
+    [
+     2,
+     7
+    ],
+    [
+     3,
+     4
+    ],
+    [
+     4,
+     9
+    ],
+    [
+     5,
+     6
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     6,
+     7
+    ],
+    [
+     6,
+     11
+    ],
+    [
+     7,
+     8
+    ],
+    [
+     7,
+     12
+    ],
+    [
+     8,
+     9
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     11,
+     12
+    ],
+    [
+     11,
+     16
+    ],
+    [
+     12,
+     13
+    ],
+    [
+     12,
+     17
+    ],
+    [
+     13,
+     14
+    ],
+    [
+     13,
+     18
+    ],
+    [
+     14,
+     19
+    ],
+    [
+     15,
+     16
+    ],
+    [
+     15,
+     20
+    ],
+    [
+     16,
+     21
+    ],
+    [
+     17,
+     18
+    ],
+    [
+     18,
+     23
+    ],
+    [
+     20,
+     21
+    ],
+    [
+     21,
+     22
+    ],
+    [
+     22,
+     23
+    ],
+    [
+     23,
+     24
+    ]
+   ],
+   "pesos": [
+    8,
+    8,
+    6,
+    1,
+    6,
+    3,
+    5,
+    3,
+    8,
+    6,
+    9,
+    1,
+    9,
+    4,
+    3,
+    4,
+    8,
+    9,
+    2,
+    6,
+    6,
+    1,
+    7,
+    6,
+    2,
+    5,
+    5,
+    9,
+    2,
+    5
+   ],
+   "faixa_pesos": [
+    1,
+    9
+   ],
+   "dist": [
+    0,
+    8,
+    16,
+    44,
+    38,
+    19,
+    14,
+    17,
+    26,
+    35,
+    22,
+    20,
+    18,
+    26,
+    28,
+    25,
+    24,
+    27,
+    29,
+    34,
+    32,
+    30,
+    36,
+    34,
+    39
+   ],
+   "ordem": [
+    0,
+    1,
+    6,
+    2,
+    7,
+    12,
+    5,
+    11,
+    10,
+    16,
+    15,
+    8,
+    13,
+    17,
+    14,
+    18,
+    21,
+    20,
+    19,
+    23,
+    9,
+    22,
+    4,
+    24,
+    3
+   ],
+   "ops": 359,
+   "operacoes": 58,
+   "vizinhos": 60,
+   "descartados": 4,
+   "pico": 32,
+   "estrutura": 7
+  },
+  "medido": {
+   "tempo": {
+    "unidade": "acessos ao heap e à lista",
+    "tipo": "dijkstra",
+    "series": [
+     {
+      "caso": "sorteado",
+      "nome": "sorteado (média)"
+     },
+     {
+      "caso": "grade",
+      "nome": "grade cheia (média)"
+     },
+     {
+      "caso": "caminho",
+      "nome": "caminho (média)"
+     }
+    ],
+    "banda": "sorteado",
+    "crescimento": [
+     {
+      "n": 16,
+      "k": 4,
+      "sorteado": {
+       "media": 166.9,
+       "min": 123,
+       "max": 210,
+       "pico": 6,
+       "arestas": 17.9,
+       "descartados": 0.7
+      },
+      "grade": {
+       "media": 236.6,
+       "min": 202,
+       "max": 310,
+       "pico": 8,
+       "arestas": 24,
+       "descartados": 2.2
+      },
+      "caminho": {
+       "media": 78,
+       "min": 78,
+       "max": 78,
+       "pico": 1,
+       "arestas": 15,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 36,
+      "k": 6,
+      "sorteado": {
+       "media": 483.8,
+       "min": 405,
+       "max": 567,
+       "pico": 10,
+       "arestas": 43.3,
+       "descartados": 2
+      },
+      "grade": {
+       "media": 685,
+       "min": 611,
+       "max": 780,
+       "pico": 13,
+       "arestas": 60,
+       "descartados": 6.6
+      },
+      "caminho": {
+       "media": 178,
+       "min": 178,
+       "max": 178,
+       "pico": 1,
+       "arestas": 35,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 64,
+      "k": 8,
+      "sorteado": {
+       "media": 991.1,
+       "min": 916,
+       "max": 1105,
+       "pico": 13,
+       "arestas": 79.5,
+       "descartados": 4.4
+      },
+      "grade": {
+       "media": 1357.1,
+       "min": 1227,
+       "max": 1491,
+       "pico": 20,
+       "arestas": 112,
+       "descartados": 11.9
+      },
+      "caminho": {
+       "media": 318,
+       "min": 318,
+       "max": 318,
+       "pico": 1,
+       "arestas": 63,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 121,
+      "k": 11,
+      "sorteado": {
+       "media": 2173.8,
+       "min": 1956,
+       "max": 2416,
+       "pico": 23,
+       "arestas": 153.7,
+       "descartados": 8.2
+      },
+      "grade": {
+       "media": 2918.8,
+       "min": 2663,
+       "max": 3236,
+       "pico": 31,
+       "arestas": 220,
+       "descartados": 24.9
+      },
+      "caminho": {
+       "media": 603,
+       "min": 603,
+       "max": 603,
+       "pico": 1,
+       "arestas": 120,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 256,
+      "k": 16,
+      "sorteado": {
+       "media": 5339,
+       "min": 4908,
+       "max": 5711,
+       "pico": 29,
+       "arestas": 332.4,
+       "descartados": 22.1
+      },
+      "grade": {
+       "media": 7081.7,
+       "min": 6725,
+       "max": 7270,
+       "pico": 40,
+       "arestas": 480,
+       "descartados": 57.3
+      },
+      "caminho": {
+       "media": 1278,
+       "min": 1278,
+       "max": 1278,
+       "pico": 1,
+       "arestas": 255,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 529,
+      "k": 23,
+      "sorteado": {
+       "media": 12216.1,
+       "min": 12042,
+       "max": 12487,
+       "pico": 47,
+       "arestas": 694.3,
+       "descartados": 43
+      },
+      "grade": {
+       "media": 16014.1,
+       "min": 15682,
+       "max": 16346,
+       "pico": 60,
+       "arestas": 1012,
+       "descartados": 127.1
+      },
+      "caminho": {
+       "media": 2643,
+       "min": 2643,
+       "max": 2643,
+       "pico": 1,
+       "arestas": 528,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 1024,
+      "k": 32,
+      "sorteado": {
+       "media": 25932.9,
+       "min": 25346,
+       "max": 26546,
+       "pico": 61,
+       "arestas": 1344.3,
+       "descartados": 84.1
+      },
+      "grade": {
+       "media": 33683.5,
+       "min": 33068,
+       "max": 34228,
+       "pico": 84,
+       "arestas": 1984,
+       "descartados": 245.2
+      },
+      "caminho": {
+       "media": 5118,
+       "min": 5118,
+       "max": 5118,
+       "pico": 1,
+       "arestas": 1023,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 2025,
+      "k": 45,
+      "sorteado": {
+       "media": 55036.1,
+       "min": 54511,
+       "max": 55954,
+       "pico": 85,
+       "arestas": 2681.9,
+       "descartados": 160.1
+      },
+      "grade": {
+       "media": 71368.8,
+       "min": 70754,
+       "max": 72307,
+       "pico": 116,
+       "arestas": 3960,
+       "descartados": 488.9
+      },
+      "caminho": {
+       "media": 10123,
+       "min": 10123,
+       "max": 10123,
+       "pico": 1,
+       "arestas": 2024,
+       "descartados": 0
+      }
+     },
+     {
+      "n": 4096,
+      "k": 64,
+      "sorteado": {
+       "media": 120778.6,
+       "min": 119451,
+       "max": 122479,
+       "pico": 118,
+       "arestas": 5423.9,
+       "descartados": 337
+      },
+      "grade": {
+       "media": 153720.1,
+       "min": 151990,
+       "max": 156265,
+       "pico": 168,
+       "arestas": 8064,
+       "descartados": 973.1
+      },
+      "caminho": {
+       "media": 20478,
+       "min": 20478,
+       "max": 20478,
+       "pico": 1,
+       "arestas": 4095,
+       "descartados": 0
+      }
+     }
+    ],
+    "eixo": "V (vértices de uma grade k × k; quase dobra a cada passo)",
+    "refs": [
+     "V log₂ V"
+    ],
+    "crescimento_dados": "média de 10 sorteios de pesos por tamanho (no sorteado, também das arestas)",
+    "distribuicao": {
+     "n": 25,
+     "vezes": 200,
+     "valores": [
+      6,
+      5,
+      5,
+      6,
+      7,
+      6,
+      7,
+      6,
+      4,
+      9,
+      5,
+      7,
+      5,
+      5,
+      5,
+      8,
+      6,
+      6,
+      6,
+      9,
+      5,
+      5,
+      7,
+      8,
+      5,
+      4,
+      7,
+      7,
+      7,
+      7,
+      5,
+      8,
+      7,
+      4,
+      9,
+      5,
+      5,
+      7,
+      8,
+      9,
+      6,
+      7,
+      6,
+      7,
+      4,
+      8,
+      7,
+      5,
+      6,
+      5,
+      7,
+      6,
+      7,
+      6,
+      4,
+      8,
+      6,
+      7,
+      7,
+      4,
+      6,
+      5,
+      7,
+      7,
+      8,
+      5,
+      7,
+      5,
+      7,
+      5,
+      6,
+      5,
+      6,
+      5,
+      7,
+      5,
+      5,
+      5,
+      8,
+      8,
+      7,
+      6,
+      7,
+      6,
+      7,
+      6,
+      6,
+      6,
+      5,
+      4,
+      7,
+      5,
+      6,
+      7,
+      6,
+      6,
+      5,
+      5,
+      6,
+      5,
+      5,
+      6,
+      6,
+      6,
+      5,
+      6,
+      7,
+      6,
+      6,
+      6,
+      5,
+      4,
+      8,
+      5,
+      5,
+      8,
+      6,
+      9,
+      5,
+      5,
+      4,
+      4,
+      6,
+      9,
+      8,
+      6,
+      8,
+      6,
+      8,
+      6,
+      4,
+      5,
+      5,
+      7,
+      5,
+      6,
+      6,
+      4,
+      8,
+      6,
+      5,
+      9,
+      7,
+      7,
+      6,
+      6,
+      8,
+      9,
+      5,
+      4,
+      5,
+      7,
+      8,
+      5,
+      7,
+      6,
+      4,
+      6,
+      8,
+      5,
+      4,
+      7,
+      7,
+      6,
+      5,
+      5,
+      7,
+      6,
+      7,
+      8,
+      6,
+      4,
+      6,
+      7,
+      8,
+      7,
+      7,
+      7,
+      7,
+      5,
+      6,
+      8,
+      6,
+      7,
+      6,
+      5,
+      7,
+      7,
+      8,
+      5,
+      7,
+      7,
+      7,
+      7,
+      7,
+      4,
+      5,
+      6,
+      4,
+      8
+     ],
+     "destaque": 7
+    }
+   },
+   "memoria": {
+    "pico": 32,
+    "detalhe": {
+     "dist": 25,
+     "heap": 7
+    }
+   },
+   "ciclomatica": {
+    "M": 5,
+    "nos": 17,
+    "arestas": 20,
+    "decisoes": [
+     {
+      "linha": 6,
+      "tipo": "while"
+     },
+     {
+      "linha": 8,
+      "tipo": "if"
+     },
+     {
+      "linha": 9,
+      "tipo": "for"
+     },
+     {
+      "linha": 11,
+      "tipo": "if"
+     }
+    ],
+    "grafo": {
+     "nos": [
+      {
+       "id": 0,
+       "linha": 1,
+       "rotulo": "início"
+      },
+      {
+       "id": 1,
+       "linha": 2,
+       "rotulo": "assign"
+      },
+      {
+       "id": 2,
+       "linha": 3,
+       "rotulo": "assign"
+      },
+      {
+       "id": 3,
+       "linha": 4,
+       "rotulo": "assign"
+      },
+      {
+       "id": 4,
+       "linha": 5,
+       "rotulo": "expr"
+      },
+      {
+       "id": 5,
+       "linha": 6,
+       "rotulo": "while"
+      },
+      {
+       "id": 6,
+       "linha": 7,
+       "rotulo": "assign"
+      },
+      {
+       "id": 7,
+       "linha": 8,
+       "rotulo": "if"
+      },
+      {
+       "id": 8,
+       "linha": 9,
+       "rotulo": "for"
+      },
+      {
+       "id": 9,
+       "linha": 10,
+       "rotulo": "assign"
+      },
+      {
+       "id": 10,
+       "linha": 11,
+       "rotulo": "if"
+      },
+      {
+       "id": 11,
+       "linha": 12,
+       "rotulo": "assign"
+      },
+      {
+       "id": 12,
+       "linha": 13,
+       "rotulo": "expr"
+      },
+      {
+       "id": 13,
+       "linha": 15,
+       "rotulo": "expr"
+      },
+      {
+       "id": 14,
+       "linha": 16,
+       "rotulo": "expr"
+      },
+      {
+       "id": 15,
+       "linha": 17,
+       "rotulo": "return"
+      },
+      {
+       "id": 16,
+       "linha": 18,
+       "rotulo": "fim"
+      }
+     ],
+     "arestas": [
+      {
+       "de": 0,
+       "para": 1,
+       "tipo": "segue"
+      },
+      {
+       "de": 1,
+       "para": 2,
+       "tipo": "segue"
+      },
+      {
+       "de": 2,
+       "para": 3,
+       "tipo": "segue"
+      },
+      {
+       "de": 3,
+       "para": 4,
+       "tipo": "segue"
+      },
+      {
+       "de": 4,
+       "para": 5,
+       "tipo": "segue"
+      },
+      {
+       "de": 5,
+       "para": 6,
+       "tipo": "segue"
+      },
+      {
+       "de": 6,
+       "para": 7,
+       "tipo": "segue"
+      },
+      {
+       "de": 7,
+       "para": 8,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 9,
+       "tipo": "segue"
+      },
+      {
+       "de": 9,
+       "para": 10,
+       "tipo": "segue"
+      },
+      {
+       "de": 10,
+       "para": 11,
+       "tipo": "segue"
+      },
+      {
+       "de": 11,
+       "para": 12,
+       "tipo": "segue"
+      },
+      {
+       "de": 12,
+       "para": 8,
+       "tipo": "volta"
+      },
+      {
+       "de": 10,
+       "para": 8,
+       "tipo": "volta"
+      },
+      {
+       "de": 7,
+       "para": 13,
+       "tipo": "segue"
+      },
+      {
+       "de": 13,
+       "para": 14,
+       "tipo": "segue"
+      },
+      {
+       "de": 8,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 14,
+       "para": 5,
+       "tipo": "volta"
+      },
+      {
+       "de": 5,
+       "para": 15,
+       "tipo": "segue"
+      },
+      {
+       "de": 15,
+       "para": 16,
+       "tipo": "segue"
+      }
+     ]
+    },
+    "codigo": "def dijkstra(grafo, s, conta):\n    dist = conta.aloca(\"dist\", [INF] * grafo.V)\n    heap = Heap(conta)\n    dist[s] = 0\n    insere(heap, 0, s, conta)\n    while heap.n > 0:\n        d, u = tira(heap, conta)\n        if d == dist[u]:\n            for i in range(grafo.grau(u)):\n                v, w = olha(grafo, u, i, conta)\n                if d + w < dist[v]:\n                    dist[v] = d + w\n                    insere(heap, dist[v], v, conta)\n        else:\n            conta.op(\"descartados\")\n            conta.evento(\"descarta\", u, d)\n    return dist\n"
+   }
+  },
+  "conferencia": {
+   "referencia": "igraph::distances() (igraph 2.3.3) e dijkstra_r() (reimplementação em R)",
+   "versao_r": "4.6.0",
+   "vetores": 16,
+   "tudo_ok": true,
+   "resumo": "Rodado no R 4.6.0 com o igraph 2.3.3 em 16 grafos com pesos (o do encarte e 15 grades 6 × 6: sorteadas, cheias e em caminho): a distância de cada vértice bate com o distances() do igraph, e a reimplementação em R, com um heap que conta casas, conta os mesmos acessos, descarta os mesmos pares, tira os vértices na mesma ordem e chega ao mesmo heap mais alto."
+  },
+  "pseudocodigo": {
+   "assinatura": "dijkstra(G, s)",
+   "nome": "dijkstra",
+   "arvore": [
+    {
+     "tipo": "acao",
+     "linha": 2,
+     "texto": "dist[v] ← ∞ para todo vértice v",
+     "chamada": false
+    },
+    {
+     "tipo": "acao",
+     "linha": 3,
+     "texto": "dist[s] ← 0;  insira (0, s) no heap",
+     "chamada": false
+    },
+    {
+     "tipo": "laco",
+     "rotulo": "enquanto",
+     "linha": 4,
+     "op": "e",
+     "conds": [
+      "o heap não está vazio"
+     ],
+     "corpo": [
+      {
+       "tipo": "acao",
+       "linha": 5,
+       "texto": "(d, u) ← tire o menor do heap",
+       "chamada": false
+      },
+      {
+       "tipo": "se",
+       "linha": 6,
+       "op": "e",
+       "conds": [
+        "d = dist[u]"
+       ],
+       "entao": [
+        {
+         "tipo": "laco",
+         "rotulo": "para",
+         "linha": 7,
+         "op": "e",
+         "conds": [
+          "para cada vizinho v de u, com peso w"
+         ],
+         "corpo": [
+          {
+           "tipo": "se",
+           "linha": 8,
+           "op": "e",
+           "conds": [
+            "d + w < dist[v]"
+           ],
+           "entao": [
+            {
+             "tipo": "acao",
+             "linha": 9,
+             "texto": "dist[v] ← d + w",
+             "chamada": false
+            },
+            {
+             "tipo": "acao",
+             "linha": 10,
+             "texto": "insira (dist[v], v) no heap",
+             "chamada": false
+            }
+           ],
+           "senao": null
+          }
+         ]
+        }
+       ],
+       "senao": [
+        {
+         "tipo": "acao",
+         "linha": 12,
+         "texto": "descarte o par (d, u), que está vencido",
+         "chamada": false
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tipo": "devolva",
+     "linha": 13,
+     "texto": "devolva dist"
+    }
+   ],
+   "linhas": [
+    "procedimento dijkstra(G, s):",
+    "    dist[v] ← ∞ para todo vértice v",
+    "    dist[s] ← 0;  insira (0, s) no heap",
+    "    enquanto o heap não está vazio:",
+    "        (d, u) ← tire o menor do heap",
+    "        se d = dist[u]:",
+    "            para cada vizinho v de u, com peso w:",
+    "                se d + w < dist[v]:",
+    "                    dist[v] ← d + w",
+    "                    insira (dist[v], v) no heap",
+    "        senão:",
+    "            descarte o par (d, u), que está vencido",
+    "    devolva dist"
+   ],
+   "M": 5,
+   "nos": 13,
+   "arestas": 16,
+   "decisoes": [
+    4,
+    6,
+    7,
+    8
+   ]
+  }
+ },
+ {
+  "ciclomatica": {
+   "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
+   "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
+  },
   "alg": "kmeans",
   "id": "k-means",
   "nome": "K-means",
@@ -12074,13 +13190,7 @@ window.ALBUNS = [
   "titulo": "Grafos",
   "familia": "grafos",
   "frase": "Caminhos, vizinhos e distâncias.",
-  "em_producao": [
-   {
-    "nome": "Dijkstra",
-    "tempo": "O((V + E) log V)",
-    "memoria": "O(V)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "dispersao",

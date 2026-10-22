@@ -102,13 +102,7 @@
   "titulo": "Grafos",
   "familia": "grafos",
   "frase": "Caminhos, vizinhos e distâncias.",
-  "em_producao": [
-   {
-    "nome": "Dijkstra",
-    "tempo": "O((V + E) log V)",
-    "memoria": "O(V)"
-   }
-  ]
+  "em_producao": []
  },
  {
   "id": "dispersao",

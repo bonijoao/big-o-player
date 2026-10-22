@@ -1,5 +1,5 @@
-"""Molde das faixas de grafo (busca em largura e em profundidade): os grafos
-em grade k × k que elas percorrem.
+"""Molde das faixas de grafo (busca em largura, em profundidade e o Dijkstra):
+os grafos em grade k × k que elas percorrem.
 
 Os vértices 0 a V − 1 (V = k²) ficam na grade linha a linha: o vértice da
 linha r e coluna c é r·k + c. As arestas só ligam vizinhos de linha ou de
@@ -74,6 +74,26 @@ def lista(V, arestas, conta):
     g = GrafoLista(conta, V)
     for u, v in arestas:
         g.por(u, v)
+    conta.ops.clear()
+    return g
+
+
+PESOS = (1, 9)     # o Dijkstra: cada aresta com um peso inteiro sorteado nesse intervalo
+
+
+def pesos(arestas, r):
+    """Um peso por aresta, na ordem das arestas."""
+    return [r.randint(*PESOS) for _ in arestas]
+
+
+def lista_pesos(V, arestas, ps, conta):
+    """A lista de adjacência com pesos: cada casa guarda o par (vizinho, peso),
+    lido de uma vez. Montá-la não entra na conta da faixa."""
+    g = GrafoLista(conta, V)
+    for (u, v), w in zip(arestas, ps):
+        g.listas[u].anexar((v, w))
+        g.listas[v].anexar((u, w))
+        g.E += 1
     conta.ops.clear()
     return g
 

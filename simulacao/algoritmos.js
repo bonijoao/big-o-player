@@ -559,6 +559,63 @@
       casas: g.reg.leituras + g.reg.escritas + pilha.reg.leituras + pilha.reg.escritas };
   }
 
+  /** Dijkstra a partir do vértice 0 (algoritmos/dijkstra/dijkstra.py): a lista de adjacência guarda o par
+   *  (vizinho, peso) em cada casa; o Heap guarda pares (distância, vértice); o par vencido é descartado. */
+  function dijkstra(V, arestas, pesos) {
+    const c = contador(), I = instrumentos(), heap = I.Heap(), g = I.GrafoLista(undefined, V);
+    arestas.forEach(([u, v], j) => { g.listas[u].anexar([v, pesos[j]]); g.listas[v].anexar([u, pesos[j]]); g.E++; });
+    g.reg.leituras = 0; g.reg.escritas = 0; g.reg.eventos = [];
+    const dist = new Array(V).fill(Infinity), ordem = [];
+    c.aloca("dist", V);
+    let noHeap = 0, descartados = 0;
+    // cada operação no heap: soma o custo e guarda o heap depois dela e as casas que ela escreveu
+    const opHeap = (chamada, args) => {
+      const r = I.operar(heap, chamada, args);
+      noHeap += r.leituras + r.escritas;
+      return { volta: r.volta, casas: heap.casas().slice(0, heap.n), escritas: [...new Set(r.eventos.filter((e) => e.t === "escreve").map((e) => e.i))] };
+    };
+    const acessos = () => noHeap + g.reg.leituras + g.reg.escritas;
+    const D = (x) => (x === Infinity ? "∞" : x);
+    const vars = c.vars = { u: null, d: null, v: null, w: null, "dist[u]": null, "dist[v]": null, "tamanho do heap": 0 };
+    const insere = (v, linha) => {
+      c.op("inserir"); const r = opHeap("inserir", [[dist[v], v]]); c.aloca("heap", heap.n); vars["tamanho do heap"] = heap.n;
+      c.push({ t: "insere", v, d: dist[v], ...r, acessos: acessos(), linha });
+    };
+    c.push({ t: "atribui", linha: 2 });
+    dist[0] = 0;
+    insere(0, 3);
+    for (;;) {
+      c.push({ t: "testa", linha: 4 });
+      if (heap.n === 0) break;
+      c.op("tirar"); const r = opHeap("tirar", []); c.aloca("heap", heap.n);
+      const [d, u] = r.volta;
+      Object.assign(vars, { u: rotulo(u), d, v: null, w: null, "dist[u]": D(dist[u]), "dist[v]": null, "tamanho do heap": heap.n });
+      c.push({ t: "tira", u, d, casas: r.casas, escritas: r.escritas, acessos: acessos(), linha: 5 });
+      c.push({ t: "compara", u, linha: 6 });
+      if (d === dist[u]) {
+        ordem.push(u);
+        for (let i = 0; i < g.grau(u); i++) {
+          c.op("vizinhos"); const [v, w] = g.vizinho(u, i);
+          Object.assign(vars, { v: rotulo(v), w, "dist[v]": D(dist[v]) });
+          c.push({ t: "olha", u, v, w, acessos: acessos(), linha: 7 });
+          c.push({ t: "compara", v, linha: 8 });
+          if (d + w < dist[v]) {
+            dist[v] = d + w;
+            vars["dist[v]"] = dist[v];
+            c.push({ t: "atribui", v, d: dist[v], pai: u, linha: 9 });
+            insere(v, 10);
+          }
+        }
+      } else {
+        c.op("descartados"); descartados++;
+        c.push({ t: "descarta", u, d, linha: 12 });
+      }
+    }
+    c.push({ t: "devolva", linha: 13 });
+    return { V, arestas, pesos, dist: dist.map((x) => (x === Infinity ? null : x)), ordem, eventos: c.eventos, pico: c.pico, estrutura: c.pico - V,
+      ops: acessos(), operacoes: (c.ops.inserir || 0) + (c.ops.tirar || 0), vizinhos: c.ops.vizinhos || 0, descartados };
+  }
+
   // ---------- entradas ----------
 
   // gerador com semente (mulberry32): o mesmo número de sorteio dá o mesmo vetor
@@ -668,7 +725,13 @@
     return ordena(escolhidas);
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, prioridade, largura, profundidade, entrada, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, centrosIniciais, ORDENACOES };
+  /** Um peso inteiro de p0 a p1 para cada uma das m arestas (o Dijkstra), sorteado com semente. */
+  function pesosGrade(m, [p0, p1], semente) {
+    const r = sorteador(semente);
+    return Array.from({ length: m }, () => p0 + Math.floor(r() * (p1 - p0 + 1)));
+  }
+
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, prioridade, largura, profundidade, dijkstra, entrada, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade, centrosIniciais, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -1,0 +1,54 @@
+{
+ "id": "dijkstra",
+ "nome": "Dijkstra",
+ "variante": "grafo em grade com pesos, heap que reinsere e descarta",
+ "familia": "grafos",
+ "resumo": "Acha a distância mínima da origem a cada vértice, num grafo em que cada aresta tem um peso, o custo de atravessá-la. Um heap guarda pares (distância, vértice), e sai sempre o mais perto da origem: quando ele sai, a distância dele já é a menor possível. Então olha os vizinhos dele e, se passar por ele encurta o caminho até algum, anota a distância nova e põe o par no heap. O par antigo daquele vizinho continua lá dentro; quando sair, estará vencido e é jogado fora.",
+ "instrumentos": [
+  {
+   "id": "grafo",
+   "papel": "a lista de adjacência, com o par (vizinho, peso) em cada casa: os vizinhos de u custam grau(u) leituras"
+  },
+  {
+   "id": "heap",
+   "papel": "os pares (distância, vértice) esperando a vez; sai sempre o mais perto da origem"
+  }
+ ],
+ "tempo": {
+  "notacao": "O((V + E) log V)",
+  "porque": "Cada vértice que sai do heap valendo olha cada vizinho uma vez: somando todos, cada aresta é olhada pelas duas pontas, 2E leituras. Cada distância que melhora põe um par no heap, no máximo uma vez por aresta olhada, e cada par entra e sai uma vez, subindo ou descendo até log₂ do tamanho do heap. O total cresce como (V + E) log V.",
+  "nota": "Na grade, E fica entre V − 1 e 2V, e a conta vira V log V. O heap que diminui a prioridade de um vértice em vez de reinseri-lo, como no livro de Cormen, guarda no máximo V pares; reinserindo, ele pode guardar um por aresta, mas cada par vencido só custa uma saída a mais."
+ },
+ "memoria": {
+  "notacao": "O(V + E)",
+  "porque": "O vetor dist guarda uma distância por vértice: V casas. O heap guarda a fronteira, os vértices alcançados que ainda não saíram, mais os pares vencidos que ainda não saíram: no pior caso, um par por aresta. Na grade, isso fica bem abaixo de V; no caminho, o heap nunca passa de 1.",
+  "nomes": {
+   "dist": "distâncias (uma por vértice)",
+   "heap": "pares no heap"
+  },
+  "cresce_com_n": [
+   "dist"
+  ],
+  "vazados": "no heap, a fronteira e os pares vencidos",
+  "variavel": "V"
+ },
+ "video": {
+  "ideia": [
+   "sai do heap o mais perto; por ele, algum vizinho fica mais perto?",
+   "o par vencido sai depois e é descartado: a distância já melhorou"
+  ]
+ },
+ "graficos": {
+  "titulo": "Tempo: como cresce, e que grafo entra",
+  "texto": "As mesmas contas para grades cada vez maiores e para três grafos: sorteado, grade cheia e caminho em serpentina, todos com pesos de 1 a 9 sorteados. Em escala logarítmica, quem cresce como V sobe em linha reta, com inclinação 1. A grade cheia sobe um pouco mais inclinada: com mais arestas, o heap fica mais alto e descarta mais pares. No caminho, o heap tem um par só, e a conta é quase linear.",
+  "crescimento": "Acessos ao heap e à lista para V de {n0} a {n1}. {dados}; a faixa cinza vai do menor ao maior dos grafos sorteados. Tracejada: V log₂ V, de referência.",
+  "distribuicao": "{vezes} grafos sorteados de {nd} vértices: o heap mais alto vai de {min} a {max} pares. A barra preta é o grafo do encarte.",
+  "rotulo": "heap mais alto (V = {nd})",
+  "memoria": "O heap mais alto para cada V, nos três grafos (nos sorteados, o maior entre eles). O vetor dist, sempre com V casas, fica de fora. No caminho, o heap nunca passa de 1; na grade cheia, ele carrega a fronteira e os pares vencidos."
+ },
+ "pseudocodigo": "procedimento dijkstra(G, s):\n    dist[v] ← ∞ para todo vértice v\n    dist[s] ← 0;  insira (0, s) no heap\n    enquanto o heap não está vazio:\n        (d, u) ← tire o menor do heap\n        se d = dist[u]:\n            para cada vizinho v de u, com peso w:\n                se d + w < dist[v]:\n                    dist[v] ← d + w\n                    insira (dist[v], v) no heap\n        senão:\n            descarte o par (d, u), que está vencido\n    devolva dist\n",
+ "placa": {
+  "autor": "Edsger W. Dijkstra",
+  "ano": "1959"
+ }
+}

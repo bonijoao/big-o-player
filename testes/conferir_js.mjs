@@ -42,7 +42,7 @@ function confereLinhas(pasta, eventos) {
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
-    atribui: "passo", insere: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    atribui: "passo", insere: "passo", tira: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -87,6 +87,10 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "atribui" || e.v === undefined || e.vars["dist[v]"] === e.d) && (e.t !== "enfileira" || e.vars["tamanho da fila"] >= 1),
     profundidade: (e) => (e.t !== "topo" || e.vars.u === e.u + 1) && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1 && e.vars["próximo[u]"] <= e.vars["grau(u)"]))
       && (e.t !== "atribui" || e.v === undefined || (e.vars.k === e.k && e.vars["ordem[v]"] === e.k)) && (e.t !== "desempilha" || e.vars.u === e.u + 1),
+    dijkstra: (e) => (e.t !== "tira" || (e.vars.u === e.u + 1 && e.vars.d === e.d && e.vars["tamanho do heap"] === e.casas.length))
+      && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1 && e.vars.w === e.w))
+      && (e.t !== "atribui" || e.v === undefined || (e.vars.v === e.v + 1 && e.vars["dist[v]"] === e.d && e.vars.d + e.vars.w === e.d))
+      && (e.t !== "insere" || e.vars["tamanho do heap"] === e.casas.length) && (e.t !== "descarta" || (e.vars.u === e.u + 1 && e.vars["dist[u]"] < e.d)),
     kmeans: (e) => e.t !== "dist" || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1 && e.vars[e.linha === 7 ? "menor" : "d"] === e.x),
   }[pasta];
   let erros = 0;
@@ -197,6 +201,18 @@ for (const pasta of ["largura", "profundidade"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: ${pasta} (${casos.length} grafos)`);
 }
 
+{
+  const d = ler("algoritmos/dijkstra/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ dist: r.dist, ordem: r.ordem, ops: r.ops, operacoes: r.operacoes, vizinhos: r.vizinhos, descartados: r.descartados, estrutura: r.estrutura });
+  const casos = [{ ...ex, caso: "encarte" }, ...d.conferir];
+  const roda = (c) => A.dijkstra(c.k * c.k, c.arestas, c.pesos);
+  let ok = confere("dijkstra pico", roda(ex).pico, d.memoria.pico);
+  for (const c of casos) ok = confere(`dijkstra ${c.caso} k=${c.k}`, medidas(roda(c)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("dijkstra", roda(c).eventos) && ok;
+  for (const c of casos) ok = confereVars("dijkstra", null, roda(c).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: dijkstra (${casos.length} grafos)`);
+}
+
 // os geradores de entrada do palco (o menu "sortear"): cada caso tem de dar o que promete
 {
   let ok = true;
@@ -226,6 +242,9 @@ for (const pasta of ["largura", "profundidade"]) {
       const V = k * k, E = (caso) => A.grafoGrade(k, caso, semente).length;
       const visitou = A.largura(V, A.grafoGrade(k, "sorteado", semente)).visitas.length;
       ok = confere(`grafo k=${k} s=${semente}`, [E("grade"), E("caminho"), E("sorteado") >= V - 1, visitou], [2 * k * (k - 1), V - 1, true, V]) && ok;
+      const as = A.grafoGrade(k, "sorteado", semente), ps = A.pesosGrade(as.length, [1, 9], semente);
+      const dj = A.dijkstra(V, as, ps);
+      ok = confere(`dijkstra k=${k} s=${semente}`, [ps.every((w) => w >= 1 && w <= 9), dj.dist.every((x) => x !== null), dj.ordem.length], [true, true, V]) && ok;
     }
   }
   console.log(`${ok ? "ok" : "FALHOU"}: geradores de entrada do palco`);
