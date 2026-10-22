@@ -1,0 +1,120 @@
+{
+ "id": "lista",
+ "nome": "Lista encadeada",
+ "variante": "duas versões: estática (vetor + índice do próximo) e dinâmica (nós e ponteiros)",
+ "frase": "Cada valor sabe quem vem depois dele.",
+ "resumo": "Os valores não precisam morar em ordem: cada um guarda, ao lado de si, onde está o seguinte. Inserir ou tirar no começo é só trocar um ponteiro, sem ninguém andar. O preço é a posição: para chegar ao i-ésimo, é preciso seguir os ponteiros um por um desde o início. Na estática, tudo mora em dois vetores (valor e próx), e as casas vagas formam uma segunda lista, a dos livres. Na dinâmica, cada valor mora num nó pedido à memória na hora, e o próx guarda o endereço do nó seguinte.",
+ "placa": {
+  "autor": "Allen Newell, Cliff Shaw e Herbert Simon (a lista ligada da linguagem IPL)",
+  "ano": "1955–1956"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "As duas guardam duas casas por valor: o valor e o próx. A estática reserva o vetor inteiro, com a folga das casas livres, e dobra quando enche, como o Vetor; remover devolve a casa para a lista de livres, mas não encolhe o vetor. A dinâmica pede um nó por valor e solta o nó ao remover: nunca tem folga, mas paga o ponteiro de cada valor."
+ },
+ "variantes": {
+  "estatica": "estática",
+  "dinamica": "dinâmica"
+ },
+ "operacoes": [
+  {
+   "id": "ler-ultima-dinamica",
+   "nome": "ler a posição i (a última)",
+   "notacao": "O(n)",
+   "porque": "Não há endereço calculado: segue i próx desde o início e lê o valor. Na estática, o mesmo, com índices no lugar de endereços."
+  },
+  {
+   "id": "inserir-inicio-estatica",
+   "nome": "inserir no início",
+   "notacao": "O(1)",
+   "porque": "Tira uma casa dos livres (lê o próx dela), escreve o valor e aponta o próx para o antigo início."
+  },
+  {
+   "id": "inserir-inicio-dinamica",
+   "nome": "inserir no início",
+   "notacao": "O(1)",
+   "porque": "Pede um nó, escreve o valor e aponta o próx para o antigo início. Ninguém anda, ao contrário do Vetor."
+  },
+  {
+   "id": "inserir-fim-estatica",
+   "nome": "inserir no fim, com folga",
+   "notacao": "O(1)",
+   "porque": "Como no início, e mais uma escrita: o próx do antigo fim, guardado à parte, passa a apontar para a casa nova."
+  },
+  {
+   "id": "inserir-fim-pior-estatica",
+   "nome": "inserir no fim, o mais caro de n seguidos",
+   "notacao": "O(n)",
+   "porque": "Sem casa livre, dobra: copia o valor e o próx de cada casa no mesmo índice e encadeia as casas novas na lista de livres."
+  },
+  {
+   "id": "inserir-fim-media-estatica",
+   "nome": "inserir no fim, média de n seguidos",
+   "notacao": "O(1) amortizado",
+   "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."
+  },
+  {
+   "id": "inserir-fim-dinamica",
+   "nome": "inserir no fim",
+   "notacao": "O(1)",
+   "porque": "Pede um nó, escreve o valor, o próx nulo e o próx do antigo fim. Nunca copia: o mais caro de n seguidos custa o mesmo."
+  },
+  {
+   "id": "inserir-meio-dinamica",
+   "nome": "inserir no meio",
+   "notacao": "O(n)",
+   "porque": "Anda até o nó anterior à posição e troca dois ponteiros. A troca é O(1); a caminhada é que custa. Na estática, o mesmo, mais a lista de livres."
+  },
+  {
+   "id": "remover-inicio-estatica",
+   "nome": "remover do início",
+   "notacao": "O(1)",
+   "porque": "Lê o valor e o próx do primeiro e devolve a casa para os livres (uma escrita no próx dela)."
+  },
+  {
+   "id": "remover-inicio-dinamica",
+   "nome": "remover do início",
+   "notacao": "O(1)",
+   "porque": "Lê o valor e o próx do primeiro; o início passa a ser o seguinte, e o nó é solto."
+  },
+  {
+   "id": "remover-fim-dinamica",
+   "nome": "remover do fim",
+   "notacao": "O(n)",
+   "porque": "O fim está guardado, mas quem vem antes dele não: é preciso andar até o penúltimo para apagar o próx dele. Na estática, o mesmo."
+  },
+  {
+   "id": "buscar-ausente-dinamica",
+   "nome": "buscar um valor que não está",
+   "notacao": "O(n)",
+   "porque": "Lê o valor e o próx de cada nó até o fim. Na estática, o mesmo."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "remover-fim-dinamica",
+   "rotulo": "remover do fim"
+  },
+  {
+   "id": "ler-ultima-dinamica",
+   "rotulo": "ler a última"
+  },
+  {
+   "id": "inserir-fim-media-estatica",
+   "rotulo": "inserir no fim, média, estática"
+  },
+  {
+   "id": "inserir-fim-media-dinamica",
+   "rotulo": "inserir no fim, média, dinâmica"
+  },
+  {
+   "id": "inserir-inicio-dinamica",
+   "rotulo": "inserir no início"
+  }
+ ],
+ "legendas": {
+  "operacoes": "Custo = leituras + escritas de casas (o valor ou o próx de uma posição), contadas rodando as duas listas em Python com n valores já guardados, para n = {ns}. Seguir um ponteiro é ler um próx. O início, o fim, a cabeça dos livres e o tamanho, guardados à parte, não contam; pedir e soltar um nó da dinâmica também não.",
+  "custo": "O custo de cada operação com n valores já guardados, para n de {v0} a {v1}, medido uma vez por n (na dinâmica; a estática custa o mesmo ou 1 a mais, pela lista de livres). Remover do fim e ler a última sobem em linha reta: seguem todos os ponteiros. Inserir no início não sai do chão. Tracejadas: a média de n inserções seguidas no fim a partir da lista vazia; a da estática paga as cópias, a da dinâmica nunca copia.",
+  "casas": "Casas guardadas depois de pôr n valores no fim, a partir da lista vazia, para n de {v0} a {v1}. A dinâmica guarda exatamente 2n; a estática sobe em degraus, com a folga das casas livres."
+ }
+}

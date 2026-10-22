@@ -1,0 +1,85 @@
+{
+ "id": "deque",
+ "nome": "Deque",
+ "variante": "circular, com capacidade que dobra quando enche",
+ "frase": "Uma fila que abre pelas duas pontas.",
+ "resumo": "Põe-se e tira-se pela frente e por trás. É a fila circular com as duas pontas abertas: os valores moram em casas próprias, e ninguém anda; quem anda são os marcadores. Pôr na frente recua o início uma casa, dando a volta no começo do vetor; tirar de trás só lê a última casa. Serve de pilha e de fila ao mesmo tempo, e é o que a janela deslizante precisa: entra por trás, sai pelas duas pontas.",
+ "placa": {
+  "autor": "o nome é de E. J. Schweppe; Donald Knuth o registrou em The Art of Computer Programming",
+  "ano": "1968"
+ },
+ "memoria": {
+  "notacao": "O(n)",
+  "porque": "Uma casa por valor, mais a folga do vetor, que dobra quando enche; tirar não devolve casas. O início e o tamanho ficam guardados à parte."
+ },
+ "operacoes": [
+  {
+   "id": "por-tras",
+   "nome": "pôr atrás, com folga",
+   "notacao": "O(1)",
+   "porque": "Escreve na casa logo depois da última, dando a volta se passar do fim do vetor."
+  },
+  {
+   "id": "por-frente",
+   "nome": "pôr na frente, com folga",
+   "notacao": "O(1)",
+   "porque": "Recua o início uma casa (do 0, vai para a última casa do vetor) e escreve ali."
+  },
+  {
+   "id": "por-tras-pior",
+   "nome": "pôr, o mais caro de n seguidos",
+   "notacao": "O(n)",
+   "porque": "Quando enche, dobra e copia o deque na ordem, a partir da casa 0. Na frente, o mesmo."
+  },
+  {
+   "id": "por-tras-media",
+   "nome": "pôr atrás, média de n seguidos",
+   "notacao": "O(1) amortizado",
+   "porque": "As cópias ficam cada vez mais raras: o custo médio não cresce com n."
+  },
+  {
+   "id": "por-frente-media",
+   "nome": "pôr na frente, média de n seguidos",
+   "notacao": "O(1) amortizado",
+   "porque": "As mesmas cópias, nas mesmas vezes: o vetor enche igual por qualquer ponta."
+  },
+  {
+   "id": "tirar-frente",
+   "nome": "tirar da frente",
+   "notacao": "O(1)",
+   "porque": "Lê a casa do início e anda o início uma casa. Ninguém se desloca."
+  },
+  {
+   "id": "tirar-tras",
+   "nome": "tirar de trás",
+   "notacao": "O(1)",
+   "porque": "Lê a última casa (início + tamanho − 1, dando a volta) e diminui o tamanho."
+  },
+  {
+   "id": "frente",
+   "nome": "ver a frente",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da casa do início."
+  },
+  {
+   "id": "fundo",
+   "nome": "ver o fundo",
+   "notacao": "O(1)",
+   "porque": "Uma leitura da última casa."
+  }
+ ],
+ "grafico": [
+  {
+   "id": "por-tras-media",
+   "rotulo": "pôr atrás, média"
+  },
+  {
+   "id": "por-tras",
+   "rotulo": "pôr atrás"
+  },
+  {
+   "id": "tirar-tras",
+   "rotulo": "tirar de trás"
+  }
+ ]
+}
