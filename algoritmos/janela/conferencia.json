@@ -1,0 +1,7 @@
+{
+  "referencia": "apply(embed(x, k), 1, max) do R base e janela_r()/ingenuo_r() (reimplementação em R)",
+  "versao_r": "4.6.0",
+  "vetores": 75,
+  "tudo_ok": true,
+  "resumo": "Rodado em R 4.6.0 em 75 vetores (sorteados, crescentes e decrescentes, de 5 a 30 valores, com k de 1 a 30): os máximos batem com apply(embed(x, k), 1, max), e as comparações do deque e do ingênuo e o deque mais cheio (nunca acima de k) batem com a reimplementação em R, uma a uma."
+}

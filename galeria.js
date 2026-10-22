@@ -175,6 +175,8 @@
     atendimento: { entrada: "clientes", conta: (ex) => `${ex.n} clientes, espera média de ${decimal(ex.soma / ex.n)} min, na entrada do encarte` },
     prioridade: { entrada: "pacientes", conta: (ex) => `${ex.n} pacientes, espera média de ${decimal(ex.soma / ex.n)} min (gravidade 1: ${decimal(ex.por_gravidade[0])} min), na entrada do encarte` },
     dijkstra: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas com pesos de ${ex.faixa_pesos[0]} a ${ex.faixa_pesos[1]}, heap de até ${ex.estrutura} pares, ${ex.descartados} descartados, no grafo do encarte` },
+    inverter: { entrada: "nós", conta: (ex) => `${ex.n} nós, ${ex.casas} casas lidas e escritas, na lista do encarte` },
+    janela: { entrada: "números", conta: (ex) => `${ex.n} números, janela de ${ex.k}; o ingênuo faria ${ex.ingenuo}, no vetor do encarte` },
     grafo: { entrada: "vértices", conta: (ex) => `${ex.n} vértices e ${ex.arestas.length} arestas, ${nomeEstrutura(ex)} de até ${ex.estrutura}, no grafo do encarte` },
     mediana: { entrada: "números", conta: (ex) => `${ex.n} volumes, mediana ${num(ex.mediana, 1)} (a média é ${num(ex.media, 1)}), na entrada do encarte` },
     welford: { entrada: "valores", conta: (ex) => `${ex.n} anos lidos uma vez, variância de ${num(ex.variancia, 4)} pés², na entrada do encarte` },
@@ -209,12 +211,15 @@
     // as legendas dos gráficos das faixas novas: texto da ficha, números do dados.json
     const preencher = (t) => (t || "").replace(/\{(\w+)\}/g, (_, c) => ({
       n0: mil(m.tempo.crescimento[0].n), n1: mil(m.tempo.crescimento.at(-1).n), dados: m.tempo.crescimento_dados[0].toUpperCase() + m.tempo.crescimento_dados.slice(1),
-      vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])),
-      acima: (dist.valores || []).filter((x) => x < dist.destaque).length,
+      ...(temDist ? { vezes: dist.vezes, nd: dist.n, min: Math.min(...(dist.valores || [0])), max: Math.max(...(dist.valores || [0])),
+        acima: (dist.valores || []).filter((x) => x < dist.destaque).length } : {}),
+      ...(porK ? { k: m.tempo.k_fixo, nk: m.tempo.n_fixo, k0: porK[0].n, k1: porK.at(-1).n } : {}),
     })[c] ?? `{${c}}`);
-    const temPicoCasos = casos && m.tempo.crescimento.some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
+    // a janela tem um segundo eixo (k, com n fixo): o tempo × k no lugar da distribuição, e a memória × k
+    const porK = m.tempo.por_k;
+    const temPicoCasos = casos && (porK || m.tempo.crescimento).some((d) => m.tempo.series.some((sr) => d[sr.caso].pico > 0));
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
-    const dist = m.tempo.distribuicao || {}, erro = m.tempo.erro;
+    const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro;
     const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div");
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
@@ -279,9 +284,9 @@
       casos ? el("section", { class: "secao" }, [
         el("h2", { text: gr.titulo }),
         el("p", { text: gr.texto }),
-        el("div", { class: "dois" }, [
+        el("div", { class: temDist || porK || erro ? "dois" : "um" }, [
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text: preencher(gr.crescimento) })]),
-          el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(erro ? gr.erro : gr.distribuicao) })]),
+          (temDist || porK || erro) && el("figure", { class: "figura" }, [fig2, el("figcaption", { text: preencher(porK ? gr.por_k : erro ? gr.erro : gr.distribuicao) })]),
         ]),
       ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
@@ -338,9 +343,10 @@
       const Gr = window.Graficos;
       if (casos) {
         Gr.graficoCasos(fig1, f, "ops");
-        if (erro) Gr.graficoErro(fig2, f);
-        else Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
-        if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico");
+        if (porK) Gr.graficoCasos(fig2, f, "ops", "por_k");
+        else if (erro) Gr.graficoErro(fig2, f);
+        else if (temDist) Gr.graficoHistograma(fig2, dist.valores, dist.destaque, preencher(gr.rotulo));
+        if (temPicoCasos) Gr.graficoCasos(fig3, f, "pico", porK ? "por_k" : "crescimento");
       } else if (ordena) {
         Gr.graficoOrdenacao(fig1, f, "comparacoes");
         Gr.graficoHistograma(fig2, dist.comparacoes, ex.ops, `comparações (n = ${dist.n})`);
@@ -433,6 +439,10 @@
       opcoes: [["padrao", "o do encarte", "os pacientes do encarte"], ["calmo", "calmo", "movimento calmo"], ["no_limite", "no limite", "movimento no limite"], ["lotado", "lotado", "movimento lotado"]] },
     dijkstra: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado",
       opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
+    inverter: { rotulo: "lista", ns: [4, 6, 8, 10], sortear: "sortear lista", sorteado: "sorteada",
+      opcoes: [["padrao", "a do encarte", "a lista do encarte"], ["sorteada", "sorteada", "lista sorteada"]] },
+    janela: { rotulo: "vetor", ns: [8, 12, 16, 24, 32], ks: [3, 4, 6, 8], sortear: "sortear vetor", sorteado: "sorteada",
+      opcoes: [["padrao", "o do encarte", "o vetor do encarte"], ["sorteada", "sorteado", "vetor sorteado"], ["crescente", "crescente", "vetor crescente"], ["decrescente", "decrescente", "vetor decrescente"]] },
     grafo: { rotulo: "grafo", n: "V", ns: [9, 16, 25, 36, 49], sortear: "sortear grafo", sorteado: "sorteado", fixos: ["grade", "caminho"],
       opcoes: [["padrao", "o do encarte", "o grafo do encarte"], ["sorteado", "sorteado", "grafo sorteado"], ["grade", "grade cheia", "grade cheia"], ["caminho", "caminho", "caminho em serpentina"]] },
     mediana: { rotulo: "entrada", ns: [8, 16, 24, 32, 48, 64], sortear: "embaralhar", sorteado: "aleatorio", fixos: ["ordenado", "invertido"],
@@ -446,7 +456,8 @@
   const tipoDe = (f) => f.medido.tempo.tipo || "ordenacao";
   const rotuloCfg = (f, c) => (ENTRADAS[tipoDe(f)].opcoes.find((o) => o[0] === c.tipo) || [])[2];
 
-  const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null } : { tipo: "padrao", n: f.exemplo.n, semente: 1 });
+  const cfgPadrao = (f) => (f.alg === "kmeans" ? { k: f.exemplo.iniciais.length, semente: null }
+    : { tipo: "padrao", n: f.exemplo.n, semente: 1, ...(f.exemplo.k && tipoDe(f) === "janela" ? { k: f.exemplo.k } : {}) });
   function duracao(f) {
     const chave = `${f.id}:${accelerando}`;
     if (!padroes[chave]) padroes[chave] = window.Palco.criar(f, cfgPadrao(f), accelerando);
@@ -630,8 +641,14 @@
   function sincronizarControles() {
     const c = cfgs[faixa.id], km = faixa.alg === "kmeans";
     palco.classList.toggle("e-kmeans", km);
-    if (km) $("#cfg-k").value = String(c.k);
-    else {
+    // o k: o do K-means (sem o menu de entrada) ou o da janela (junto do menu)
+    const ks = km ? [2, 3, 4, 5] : ENTRADAS[tipoDe(faixa)].ks;
+    palco.classList.toggle("e-com-k", !km && !!ks);
+    if (ks) {
+      $("#cfg-k").replaceChildren(...ks.map((k) => el("option", { text: String(k) })));
+      $("#cfg-k").value = String(c.k);
+    }
+    if (!km) {
       const E = ENTRADAS[tipoDe(faixa)];
       $("#cfg-tipo-rotulo").textContent = E.rotulo;
       $("#cfg-n-rotulo").textContent = E.n || "n";

@@ -457,6 +457,103 @@
       ops: acessos, operacoes: (c.ops.inserir || 0) + (c.ops.tirar || 0) };
   }
 
+  /** Inverter lista encadeada (algoritmos/inverter/inverter.py), sobre a Lista dinâmica do instrumento.
+   *  Os nós nascem na ordem da lista, então o id de cada um é a posição dele na lista de entrada. */
+  function inverter(valores) {
+    const c = contador(), lista = instrumentos().ListaDinamica();
+    for (const x of valores) lista.inserir_fim(x);
+    const reg = lista.reg;
+    reg.leituras = 0; reg.escritas = 0; reg.eventos = [];   // a entrada é montada fora da conta
+    const pos = (p) => (p === null ? null : p.id + 1);       // posições a partir de 1, como no pseudocódigo
+    const V = c.vars = { anterior: null, atual: null, "próximo": null, "ponteiros trocados": 0 };
+    let anterior = null;
+    c.push({ t: "atribui", linha: 2 });
+    let atual = lista.inicio;
+    V.atual = pos(atual);
+    c.push({ t: "atribui", linha: 3 });
+    for (;;) {
+      c.push({ t: "testa", linha: 4 });
+      if (atual === null) break;
+      const proximo = lista.leProx(atual);
+      V["próximo"] = pos(proximo);
+      c.push({ t: "proximo", i: atual.id, linha: 5 });
+      lista.escreveProx(atual, anterior);
+      c.op("ponteiros");
+      V["ponteiros trocados"]++;
+      c.push({ t: "vira", i: atual.id, de: anterior === null ? null : anterior.id, linha: 6 });
+      anterior = atual;
+      V.anterior = pos(anterior);
+      c.push({ t: "atribui", linha: 7 });
+      atual = proximo;
+      V.atual = pos(atual);
+      c.push({ t: "atribui", linha: 8 });
+    }
+    lista.fim = lista.inicio;
+    c.push({ t: "atribui", linha: 9 });
+    lista.inicio = anterior;
+    c.push({ t: "atribui", fim: true, linha: 10 });
+    return { valores, invertida: lista.valores(), eventos: c.eventos, ops: c.ops.ponteiros || 0, pico: c.pico,
+      casas: reg.leituras + reg.escritas };
+  }
+
+  /** Máximo em janela deslizante (algoritmos/janela/janela.py), sobre o Deque do instrumento, que guarda posições. */
+  function janela(v, k) {
+    const c = contador(), d = instrumentos().Deque(), n = v.length, maximos = [];
+    // do deque, o painel mostra as pontas e o tamanho, lidos sem contar (as posições aparecem na animação)
+    const V = c.vars = { i: null, "v[i]": null, frente: null, fundo: null, "tamanho do deque": 0, "máximo": null };
+    const pontas = () => {
+      const p = d.valores();
+      Object.assign(V, { frente: p.length ? p[0] + 1 : null, fundo: p.length ? p[p.length - 1] + 1 : null, "tamanho do deque": p.length });
+      c.aloca("posicoes", p.length);
+    };
+    c.push({ t: "atribui", linha: 2 });
+    for (let i = 0; i < n; i++) {
+      Object.assign(V, { i: i + 1, "v[i]": v[i] });
+      c.push({ t: "le", i, linha: 3 });
+      c.push({ t: "testa", linha: 4 });
+      if (i >= k && d.frente() === i - k) {
+        const j = d.tirar_frente(); c.op("deque"); pontas();
+        c.push({ t: "tira", j, ponta: "frente", linha: 5 });
+      }
+      for (;;) {
+        if (d.n === 0) { c.push({ t: "testa", linha: 6 }); break; }
+        const j = d.fundo();
+        c.op("comparacoes");
+        c.push({ t: "compara", i, j, linha: 6 });
+        if (!(v[j] <= v[i])) break;
+        d.tirar_tras(); c.op("deque"); pontas();
+        c.push({ t: "tira", j, ponta: "fundo", linha: 7 });
+      }
+      d.por_tras(i); c.op("deque"); pontas();
+      c.push({ t: "poe", i, linha: 8 });
+      c.push({ t: "testa", linha: 9 });
+      if (i >= k - 1) {
+        const m = v[d.frente()];
+        maximos.push(m);
+        V["máximo"] = m;
+        c.push({ t: "maximo", i, m, linha: 10 });
+      }
+    }
+    c.push({ t: "devolva", linha: 11 });
+    const ing = janelaIngenua(v, k);
+    if (JSON.stringify(ing.maximos) !== JSON.stringify(maximos)) throw new Error("o deque e o ingênuo discordam");
+    return { vetor: v, k, maximos, eventos: c.eventos, ops: c.ops.comparacoes || 0, deque: c.ops.deque || 0,
+      ingenuo: ing.comparacoes, ingenuoAte: ing.ate, pico: c.pico, casas: d.reg.leituras + d.reg.escritas };
+  }
+
+  /** O ingênuo da janela: k − 1 comparações por janela. `ate[a]`: as comparações até a janela a (inclusive). */
+  function janelaIngenua(v, k) {
+    const maximos = [], ate = [];
+    let comparacoes = 0;
+    for (let a = 0; a + k <= v.length; a++) {
+      let m = v[a];
+      for (let j = a + 1; j < a + k; j++) { comparacoes++; if (v[j] > m) m = v[j]; }
+      maximos.push(m);
+      ate.push(comparacoes);
+    }
+    return { maximos, comparacoes, ate };
+  }
+
   // ---------- grafos (algoritmos/largura, algoritmos/profundidade) ----------
 
   // a lista de adjacência do instrumento Grafo, montada sem entrar na conta
@@ -857,6 +954,17 @@
     return { chegada, duracao, gravidade };
   }
 
+  /** n valores de 10 a 99, como algoritmos/janela/janela.py:gerar (com outro sorteador): sorteados
+   *  (podem repetir), crescentes ou decrescentes (sem repetir). A lista da inversão usa os sorteados. */
+  function valoresSorteados(n, caso, semente) {
+    const r = sorteador(semente);
+    if (caso === "sorteada") return Array.from({ length: n }, () => 10 + Math.floor(r() * 90));
+    const faixa = Array.from({ length: 90 }, (_, i) => 10 + i);
+    for (let i = faixa.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const x = faixa[i]; faixa[i] = faixa[j]; faixa[j] = x; }
+    const v = faixa.slice(0, n).sort((a, b) => a - b);
+    return caso === "crescente" ? v : v.reverse();
+  }
+
   /** As arestas de um grafo em grade k × k, como motor/grade.py:gerar (com outro sorteador):
    *  a grade cheia, um sorteado conexo (árvore que cobre a grade + cada aresta que sobra com chance 1/3)
    *  ou o caminho em serpentina que começa no vértice 0. */
@@ -899,8 +1007,9 @@
       : forma === "uniforme" ? 100 * r() : r() < 0.5 ? normal(35, 6) : normal(65, 6)));
   }
 
-  const api = { ordenar, kmeans, buscar, parenteses, atendimento, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
-    histograma, pretty, sturges, prioridade, dijkstra, entrada, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade, centrosIniciais, amostra, ORDENACOES };
+  const api = { ordenar, kmeans, buscar, parenteses, atendimento, inverter, janela, janelaIngenua, largura, profundidade, mediana, welford, somaDosQuadrados, duasPassadas,
+    histograma, pretty, sturges, prioridade, dijkstra, entrada, valoresSorteados, entradaBusca, textoParenteses, clientes, pacientes, grafoGrade, pesosGrade,
+    centrosIniciais, amostra, ORDENACOES };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Algoritmos = api;
 })(typeof window !== "undefined" ? window : globalThis);

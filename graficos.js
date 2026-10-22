@@ -211,21 +211,23 @@
 
   // As faixas que descrevem os próprios casos no dados.json (tempo.series):
   // a medida "ops" (a unidade da faixa, média nos sorteados) ou "pico".
-  function graficoCasos(caixa, a, medida) {
-    const t = a.medido.tempo, tempo = medida === "ops";
+  // `chave`: a série medida (crescimento, × n; na janela também por_k, × k com n fixo)
+  function graficoCasos(caixa, a, medida, chave = "crescimento") {
+    const t = a.medido.tempo, tempo = medida === "ops", porK = chave === "por_k";
     let k = 0;
     const series = t.series.map((sr) => ({ ...sr, curto: sr.nome.replace(/ \(.*\)$/, ""),
-      cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }));
+      cor: sr.caso === t.banda ? "#1e1e1e" : CORES_CASOS[k++ % CORES_CASOS.length] }))
+      .filter((sr) => tempo || sr.memoria !== false);   // o ingênuo não guarda nada: fica fora da memória
     if (!tempo) series.forEach((sr) => { sr.nome = sr.nome.replace("(média)", "(maior)"); });   // na memória, o maior pico dos sorteios
     desenharCasos(caixa, {
-      dados: t.crescimento,
+      dados: t[chave],
       val: (d, caso) => (tempo ? d[caso].media ?? d[caso].ops : d[caso].pico),
       series,
       refs: (tempo ? t.refs || [] : t.refs_memoria || []).map((r) => REFS[r]),
       banda: tempo && t.banda ? { min: (d) => d[t.banda].min, max: (d) => d[t.banda].max } : null,
       todas: "todos os casos",
-      aria: `${tempo ? t.unidade : "memória extra no pico"} por tamanho n, um traço por caso de entrada`,
-      eixo: t.eixo,
+      aria: `${tempo ? t.unidade : "memória extra no pico"} por ${porK ? "tamanho da janela k" : "tamanho n"}, um traço por caso de entrada`,
+      eixo: porK ? t.eixo_k : t.eixo,
     });
   }
 

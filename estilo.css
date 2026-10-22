@@ -429,7 +429,7 @@ svg text { font-family: var(--mono); }
 .botao-passo:hover, .palco-controles select:hover { border-color: var(--cinza-claro); }
 .palco-controles select:disabled { color: var(--cinza-claro); cursor: default; }
 .palco .so-kmeans, .palco.e-kmeans .so-ordenacao { display: none; }
-.palco.e-kmeans .so-kmeans { display: inline-flex; }
+.palco.e-kmeans .so-kmeans, .palco.e-com-k .so-kmeans { display: inline-flex; }
 
 .palco-barra { display: flex; align-items: center; gap: 6px; padding: 6px 8px 6px 14px; border-bottom: 1px solid var(--linha); font-size: 0.82rem; }
 .palco-titulo { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
@@ -532,4 +532,6 @@ svg text { font-family: var(--mono); }
 .demo-vista { margin: 0; min-width: 0; max-width: 100%; }
 .demo-vista figcaption { font-size: 0.78rem; color: var(--cinza); margin: 0 0 6px; }
 .demo-vista svg { display: block; height: auto; }
+.demo-listas { flex-direction: column; align-items: stretch; width: 100%; }
+.demo-listas .demo-vista svg { max-width: 100%; }
 .custo-vista { display: block; }

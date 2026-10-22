@@ -42,7 +42,8 @@ function confereLinhas(pasta, eventos) {
     menor: "passo", dist: "passo", rotulo: ["decisao", "passo"], volta: "decisao", centros: "passo", testa: "decisao", pare: "passo",
     achou: "passo", devolva: "passo", meio: "passo", corta: "passo", le: "laco", empilha: "passo", desempilha: "passo",
     erro: "passo", enfileira: "passo", maior: "passo", chama: "passo", direto: "passo", atende: "passo",
-    atribui: "passo", insere: "passo", tira: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
+    atribui: "passo", insere: "passo", descarta: "passo", sai: "chamada", visita: "passo", olha: ["laco", "passo"], topo: "passo", avanca: "passo", classes: "passo", classe: "passo", conta: "passo",
+    proximo: "passo", vira: "passo", tira: "passo", poe: "passo", maximo: "passo" };   // o retorno volta à linha da chamada; rótulo: o teste "≠" ou a troca
   let erros = 0;
   for (const e of eventos) {
     if (e.linha === undefined) continue;
@@ -91,6 +92,10 @@ function confereVars(pasta, vetor, eventos) {
       && (e.t !== "olha" || (e.vars.u === e.u + 1 && e.vars.v === e.v + 1 && e.vars.w === e.w))
       && (e.t !== "atribui" || e.v === undefined || (e.vars.v === e.v + 1 && e.vars["dist[v]"] === e.d && e.vars.d + e.vars.w === e.d))
       && (e.t !== "insere" || e.vars["tamanho do heap"] === e.casas.length) && (e.t !== "descarta" || (e.vars.u === e.u + 1 && e.vars["dist[u]"] < e.d)),
+    inverter: (e) => (e.t !== "vira" || (e.vars.atual === e.i + 1 && e.vars.anterior === (e.de === null ? null : e.de + 1)))
+      && (e.t !== "proximo" || e.vars.atual === e.i + 1),
+    janela: (e) => (e.t !== "compara" || (e.vars.i === e.i + 1 && e.vars["v[i]"] === v[e.i] && e.vars.fundo === e.j + 1))
+      && (e.t !== "poe" || (e.vars.fundo === e.i + 1 && e.vars["tamanho do deque"] >= 1)) && (e.t !== "maximo" || e.vars["máximo"] === e.m),
     mediana: (e) => (e.t !== "compara" || (e.linha === 8 ? e.vars.j === e.j + 1 && e.vars["pivô"] === v[e.i] : e.vars.m === e.i + 1 && e.vars.j === e.j + 1))
       && (e.t !== "corta" || (e.vars.a === e.a + 1 && e.vars.b === e.b + 1)) && (e.t !== "menor" || e.vars.m === e.m + 1)
       && (e.t !== "troca" || e.linha !== 9 || (e.vars.i === e.i + 1 && e.vars.j === e.j + 1)),
@@ -195,6 +200,28 @@ for (const pasta of ["sequencial", "binaria"]) {
   console.log(`${ok ? "ok" : "FALHOU"}: prioridade (${casos.length} sorteios)`);
 }
 
+{
+  const d = ler("algoritmos/inverter/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ invertida: r.invertida, ops: r.ops, pico: r.pico, casas: r.casas });
+  const casos = [{ ...ex, pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`inverter n=${c.valores.length}`, medidas(A.inverter(c.valores)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("inverter", A.inverter(c.valores).eventos) && ok;
+  for (const c of casos) ok = confereVars("inverter", null, A.inverter(c.valores).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: inverter (${casos.length} listas)`);
+}
+
+{
+  const d = ler("algoritmos/janela/dados.json"), ex = d.exemplo;
+  const medidas = (r) => ({ maximos: r.maximos, ops: r.ops, deque: r.deque, ingenuo: r.ingenuo, pico: r.pico, casas: r.casas });
+  const casos = [{ ...ex, caso: "encarte", pico: d.memoria.pico }, ...d.conferir];
+  let ok = true;
+  for (const c of casos) ok = confere(`janela ${c.caso} n=${c.vetor.length} k=${c.k}`, medidas(A.janela(c.vetor, c.k)), medidas(c)) && ok;
+  for (const c of casos) ok = confereLinhas("janela", A.janela(c.vetor, c.k).eventos) && ok;
+  for (const c of casos) ok = confereVars("janela", c.vetor, A.janela(c.vetor, c.k).eventos) && ok;
+  console.log(`${ok ? "ok" : "FALHOU"}: janela (${casos.length} vetores)`);
+}
+
 for (const pasta of ["largura", "profundidade"]) {
   const d = ler(`algoritmos/${pasta}/dados.json`), ex = d.exemplo;
   const res = pasta === "largura" ? "dist" : "ordem";
@@ -292,6 +319,16 @@ for (const pasta of ["largura", "profundidade"]) {
       const as = A.grafoGrade(k, "sorteado", semente), ps = A.pesosGrade(as.length, [1, 9], semente);
       const dj = A.dijkstra(V, as, ps);
       ok = confere(`dijkstra k=${k} s=${semente}`, [ps.every((w) => w >= 1 && w <= 9), dj.dist.every((x) => x !== null), dj.ordem.length], [true, true, V]) && ok;
+    }
+  }
+  // janela: crescente sobe, decrescente desce, todos de 10 a 99; o deque nunca passa de k
+  for (let semente = 1; semente <= 60; semente++) {
+    for (const n of [8, 12, 16, 24, 32]) {
+      const sobe = (v) => v.every((x, i) => !i || x > v[i - 1]), desce = (v) => v.every((x, i) => !i || x < v[i - 1]);
+      const [s, c, d] = ["sorteada", "crescente", "decrescente"].map((caso) => A.valoresSorteados(n, caso, semente));
+      const dentro = [s, c, d].every((v) => v.length === n && v.every((x) => Number.isInteger(x) && x >= 10 && x <= 99));
+      const picos = [3, 4, 6, 8].every((k) => A.janela(s, k).pico <= k && A.janela(d, k).pico === Math.min(k, n));
+      ok = confere(`valores n=${n} s=${semente}`, [dentro, sobe(c), desce(d), picos], [true, true, true, true]) && ok;
     }
   }
   // as amostras do histograma: n valores com uma casa decimal, e as contagens somam n

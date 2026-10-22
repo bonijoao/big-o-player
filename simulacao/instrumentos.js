@@ -105,19 +105,26 @@
     const c = casas(1, reg);
     const e = {
       reg, n: 0, inicio: 0,
+      // cheio: dobra e copia na ordem da fila, a partir da casa 0 (o Deque usa também)
+      realocar() {
+        const ini = e.inicio, cap = c.capacidade;
+        c.realoca(2 * cap, e.n, (k) => (ini + k) % cap);
+        e.inicio = 0;
+      },
+      lerCasa: (i) => c.le(i),
+      escreverCasa: (i, x) => c.escreve(i, x),
+      soltarCasa(i) {
+        c.v[i] = null;                         // a casa volta a ficar livre (não conta)
+        reg.eventos.push({ t: "libera", i });
+      },
       enfileirar(x) {
-        if (e.n === c.capacidade) {
-          const ini = e.inicio, cap = c.capacidade;
-          c.realoca(2 * cap, e.n, (k) => (ini + k) % cap);
-          e.inicio = 0;
-        }
+        if (e.n === c.capacidade) e.realocar();
         c.escreve((e.inicio + e.n) % c.capacidade, x);
         e.n++;
       },
       desenfileirar() {
         const x = c.le(e.inicio);
-        c.v[e.inicio] = null;                  // a casa volta a ficar livre (não conta)
-        reg.eventos.push({ t: "libera", i: e.inicio });
+        e.soltarCasa(e.inicio);
         e.inicio = (e.inicio + 1) % c.capacidade;
         e.n--;
         return x;
@@ -180,6 +187,161 @@
       get capacidade() { return v.capacidade; },
     };
     return h;
+  }
+
+  // ---------- deque circular (instrumentos/deque/deque.py) ----------
+
+  function Deque(reg = registro()) {
+    const d = FilaCircular(reg);
+    // as casas da fila circular são internas: a demo lê o que precisa por casas() e reg.eventos
+    const ultima = () => (d.inicio + d.n - 1) % d.capacidade;
+    return Object.assign(d, {
+      por_tras: d.enfileirar,
+      tirar_frente: d.desenfileirar,
+      frente: d.primeiro,
+      por_frente(x) {
+        if (d.n === d.capacidade) d.realocar();
+        d.inicio = (d.inicio - 1 + d.capacidade) % d.capacidade;
+        d.escreverCasa(d.inicio, x);
+        d.n++;
+      },
+      tirar_tras() {
+        const i = ultima(), x = d.lerCasa(i);
+        d.soltarCasa(i);
+        d.n--;
+        return x;
+      },
+      fundo: () => d.lerCasa(ultima()),
+    });
+  }
+
+  // ---------- listas encadeadas (instrumentos/lista/lista.py) ----------
+  // As operações são as mesmas nas duas; cada uma diz o que é uma casa (le,
+  // escreve) e o que é nulo. Os eventos dizem a casa (i na estática, o nó `no`
+  // na dinâmica) e o campo (valor ou próx); "marca" avisa quando o início, o
+  // fim ou a cabeça dos livres mudam, sem custo.
+
+  function operacoesLista(e) {
+    const id = (p) => (p !== null && typeof p === "object" ? p.id : p);   // na dinâmica, o nó vira o id dele
+    const marca = () => e.reg.eventos.push({ t: "marca", inicio: id(e.inicio), fim: id(e.fim), livre: e.livre });
+    const anda = (i) => { let p = e.inicio; for (let k = 0; k < i; k++) p = e.leProx(p); return p; };
+    return Object.assign(e, {
+      ler: (i) => e.leValor(anda(i)),
+      inserir_inicio(x) {
+        const c = e.nova(x);
+        e.escreveProx(c, e.inicio);
+        if (e.n === 0) e.fim = c;
+        e.inicio = c; e.n++; marca();
+      },
+      inserir_fim(x) {
+        const c = e.nova(x);
+        e.escreveProx(c, e.NULO);
+        if (e.n === 0) e.inicio = c; else e.escreveProx(e.fim, c);
+        e.fim = c; e.n++; marca();
+      },
+      inserir(i, x) {
+        if (i === 0) return e.inserir_inicio(x);
+        if (i === e.n) return e.inserir_fim(x);
+        const p = anda(i - 1), c = e.nova(x);
+        e.escreveProx(c, e.leProx(p));
+        e.escreveProx(p, c);
+        e.n++; marca();
+      },
+      remover_inicio() {
+        const c = e.inicio, x = e.leValor(c);
+        e.inicio = e.leProx(c);
+        e.devolve(c);
+        e.n--;
+        if (e.n === 0) e.fim = e.NULO;
+        marca();
+        return x;
+      },
+      remover(i) {
+        if (i === 0) return e.remover_inicio();
+        const p = anda(i - 1), c = e.leProx(p), x = e.leValor(c);
+        e.escreveProx(p, e.leProx(c));
+        if (c === e.fim) e.fim = p;
+        e.devolve(c);
+        e.n--; marca();
+        return x;
+      },
+      buscar(x) {
+        let p = e.inicio, k = 0;
+        while (p !== e.NULO) {
+          if (e.leValor(p) === x) return k;
+          p = e.leProx(p); k++;
+        }
+        return -1;
+      },
+    });
+  }
+
+  function ListaEstatica(reg = registro()) {
+    let valor = [null], prox = [-1];
+    const ev = (o) => reg.eventos.push(o);
+    const e = {
+      reg, n: 0, inicio: -1, fim: -1, livre: 0, NULO: -1,
+      leValor(i) { reg.leituras++; ev({ t: "le", i, campo: "valor" }); return valor[i]; },
+      leProx(i) { reg.leituras++; ev({ t: "le", i, campo: "prox" }); return prox[i]; },
+      escreveValor(i, x) { reg.escritas++; ev({ t: "escreve", i, campo: "valor", x }); valor[i] = x; },
+      escreveProx(i, j) { reg.escritas++; ev({ t: "escreve", i, campo: "prox", x: j }); prox[i] = j; },
+      // cheio: casas novas; copia cada casa no mesmo índice e encadeia as novas nos livres
+      realoca(cap) {
+        const velho = valor.length;
+        ev({ t: "realoca", de: velho, para: cap });
+        const nv = new Array(cap).fill(null), np = new Array(cap).fill(-1);
+        for (let k = 0; k < velho; k++) {
+          reg.leituras += 2; reg.escritas += 2;
+          nv[k] = valor[k]; np[k] = prox[k];
+          ev({ t: "copia", i: k });
+        }
+        valor = nv; prox = np;
+        for (let k = velho; k < cap; k++) e.escreveProx(k, k + 1 < cap ? k + 1 : -1);
+        e.livre = velho;
+      },
+      nova(x) {
+        if (e.livre === -1) e.realoca(2 * valor.length);
+        const c = e.livre;
+        e.livre = e.leProx(c);
+        e.escreveValor(c, x);
+        return c;
+      },
+      devolve(c) {
+        e.escreveProx(c, e.livre);
+        valor[c] = null;                       // a casa volta a ficar livre (não conta)
+        ev({ t: "libera", i: c });
+        e.livre = c;
+      },
+      valores() { const v = []; for (let p = e.inicio; p !== -1; p = prox[p]) v.push(valor[p]); return v; },
+      casas: () => ({ valor: valor.slice(), prox: prox.slice() }),
+      get capacidade() { return 2 * valor.length; },
+    };
+    return operacoesLista(e);
+  }
+
+  function ListaDinamica(reg = registro()) {
+    let criados = 0;
+    const ev = (o) => reg.eventos.push(o);
+    const e = {
+      reg, n: 0, inicio: null, fim: null, livre: null, NULO: null,
+      leValor(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "valor" }); return p.valor; },
+      leProx(p) { reg.leituras++; ev({ t: "le", no: p.id, campo: "prox" }); return p.prox; },
+      escreveValor(p, x) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "valor", x }); p.valor = x; },
+      escreveProx(p, q) { reg.escritas++; ev({ t: "escreve", no: p.id, campo: "prox", x: q && q.id }); p.prox = q; },
+      // aloca um nó sozinho (pedir memória não conta); o id é só o nome dele na demo
+      nova(x) {
+        const c = { id: criados++, valor: null, prox: null };
+        ev({ t: "aloca", no: c.id });
+        e.escreveValor(c, x);
+        return c;
+      },
+      devolve(c) { ev({ t: "solta", no: c.id }); },
+      valores() { const v = []; for (let p = e.inicio; p !== null; p = p.prox) v.push(p.valor); return v; },
+      // os nós na ordem da lista: {id, valor, prox (o id do seguinte ou null)}
+      nos() { const v = []; for (let p = e.inicio; p !== null; p = p.prox) v.push({ id: p.id, valor: p.valor, prox: p.prox && p.prox.id }); return v; },
+      get capacidade() { return 2 * e.n; },
+    };
+    return operacoesLista(e);
   }
 
   // ---------- grafo em três vistas (instrumentos/grafo/grafo.py) ----------
@@ -278,8 +440,8 @@
     return arestas;
   }
 
-  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, heap: Heap,
-    matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
+  const ESTRUTURAS = { vetor: Vetor, pilha: Pilha, ingenua: FilaIngenua, circular: FilaCircular, deque: Deque, heap: Heap,
+    estatica: ListaEstatica, dinamica: ListaDinamica, matriz: GrafoMatriz, lista: GrafoLista, incidencia: GrafoIncidencia };
 
   /** Roda uma operação e devolve o que ela devolveu, o que custou e os eventos. */
   function operar(e, chamada, args = []) {
@@ -302,7 +464,7 @@
     return e;
   }
 
-  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
+  const api = { Vetor, Pilha, FilaIngenua, FilaCircular, Deque, ListaEstatica, ListaDinamica, Heap, antes, GrafoMatriz, GrafoLista, GrafoIncidencia, anel, ESTRUTURAS, operar, montar };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.Instrumentos = api;
 })(typeof window !== "undefined" ? window : globalThis);

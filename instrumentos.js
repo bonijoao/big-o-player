@@ -40,6 +40,12 @@
       const P = [[10, 12], [38, 10], [24, 26], [8, 38], [40, 38]];
       [[0, 1], [0, 2], [1, 2], [2, 3], [2, 4], [3, 4]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
       P.forEach(([x, y]) => s.append(svg("circle", { cx: x, cy: y, r: 4, fill: COR.tinta })));
+    } else if (id === "deque") {
+      [0, 1, 2].forEach((k) => casa(14 + k * 8, 20, 7, 8, true));
+      s.append(svg("path", { d: "M2 24 H11 M6 20 L2 24 L6 28 M46 24 H38 M42 20 L46 24 L42 28", fill: "none", stroke: COR.cinza, "stroke-width": 1.5 }));
+    } else if (id === "lista") {
+      [0, 1, 2].forEach((k) => { casa(2 + k * 16, 20, 6, 8, true); casa(8 + k * 16, 20, 4, 8, false); });
+      [0, 1].forEach((k) => s.append(svg("path", { d: `M${12 + k * 16} 24 H${17 + k * 16}`, stroke: COR.tinta, "stroke-width": 1.5 })));
     } else if (id === "heap") {
       const P = [[24, 8], [13, 22], [35, 22]];
       [[0, 1], [0, 2]].forEach(([a, b]) => s.append(svg("line", { x1: P[a][0], y1: P[a][1], x2: P[b][0], y2: P[b][1], stroke: COR.tinta, "stroke-width": 1.5 })));
@@ -145,7 +151,7 @@
       if (repasse) { clearTimeout(repasse.timer); repasse = null; }
       pararRepasse.hidden = true;
       es = variantes.map((v) => I.ESTRUTURAS[v]());
-      const chamada = { vetor: "anexar", pilha: "empilhar", fila: "enfileirar" }[tipo];
+      const chamada = { vetor: "anexar", pilha: "empilhar", fila: "enfileirar", deque: "por_tras" }[tipo];
       for (let k = 0; k < n; k++) { const x = sorteia(); es.forEach((e) => e[chamada](x)); }
       qs = es.map(quadro);
       rotulo = (v) => String(v);
@@ -162,6 +168,8 @@
         inserir: `inserir ${x} na posição ${args[0]}`, remover: `remover v[${args[0]}]`, buscar: `buscar ${x}`,
         empilhar: `empilhar ${rotulo(x)}`, desempilhar: "desempilhar", topo: "ver o topo",
         enfileirar: `enfileirar ${x}`, desenfileirar: "desenfileirar", primeiro: "ver o primeiro",
+        por_frente: `pôr ${x} na frente`, por_tras: `pôr ${x} atrás`, tirar_frente: "tirar da frente", tirar_tras: "tirar de trás",
+        frente: "ver a frente", fundo: "ver o fundo",
       }[chamada];
     }
 
@@ -219,6 +227,10 @@
           if (tipo === "fila") {
             if (q.n) marcas[q.inicio] = "início";
             if (q.n < cap) marcas[(q.inicio + q.n) % cap] = marcas[(q.inicio + q.n) % cap] ? "início/fim" : "fim";
+          } else if (tipo === "deque" && q.n) {   // no deque, as duas pontas são valores: o primeiro e o último
+            marcas[q.inicio] = "frente";
+            const u = (q.inicio + q.n - 1) % cap;
+            marcas[u] = u === q.inicio ? "frente/fundo" : "fundo";
           }
           y += fileira(g, q.casas, q.cores, y + 6, col, rotulo, marcas) + 6;
           if (q.novas) {
@@ -306,6 +318,15 @@
         botao("empilhar x", () => comValor("empilhar"), () => n0() < MAX),
         botao("desempilhar", () => fazer("desempilhar", []), () => n0() > 0),
         botao("ver o topo", () => fazer("topo", []), () => n0() > 0),
+      ];
+    } else if (tipo === "deque") {
+      ops = [
+        botao("pôr x na frente", () => comValor("por_frente"), () => n0() < MAX),
+        botao("pôr x atrás", () => comValor("por_tras"), () => n0() < MAX),
+        botao("tirar da frente", () => fazer("tirar_frente", []), () => n0() > 0),
+        botao("tirar de trás", () => fazer("tirar_tras", []), () => n0() > 0),
+        botao("ver a frente", () => fazer("frente", []), () => n0() > 0),
+        botao("ver o fundo", () => fazer("fundo", []), () => n0() > 0),
       ];
     } else {
       ops = [
@@ -616,6 +637,241 @@
     ]);
     const tela = el("div", { class: "demo-tela" }, [el("div", { class: "demo-figura demo-grafo" }, el("div", { class: "demo-vistas" }, [desenho, ...vistas])),
       legenda, el("p", { class: "demo-dica", text: tipoTexto("grafo") })]);
+    const raiz = el("div", { class: "demo" }, [tela, painel]);
+    recomecar();
+    return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
+  }
+
+  // ---------- a demo da lista encadeada: estática (arcos sobre o vetor) × dinâmica (nós e setas) ----------
+
+  const ML = 8;                          // a demo vai até 8 valores
+  // o endereço de um nó da dinâmica: só um nome (não é contado), espalhado para lembrar a memória
+  const endereco = (id) => "@" + ((id * 107 + 58) & 255).toString(16).padStart(2, "0");
+
+  function demoLista(inst) {
+    const VARS = ["estatica", "dinamica"], nomeVar = inst.variantes;
+    let es = [], qs = [], log = [];
+    const anim = animador();
+    const vistas = VARS.map(() => el("figure", { class: "demo-vista demo-vista-lista" }));
+    const custou = el("p", { class: "demo-custou", "aria-live": "polite" });
+    const lista = el("ol", { class: "demo-log" });
+    const aviso = el("p", { class: "demo-aviso" });
+    const campo = (rotulo, id, valor, max) => {
+      const i = el("input", { type: "number", id, min: 0, max, value: String(valor), inputmode: "numeric" });
+      return [el("label", { for: id, text: rotulo }), i];
+    };
+    const [rotX, entX] = campo("valor", "x-lista", sorteia(), 99);
+    const [rotI, entI] = campo("posição", "i-lista", 0, ML);
+
+    // o que cada lista mostra, num instante da animação
+    function quadroLista(e, j) {
+      if (VARS[j] === "estatica") { const c = e.casas(); return { valor: c.valor, prox: c.prox, inicio: e.inicio, livre: e.livre, cores: {} }; }
+      const nos = new Map(e.nos().map((no) => [no.id, { valor: no.valor, prox: no.prox }]));
+      return { nos, inicio: e.inicio ? e.inicio.id : null, soltos: new Set(), cores: {} };
+    }
+
+    function aplicarLista(j, ev) {
+      const q = qs[j];
+      q.cores = {};
+      if (VARS[j] === "estatica") {
+        if (ev.t === "le") q.cores[`${ev.i},${ev.campo}`] = "le";
+        else if (ev.t === "escreve") { q[ev.campo][ev.i] = ev.x; q.cores[`${ev.i},${ev.campo}`] = "escreve"; }
+        else if (ev.t === "realoca") { q.valor = q.valor.concat(new Array(ev.para - ev.de).fill(null)); q.prox = q.prox.concat(new Array(ev.para - ev.de).fill(-1)); }
+        else if (ev.t === "copia") { q.cores[`${ev.i},valor`] = "escreve"; q.cores[`${ev.i},prox`] = "escreve"; }
+        else if (ev.t === "libera") q.valor[ev.i] = null;
+        else if (ev.t === "marca") { q.inicio = ev.inicio; q.livre = ev.livre; }
+      } else {
+        if (ev.t === "aloca") q.nos.set(ev.no, { valor: null, prox: null });
+        else if (ev.t === "le") q.cores[`${ev.no},${ev.campo}`] = "le";
+        else if (ev.t === "escreve") { q.nos.get(ev.no)[ev.campo] = ev.x; q.cores[`${ev.no},${ev.campo}`] = "escreve"; }
+        else if (ev.t === "solta") q.soltos.add(ev.no);
+        else if (ev.t === "marca") q.inicio = ev.inicio;
+      }
+    }
+
+    function recomecar(n = 4) {
+      anim.parar();
+      es = VARS.map((v) => I.ESTRUTURAS[v]());
+      for (let k = 0; k < n; k++) { const x = sorteia(); es.forEach((e) => e.inserir_fim(x)); }
+      // um tirado do começo e um posto no meio: a ordem lógica já salta pelo vetor, que fica cheio (o próximo dobra)
+      const y = sorteia();
+      es.forEach((e) => { e.remover_inicio(); e.inserir(2, y); });
+      qs = es.map(quadroLista);
+      log = [];
+      custou.textContent = `${es[0].n} valores postos para começar; clique numa operação.`;
+      aviso.textContent = "";
+      desenhar(); listar(); habilitar();
+    }
+
+    function nomeOp(chamada, args) {
+      const x = args.length ? args[args.length - 1] : null;
+      return { ler: `ler a posição ${args[0]}`, inserir_inicio: `inserir ${x} no início`, inserir_fim: `inserir ${x} no fim`,
+        inserir: `inserir ${x} na posição ${args[0]}`, remover_inicio: "remover do início", remover: `remover a posição ${args[0]}`,
+        buscar: `buscar ${x}` }[chamada];
+    }
+
+    function fazer(chamada, args) {
+      anim.terminar();
+      qs = es.map(quadroLista);
+      const rs = es.map((e) => I.operar(e, chamada, args));
+      habilitar();
+      const nome = nomeOp(chamada, args);
+      const fim = () => {
+        qs = es.map(quadroLista);
+        desenhar(); habilitar();
+        const volta = rs[0].volta;
+        const devolveu = chamada === "buscar" ? (volta < 0 ? " → não está" : ` → posição ${volta}`) : volta !== null ? ` → ${volta}` : "";
+        custou.replaceChildren(el("b", { text: `${nome}${devolveu}` }), el("span", { text: " custou:" }),
+          ...rs.map((r, j) => el("span", { class: "custo-vista", text: `${nomeVar[VARS[j]]}: ${textoCusto(r)}` })));
+        const realocou = rs[0].eventos.find((e) => e.t === "realoca");
+        aviso.textContent = realocou ? `A estática ficou sem casa livre: reservou ${realocou.para} posições, copiou valor e próx de cada uma no mesmo índice e encadeou as novas nos livres. A dinâmica só pediu um nó.` : "";
+        log.unshift({ nome: nome + devolveu, custos: rs.map((r) => r.leituras + r.escritas) });
+        log = log.slice(0, 6);
+        listar();
+      };
+      fim.quadro = desenhar;
+      anim.tocar(rs.map((r) => r.eventos), aplicarLista, fim);
+    }
+
+    function listar() {
+      lista.replaceChildren(...log.map((l) => el("li", {}, [el("span", { text: l.nome }),
+        el("b", { text: l.custos.map((c) => mil(c)).join(" · ") })])));
+    }
+
+    // ---------- desenho ----------
+
+    const fill = (papel, vazia) => (papel === "le" ? COR.le : papel === "escreve" ? COR.escreve : vazia ? COR.fundo : "#fff");
+    function caixa(s, x, y, w, h, texto, papel, vazia, tam = 13) {
+      s.append(svg("rect", { x, y, width: w, height: h, rx: 3, fill: fill(papel, vazia), stroke: papel ? fill(papel) : vazia ? COR.palido : COR.tinta,
+        "stroke-width": 1.5, "stroke-dasharray": vazia && !papel ? "3 3" : "" }));
+      if (texto !== null) s.append(svg("text", { x: x + w / 2, y: y + h / 2 + tam * 0.36, "text-anchor": "middle", "font-size": tam, "font-weight": 600,
+        fill: papel ? "#fff" : vazia ? COR.cinza : COR.tinta }, texto));
+    }
+    const ponta = (s, x, y, ang, cor) => s.append(svg("path", { d: `M${x},${y} l${-7 * Math.cos(ang - 0.45)},${-7 * Math.sin(ang - 0.45)} M${x},${y} l${-7 * Math.cos(ang + 0.45)},${-7 * Math.sin(ang + 0.45)}`,
+      stroke: cor, "stroke-width": 1.5, fill: "none" }));
+    // a corrente a partir de p seguindo `seg`, sem repetir (no meio de uma operação, ela pode estar pela metade)
+    const corrente = (p, seg, nulo) => { const v = [], vistos = new Set(); while (p !== nulo && p !== undefined && !vistos.has(p)) { vistos.add(p); v.push(p); p = seg(p); } return v; };
+
+    // estática: o vetor na ordem física; arcos por cima seguem os próx da lista, tracejados por baixo os dos livres
+    function vistaEstatica(q) {
+      const C = q.valor.length, P = 40, S = 36, X0 = 46, YV = 76, W = Math.max(350, X0 + Math.max(C, 4) * P + 30);
+      const usadas = corrente(q.inicio, (p) => q.prox[p], -1), livres = corrente(q.livre, (p) => q.prox[p], -1);
+      const H = YV + 26 + 4 + 22 + 88;
+      const s = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
+        "aria-label": `Lista estática: ${usadas.map((p) => q.valor[p]).join(", ") || "vazia"}; casas livres ${livres.join(", ") || "nenhuma"}` });
+      s.append(svg("text", { x: 0, y: 14, "font-size": 12, fill: COR.cinza }, `${usadas.length} ${usadas.length === 1 ? "valor" : "valores"}, ${C} posições (${2 * C} casas), ${livres.length} ${livres.length === 1 ? "livre" : "livres"}`));
+      const cx = (i) => X0 + i * P + S / 2;
+      const arco = (a, b, y, cima, cor, tracejado) => {
+        const h = Math.min(cima ? 46 : 40, 14 + Math.abs(b - a) * 9) * (cima ? -1 : 1), xa = cx(a) + (b > a ? 5 : -5), xb = cx(b) + (b > a ? -5 : 5);
+        s.append(svg("path", { d: `M${xa},${y} C${xa},${y + h} ${xb},${y + h} ${xb},${y}`, fill: "none", stroke: cor, "stroke-width": 1.5, "stroke-dasharray": tracejado ? "4 3" : "" }));
+        ponta(s, xb, y, cima ? Math.PI / 2 : -Math.PI / 2, cor);
+      };
+      for (let k = 0; k + 1 < usadas.length; k++) arco(usadas[k], usadas[k + 1], YV - 2, true, COR.tinta, false);
+      const YP = YV + 30, YB = YP + 22 + 16;
+      for (let k = 0; k + 1 < livres.length; k++) arco(livres[k], livres[k + 1], YB + 2, false, COR.cinza, true);
+      s.append(svg("text", { x: X0 - 8, y: YV + 17, "text-anchor": "end", "font-size": 10, fill: COR.cinza }, "valor"));
+      s.append(svg("text", { x: X0 - 8, y: YP + 15, "text-anchor": "end", "font-size": 10, fill: COR.cinza }, "próx"));
+      for (let i = 0; i < C; i++) {
+        const x = X0 + i * P, livre = !usadas.includes(i);
+        caixa(s, x, YV, S, 26, livre ? null : String(q.valor[i]), q.cores[`${i},valor`], livre);
+        caixa(s, x, YP, S, 22, q.prox[i] === -1 ? "∅" : String(q.prox[i]), q.cores[`${i},prox`], livre, 11);
+        s.append(svg("text", { x: x + S / 2, y: YB - 2, "text-anchor": "middle", "font-size": 10, fill: COR.cinza }, String(i)));
+      }
+      // em alturas diferentes: o início e a cabeça dos livres podem ser casas vizinhas
+      const marca = (i, rot, cor, y) => { if (i >= 0 && i < C) s.append(svg("text", { x: cx(i), y, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: cor }, rot)); };
+      marca(q.inicio, "↑início", COR.tinta, H - 20);
+      marca(q.livre, "↑livres", COR.cinza, H - 6);
+      return s;
+    }
+
+    // dinâmica: os nós na ordem da lista, cada um com o seu endereço; o próx mostra o endereço do seguinte
+    function vistaDinamica(q, estreito) {
+      const ordem = corrente(q.inicio, (id) => q.nos.get(id).prox, null).filter((id) => !q.soltos.has(id));
+      const fora = [...q.nos.keys()].filter((id) => !ordem.includes(id));   // recém-pedido ainda sem ligar, ou soltando
+      const todos = ordem.concat(fora), col = estreito ? 4 : 8;
+      const VW = 30, PW = 36, NW = VW + PW, G = 22, X0 = 10, LH = 74;
+      const linhas = Math.max(1, Math.ceil(todos.length / col)), W = X0 + Math.min(col, Math.max(todos.length, 4)) * (NW + G) + 4;
+      const H = 26 + linhas * LH;
+      const s = svg("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img",
+        "aria-label": `Lista dinâmica: ${ordem.map((id) => q.nos.get(id).valor).join(", ") || "vazia"}` });
+      s.append(svg("text", { x: 0, y: 14, "font-size": 12, fill: COR.cinza }, `${ordem.length} ${ordem.length === 1 ? "nó" : "nós"} (${2 * ordem.length} casas)`));
+      const pos = (k) => [X0 + (k % col) * (NW + G), 26 + Math.floor(k / col) * LH + 20];
+      todos.forEach((id, k) => {
+        const [x, y] = pos(k), no = q.nos.get(id), solto = q.soltos.has(id), novo = k >= ordem.length;
+        s.append(svg("text", { x: x + NW / 2, y: y - 6, "text-anchor": "middle", "font-size": 10, fill: novo ? COR.escreve : COR.cinza,
+          "font-weight": novo ? 600 : 400 }, `${endereco(id)}${solto ? " solto" : novo ? " novo" : ""}`));
+        caixa(s, x, y, VW, 28, no.valor === null ? null : String(no.valor), q.cores[`${id},valor`], solto);
+        caixa(s, x + VW, y, PW, 28, no.prox === null ? "∅" : endereco(no.prox), q.cores[`${id},prox`], solto, 10);
+        if (k === 0 && !novo) s.append(svg("text", { x: x + NW / 2, y: y + 44, "text-anchor": "middle", "font-size": 10, "font-weight": 600, fill: COR.tinta }, "↑início"));
+        if (k + 1 < ordem.length) {   // a seta até o seguinte: reta na mesma linha, em cotovelo na quebra
+          const [x2, y2] = pos(k + 1), y0 = y + 14;
+          if (y2 === y) { s.append(svg("line", { x1: x + NW, y1: y0, x2: x2 - 1, y2: y0, stroke: COR.tinta, "stroke-width": 1.5 })); ponta(s, x2 - 1, y0, 0, COR.tinta); }
+          else {
+            const yb = y + 52;
+            s.append(svg("path", { d: `M${x + NW},${y0} h${G / 2} V${yb} H${x2 - G / 2 + 2} V${y2 + 14} H${x2 - 1}`, fill: "none", stroke: COR.tinta, "stroke-width": 1.5 }));
+            ponta(s, x2 - 1, y2 + 14, 0, COR.tinta);
+          }
+        }
+      });
+      return s;
+    }
+
+    function desenhar() {
+      const larg = vistas[1].parentElement ? vistas[1].parentElement.clientWidth : 0, estreito = larg > 0 && larg < 560;
+      const ss = [vistaEstatica(qs[0]), vistaDinamica(qs[1], estreito)];
+      // as duas na mesma escala, para uma casa ter o mesmo tamanho nas duas; cresce até encher a largura do palco
+      const W = Math.max(...ss.map((s) => Number(s.getAttribute("width")))), esc = larg > 0 ? Math.min(1.7, larg / W) : 1;
+      ss.forEach((s) => { s.style.width = `${Number(s.getAttribute("width")) * esc}px`; s.style.height = `${Number(s.getAttribute("height")) * esc}px`; });
+      vistas[0].replaceChildren(el("figcaption", { text: `${nomeVar.estatica}: vetor + índice do próximo` }), ss[0]);
+      vistas[1].replaceChildren(el("figcaption", { text: `${nomeVar.dinamica}: nós e ponteiros` }), ss[1]);
+    }
+
+    // ---------- controles ----------
+
+    const botoes = [];
+    const botao = (rot, acao, cond) => {
+      const b = el("button", { type: "button", class: "botao-passo", text: rot });
+      b.addEventListener("click", () => { if (cond()) acao(); });
+      botoes.push({ b, cond });
+      return b;
+    };
+    const n0 = () => es[0].n;
+    const lerX = () => {
+      const x = Number(entX.value);
+      if (entX.value === "" || !Number.isInteger(x) || x < 0 || x > 99) { aviso.textContent = "O valor vai de 0 a 99."; return null; }
+      return x;
+    };
+    const trocaX = () => { entX.value = String(sorteia()); };
+    const comPosicao = (lim, faz) => {
+      const i = Math.round(Number(entI.value) || 0);
+      if (i < 0 || i > lim) { aviso.textContent = `Posição fora da lista: aqui vai de 0 a ${lim}.`; return; }
+      faz(i);
+    };
+    const comValor = (faz) => { const x = lerX(); if (x !== null) { faz(x); trocaX(); } };
+    const ops = [
+      botao("ler a posição i", () => comPosicao(n0() - 1, (i) => fazer("ler", [i])), () => n0() > 0),
+      botao("inserir x no início", () => comValor((x) => fazer("inserir_inicio", [x])), () => n0() < ML),
+      botao("inserir x no fim", () => comValor((x) => fazer("inserir_fim", [x])), () => n0() < ML),
+      botao("inserir x na posição i", () => comPosicao(n0(), (i) => comValor((x) => fazer("inserir", [i, x]))), () => n0() < ML),
+      botao("remover do início", () => fazer("remover_inicio", []), () => n0() > 0),
+      botao("remover a posição i", () => comPosicao(n0() - 1, (i) => fazer("remover", [i])), () => n0() > 0),
+      botao("buscar x", () => { const x = lerX(); if (x !== null) fazer("buscar", [x]); }, () => true),
+    ];
+    function habilitar() { for (const { b, cond } of botoes) b.disabled = !cond(); entI.max = String(Math.max(0, n0())); }
+    const recomeca = el("button", { type: "button", class: "botao-passo", text: "recomeçar" });
+    recomeca.addEventListener("click", () => recomecar());
+
+    const legenda = el("p", { class: "demo-legenda", html:
+      `<i style="background:${COR.le}"></i>casa lida <i style="background:${COR.escreve}"></i>casa escrita <i class="livre"></i>casa livre` });
+    const bloco = (titulo, filhos, extra = "") => el("section", { class: `painel-bloco ${extra}` }, [el("h3", { text: titulo }), ...filhos]);
+    const painel = el("aside", { class: "demo-painel", "aria-label": "Ferramentas" }, [
+      bloco("entrada", [el("div", { class: "demo-campos" }, [rotX, entX, rotI, entI])]),
+      bloco("operações", [el("div", { class: "demo-botoes" }, ops), recomeca]),
+      bloco("custou", [custou, aviso]),
+      bloco("últimas operações", [el("p", { class: "demo-aviso", text: "custo na estática · na dinâmica" }), lista], "historico"),
+    ]);
+    const tela = el("div", { class: "demo-tela" }, [el("div", { class: "demo-figura demo-grafo" }, el("div", { class: "demo-vistas demo-listas" }, vistas)),
+      legenda, el("p", { class: "demo-dica", text: tipoTexto("lista") })]);
     const raiz = el("div", { class: "demo" }, [tela, painel]);
     recomecar();
     return { el: raiz, redesenhar: desenhar, parar() { anim.parar(); } };
@@ -936,7 +1192,7 @@
   /** Monta a página; devolve { el, redesenhar, parar }. ctx: { faixas, rotaFaixa, tocar, feat } */
   function pagina(inst, ctx) {
     const usam = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === inst.id));
-    const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "heap" ? demoHeap() : demo(inst, ctx);
+    const d = inst.id === "grafo" ? demoGrafo(inst) : inst.id === "lista" ? demoLista(inst) : inst.id === "heap" ? demoHeap() : demo(inst, ctx);
     const fig1 = el("div"), fig2 = el("div");
     const ns = inst.medido.tamanhos, nome = inst.n || "n";
     // legendas próprias da ficha (o Grafo), com os números do dados.json
@@ -1004,6 +1260,8 @@
       vetor: "Escolha um valor e uma posição e toque o vetor. Cada clique roda a operação no vetor de verdade e mostra casa por casa o que ela leu e escreveu. Repare no anexar quando as casas acabam.",
       pilha: "Empilhe e desempilhe: só o topo se mexe. O repasse toca a pilha de chamadas de uma faixa recursiva: cada chamada empilha um nível, cada retorno desempilha.",
       fila: "Cada clique roda a mesma operação nas duas filas, lado a lado. Compare o desenfileirar: a ingênua puxa todos para a frente, a circular só anda o início.",
+      deque: "Ponha e tire pelas duas pontas: ninguém anda, só os marcadores da frente e do fundo. Ponha na frente com a frente na casa 0 e veja a frente dar a volta para o fim do vetor.",
+      lista: "Cada clique roda a mesma operação nas duas listas. Na estática, os arcos de cima seguem os próx pelo vetor, e os tracejados de baixo são a lista de livres. Na dinâmica, cada nó tem um endereço, e o próx guarda o endereço do seguinte. Compare inserir no início com ler a última: um troca um ponteiro, o outro segue todos.",
       heap: "Insira e tire o menor: a casa que se mexe acende ao mesmo tempo na árvore e no vetor, porque são a mesma casa. Repare que inserir sobe e tirar desce, no máximo a altura da árvore. Depois compare as duas montagens com os mesmos valores: de uma vez, de baixo para cima, sai mais barato que um por um.",
       grafo: "Escolha u e v e clique numa operação: ela roda nas três vistas ao mesmo tempo, sobre as mesmas arestas, e cada vista mostra as casas que leu e escreveu. A letra de cada aresta no desenho é a coluna dela na matriz de incidência. Compare os vizinhos de u: a lista lê só eles, a matriz de adjacência lê a linha inteira.",
     }[id];
