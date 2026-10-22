@@ -20,9 +20,9 @@ python3 servir.py
 python3 gerar.py --tudo
 ```
 
-Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 15 grafos por busca em grafo e no Dijkstra) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
+Para cada algoritmo: mede (`medir.py` → `dados.json`), confere contra uma referência no R (`conferir.R` → `conferencia.json`), gera o pôster (`video.py poster` → `.png`, a capa provisória) e junta tudo em `dados.js`, que a página lê. Os instrumentos (estruturas de dados) também são medidos (`instrumentos/<nome>/medir.py` → `dados.json`). Sem `--tudo`, só junta; e recusa uma faixa que credita um instrumento que não existe. Sempre, no fim, roda `testes/conferir_js.mjs`: o JavaScript do site tem de contar igual ao Python nas entradas guardadas (a do encarte e as de conferência: 7 vetores por ordenação, 20 buscas, 25 textos de parênteses, 15 sorteios de clientes, 15 sorteios de pacientes, 21 listas da inversão, 75 vetores da janela deslizante, 42 árvores dos percursos e da busca em árvore, 48 entradas da AVL, 15 grafos por busca em grafo e no Dijkstra) e, nos instrumentos, em cada chamada medida e em sequências sorteadas de operações.
 
-Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas buscas em grafo e no Dijkstra, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
+Para exportar um clipe em vídeo de uma faixa: `python3 video.py` dentro da pasta do algoritmo (gera `.mp4`, que não vai para o repositório). Nas buscas, nos parênteses, nas filas de atendimento e de prioridade, na inversão da lista, na janela deslizante, nas três faixas de árvore, nas buscas em grafo e no Dijkstra, o `video.py` só faz o pôster, um quadro parado (`motor/video_casos.py`); a animação dessas faixas mora só na simulação ao vivo.
 
 Requisitos: Python 3 com Pillow, Node, ffmpeg (só para exportar clipes), R com jsonlite e igraph, IBM Plex Mono instalada e a skill `explainer-videos` em `~/.claude/skills/` (o motor `engine.py` é importado de lá, sem cópia).
 
@@ -37,9 +37,11 @@ motor/ordenacao.R      as ordenações reescritas em R, para conferir contagens 
 motor/video_ordenacao.py  vídeo padrão de barrinhas (altura = valor; cor = papel da barra)
 motor/busca.py         molde das buscas: os ajudantes que contam (igual, menor), as entradas e a medição padrão
 motor/busca.R          as buscas reescritas em R, para conferir posição e comparações
-motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, da inversão da lista, da janela deslizante, das buscas em grafo, do Dijkstra e do álbum Estatística
+motor/video_casos.py   pôsteres das buscas, dos parênteses, das filas de atendimento e de prioridade, da inversão da lista, da janela deslizante, das faixas de árvore, das buscas em grafo, do Dijkstra e do álbum Estatística
 motor/grade.py         os grafos em grade k × k das buscas em grafo (sorteado, grade cheia, caminho), a medição delas e os pesos do Dijkstra
 motor/heap.R           o heap do instrumento reescrito em R, contando casas, para conferir a fila de prioridade e o Dijkstra
+motor/arvores.py       as entradas das faixas de árvore (crescente, decrescente, embaralhada, cheia) e a árvore comum montada fora da conta
+motor/arvore.R         a árvore de busca e a AVL reescritas em R (vetores valor/esq/dir/altura), para conferir as três faixas de árvore
 algoritmos/<nome>/     implementação instrumentada, medir.py, conferir.R, ficha.json, video.py
 motor/instrumento.py   molde dos instrumentos: o custo medido de cada operação e as sequências que o JS refaz
 instrumentos/<nome>/   estrutura instrumentada (cada leitura e escrita de casa conta 1), medir.py, ficha.json
@@ -63,6 +65,8 @@ A Fila e a Lista encadeada têm duas versões lado a lado (ingênua × circular;
 
 O Heap (de mínimo, sobre o Vetor) mostra a árvore e o vetor ao mesmo tempo: são as mesmas casas, e cada operação acende a casa nas duas vistas; apontar um nó acende o pai e os filhos. A tabela compara as duas montagens (de uma vez, O(n), e um por um, O(n log n)), que partem do heap vazio: no `medir.py`, uma operação com `vazia` recebe os n valores nos argumentos.
 
+A Árvore de busca tem a comum e a AVL lado a lado, com os mesmos valores. Cada nó da comum tem três casas (valor, esq, dir); o da AVL tem quatro (mais a altura). A demo desenha cada nó na coluna da sua ordem e na linha da sua profundidade; no meio de uma rotação a árvore fica quebrada, e o desenho congela até ela se religar e então desliza (os eventos `gira` e `girou` cercam cada rotação, sem custo). A árvore medida é montada com 0, 1, …, n − 1 em ordem: a comum vira uma fila indiana, a AVL fica com uns log₂ n níveis.
+
 O Grafo tem três vistas lado a lado (matriz de adjacência, lista de adjacência e matriz de incidência): cada operação da demo roda nas três ao mesmo tempo, e a tabela mede as três num grafo de medição fixo, com V vértices e E = 3V arestas.
 
 ## Faixas que usam um instrumento por dentro
@@ -72,6 +76,8 @@ Os parênteses balanceados, a fila de atendimento, a inversão da lista e a jane
 A fila de prioridade (o pronto-socorro) é a fila de atendimento com o `Heap` no lugar da fila: a chave é o par (gravidade, chegada), e o tempo conta os acessos ao heap, não as operações, para o log n aparecer. O heapsort mora no molde das ordenações, com o heap de máximo no próprio vetor; o palco desenha a árvore do heap acima das barras quando n ≤ 31.
 
 O Dijkstra roda na mesma grade das buscas, com um peso de 1 a 9 sorteado por aresta; cada casa da lista de adjacência guarda o par (vizinho, peso). O heap reinsere o par quando a distância melhora e descarta o par vencido quando ele sai. O `conferir.R` usa o `distances()` do igraph e o heap de `motor/heap.R`.
+
+As três faixas de árvore rodam sobre as árvores do instrumento. Os Percursos fazem uma descida recursiva só, que anota o nó em três momentos (pré, em e pós-ordem), e depois a em largura com a `FilaCircular`; a memória é o pico da pilha de chamadas (a altura + 1) ou o da fila. A Busca em árvore monta a comum com os valores na ordem de chegada (fora da conta) e busca cada um, contando até duas comparações por nó, como a busca binária. A AVL insere um por um e equilibra na volta; o palco mostra a comum com os mesmos valores num placar ao lado. As duas últimas trazem um segundo gráfico, a altura × n (`tempo.altura`). O `conferir.R` das três usa `motor/arvore.R`, e o dos Percursos confere as ordens com o `dfs()` e o `bfs()` do igraph.
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
 
