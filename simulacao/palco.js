@@ -774,14 +774,14 @@
     };
     const kChama = (() => { const j = est.findIndex((s) => s.t === "chama"); return j < 0 ? Infinity : j; })();   // a legenda troca no primeiro chamado
     // a espera média de cada gravidade, no fim do dia
-    const G = Math.max(...gravidade), medias = Array.from({ length: G }, (_, j) => {
+    const G = faixa.exemplo.gravidades[1], medias = Array.from({ length: G }, (_, j) => {
       const w = r.esperas.filter((_, k) => gravidade[k] === j + 1);
       return w.length ? w.reduce((a, b) => a + b, 0) / w.length : null;
     });
 
     // geometria: o médico e o heap em cima (a árvore e o vetor embaixo dela), a fila ao longo do dia embaixo
     const GX0 = 70, GX1 = 600, HX0 = 210, NIV = Math.floor(Math.log2(Math.max(1, r.maior))) + 1;
-    const TY0 = 96, TY1 = 226, DY = (TY1 - TY0) / Math.max(1, NIV - 1);
+    const TY0 = 96, TY1 = 212, DY = (TY1 - TY0) / Math.max(1, NIV - 1);
     const R = Math.min(15, (GX1 - HX0) / 2 ** (NIV - 1) * 0.42);
     const pos = (i) => { const d = Math.floor(Math.log2(i + 1)), j = i + 1 - 2 ** d; return [HX0 + (j + 0.5) * (GX1 - HX0) / 2 ** d, TY0 + d * DY]; };
     const GY0 = 330, GY1 = 430, ymax = Math.max(1, r.maior);
@@ -848,7 +848,8 @@
       if (fim) medias.forEach((m, j) => texto(ctx, `gravidade ${j + 1}: ${m === null ? "ninguém" : `${decimal(m)} min`}`, x, 382 + j * 18, 12, j === 0 ? COR.verde : COR.cinza, j === 0 ? 600 : 400));
       legendaCores(ctx, [[COR.mexeu, "casa escrita agora (o caminho que subiu ou desceu)"], ["#fff", "no nó: a gravidade, 1 = a mais urgente", COR.tinta]], 486);
 
-      if (fim) legenda(ctx, [["gravidade 1 espera ", ""], [`${decimal(medias[0] ?? 0)} min`, "g"], [`; gravidade ${G}, ${medias[G - 1] === null ? "ninguém" : `${decimal(medias[G - 1])} min`}`, ""]]);
+      if (fim) legenda(ctx, [["gravidade 1 ", ""], [medias[0] === null ? "ninguém chegou" : `espera ${decimal(medias[0])} min`, "g"],
+        [`; gravidade ${G}, ${medias[G - 1] === null ? "ninguém chegou" : `${decimal(medias[G - 1])} min`}`, ""]]);
       else if (k < kChama) legenda(ctx, [[ideia[0], ""]]);
       else legenda(ctx, [[ideia[ideia.length - 1], ""]]);
     }
@@ -988,14 +989,14 @@
     // papel de cada vértice: 0 = não alcançado, 1 = alcançado (tem par no heap), 2 = o da vez, 3 = já saiu valendo
     const papel = new Array(V).fill(0), num = new Array(V).fill(null), pai = new Array(V).fill(null);
     let vez = null, ops = 0, viz = 0, desc = 0, pico = 0, casas = [], escritas = [], olhando = null, saiu = null;
-    const est = r.eventos.map((e) => {
+    const est = r.eventos.map((e, j) => {
       escritas = [];
       if (e.t === "tira" || e.t === "testa" || e.t === "devolva") olhando = null;
       if (e.t === "insere") {
         casas = e.casas; escritas = e.escritas; ops = e.acessos;
         num[e.v] = e.d; if (papel[e.v] !== 3 && e.v !== vez) papel[e.v] = 1;
       } else if (e.t === "tira") {
-        casas = e.casas; escritas = e.escritas; ops = e.acessos; saiu = { u: e.u, d: e.d, vencido: papel[e.u] === 3 };
+        casas = e.casas; escritas = e.escritas; ops = e.acessos; saiu = { u: e.u, d: e.d, vencido: !!r.eventos[j + 2] && r.eventos[j + 2].t === "descarta" };   // depois do tira: o teste d = dist[u] e o descarte
         if (!saiu.vencido) { if (vez !== null) papel[vez] = 3; vez = e.u; papel[e.u] = 2; }
       } else if (e.t === "olha") {
         viz++; ops = e.acessos; olhando = [e.u, e.v]; saiu = null;

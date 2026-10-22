@@ -763,7 +763,8 @@
       const i = alvo ? Number(alvo.dataset.i) : null;
       if (i !== foco) { foco = i; desenhar(); }
     });
-    figura.addEventListener("pointerleave", () => { if (foco !== null) { foco = null; desenhar(); } });
+    // no toque, o dedo sai logo da tela: o destaque fica até tocar em outro lugar
+    figura.addEventListener("pointerleave", (e) => { if (e.pointerType !== "touch" && foco !== null) { foco = null; desenhar(); } });
 
     // ---------- controles ----------
 
@@ -808,7 +809,7 @@
   // ---------- gráficos: custo × n e casas × n ----------
 
   // o menor n medido nas séries (o Grafo começa em V = 8, onde o anel de medição já é ele mesmo)
-  const nMin = (inst) => Math.min(...Object.values(inst.medido.operacoes).flatMap((o) => o.serie.map((t) => t.n)));
+  const nMin = (inst) => Math.min(...inst.grafico.flatMap((g) => inst.medido.operacoes[g.id].serie.map((t) => t.n)));
   // texto da ficha com os números do dados.json: {ns} os n da tabela, {v0}–{v1} as séries,
   // e o que o próprio grafo de medição diz de si ({seguintes}, {grau}, {razao})
   const textoInst = (inst, t) => t.replace(/\{(\w+)\}/g, (_, c) => ({ ns: inst.medido.tamanhos.map(mil).join(", "), v0: nMin(inst), v1: nMax(inst),

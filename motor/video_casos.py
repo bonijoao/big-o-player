@@ -175,8 +175,9 @@ def montar_prioridade(pasta):
         _painel(d, [("acessos ao heap", str(ex["ops"]), 40, True), ("espera média", f"{media} min", 26, False),
                     ("maior fila", f"{ex['maior']} pacientes", 20, False)])
         ult = len(medias) - 1
-        rich(d, [("gravidade 1 espera ", ""), (f"{fmt(medias[0])} min", "bg"),
-                 (f"; gravidade {g0 + ult}, {fmt(medias[ult])} min", "")], W / 2, 34, 18)
+        espera = lambda m: "ninguém chegou" if m is None else f"{fmt(m)} min"  # noqa: E731
+        rich(d, [(f"gravidade {g0} ", ""), (("espera " if medias[0] is not None else "") + espera(medias[0]), "bg"),
+                 (f"; gravidade {g0 + ult}, {espera(medias[ult])}", "")], W / 2, 34, 18)
 
     return [(1.0, cena)], 0.5
 
