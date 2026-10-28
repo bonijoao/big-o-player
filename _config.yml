@@ -1,0 +1,17 @@
+# GitHub Pages: o site é index.html + dados.js + os scripts, o CSS e os pôsteres (algoritmos/*/*.png).
+# O resto é bastidor (medição, conferência, planos, instruções) e não vai para o ar.
+exclude:
+  - CLAUDE.md
+  - README.md
+  - CONTENT_MAP.md
+  - docs
+  - testes
+  - motor
+  - gerar.py
+  - servir.py
+  - playlists.json
+  - fundamentos.json
+  - conceitos.json
+  - "*.py"
+  - "*.R"
+  - "*.json"
