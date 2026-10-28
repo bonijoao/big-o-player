@@ -485,7 +485,10 @@
   const objetivoPalco = $("#palco-objetivo");   // a linha fina da barra do palco, fora da animação
   let faixa = null, fila = [], tocandoEm = null, sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
   let accelerando = false;              // o ritmo que acelera; vale para todas as faixas, só nesta visita
-  let pos = null, arrasto = null, esperaProxima = null;
+  let pos = null, arrasto = null;
+  // o fim da faixa: o resultado e o "a seguir", com a contagem até a próxima (null quando não há fim aberto)
+  let fim = null, repetir = false;
+  const ESPERA = 5000;
   const cfgs = {};                      // a entrada escolhida em cada faixa
   const padroes = {};                   // simulação padrão (para a duração das listas), por ritmo
 
@@ -590,7 +593,7 @@
   function tocar(f, a) {
     tocandoEm = a || casaDe(f);
     fila = tocandoEm.faixas;
-    clearTimeout(esperaProxima);
+    cancelarFim();
     if (!faixa || faixa.id !== f.id) {
       faixa = f;
       if (!cfgs[f.id]) cfgs[f.id] = cfgPadrao(f);
@@ -627,12 +630,77 @@
       u = Math.min(sim.total, u + (agora - ultimoQuadro) / 1000 * sim.ritmo * vel);
       if (u >= sim.total) {
         play(false);
-        esperaProxima = setTimeout(() => pular(1), 1500);   // a playlist segue tocando
+        terminou();
       }
       pintar();
     }
+    // a contagem do "a seguir" anda só com a aba visível; com a aba em segundo plano, espera
+    if (fim && fim.proxima) {
+      if (document.hidden) fim.ate += agora - ultimoQuadro;
+      else if (agora >= fim.ate) { cancelarFim(); pular(1); }
+      else desenharFim();
+    }
     ultimoQuadro = agora;
     requestAnimationFrame(quadro);
+  }
+
+  // ---------- o fim da faixa: o resultado, o "a seguir" e o repetir ----------
+
+  function terminou() {
+    if (repetir) { u = 0; play(true); return; }
+    const i = fila.indexOf(faixa);
+    fim = { proxima: fila[i + 1] || null, ate: performance.now() + ESPERA };
+    painelEm = null;
+    desenharFim(true);
+  }
+
+  function cancelarFim() {
+    if (!fim) return;
+    fim = null;
+    painelEm = null;
+    palco.classList.remove("no-fim");
+    if (sim) pintar();
+  }
+
+  // o cartão do fim mora no painel ao lado do quadro: o resultado em verde, a próxima e as três saídas
+  function desenharFim(montar) {
+    const caixa = $("#palco-vars");
+    const resta = Math.max(0, fim.ate - performance.now()), falta = Math.ceil(resta / 1000);
+    const conta = caixa.querySelector(".fim-conta");
+    if (!montar && conta) {
+      conta.querySelector(".fim-anel b").textContent = String(falta);
+      conta.querySelector("circle.anda").style.strokeDashoffset = String(113.1 * (1 - resta / ESPERA));
+      return;
+    }
+    palco.classList.add("no-fim");
+    const total = faixa.arquivo ? null : sim.contagemEm ? sim.contagemEm(sim.total) : null;
+    const botao = (texto, acao, extra = "") => {
+      const b = el("button", { type: "button", class: `botao-fim ${extra}`, text: texto });
+      b.addEventListener("click", (e) => { e.stopPropagation(); acao(); });
+      return b;
+    };
+    const p = fim.proxima;
+    caixa.replaceChildren(el("div", { class: "fim" }, [
+      el("p", { class: "fim-rotulo", text: faixa.arquivo ? "fim do vídeo" : "terminou" }),
+      total !== null ? el("p", { class: "fim-resultado" }, [el("b", { text: mil(total) }), ` ${faixa.medido.tempo.unidade}`]) : null,
+      faixa.tempo ? el("p", { class: "fim-ordem" }, ["tempo ", el("span", { class: "o", text: faixa.tempo.notacao })]) : null,
+      p ? el("div", { class: "fim-conta", role: "status" }, [
+        el("span", { class: "fim-anel" }, [
+          el("span", { html: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><circle class="anda" cx="20" cy="20" r="18"/></svg>' }),
+          el("b", { text: String(falta) })]),
+        el("span", {}, [el("small", { text: "a seguir" }), el("strong", { text: p.nome }), p.tempo ? el("span", { class: "o", text: p.tempo.notacao }) : null]),
+      ]) : el("p", { class: "fim-rotulo", text: fila.indexOf(faixa) === fila.length - 1 ? `fim de ${tocandoEm.titulo}` : "a playlist parou aqui" }),
+      el("div", { class: "fim-acoes" }, [
+        p ? botao("▶ tocar agora", () => { cancelarFim(); pular(1); }, "principal") : null,
+        botao("↻ de novo", () => { cancelarFim(); u = 0; play(true); }, p ? "" : "principal"),
+        p ? botao("ficar aqui", () => { fim.proxima = null; desenharFim(true); }) : null,
+      ]),
+    ]));
+  }
+
+  function alternarRepetir() {
+    repetir = !repetir;
+    $("#repetir").setAttribute("aria-pressed", String(repetir));
   }
 
   function pintar() {
@@ -677,7 +745,7 @@
 
   function pintarVariaveis() {
     const caixa = $("#palco-vars");
-    if (palco.dataset.modo !== "grande") return;
+    if (palco.dataset.modo !== "grande" || fim) return;
     const p = sim.varsEm(u);
     const chave = p ? p.k : -1;
     if (chave === painelEm) return;
@@ -777,7 +845,7 @@
 
   function mudarCfg(muda) {
     if (!faixa) return;
-    clearTimeout(esperaProxima);
+    cancelarFim();
     Object.assign(cfgs[faixa.id], muda);
     sincronizarControles();
     const estava = tocando;
@@ -830,7 +898,7 @@
   // passo a passo: pausa e vai ao fim do passo anterior/seguinte
   function passo(dir) {
     if (!sim) return;
-    clearTimeout(esperaProxima);
+    cancelarFim();
     play(false);
     const ps = sim.passos, eps = 1e-9;
     if (dir > 0) u = ps.find((x) => x > u + eps) ?? sim.total;
@@ -845,7 +913,7 @@
 
   botaoTocar.addEventListener("click", () => {
     if (!faixa) return;
-    clearTimeout(esperaProxima);
+    cancelarFim();
     if (!tocando) {
       if (u >= sim.total) u = 0;
       if (palco.dataset.modo === "oculto") modo("mini");
@@ -858,7 +926,7 @@
   trilho.addEventListener("input", () => {
     if (!sim) return;
     arrastandoTrilho = true;
-    clearTimeout(esperaProxima);
+    cancelarFim();
     u = sim.total * Number(trilho.value) / 1000;
     pintar();
   });
@@ -867,11 +935,12 @@
 
   // grande → mini: minimizar, clicar fora ou Esc; a simulação continua
   $("#palco-modo").addEventListener("click", (e) => { e.stopPropagation(); modo(palco.dataset.modo === "grande" ? "mini" : "grande"); });
-  $("#palco-fechar").addEventListener("click", (e) => { e.stopPropagation(); play(false); clearTimeout(esperaProxima); modo("oculto"); });
+  $("#palco-fechar").addEventListener("click", (e) => { e.stopPropagation(); play(false); cancelarFim(); modo("oculto"); });
   fundo.addEventListener("click", () => modo("mini"));
   document.querySelectorAll(".palco-controles select").forEach((s) => s.addEventListener("change", () => s.blur()));   // as setas voltam a ser do player
   document.addEventListener("keydown", (e) => {
     if (caixaFluxo.open) return;          // o Esc e as setas são da caixa do fluxograma
+    if (e.key === "Escape" && fim && fim.proxima) { fim.proxima = null; desenharFim(true); return; }   // Esc cancela a contagem
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
     // o espaço toca e pausa; com o palco aberto (mini ou grande), sempre, mesmo com o foco num botão (o Enter continua apertando o botão)
@@ -880,7 +949,9 @@
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
     if (e.key === "-" || e.key === "_") mudarVel(-1);
     if (e.key === "+" || e.key === "=") mudarVel(1);
+    if (e.key === "r" || e.key === "R") alternarRepetir();
   });
+  $("#repetir").addEventListener("click", alternarRepetir);
 
   // o botão nativo aperta no keyup do espaço: com o palco aberto, o espaço já tocou ou pausou no keydown
   document.addEventListener("keyup", (e) => {

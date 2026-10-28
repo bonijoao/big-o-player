@@ -515,6 +515,29 @@ svg text { font-family: var(--mono); }
 .acelera { border: 1px solid var(--linha); }
 .acelera svg { width: 20px; height: 14px; }
 .acelera[aria-pressed="true"], .acelera[aria-pressed="true"]:hover { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.repetir { border: 1px solid var(--linha); }
+.repetir svg { width: 18px; height: 18px; }
+.repetir[aria-pressed="true"], .repetir[aria-pressed="true"]:hover { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+
+/* o fim da faixa: o resultado em verde, o "a seguir" com o anel da contagem e as três saídas */
+.fim { display: flex; flex-direction: column; gap: 10px; }
+.fim-rotulo { margin: 0; color: var(--cinza); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.fim-resultado { margin: 0; font-size: 1rem; color: var(--verde-texto); }
+.fim-resultado b { display: block; font-size: 2.4rem; line-height: 1; color: var(--verde-texto); }
+.fim-ordem { margin: 0; font-size: 0.82rem; color: var(--cinza); }
+.fim-ordem .o { color: var(--verde-texto); font-weight: 600; }
+.fim-conta { display: flex; gap: 12px; align-items: center; margin: 8px 0 0; padding: 12px; border: 1px solid var(--tinta); border-radius: 8px; }
+.fim-conta small { display: block; color: var(--cinza); font-size: 0.72rem; }
+.fim-conta strong { display: block; font-size: 0.95rem; }
+.fim-conta .o { color: var(--verde-texto); font-size: 0.78rem; font-weight: 600; }
+.fim-anel { position: relative; width: 44px; height: 44px; flex: none; display: grid; place-items: center; }
+.fim-anel svg { position: absolute; inset: 0; width: 44px; height: 44px; transform: rotate(-90deg); }
+.fim-anel circle { fill: none; stroke: var(--linha); stroke-width: 3; }
+.fim-anel circle.anda { stroke: var(--tinta); stroke-dasharray: 113.1; stroke-dashoffset: 0; }
+.fim-anel b { position: relative; font-size: 1rem; }
+.fim-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.botao-fim { font: inherit; font-size: 0.82rem; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--tinta); background: transparent; color: var(--tinta); cursor: pointer; }
+.botao-fim.principal { background: var(--tinta); color: var(--papel); }
 .so-estreito { display: none; }
 
 /* ---------- estreito ---------- */
