@@ -109,23 +109,12 @@
     ]);
   }
 
-  // os fundamentos na home: os termos de um grupo, como fichas pequenas
-  function fichasTermos(g) {
-    return el("ul", { class: "termos-curtos" }, g.termos.map((t) => el("li", {}, [el("b", { text: t.termo }), " ", t.linha])));
-  }
-
   function inicio() {
     return el("div", { class: "inicio" }, [
-      el("header", { class: "apresenta" }, [
-        el("h1", { text: NOME }),
-        el("p", { text: "Algoritmos tocando ao vivo, com cada passo contado e conferido no R. Cada playlist é um problema, e cada faixa um jeito de resolvê-lo." }),
-      ]),
+      // a home é só prateleiras, como a do Spotify; o glossário fica na lateral
+      el("h1", { class: "so-leitor", text: NOME }),
+      el("p", { class: "apresenta", text: "Algoritmos tocando ao vivo, com cada passo contado. Cada playlist é um problema; cada faixa, um jeito de resolvê-lo." }),
       VIDEOS.length ? prateleira(CONC.titulo, "#conceitos", CONC.frase, VIDEOS.map(cartaoVideo), "destaque") : null,
-      el("section", { class: "prateleira" }, [
-        el("header", {}, [el("div", {}, [el("h2", {}, el("a", { href: "#fundamentos", text: "Fundamentos" })), el("p", { text: FUND.frase })]),
-          el("div", { class: "prateleira-acoes" }, el("a", { class: "mostrar-tudo", href: "#fundamentos", text: "Mostrar tudo" }))]),
-        fichasTermos({ termos: FUND.grupos.flatMap((g) => g.termos).filter((t) => ["algoritmo", "n", "passo", "O(·)", "memória extra", "melhor, pior e caso médio"].includes(t.termo)) }),
-      ]),
       ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), p.gerais ? "gerais" : "")),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),

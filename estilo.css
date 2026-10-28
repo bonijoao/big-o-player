@@ -77,13 +77,11 @@ main:focus { outline: none; }
 .chip[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--papel); }
 
 /* prateleiras: título, "Mostrar tudo" e uma fileira que rola na horizontal */
-/* a home abre dizendo o que é o site; a capa de texto marca as seções sem faixa própria */
-.apresenta h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.04em; line-height: 1; font-weight: 700; }
-.apresenta p { margin: 10px 0 0; color: var(--cinza); max-width: 62ch; }
+/* a home abre com uma linha só, e logo as prateleiras; a capa de texto marca as seções sem faixa própria */
+.apresenta { margin: 0; color: var(--cinza); font-size: 0.86rem; max-width: 70ch; }
+.inicio .prateleira:first-of-type { margin-top: 20px; }
 .capa-texto { display: grid; place-items: center; background: var(--fundo); box-shadow: inset 0 0 0 1px var(--linha); font-weight: 700; color: var(--tinta); }
 .cabeca .capa-texto { font-size: 4rem; }
-.termos-curtos { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px 28px; font-size: 0.86rem; color: var(--cinza); }
-.termos-curtos b { color: var(--tinta); }
 .autoria { margin: 72px 0 0; padding: 18px 0 0; border-top: 1px solid var(--linha); font-size: 0.8rem; color: var(--cinza); }
 .autoria a { color: inherit; }
 
@@ -549,6 +547,7 @@ svg text { font-family: var(--mono); }
   .prateleira { margin-top: 32px; }
   .prateleira h2 { font-size: 1.1rem; }
   .fileira, .destaque .fileira { grid-auto-columns: 142px; gap: 14px; }
+  .apresenta { display: none; }   /* no celular, direto às prateleiras */
   .glossario dl { grid-template-columns: 1fr; }
   .glossario dt { padding-bottom: 0; border-bottom: 0; }
   .demo { grid-template-columns: 1fr; min-height: 0; }
