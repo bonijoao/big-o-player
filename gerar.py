@@ -1,6 +1,6 @@
 """Junta ficha.json (texto) + dados.json (medido) + conferencia.json de cada
-algoritmo, ficha.json + dados.json de cada estrutura (instrumentos/), as playlists, o glossário dos
-fundamentos e os vídeos dos conceitos em dados.js, que a página carrega (funciona abrindo o arquivo direto,
+algoritmo, ficha.json + dados.json de cada estrutura (instrumentos/), as playlists e as duas playlists
+de vídeo (conceitos e fundamentos) em dados.js, que a página carrega (funciona abrindo o arquivo direto,
 sem servidor).
 
   python3 gerar.py            mede os instrumentos e junta
@@ -91,7 +91,7 @@ def conferir_creditos(galeria, instrumentos):
                                  f"(existem: {', '.join(sorted(ids))})")
 
 
-def conferir_playlists(playlists, fundamentos):
+def conferir_playlists(playlists, series):
     citadas = set()
     for p in playlists:
         for s in p["subcategorias"]:
@@ -102,11 +102,10 @@ def conferir_playlists(playlists, fundamentos):
     soltas = [n for n in ALGORITMOS if n not in citadas]
     if soltas:
         raise SystemExit(f"faixas fora de qualquer playlist: {', '.join(soltas)}")
-    for g in fundamentos["grupos"]:
-        for t in g["termos"]:
-            ver = t.get("ver", {})
-            if ver.get("faixa") and ver["faixa"] not in ALGORITMOS or ver.get("estrutura") and ver["estrutura"] not in INSTRUMENTOS:
-                raise SystemExit(f"fundamentos: {t['termo']!r} aponta para {ver}, que não existe")
+    for s in series:   # um vídeo pronto aponta para um arquivo que existe
+        for v in s["videos"]:
+            if v.get("video") and not os.path.exists(os.path.join(RAIZ, v["video"])):
+                raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} aponta para {v['video']}, que não existe")
 
 
 def main():
@@ -122,14 +121,14 @@ def main():
     galeria = [entrada(n) for n in ALGORITMOS]
     instrumentos = [instrumento(n) for n in INSTRUMENTOS]
     conferir_creditos(galeria, instrumentos)
-    playlists, fundamentos = ler(RAIZ, "playlists.json"), ler(RAIZ, "fundamentos.json")
-    conferir_playlists(playlists, fundamentos)
+    playlists, conceitos, fundamentos = ler(RAIZ, "playlists.json"), ler(RAIZ, "conceitos.json"), ler(RAIZ, "fundamentos.json")
+    conferir_playlists(playlists, [conceitos, fundamentos])
     with open(os.path.join(RAIZ, "dados.js"), "w") as f:
         f.write("// gerado por gerar.py; não editar à mão\n")
         f.write("window.GALERIA = " + json.dumps(galeria, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.PLAYLISTS = " + json.dumps(playlists, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.FUNDAMENTOS = " + json.dumps(fundamentos, ensure_ascii=False, indent=1) + ";\n")
-        f.write("window.CONCEITOS = " + json.dumps(ler(RAIZ, "conceitos.json"), ensure_ascii=False, indent=1) + ";\n")
+        f.write("window.CONCEITOS = " + json.dumps(conceitos, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.INSTRUMENTOS = " + json.dumps(instrumentos, ensure_ascii=False) + ";\n")
     print("dados.js:", ", ".join(g["nome"] for g in galeria), "| estruturas:", ", ".join(i["nome"] for i in instrumentos))
     subprocess.run(["node", os.path.join(RAIZ, "testes", "conferir_js.mjs")], check=True)

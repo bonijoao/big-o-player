@@ -8,15 +8,15 @@ O inventário de partida é o que estava no ar no commit `4d27f95`: 8 álbuns, 3
 
 A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa-de-conteudo`, **sem push e sem merge**: o Pedro vê a prévia local primeiro (`python3 -m http.server 8765` na raiz).
 
-- As playlists, a galeria Problemas gerais, os Fundamentos (glossário rápido) e Algoritmos e estruturas estão no código: `playlists.json`, `fundamentos.json` e `galeria.js`.
-- **Conceitos importantes** está pronto no código (`conceitos.json`) e **desligado**: a seção só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
+- As playlists, a galeria Problemas gerais e Algoritmos e estruturas estão no código: `playlists.json` e `galeria.js`. A home é só prateleiras, como a do Spotify.
+- **Conceitos importantes** (`conceitos.json`) e **Fundamentos** (`fundamentos.json`) são playlists de vídeo, prontas no código e **desligadas**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
-- Os 4 vídeos curtos de Fundamentos continuam novos (não existem).
+- Os 11 vídeos de Fundamentos são uma lista proposta, ainda sem roteiro.
 
 ## As quatro seções, nesta ordem
 
 1. **Conceitos importantes**: 7 vídeos novos, com o vídeo 0 apresentando o site. É a porta de entrada e termina onde começa o primeiro algoritmo. Os roteiros estão prontos: o Pedro grava o áudio primeiro, e a animação vem por cima.
-2. **Fundamentos**: o glossário rápido (36 termos, em `fundamentos.json`) e 4 vídeos curtos, só onde uma linha não basta.
+2. **Fundamentos**: a playlist inicial de vídeos curtos sobre a base (variável, laço, vetor, pilha, n, passo…), que deixa a pessoa pronta para ver qualquer faixa.
 3. **Playlists por problema**: 7 playlists com 24 faixas, e as variações ficam como subcategorias.
    - Encontrar um item
    - Ordenar uma lista
@@ -83,11 +83,17 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. |
 | Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. |
 | Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. |
-| Fundamentos | — | glossário | Glossário rápido (36 termos, em `fundamentos.json`) | feito | Uma linha por termo, sempre à mão: quem sabe a base consegue ver qualquer faixa. |
-| Fundamentos | — | vídeo curto | Recursão e a pilha de chamadas | novo | Uma função que chama a si mesma, e quem fica esperando. Palco do Fatorial. |
-| Fundamentos | — | vídeo curto | Laço dentro de laço | novo | Três laços, n · n · n: dobrar n multiplica o custo por 8. Palco da Multiplicação de matrizes. |
-| Fundamentos | — | vídeo curto | Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. Gráficos do Máximo e da Multiplicação. |
-| Fundamentos | — | vídeo curto | O vetor que dobra (amortizado) | novo | Uma cópia cara de vez em quando, dividida por todas as inserções, dá O(1) por operação. Demo do Vetor. |
+| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. |
+| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. |
+| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. |
+| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. |
+| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. |
+| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. |
+| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. |
+| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. |
+| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. |
+| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. |
+| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. |
 | Algoritmos e estruturas | — | estruturas | Vetor (`vetor`) | mudou de lugar (Instrumentos) | Valores em sequência; chega a qualquer um pelo número da casa. |
 | Algoritmos e estruturas | — | estruturas | Matriz (`matriz`) | mudou de lugar (Instrumentos) | Uma tabela por linha e coluna, guardada linha a linha num bloco só. |
 | Algoritmos e estruturas | — | estruturas | Texto (`texto`) | mudou de lugar (Instrumentos) | Um vetor de letras: concatenar no laço × juntar no fim. |
@@ -141,18 +147,11 @@ Os roteiros dos 7 vídeos estão na sessão coordenadora, e os resumos de 1 linh
 
 ## Fundamentos
 
-Fundamentos é o que a pessoa precisa saber para ler qualquer faixa: o vocabulário e a régua com que o site mede. Fica antes de Algoritmos e estruturas.
+Fundamentos é a playlist inicial: vídeos curtos sobre a base, para a pessoa entender os demais. Sabendo a base, ela consegue ver qualquer vídeo ou simulação. Vem depois de Conceitos importantes e antes das playlists por problema.
 
-A fronteira:
-- Vai para **Fundamentos** o que se explica numa linha e não precisa ser tocado: o que é n, um passo, uma variável, uma pilha. A estrutura aparece aqui só como definição curta, com um link para a página dela.
-- Vai para **Algoritmos e estruturas** o que tem operações com custo para explorar: cada estrutura com a demo e a tabela de operações, e cada algoritmo com o palco, o encarte e os gráficos.
-- O vídeo curto entra em Fundamentos só quando uma linha não basta: recursão, laço aninhado, log-log e amortizado (veja a tabela).
+A fronteira com Algoritmos e estruturas: o vídeo de Fundamentos apresenta a ideia (o que é uma pilha, por que o vetor dobra); a página da estrutura é onde se mexe nela e se vê o custo de cada operação.
 
-O branch do redator (`claude/compassionate-dhawan-92e734`, que não está no ar) já tem quatro fichas de fundamentos: algoritmo, variável, laço e decisão, e custo. Elas servem de ponto de partida (decisão 7).
-
-### Glossário rápido
-
-O glossário mora em `fundamentos.json`, com 36 termos em três grupos (o que roda, onde se guarda, como se mede). Cada termo traz uma linha e um link para a faixa ou a estrutura onde ele aparece funcionando. Algoritmo, variável, laço, decisão e custo partem das fichas da trilha "Do zero". A regra dos rótulos ("o rótulo é o pior caso, salvo quando diz médio ou amortizado") está no termo O(·), e a da memória ("além da entrada e da resposta") no termo memória extra.
+Os 11 vídeos estão em `fundamentos.json`, como lista proposta e sem roteiro. Algoritmo, variável, laço e decisão, e custo podem partir das fichas da trilha "Do zero" (branch `claude/compassionate-dhawan-92e734`, commit `74cc438`). O glossário rápido que esta seção chegou a ter saiu do site: Fundamentos não é glossário.
 
 ## Pendências que não são de mapa
 
@@ -168,7 +167,7 @@ Erros técnicos (QA de conteúdo). Regra do site: o rótulo é o pior caso, salv
 - **E5. Feito.** O Fibonacci iterativo diz "duas variáveis" no encarte e "O(1), duas variáveis" no palco, e as casas que passaram apagam.
 - **E6. Feito.** A profundidade média da árvore embaralhada aparece como uns 1,4 log₂ n.
 - **E7. Feito.** O memo do Fibonacci é um Vetor (a casa k guarda fib(k)), em Python, JS e R. O feat. ficou "Vetor, Pilha", e o palco desenha o vetor.
-- **E8. Feito.** A regra está no glossário dos Fundamentos, com Ω e Θ.
+- **E8. Feito.** A regra está escrita uma vez, na abertura de Algoritmos e estruturas. Ω e Θ ficam para o vídeo de Fundamentos sobre n, passo e memória.
 - **E9. Feito.** A autoria do Fibonacci iterativo virou "—", e a linha some da ficha.
 
 Sistema (QA de sistema):
@@ -197,6 +196,7 @@ Todas tomadas em 28/10/2026 ("aceito as sugestões, mete marcha"):
 4. **Ordem das seções:** Conceitos importantes → Fundamentos → Playlists (com Problemas gerais no fim) → Algoritmos e estruturas.
 5. **Termos:** "feat." fica, como metáfora do player. "Instrumento" vira "estrutura" no texto e na navegação.
 6. **Ordem das playlists:** a deste mapa.
-7. **Trilha "Do zero":** as 4 fichas de fundamentos do branch `claude/compassionate-dhawan-92e734` viram base do glossário rápido, e a trilha fica arquivada.
+7. **Trilha "Do zero":** a trilha fica arquivada. As 4 fichas de fundamentos dela viram ponto de partida dos vídeos de Fundamentos.
+8. **Fundamentos não é glossário** (28/10, depois da prévia): vira a playlist inicial de vídeos, desligada até o primeiro vídeo. A home é só prateleiras.
 
 Antes disso, também ficou decidido que os problemas com uma faixa só vão para a galeria Problemas gerais e que o vídeo 0 apresenta o site, separado do vídeo 1.

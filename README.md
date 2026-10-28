@@ -2,8 +2,7 @@
 
 Galeria de algoritmos com as contas à mostra, em forma de player de música: cada playlist é um problema (encontrar um item, ordenar uma lista…), e cada algoritmo é uma faixa, um jeito de resolvê-lo. O mapa do conteúdo está em `CONTENT_MAP.md`. O site tem quatro seções, nesta ordem:
 
-- **Conceitos importantes** (`conceitos.json`): os vídeos de entrada. A seção só aparece quando algum vídeo tem `"video"` (o caminho do arquivo); sem vídeo, nada é mostrado.
-- **Fundamentos** (`fundamentos.json`): o glossário rápido, uma linha por termo e onde ver cada um funcionando.
+- **Conceitos importantes** (`conceitos.json`) e **Fundamentos** (`fundamentos.json`): as duas playlists de vídeo, a de entrada e a da base. Cada uma só aparece quando algum vídeo tem `"video"` (o caminho do arquivo); sem vídeo, nada é mostrado. O `gerar.py` recusa vídeo que aponta para um arquivo que não existe.
 - **Playlists** (`playlists.json`): as faixas agrupadas por problema, com as variações em subcategorias. Os problemas com uma faixa só ficam na galeria Problemas gerais (`"gerais": true`). Uma faixa pode morar em duas playlists; a rota dela usa a primeira. O `gerar.py` recusa faixa fora de qualquer playlist.
 - **Algoritmos e estruturas**: a página de cada faixa e de cada estrutura de dados (`#estruturas/<nome>`; no código, as estruturas ainda se chamam instrumentos).
 
@@ -61,9 +60,9 @@ instrumentos.js        a página do instrumento: placa, demo ao vivo, tabela de 
 simulacao/algoritmos.js  os algoritmos em JS, contando como o Python, com a linha do pseudocódigo de cada evento
 simulacao/palco.js     a simulação: estado de cada instante, linha do tempo e desenho em canvas
 testes/conferir_js.mjs JS × Python nos mesmos vetores, textos, sorteios de clientes, grafos e amostras
-gerar.py               junta tudo em dados.js (faixas, estruturas, playlists, glossário e vídeos) e roda o teste
+gerar.py               junta tudo em dados.js (faixas, estruturas, playlists e vídeos) e roda o teste
 playlists.json         as playlists por problema e a galeria Problemas gerais
-fundamentos.json       o glossário rápido dos Fundamentos
+fundamentos.json       os vídeos de Fundamentos (desligados até existir o primeiro)
 conceitos.json         os vídeos de Conceitos importantes (desligados até existir o primeiro)
 motor/identidade.py    gera og.png (1200 × 630, para compartilhar) e icone.png
 _config.yml            o que o GitHub Pages não publica (bastidor: docs, testes, motor, .py, .R, .json)

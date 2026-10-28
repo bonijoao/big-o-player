@@ -85,16 +85,6 @@ main:focus { outline: none; }
 .autoria { margin: 72px 0 0; padding: 18px 0 0; border-top: 1px solid var(--linha); font-size: 0.8rem; color: var(--cinza); }
 .autoria a { color: inherit; }
 
-/* fundamentos: o glossário em três grupos */
-.glossario { margin: 48px 0 0; }
-.glossario h2 { margin: 0 0 12px; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
-.glossario dl { margin: 0; display: grid; grid-template-columns: minmax(10ch, 24ch) 1fr; border-top: 1px solid var(--linha); }
-.glossario dt, .glossario dd { margin: 0; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--linha); font-size: 0.9rem; }
-.glossario dt { font-weight: 600; }
-.glossario .ver { color: var(--cinza); font-size: 0.8rem; white-space: nowrap; }
-.glossario .ver::before { content: "→"; margin: 0 2px 0 6px; }
-.nota-fim { margin: 40px 0 0; color: var(--cinza); font-size: 0.78rem; }
-
 /* algoritmos e estruturas: a lista dos algoritmos em ordem alfabética */
 .indice-algoritmos { list-style: none; margin: 20px 0 0; padding: 0; columns: 2 320px; column-gap: 40px; font-size: 0.9rem; }
 .indice-algoritmos li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--linha); }
@@ -548,8 +538,6 @@ svg text { font-family: var(--mono); }
   .prateleira h2 { font-size: 1.1rem; }
   .fileira, .destaque .fileira { grid-auto-columns: 142px; gap: 14px; }
   .apresenta { display: none; }   /* no celular, direto às prateleiras */
-  .glossario dl { grid-template-columns: 1fr; }
-  .glossario dt { padding-bottom: 0; border-bottom: 0; }
   .demo { grid-template-columns: 1fr; min-height: 0; }
   .demo-tela { padding: 12px; }
   .demo-figura { min-height: 160px; }

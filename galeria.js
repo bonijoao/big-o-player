@@ -13,9 +13,9 @@
     const subcategorias = p.subcategorias.map((s) => ({ ...s, faixas: s.faixas.map((n) => porAlg[n]).filter(Boolean) }));
     return { ...p, subcategorias, faixas: subcategorias.flatMap((s) => s.faixas) };
   });
-  const FUND = window.FUNDAMENTOS || { grupos: [] };
-  const CONC = window.CONCEITOS || { videos: [] };
-  const VIDEOS = (CONC.videos || []).filter((v) => v.video);   // a seção Conceitos só existe com vídeo pronto
+  // as duas playlists de vídeo, na ordem da home; cada uma só existe com algum vídeo pronto
+  const SERIES = [{ id: "conceitos", ...(window.CONCEITOS || {}) }, { id: "fundamentos", ...(window.FUNDAMENTOS || {}) }]
+    .map((s) => ({ ...s, prontos: (s.videos || []).filter((v) => v.video) })).filter((s) => s.prontos.length);
   const NOME = "Big O Player";
   const $ = (s, raiz = document) => raiz.querySelector(s);
   const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -62,8 +62,7 @@
     const linha = (id, capa, titulo, sub) => el("a", { class: "album-mini", href: `#${id}`, "aria-current": String(id === atual) }, [
       capa, el("span", {}, [el("b", { text: titulo }), el("small", { text: sub })])]);
     $("#secoes").replaceChildren(
-      ...(VIDEOS.length ? [linha("conceitos", capaTexto("▶", "mini-48"), CONC.titulo, `${VIDEOS.length} ${VIDEOS.length === 1 ? "vídeo" : "vídeos"}`)] : []),
-      linha("fundamentos", capaTexto("n", "mini-48"), "Fundamentos", `glossário, ${FUND.grupos.reduce((t, g) => t + g.termos.length, 0)} termos`),
+      ...SERIES.map((s) => linha(s.id, capaTexto("▶", "mini-48"), s.titulo, `${s.prontos.length} ${s.prontos.length === 1 ? "vídeo" : "vídeos"}`)),
       el("p", { class: "lateral-titulo", text: "Playlists" }),
       ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length))),
       el("p", { class: "lateral-titulo", text: "Algoritmos e estruturas" }),
@@ -111,10 +110,10 @@
 
   function inicio() {
     return el("div", { class: "inicio" }, [
-      // a home é só prateleiras, como a do Spotify; o glossário fica na lateral
+      // a home é só prateleiras, como a do Spotify
       el("h1", { class: "so-leitor", text: NOME }),
       el("p", { class: "apresenta", text: "Algoritmos tocando ao vivo, com cada passo contado. Cada playlist é um problema; cada faixa, um jeito de resolvê-lo." }),
-      VIDEOS.length ? prateleira(CONC.titulo, "#conceitos", CONC.frase, VIDEOS.map(cartaoVideo), "destaque") : null,
+      ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.prontos.map(cartaoVideo), "destaque")),
       ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), p.gerais ? "gerais" : "")),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
@@ -166,42 +165,16 @@
     ]);
   }
 
-  // ---------- fundamentos: o glossário rápido ----------
+  // ---------- as playlists de vídeo (Conceitos importantes e Fundamentos): só com vídeo pronto ----------
 
-  function fundamentos() {
-    const ver = (v) => {
-      if (v.faixa && porAlg[v.faixa]) return el("a", { href: rotaFaixa(porAlg[v.faixa]), text: porAlg[v.faixa].nome });
-      const inst = v.estrutura && INSTS.find((x) => x.id === v.estrutura);
-      return inst ? el("a", { href: `#estruturas/${inst.id}`, text: inst.nome }) : null;
-    };
-    return el("div", { class: "fundamentos" }, [
-      el("header", { class: "cabeca" }, [el("div", {}, [
-        el("span", { class: "rotulo", text: "glossário" }),
-        el("h1", { text: "Fundamentos" }),
-        el("p", { text: FUND.frase }),
-      ])]),
-      ...FUND.grupos.map((g) => el("section", { class: "glossario" }, [
-        el("h2", { text: g.titulo }),
-        el("dl", {}, g.termos.flatMap((t) => [
-          el("dt", { id: `termo-${t.termo.replace(/[^\p{L}\p{N}]+/gu, "-")}`, text: t.termo }),
-          el("dd", {}, [t.linha, t.ver ? el("span", { class: "ver" }, [" ", ver(t.ver)]) : null]),
-        ])),
-      ])),
-      FUND.credito ? el("p", { class: "nota-fim", text: FUND.credito }) : null,
-      rodape(),
-    ]);
-  }
-
-  // ---------- conceitos importantes: os vídeos (só com vídeo pronto) ----------
-
-  function conceitos() {
+  function paginaVideos(s) {
     return el("div", {}, [
       el("header", { class: "cabeca" }, [el("div", {}, [
         el("span", { class: "rotulo", text: "vídeos" }),
-        el("h1", { text: CONC.titulo }),
-        el("p", { text: CONC.frase }),
+        el("h1", { text: s.titulo }),
+        el("p", { text: s.frase }),
       ])]),
-      el("div", { class: "estante" }, VIDEOS.map(cartaoVideo)),
+      el("div", { class: "estante" }, s.prontos.map(cartaoVideo)),
     ]);
   }
 
@@ -213,7 +186,7 @@
       el("header", { class: "cabeca" }, [el("div", {}, [
         el("span", { class: "rotulo", text: "referência" }),
         el("h1", { text: "Algoritmos e estruturas" }),
-        el("p", { text: "Cada página com a simulação ao vivo e o custo medido. As estruturas são o que as faixas tocam." }),
+        el("p", { text: "Cada página com a simulação ao vivo e o custo medido. O rótulo de tempo é o pior caso, salvo quando diz médio ou amortizado." }),
       ])]),
       el("h2", { class: "estante-titulo", id: "estruturas", text: "Estruturas" }),
       el("div", { class: "estante" }, INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
@@ -485,8 +458,7 @@
       titulo = `${inst.nome} · estruturas`;
       atual = "algoritmos-e-estruturas";
     } else if (id === "algoritmos-e-estruturas" || id === "estruturas") { main.replaceChildren(algoritmosEEstruturas()); titulo = "Algoritmos e estruturas"; atual = "algoritmos-e-estruturas"; }
-    else if (id === "fundamentos") { main.replaceChildren(fundamentos()); titulo = "Fundamentos"; }
-    else if (id === "conceitos" && VIDEOS.length) { main.replaceChildren(conceitos()); titulo = CONC.titulo; }
+    else if (SERIES.some((s) => s.id === id)) { const s = SERIES.find((x) => x.id === id); main.replaceChildren(paginaVideos(s)); titulo = s.titulo; }
     else main.replaceChildren(inicio());
     document.title = titulo ? `${titulo} · ${NOME}` : NOME;
     desenharLateral(atual);
