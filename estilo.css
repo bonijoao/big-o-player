@@ -86,6 +86,8 @@ code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); pa
 /* a marca: o disco da capa CI-00 e o nome na grotesca das capas */
 .marca { display: flex; align-items: center; gap: 10px; font-family: var(--titulo); font-weight: 400; font-size: 1.2rem; letter-spacing: -0.02em; line-height: 1; text-decoration: none; margin: 0 0 30px; }
 .marca img { width: 32px; height: 32px; flex: none; }
+/* na lateral, a marca fica presa no topo e a lista rola por baixo dela */
+.lateral .marca { position: sticky; top: -28px; z-index: 2; margin: -28px -18px 16px; padding: 24px 18px 14px; background: var(--fundo); box-shadow: 0 1px 0 var(--linha); }
 .lateral-titulo { margin: 22px 0 8px; font-size: 0.78rem; color: var(--cinza); }
 .album-mini { display: flex; gap: 12px; align-items: center; padding: 7px; margin: 0 -7px 4px; border-radius: 4px; text-decoration: none; }
 .album-mini:hover { background: var(--realce); }
@@ -610,7 +612,7 @@ svg text { font-family: var(--mono); }
   :root { --barra: 70px; }
   .app { grid-template-columns: 1fr; }
   .lateral { position: static; height: auto; padding: 16px 16px 10px; border-right: 0; border-bottom: 1px solid var(--linha); }
-  .marca { margin: 0 0 12px; }
+  .lateral .marca { position: static; margin: 0 0 12px; padding: 0; box-shadow: none; }   /* no celular a lateral não rola sozinha */
   .lateral-titulo { display: none; }
   #secoes { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .album-mini { margin: 0; flex: none; padding: 5px 10px 5px 5px; background: var(--papel); box-shadow: inset 0 0 0 1px var(--linha); }
