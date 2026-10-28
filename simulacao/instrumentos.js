@@ -32,8 +32,8 @@
 
   // ---------- vetor dinâmico (instrumentos/vetor/vetor.py) ----------
 
-  function Vetor(reg = registro()) {
-    const c = casas(1, reg);
+  function Vetor(reg = registro(), capacidade = 1) {   // capacidade: casas reservadas de saída, vazias (reservar não conta)
+    const c = casas(capacidade, reg);
     const e = {
       reg, n: 0,
       ler: (i) => c.le(i),

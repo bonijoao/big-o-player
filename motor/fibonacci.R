@@ -1,12 +1,12 @@
 # Os três Fibonacci reimplementados em R, contando as somas e o pico de
-# memória (níveis da pilha + chaves guardadas), para conferir os três
+# memória (níveis da pilha + respostas guardadas no memo), para conferir os três
 # dados.json. O valor é conferido contra a fórmula de Binet,
 # round(φⁿ/√5), exata em double para os n daqui.
 # Uso (de algoritmos/fib*/conferir.R): source("motor/fibonacci.R"); conferir_fib("recursivo", pasta)
 
 conferir_fib <- function(versao, pasta) {
-  somas <- 0; nivel <- 0; pico <- 0; memo <- new.env()
-  guarda <- function() pico <<- max(pico, nivel + length(ls(memo)))
+  somas <- 0; nivel <- 0; pico <- 0; memo <- numeric(0)   # o memo: a casa k + 1 guarda fib(k), NA até ser calculada
+  guarda <- function() pico <<- max(pico, nivel + sum(!is.na(memo)))
   rec <- function(n) {
     nivel <<- nivel + 1; guarda()
     r <- if (n <= 1) n else { x <- rec(n - 1) + rec(n - 2); somas <<- somas + 1; x }
@@ -15,10 +15,9 @@ conferir_fib <- function(versao, pasta) {
   }
   mem <- function(n) {
     nivel <<- nivel + 1; guarda()
-    chave <- as.character(n)
-    r <- if (n <= 1) n else if (exists(chave, envir = memo, inherits = FALSE)) get(chave, envir = memo) else {
+    r <- if (n <= 1) n else if (!is.na(memo[n + 1])) memo[n + 1] else {
       x <- mem(n - 1) + mem(n - 2); somas <<- somas + 1
-      assign(chave, x, envir = memo); guarda(); x
+      memo[n + 1] <<- x; guarda(); x
     }
     nivel <<- nivel - 1
     r
@@ -33,7 +32,7 @@ conferir_fib <- function(versao, pasta) {
 
   py <- jsonlite::read_json(file.path(pasta, "dados.json"))
   tab <- do.call(rbind, lapply(py$conferir, function(caso) {
-    somas <<- 0; nivel <<- 0; pico <<- 0; memo <<- new.env()
+    somas <<- 0; nivel <<- 0; pico <<- 0; memo <<- rep(NA_real_, caso$n + 1)
     r <- f(caso$n)
     data.frame(n = caso$n, binet = binet(caso$n) == caso$fib, r = r == caso$fib,
                somas_r = somas, somas_py = caso$ops, pico_r = pico, pico_py = caso$pico)

@@ -3,5 +3,5 @@
   "versao_r": "4.6.0",
   "matrizes": 16,
   "tudo_ok": true,
-  "resumo": "Rodado em R 4.6.0 em 16 pares de matrizes sorteadas, de 1 × 1 a 8 × 8: o produto bate com A %*% B casa por casa, as multiplicações (n³) batem com a reimplementação em R, e a memória é a matriz C, n² casas."
+  "resumo": "Rodado em R 4.6.0 em 16 pares de matrizes sorteadas, de 1 × 1 a 8 × 8: o produto bate com A %*% B casa por casa, as multiplicações (n³) batem com a reimplementação em R, e não há memória extra: C é a resposta."
 }

@@ -1248,7 +1248,6 @@
     const A = I_.Matriz(reg, n, n), B = I_.Matriz(reg, n, n), C = I_.Matriz(reg, n, n);
     A.carregar(a.flat()); B.carregar(b.flat());
     const V = c.vars = { i: null, j: null, k: null, s: null };
-    c.aloca("C", n * n);
     c.push({ t: "atribui", linha: 2 });
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
@@ -1317,40 +1316,40 @@
     return { fib: r, ops: c.ops.somas || 0, pico: c.pico, casas: 0, chamadas: c.seq, eventos: c.eventos };
   }
 
-  /** Fibonacci com memória (algoritmos/fibmemoria): o memo é o Dicionário com sondagem do instrumento. */
+  /** Fibonacci com memória (algoritmos/fibmemoria): o memo é o Vetor do instrumento, com a casa k para fib(k). */
   function fibMemoria(n) {
-    const c = contador(), d = instrumentos().DicSondagem();
+    const c = contador(), d = instrumentos().Vetor(undefined, n + 1);
+    let guardadas = 0;
+    const gasto = () => d.reg.leituras + d.reg.escritas;
     function f(k, linha) {
-      const V = { n: k, r: null, "respostas guardadas": d.n };
+      const V = { n: k, r: null, "respostas guardadas": guardadas };
       c.entra(k, null, linha, V);
       c.push({ t: "testa", linha: 2 });
-      let r;
+      let r, guardado;
       if (k <= 1) { r = k; V.r = r; c.push({ t: "atribui", k, linha: 3 }); }
-      else {
-        const tem = d.tem(k);
-        c.push({ t: "busca", k, achou: tem, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 4 });
-        if (tem) {
-          r = d.ler(k);
-          V.r = r;
-          c.push({ t: "lembra", k, r, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 5 });
-        } else {
-          const x = f(k - 1, 7), y = f(k - 2, 7);
-          r = x + y;
-          c.op("somas");
-          V.r = r;
-          c.push({ t: "soma", k, r, linha: 7 });
-          d.por(k, r);
-          c.aloca("memo", d.n);
-          V["respostas guardadas"] = d.n;
-          c.push({ t: "guarda", k, r, dic: eventosDic(d), gasto: d.reg.leituras + d.reg.escritas, linha: 8 });
-        }
+      else if ((guardado = d.ler(k)) !== null) {
+        c.push({ t: "busca", k, achou: true, gasto: gasto(), linha: 4 });
+        r = guardado;
+        V.r = r;
+        c.push({ t: "lembra", k, r, gasto: gasto(), linha: 5 });
+      } else {
+        c.push({ t: "busca", k, achou: false, gasto: gasto(), linha: 4 });
+        const x = f(k - 1, 7), y = f(k - 2, 7);
+        r = x + y;
+        c.op("somas");
+        V.r = r;
+        c.push({ t: "soma", k, r, linha: 7 });
+        d.escrever(k, r);
+        guardadas++;
+        c.aloca("memo", guardadas);
+        V["respostas guardadas"] = guardadas;
+        c.push({ t: "guarda", k, r, gasto: gasto(), linha: 8 });
       }
       c.sai();
       return r;
     }
     const r = f(n, 1);
-    return { fib: r, ops: c.ops.somas || 0, pico: c.pico, casas: d.reg.leituras + d.reg.escritas, chamadas: c.seq,
-      guardadas: d.n, m: d.m, eventos: c.eventos };
+    return { fib: r, ops: c.ops.somas || 0, pico: c.pico, casas: gasto(), chamadas: c.seq, guardadas, eventos: c.eventos };
   }
 
   /** Fibonacci iterativo (algoritmos/fibiterativo): n somas, duas variáveis. */

@@ -3,8 +3,8 @@ A[i][k] · B[k][j] para k de 1 a n. São n² casas de C, cada uma com n
 multiplicações: n³. Roda sobre a Matriz do instrumento (guardada linha a
 linha), que conta cada casa lida e escrita.
 
-Cada multiplicação conta 1 (`multiplicacoes`). A memória é a matriz C,
-n² casas (`conta.ocupa`). A complexidade ciclomática é medida em `multiplicar`."""
+Cada multiplicação conta 1 (`multiplicacoes`). A matriz C é a resposta e
+não conta como memória extra; fora ela, só a soma e os índices. A complexidade ciclomática é medida em `multiplicar`."""
 import os
 import sys
 
@@ -20,7 +20,6 @@ def vezes(a, b, conta):
 def multiplicar(A, B, conta):
     n = A.linhas
     C = Matriz(conta, n, n)
-    conta.ocupa("C", n * n)
     for i in range(n):
         for j in range(n):
             s = 0

@@ -4,7 +4,7 @@
  "objetivo": "Achar um valor numa árvore de busca, descendo um nível por comparação.",
  "variante": "na árvore de busca comum, montada em ordem × embaralhada",
  "familia": "árvores e heaps",
- "resumo": "Desce da raiz comparando o valor procurado com o de cada nó. Igual, achou; menor, só pode estar à esquerda; maior, só à direita. Cada nível descarta um lado inteiro, como a busca binária corta o vetor, e a busca custa no máximo a altura da árvore. Só que a altura depende da ordem em que os valores chegaram: embaralhados, a árvore fica baixa, e cada valor mora, em média, a pouco mais de log₂ n níveis da raiz; em ordem, vira uma fila indiana, e buscar volta a ser olhar um por um.",
+ "resumo": "Desce da raiz comparando o valor procurado com o de cada nó. Igual, achou; menor, só pode estar à esquerda; maior, só à direita. Cada nível descarta um lado inteiro, como a busca binária corta o vetor, e a busca custa no máximo a altura da árvore. Só que a altura depende da ordem em que os valores chegaram: embaralhados, a árvore fica baixa, e cada valor mora, em média, a uns 1,4 log₂ n níveis da raiz; em ordem, vira uma fila indiana, e buscar volta a ser olhar um por um.",
  "instrumentos": [
   {
    "id": "arvore",

@@ -2354,8 +2354,8 @@
     return {
       total: tl.total, desenhar, ...comum(tl, est, pesos, RITMO.matrizes, accelerando),
       resumo: { ops: r.ops, n: N, pico: r.pico }, contagemEm,
-      medidor: () => `${milhar(r.ops)} multiplicações, n = ${N}<br>C com ${r.pico} casas`,
-      aoVivo: (u, cfg) => `Tocando agora: matrizes ${N} × ${N}, ${cfg.rotulo}; ${milhar(contagemEm(u))} de ${milhar(r.ops)} multiplicações, memória extra de ${r.pico} casas (a matriz C).`,
+      medidor: () => `${milhar(r.ops)} multiplicações, n = ${N}<br>sem memória extra: C é a resposta`,
+      aoVivo: (u, cfg) => `Tocando agora: matrizes ${N} × ${N}, ${cfg.rotulo}; ${milhar(contagemEm(u))} de ${milhar(r.ops)} multiplicações, sem memória extra (C, com ${N * N} casas, é a resposta).`,
     };
   }
 
@@ -2436,18 +2436,18 @@
     const posX = (id) => { const no = nos[id]; if (!no.filhos.length) { no.x = folhas++; return no.x; } const xs = no.filhos.map(posX); no.x = (xs[0] + xs.at(-1)) / 2; return no.x; };
     if (nos.length) posX(0);
     const prof = Math.max(1, ...nos.map((q) => q.prof));
-    // o memo: a tabela do dicionário depois de cada evento
-    const tab = tabelaDic();
+    // o memo: o vetor de n + 1 casas depois de cada evento (a casa k guarda fib(k)), e a casa olhada agora
+    const memo = new Array(n + 1).fill(null);
     let somas = 0, casas = 0, chamadas = 0, pilha = 0, pico = 0, a = 0, b = 1, i = 0;
     const seq = [0];
     const est = r.eventos.map((e, t) => {
-      if (versao === "memoria") { tab.aplicar(e.dic || []); if (e.gasto !== undefined) casas = e.gasto; }
+      if (versao === "memoria") { if (e.t === "guarda") memo[e.k] = e.r; if (e.gasto !== undefined) casas = e.gasto; }
       if (e.t === "entra") { chamadas++; pilha++; }
       else if (e.t === "sai") pilha--;
       else if (e.t === "soma") { somas++; if (!arvore) { a = e.a; b = e.b; i = e.i + 1; seq.push(e.a); } }
       pico = Math.max(pico, pilha);
       return { t: e.t, linha: e.linha, vars: e.vars, nivel: e.nivel, chamada: e.chamada, somas, casas, chamadas, pilha, pico, a, b, i, nSeq: seq.length,
-        tab: versao === "memoria" ? tab.foto() : null };
+        memo: versao === "memoria" ? memo.slice() : null, olha: e.t === "busca" || e.t === "lembra" || e.t === "guarda" ? e.k : null };
     });
     if (somas !== r.ops || (arvore && chamadas !== r.chamadas) || casas !== r.casas) throw new Error("reprodução do Fibonacci não bate");
     const pesos = !accelerando ? est.map(() => 1)
@@ -2474,18 +2474,33 @@
 
     function desenharSequencia(ctx, s, fim) {
       const col = 8, bw = 70, bh = 34, X0 = 50, Y0 = 96;
-      texto(ctx, "a sequência, de fib(0) em diante; a e b andam juntos", X0, Y0 - 26, 11, COR.cinza);
+      texto(ctx, "a sequência, de fib(0) em diante; só a e b ficam guardados", X0, Y0 - 26, 11, COR.cinza);
       for (let p = 0; p < s.nSeq + 1 && p <= n + 1; p++) {
         const x = X0 + (p % col) * (bw + 4), y = Y0 + Math.floor(p / col) * (bh + 22);
         const ehA = p === s.i, ehB = p === s.i + 1;
         const val = p < s.nSeq ? fibs[p] : ehB ? s.b : null;
         if (val === null) continue;
         const cor = fim ? (p === n ? COR.verde : null) : ehA || ehB ? COR.mexeu : null;
+        const passou = !fim && p < s.i;   // o que ficou para trás já não está guardado: só a e b
         ctx.fillStyle = cor || "#fff"; ctx.fillRect(x, y, bw, bh);
-        ctx.strokeStyle = cor || COR.borda; ctx.lineWidth = 1; ctx.strokeRect(x, y, bw, bh);
-        texto(ctx, milhar(val), x + bw / 2, y + 10, Math.min(14, 120 / String(val).length + 4), cor ? "#fff" : COR.tinta, 600, "center");
+        ctx.strokeStyle = cor || (passou ? COR.claro : COR.borda); ctx.lineWidth = 1; ctx.strokeRect(x, y, bw, bh);
+        texto(ctx, milhar(val), x + bw / 2, y + 10, Math.min(14, 120 / String(val).length + 4), cor ? "#fff" : passou ? COR.palido : COR.tinta, 600, "center");
         const marca = !fim && (ehA || ehB);
         texto(ctx, marca ? `${ehA ? "a" : "b"} = fib(${p})` : `fib(${p})`, x + bw / 2, y + bh + 4, 10, marca ? COR.tinta : COR.cinza, marca ? 600 : 400, "center");
+      }
+    }
+    // o memo: uma fileira de casas, a k-ésima com fib(k); a casa olhada acende (azul: achou; vermelho: guardou)
+    function desenharMemo(ctx, s, fim) {
+      const col = Math.min(n + 1, 21), bw = Math.min(40, Math.floor(570 / col) - 3), bh = 30, X0 = AX0, Y0 = 372;
+      texto(ctx, "o memo: a casa k guarda fib(k)", X0, Y0 - 24, 11, COR.cinza);
+      for (let p = 0; p <= n; p++) {
+        const x = X0 + (p % col) * (bw + 3), y = Y0 + Math.floor(p / col) * (bh + 20);
+        const val = s.memo[p], agora = !fim && s.olha === p;
+        const cor = agora ? (s.t === "guarda" ? COR.mexeu : COR.album) : null;
+        ctx.fillStyle = cor || (val === null ? COR.claro : "#fff"); ctx.fillRect(x, y, bw, bh);
+        ctx.strokeStyle = cor || COR.borda; ctx.lineWidth = 1; ctx.strokeRect(x, y, bw, bh);
+        if (val !== null) texto(ctx, milhar(val), x + bw / 2, y + 9, Math.min(12, (bw - 4) / (0.62 * String(milhar(val)).length)), cor ? "#fff" : COR.tinta, 600, "center");
+        texto(ctx, String(p), x + bw / 2, y + bh + 3, 10, agora ? COR.tinta : COR.cinza, agora ? 600 : 400, "center");
       }
     }
     const fibs = [0, 1];
@@ -2493,11 +2508,11 @@
 
     function desenhar(ctx, u) {
       const k = tl.eventoEm(u), fim = u >= tl.total;
-      const s = k >= 0 ? est[k] : { somas: 0, casas: 0, chamadas: 0, pilha: 0, pico: 0, a: 0, b: 1, i: 0, nSeq: 1, tab: tabelaDic().foto() };
+      const s = k >= 0 ? est[k] : { somas: 0, casas: 0, chamadas: 0, pilha: 0, pico: 0, a: 0, b: 1, i: 0, nSeq: 1, memo: new Array(n + 1).fill(null), olha: null };
       if (arvore) {
         texto(ctx, versao === "memoria" ? "a árvore de chamadas (azul: a resposta já estava guardada)" : `a árvore de chamadas: ${milhar(r.chamadas)} no total`, AX0, AY0 - 34, 11, COR.cinza);
         desenharArvore(ctx, fim ? Infinity : k, fim);
-        if (versao === "memoria") grade(ctx, s.tab, AX0, 360, 570, 110, "o memo (chave n e a resposta fib(n))", fim);
+        if (versao === "memoria") desenharMemo(ctx, s, fim);
       } else desenharSequencia(ctx, s, fim);
 
       const x = 680;
@@ -2519,7 +2534,7 @@
         texto(ctx, "a e b", x, 174, 13, COR.cinza);
         const ab = `${milhar(s.a)} e ${milhar(s.b)}`;
         texto(ctx, ab, x, 190, Math.min(22, 270 / (0.6 * ab.length)), COR.tinta, 700);
-        texto(ctx, "memória extra: 2 variáveis", x, 236, 13, COR.cinza);
+        texto(ctx, "memória extra: O(1), duas variáveis", x, 236, 13, COR.cinza);
       }
       if (fim) texto(ctx, `fib(${n}) = ${milhar(r.fib)}`, x, versao === "memoria" ? 376 : 370, 20, COR.verde, 700);
       legendaCores(ctx, arvore

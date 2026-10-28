@@ -264,7 +264,7 @@
       conta: (ex) => `${ex.n} × ${ex.n}: ${ex.n * ex.n} casas de C, ${ex.n} multiplicações em cada; ${mil(ex.casas)} casas lidas e escritas, nas matrizes do encarte` },
     fatorial: { alem: (ex) => `níveis da pilha, para n = ${ex.n}`, conta: (ex) => `${ex.n}! = ${ex.fatorial}, com ${ex.n} chamadas` },
     fib_recursivo: { alem: (ex) => `níveis da pilha, para n = ${ex.n}`, conta: (ex) => `fib(${ex.n}) = ${ex.fib}, com ${mil(ex.chamadas)} chamadas` },
-    fib_memoria: { alem: (ex) => `na pilha e no dicionário, para n = ${ex.n}`, conta: (ex) => `fib(${ex.n}) = ${ex.fib}, com ${ex.chamadas} chamadas e ${ex.casas} casas lidas e escritas no dicionário` },
+    fib_memoria: { alem: (ex) => `na pilha e no memo, para n = ${ex.n}`, conta: (ex) => `fib(${ex.n}) = ${ex.fib}, com ${ex.chamadas} chamadas e ${ex.casas} casas lidas e escritas no memo` },
     fib_iterativo: { conta: (ex) => `fib(${ex.n}) = ${ex.fib}, em ${ex.n} voltas` },
     busca_padrao: { entrada: "letras", artigo: "das", conta: (ex) => `${ex.n} letras, padrão de ${ex.m}, "${ex.padrao}" achado nas posições ${ex.achou.map((q) => q + 1).join(" e ")}, na Canção do Exílio` },
   };

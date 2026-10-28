@@ -2,13 +2,13 @@
  "id": "fibonacci-com-memoria",
  "nome": "Fibonacci com memória",
  "objetivo": "Calcular o n-ésimo Fibonacci sem repetir conta, guardando cada resposta.",
- "variante": "a mesma recursão, guardando cada resposta num dicionário",
+ "variante": "a mesma recursão, guardando cada resposta num vetor",
  "familia": "primeiros passos",
- "resumo": "A mesma função recursiva, com uma memória: antes de calcular fib(k), olha se a resposta já está guardada. Se está, devolve na hora; se não, calcula uma vez e guarda. A árvore de chamadas murcha: cada fib(k) é somado uma vez só, e os outros pedidos viram uma consulta ao dicionário.",
+ "resumo": "A mesma função recursiva, com uma memória: antes de calcular fib(k), olha a casa k do memo. Se a resposta está lá, devolve na hora; se não, calcula uma vez e guarda. A árvore de chamadas murcha: cada fib(k) é somado uma vez só, e os outros pedidos viram uma leitura do memo.",
  "instrumentos": [
   {
-   "id": "dicionario",
-   "papel": "a memória (memo): cada fib(k) calculado, com k como chave"
+   "id": "vetor",
+   "papel": "a memória (memo): a casa k guarda fib(k), vazia até ser calculada"
   },
   {
    "id": "pilha",
@@ -17,15 +17,15 @@
  ],
  "tempo": {
   "notacao": "O(n)",
-  "porque": "Cada fib(k), de 2 até n, é calculado uma vez: n − 1 somas. As chamadas são 2n − 1: a da esquerda calcula, a da direita acha a resposta guardada. Cada consulta ao dicionário custa poucas casas.",
-  "nota": "As somas empatam com o iterativo (n − 1 contra n). O que a memória acrescenta são as idas ao dicionário: no palco, as casas lidas e escritas aparecem ao lado."
+  "porque": "Cada fib(k), de 2 até n, é calculado uma vez: n − 1 somas. As chamadas são 2n − 1: a da esquerda calcula, a da direita acha a resposta guardada. Olhar o memo é ler uma casa do vetor.",
+  "nota": "Troca memória por tempo: guarda n respostas para não refazer as φⁿ somas do recursivo. As somas empatam com o iterativo (n − 1 contra n); no palco, as casas lidas e escritas no memo aparecem ao lado."
  },
  "memoria": {
   "notacao": "O(n)",
-  "porque": "Guarda até n − 1 respostas no dicionário, e a pilha ainda desce n níveis. No fundo da pilha, o dicionário está vazio; enquanto ele enche, a pilha esvazia. O pico é n, como no recursivo, mas o dicionário fica com as n − 1 respostas no fim.",
+  "porque": "Guarda até n − 1 respostas no memo, e a pilha ainda desce n níveis. No fundo da pilha o memo está vazio; enquanto ele enche, a pilha esvazia. O pico é n, como no recursivo.",
   "nomes": {
    "pilha": "níveis da pilha de chamadas",
-   "memo": "respostas guardadas no dicionário"
+   "memo": "respostas guardadas no memo"
   },
   "cresce_com_n": [
    "pilha",
@@ -42,9 +42,9 @@
   "titulo": "Tempo: os três Fibonacci no mesmo gráfico",
   "texto": "As somas dos três Fibonacci para os mesmos n, em escala logarítmica. O recursivo sobe em linha reta: a cada n, multiplica as somas por perto de φ ≈ 1,618, e isso é crescer como φⁿ. Com memória e iterativo, quase no chão, crescem como n.",
   "crescimento": "Somas para n de {n0} a {n1}, uma chamada por n. Em destaque, esta faixa; por trás, as outras duas.",
-  "memoria": "Valores guardados no pico (níveis da pilha mais chaves no dicionário), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
+  "memoria": "Valores guardados no pico (níveis da pilha mais respostas no memo), para os mesmos n. O recursivo e o com memória chegam a n, no fundo da pilha; o iterativo não guarda nada."
  },
- "pseudocodigo": "procedimento fib_memo(n, memo):\n    se n ≤ 1:\n        r ← n\n    senão se memo tem n:\n        r ← memo[n]\n    senão:\n        r ← fib_memo(n − 1, memo) + fib_memo(n − 2, memo)\n        memo[n] ← r\n    devolva r\n",
+ "pseudocodigo": "procedimento fib_memo(n, memo):\n    se n ≤ 1:\n        r ← n\n    senão se memo[n] tem resposta:\n        r ← memo[n]\n    senão:\n        r ← fib_memo(n − 1, memo) + fib_memo(n − 2, memo)\n        memo[n] ← r\n    devolva r\n",
  "placa": {
   "autor": "Donald Michie (as \"memo functions\")",
   "ano": "1968"

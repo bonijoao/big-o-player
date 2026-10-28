@@ -4,7 +4,7 @@
  "objetivo": "Guardar em ordem e achar, inserir ou remover descendo poucos níveis.",
  "variante": "duas versões: comum (a ABB, que cresce como os valores chegam) e AVL (que gira para ficar baixa)",
  "frase": "À esquerda, os menores; à direita, os maiores.",
- "resumo": "Cada nó guarda um valor e dois ponteiros: à esquerda dele só moram valores menores, à direita só maiores. Buscar é descer da raiz comparando, um nível por vez, e cada comparação descarta um lado inteiro, como na busca binária. O preço depende da altura. A comum pendura cada valor novo onde a descida acaba: com os valores embaralhados ela fica baixa (em média, cada valor mora a pouco mais de log₂ n níveis da raiz), mas com os valores em ordem vira uma fila indiana de n níveis. A AVL guarda também a altura de cada nó e, na volta de cada inserção ou remoção, gira os nós onde um lado ficou dois níveis mais alto que o outro. Assim nunca passa de 1,44 log₂(n + 2) níveis.",
+ "resumo": "Cada nó guarda um valor e dois ponteiros: à esquerda dele só moram valores menores, à direita só maiores. Buscar é descer da raiz comparando, um nível por vez, e cada comparação descarta um lado inteiro, como na busca binária. O preço depende da altura. A comum pendura cada valor novo onde a descida acaba: com os valores embaralhados ela fica baixa (em média, cada valor mora a uns 1,4 log₂ n níveis da raiz), mas com os valores em ordem vira uma fila indiana de n níveis. A AVL guarda também a altura de cada nó e, na volta de cada inserção ou remoção, gira os nós onde um lado ficou dois níveis mais alto que o outro. Assim nunca passa de 1,44 log₂(n + 2) níveis.",
  "placa": {
   "autor": "a árvore de busca: vários, quase ao mesmo tempo (Windley, Booth e Colin, Hibbard); a AVL: Georgy Adelson-Velsky e Evgenii Landis",
   "ano": "1960 (a árvore de busca); 1962 (a AVL)"
@@ -82,7 +82,7 @@
    "id": "montar-embaralhado-comum",
    "nome": "montar com n valores embaralhados",
    "notacao": "O(n log n) em média",
-   "porque": "Embaralhados, os valores se espalham pelos dois lados, e cada inserção desce, em média, pouco mais de log₂ n níveis. Sem girar, sai mais barata que a AVL; o risco é a entrada vir em ordem."
+   "porque": "Embaralhados, os valores se espalham pelos dois lados, e cada inserção desce, em média, uns 1,4 log₂ n níveis. Sem girar, sai mais barata que a AVL; o risco é a entrada vir em ordem."
   },
   {
    "id": "montar-embaralhado-avl",

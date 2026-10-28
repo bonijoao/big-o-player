@@ -25,7 +25,7 @@ tab <- do.call(rbind, lapply(casos, function(caso) {
              mult_r = r$multiplicacoes, mult_py = caso$ops, pico_py = caso$pico)
 }))
 print(tab, row.names = FALSE)
-tudo_ok <- all(tab$base) && all(tab$r) && all(tab$mult_r == tab$mult_py) && all(tab$mult_py == tab$n^3) && all(tab$pico_py == tab$n^2)
+tudo_ok <- all(tab$base) && all(tab$r) && all(tab$mult_r == tab$mult_py) && all(tab$mult_py == tab$n^3) && all(tab$pico_py == 0)
 versao <- paste(R.version$major, R.version$minor, sep = ".")
 jsonlite::write_json(
   list(
@@ -36,7 +36,7 @@ jsonlite::write_json(
     resumo = sprintf(
       "Rodado em R %s em %d pares de matrizes sorteadas, de %d × %d a %d × %d: %s",
       versao, nrow(tab), min(tab$n), min(tab$n), max(tab$n), max(tab$n),
-      if (tudo_ok) "o produto bate com A %*% B casa por casa, as multiplicações (n³) batem com a reimplementação em R, e a memória é a matriz C, n² casas."
+      if (tudo_ok) "o produto bate com A %*% B casa por casa, as multiplicações (n³) batem com a reimplementação em R, e não há memória extra: C é a resposta."
       else "há divergência; veja conferir.R."
     )
   ),

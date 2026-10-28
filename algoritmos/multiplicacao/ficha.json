@@ -17,14 +17,11 @@
   "nota": "Existem jeitos mais espertos (o de Strassen, de 1969, faz perto de n^2,81), mas os três laços continuam sendo o que quase todo mundo escreve, e para n pequeno ganham."
  },
  "memoria": {
-  "notacao": "O(n²)",
-  "porque": "A matriz C, com n² casas. A soma da vez e os três índices são soltos. A e B são a entrada e não contam.",
-  "nomes": {
-   "C": "casas da matriz C"
-  },
-  "cresce_com_n": [
-   "C"
-  ]
+  "notacao": "O(1)",
+  "porque": "Além da resposta C (n² casas), só a soma da vez e os três índices, que não crescem com n. A e B são a entrada.",
+  "nomes": {},
+  "cresce_com_n": [],
+  "vazio": "além da resposta C, só a soma e os índices"
  },
  "video": {
   "ideia": [
@@ -33,10 +30,9 @@
   ]
  },
  "graficos": {
-  "titulo": "Tempo e memória: n³ e n²",
+  "titulo": "Tempo: n³",
   "texto": "As contas para matrizes cada vez maiores. Em escala logarítmica, a inclinação da linha é o expoente: n³ sobe três vezes mais íngreme que n.",
-  "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}. Tracejada: n³, de referência; as duas coincidem.",
-  "memoria": "Casas da matriz C no pico, para os mesmos n: exatamente n² (tracejada)."
+  "crescimento": "Multiplicações para n de {n0} a {n1}. {dados}. Tracejada: n³, de referência; as duas coincidem."
  },
  "pseudocodigo": "procedimento multiplica(A, B):\n    C ← matriz n × n\n    para i de 1 até n:\n        para j de 1 até n:\n            s ← 0\n            para k de 1 até n:\n                s ← s + A[i][k] · B[k][j]\n            C[i][j] ← s\n    devolva C\n",
  "placa": {

@@ -52,7 +52,6 @@ if __name__ == "__main__":
             "crescimento": crescimento,
             "eixo": "n (lado das matrizes n × n; dobra a cada passo)",
             "refs": ["n³"],
-            "refs_memoria": ["n²"],
             "crescimento_dados": "um par de matrizes sorteadas por tamanho; as contas não dependem dos valores",
         },
         "memoria": {"pico": c.pico, "detalhe": c.pico_detalhe},

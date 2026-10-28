@@ -14,7 +14,7 @@
  "tempo": {
   "notacao": "O(n·m)",
   "porque": "São n − m + 1 posições, e cada uma compara no máximo m letras. O pior caso é um texto de letras repetidas, como \"aaaa…a\", procurando \"aa…ab\": cada posição casa m − 1 letras antes de errar, (n − m + 1)·m comparações.",
-  "nota": "Num texto de verdade, quase toda posição erra logo na primeira ou na segunda letra, e a busca fica perto de n comparações, seja qual for o m. Algoritmos como o KMP e o Boyer–Moore garantem O(n + m) aproveitando o que já foi comparado."
+  "nota": "Num texto de verdade, quase toda posição erra logo na primeira ou na segunda letra, e a busca fica perto de n comparações, seja qual for o m. O KMP garante O(n + m) aproveitando o que já comparou; o Boyer–Moore, na prática, pula letras e lê menos que n."
  },
  "memoria": {
   "notacao": "O(1)",
