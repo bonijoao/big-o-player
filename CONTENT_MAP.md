@@ -43,6 +43,8 @@ A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; c
 
 **Palco (28/10):** à direita da animação, o pseudocódigo inteiro da faixa (o mesmo bloco do encarte), com a linha da vez acesa na cor da playlist e rolando dentro do painel; embaixo, as variáveis, com um destaque breve no valor que mudou. No celular, o código fica recolhível ("ver código") e as variáveis numa faixa compacta. Num vídeo, o painel some e só volta no fim, com o "a seguir".
 
+**Palco grande como "agora tocando" (28/10):** ocupa a tela, com uma margem fina, e leva o transporte para dentro (a barra global some e volta ao minimizar ou fechar). Em cima, a entrada: chips para o tipo, um stepper para o n (e o k) e o botão "Sortear" com dado, na cor da playlist. No meio, a animação, que cabe na altura sem distorcer, e o painel com o código e as variáveis colados. Embaixo, o trilho na largura toda, o tocar grande com os passos e as faixas, a velocidade e o repetir à direita e "A seguir" à esquerda. No celular fica tudo em coluna, com o transporte fixo embaixo; nos vídeos, sem entrada e sem painel.
+
 **Marca:** o disco de vinil da capa CI-00, recortado com fundo transparente, ao lado de "Big O Player" na grotesca (`marca/`); o favicon é o disco simplificado em SVG; a `og:image` usa o disco e o título da capa sobre o fundo preto de Conceitos importantes. Tudo sai do `motor/identidade.py`, a partir de `marca/ci-00.webp`.
 
 | playlist | cor | código |

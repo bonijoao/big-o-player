@@ -887,3 +887,84 @@ svg text { font-family: var(--mono); }
   .palco-letra[open] { max-height: 34vh; overflow: auto; }
   .palco-valores .vars { margin: 0; }
 }
+
+/* ---------- o palco grande como uma tela de "agora tocando" ----------
+   ocupa a tela (com uma margem fina); em cima, a entrada; no meio, a animação e o painel; embaixo, o transporte,
+   que é o próprio #tocador, levado para dentro do palco enquanto ele está grande */
+
+.palco[data-modo="grande"] { left: 8px; top: 8px; right: 8px; bottom: 8px; transform: none; width: auto; display: flex; flex-direction: column; }
+.palco[data-modo="grande"] .palco-barra { flex: none; padding: 8px 10px 8px 18px; }
+.palco[data-modo="grande"] .palco-corpo { flex: 1; min-height: 0; grid-template-rows: minmax(0, 1fr); }
+/* a animação cabe no espaço que sobra, sem distorcer: a largura é a menor entre a coluna e a altura × 16/9 */
+.palco[data-modo="grande"] .palco-tela { container-type: size; display: grid; place-items: center; padding: 12px; min-height: 0; }
+.palco[data-modo="grande"] .tela, .palco[data-modo="grande"] .tela-video { width: min(100cqw, 100cqh * 16 / 9); height: auto; aspect-ratio: 16 / 9; }
+/* o painel: o código em cima e as variáveis logo embaixo, sem vão; se sobrar altura, sobra embaixo */
+.palco[data-modo="grande"] .palco-vars { height: auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.palco[data-modo="grande"] .palco-letra { flex: 0 1 auto; min-height: 0; overflow: auto; }
+.palco[data-modo="grande"] .palco-valores { flex: none; max-height: none; }
+
+/* a entrada: uma barra de destaque em cima da animação */
+.palco-controles label { display: none; }   /* os <select> ficam só como a fonte da verdade */
+.palco-controles { order: 0; border-top: 0; border-bottom: 1px solid var(--linha); gap: 14px; padding: 10px 18px; color: var(--tinta); }
+.palco[data-modo="grande"] .palco-controles { flex: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.palco-entrada { display: flex; gap: 14px; align-items: center; flex-wrap: nowrap; }
+.chips-entrada { display: inline-flex; padding: 3px; gap: 3px; background: var(--fundo); border: 1px solid var(--linha); border-radius: 999px; }
+.chip-entrada { font: inherit; font-size: 0.82rem; padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--tinta); cursor: pointer; white-space: nowrap; }
+.chip-entrada:hover { background: var(--realce); }
+.chip-entrada[aria-pressed="true"] { background: var(--tinta); color: var(--papel); }
+.stepper { display: inline-flex; align-items: center; gap: 2px; padding: 2px 4px 2px 12px; border: 1px solid var(--linha); border-radius: 999px; }
+.stepper-rotulo { color: var(--cinza); font-size: 0.8rem; margin-right: 4px; }
+.stepper .icone { width: 32px; height: 32px; font-size: 1.1rem; }
+.stepper output { min-width: 3ch; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stepper.parado output { color: var(--cinza); }
+.botao-sortear { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; flex: none; font: inherit; font-weight: 600; font-size: 0.88rem; padding: 9px 18px;
+  border: 0; border-radius: 999px; background: var(--cor, var(--tinta)); color: var(--sobre-cor, var(--papel)); cursor: pointer; white-space: nowrap; }
+.botao-sortear svg { width: 18px; height: 18px; }
+.botao-sortear[hidden] { display: none; }
+
+/* o transporte dentro do palco: o trilho na largura toda; embaixo, a seguir, os botões e o ritmo */
+.a-seguir { display: none; }
+.palco .tocador { position: static; height: auto; flex: none; z-index: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-areas: "tempo tempo tempo" "seguir botoes ritmo"; gap: 8px 20px; padding: 10px 20px 14px; border-top: 1px solid var(--linha); }
+.palco .tocador .agora { display: none; }
+.palco .tocador .controles { display: contents; }
+.palco .tocador .linha-tempo { grid-area: tempo; position: static; }
+.palco .tocador .botoes { grid-area: botoes; gap: 8px; }
+.palco .tocador .ritmo { grid-area: ritmo; display: flex; }
+.palco .tocador .tocar { width: 58px; height: 58px; }
+.palco .tocador .tocar svg { width: 22px; height: 22px; }
+.palco .tocador #tempo-agora, .palco .tocador #tempo-total { display: inline; }
+.palco .tocador #anterior, .palco .tocador #proxima { display: grid; }
+.palco .a-seguir:not([hidden]) { grid-area: seguir; display: flex; gap: 10px; align-items: center; min-width: 0; justify-self: start; padding: 4px 10px 4px 4px;
+  font: inherit; text-align: left; background: none; border: 1px solid transparent; border-radius: 8px; cursor: pointer; color: var(--tinta); }
+.palco .a-seguir:hover { border-color: var(--linha); }
+.palco .a-seguir .capa { width: 40px; height: 40px; }
+.palco .a-seguir small { display: block; color: var(--cinza); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.palco .a-seguir b { display: block; font-family: var(--titulo); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 26ch; }
+
+@media (min-width: 861px) and (max-width: 1099px) {
+  .palco[data-modo="grande"] .palco-corpo { grid-template-columns: minmax(0, 1fr) 320px; }
+  .palco[data-modo="grande"] .palco-vars { border-top: 0; border-left: 1px solid var(--linha); padding: 0; }
+}
+
+@media (max-width: 860px) {
+  /* no celular, em coluna: cabeçalho, entrada (rola de lado), animação, código, variáveis e o transporte fixo embaixo */
+  .palco[data-modo="grande"] { left: 0; top: 0; right: 0; bottom: 0; border-radius: 0; border: 0; }
+  .palco[data-modo="grande"] .palco-corpo { overflow-y: auto; grid-template-rows: none; align-content: start; }
+  /* a entrada quebra em duas linhas: os chips (que rolam de lado) e, embaixo, o n e o sortear */
+  .palco[data-modo="grande"] .palco-controles { flex-wrap: wrap; overflow: visible; }
+  .palco-entrada { flex-wrap: wrap; max-width: 100%; }
+  .chips-entrada { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .botao-sortear { margin-left: 0; }
+  /* as variáveis em duas colunas de pares nome-valor */
+  .palco-valores .vars { display: grid; grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr); gap: 2px 10px; }
+  .palco-valores .vars dd { margin: 0; overflow-wrap: anywhere; }
+  .palco[data-modo="grande"] .palco-tela { container-type: normal; padding: 0; display: block; }
+  .palco[data-modo="grande"] .tela, .palco[data-modo="grande"] .tela-video { width: 100%; }
+  .palco[data-modo="grande"] .palco-vars { overflow: visible; }
+  .palco-controles { padding: 8px 12px; gap: 10px; }
+  .palco-entrada { gap: 10px; }
+  .palco .tocador { grid-template-columns: minmax(0, 1fr); grid-template-areas: "tempo" "botoes" "ritmo"; padding: 8px 12px 12px; gap: 6px; }
+  .palco .tocador .ritmo { justify-content: center; }
+  .palco .a-seguir:not([hidden]) { display: none; }
+}

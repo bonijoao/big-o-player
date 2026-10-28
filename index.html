@@ -39,6 +39,7 @@
   <symbol id="i-faixa-antes" viewBox="0 0 24 24"><rect x="3" y="5" width="2.2" height="14" fill="currentColor"/><path d="M13 5v14L5.5 12zM21 5v14l-7.5-7z" fill="currentColor"/></symbol>
   <symbol id="i-faixa-depois" viewBox="0 0 24 24"><rect x="18.8" y="5" width="2.2" height="14" fill="currentColor"/><path d="M3 5v14l7.5-7zM11 5v14l7.5-7z" fill="currentColor"/></symbol>
   <symbol id="i-rampa" viewBox="0 0 20 14"><path d="M1 13L19 2M1 13h18" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+  <symbol id="i-dado" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/></symbol>
   <symbol id="i-repetir" viewBox="0 0 24 24"><path d="M5 10V8a2 2 0 0 1 2-2h11M15 3l3 3-3 3M19 14v2a2 2 0 0 1-2 2H6M9 21l-3-3 3-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
@@ -87,16 +88,8 @@
     <button type="button" id="palco-modo" class="icone" aria-label="Minimizar"></button>
     <button type="button" id="palco-fechar" class="icone" aria-label="Fechar">×</button>
   </div>
-  <div class="palco-corpo">
-    <div class="palco-tela">
-      <canvas id="tela" class="tela" role="img" aria-label="Animação do algoritmo"></canvas>
-      <video id="palco-video" class="tela-video" playsinline preload="metadata"></video>
-    </div>
-    <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
-  </div>
-  <!-- para o leitor de tela: a linha da vez, só com a faixa parada (tocando, seriam seis por segundo) -->
-  <p id="palco-anuncio" class="so-leitor" aria-live="polite"></p>
-  <!-- embaixo do palco só a entrada do algoritmo; tocar, passos e velocidade são do rodapé -->
+  <!-- a entrada do algoritmo, em cima da animação: chips para o tipo, stepper para o n e o k, e o sortear.
+       Os <select> continuam como a fonte da verdade (escondidos); os botões só os mudam. -->
   <div class="palco-controles">
     <label class="so-ordenacao so-tipo"><span id="cfg-tipo-rotulo">entrada</span>
       <select id="cfg-tipo"></select>
@@ -107,14 +100,19 @@
     <label class="so-kmeans"><span id="cfg-k-rotulo">k</span>
       <select id="cfg-k"><option>2</option><option selected>3</option><option>4</option><option>5</option></select>
     </label>
-    <button type="button" id="cfg-sortear" class="botao-passo">embaralhar</button>
-    <span class="ritmo so-estreito"><span class="vel" role="group" aria-label="Velocidade">
-      <button type="button" class="icone" data-vel="-1" aria-label="Mais devagar" title="Mais devagar (−)">−</button>
-      <output class="vel-valor">1×</output>
-      <button type="button" class="icone" data-vel="1" aria-label="Mais rápido" title="Mais rápido (+)">+</button>
-    </span>
-    <button type="button" class="icone acelera" aria-pressed="false" aria-label="accelerando" title="accelerando: começa devagar e acelera"><svg aria-hidden="true"><use href="#i-rampa"/></svg></button></span>
+    <div id="palco-entrada" class="palco-entrada"></div>
+    <button type="button" id="cfg-sortear" class="botao-sortear">embaralhar</button>
   </div>
+  <div class="palco-corpo">
+    <div class="palco-tela">
+      <canvas id="tela" class="tela" role="img" aria-label="Animação do algoritmo"></canvas>
+      <video id="palco-video" class="tela-video" playsinline preload="metadata"></video>
+    </div>
+    <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
+  </div>
+  <!-- para o leitor de tela: a linha da vez, só com a faixa parada (tocando, seriam seis por segundo) -->
+  <p id="palco-anuncio" class="so-leitor" aria-live="polite"></p>
+  <!-- o transporte (o #tocador) entra aqui enquanto o palco está grande -->
 </section>
 
 <!-- o fluxograma abre por cima de tudo, do encarte ou do palco; a faixa continua tocando -->
@@ -161,6 +159,7 @@
 </dialog>
 
 <footer class="tocador" id="tocador" aria-label="Player">
+  <button type="button" class="a-seguir" id="a-seguir" hidden><span class="a-seguir-capa"></span><span><small>A seguir</small><b></b></span></button>
   <div class="agora">
     <button type="button" class="agora-capa" id="agora-capa" aria-label="Abrir o palco" title="Abrir o palco" disabled></button>
     <a class="agora-texto" id="agora" href="#"><b id="agora-nome">Nada tocando</b><small id="agora-album">escolha uma faixa</small></a>

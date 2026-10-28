@@ -681,6 +681,9 @@
       quemAbriu = null;
       volta.focus({ preventScroll: true });
     }
+    const tocador = $("#tocador");
+    if (m === "grande" && tocador.parentNode !== palco) palco.append(tocador);
+    else if (m !== "grande" && tocador.parentNode === palco) document.body.append(tocador);
     const botao = $("#palco-modo");
     botao.textContent = m === "grande" ? "–" : "⤢";
     botao.setAttribute("aria-label", m === "grande" ? "Minimizar" : "Ampliar");
@@ -945,6 +948,14 @@
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     $("#palco-fluxo").hidden = !faixa.pseudocodigo;
     objetivoPalco.textContent = faixa.objetivo || "";
+    // "A seguir": a próxima faixa da playlist, à esquerda do transporte do palco
+    const prox = fila[fila.indexOf(faixa) + 1], seguir = $("#a-seguir");
+    seguir.hidden = !prox;
+    if (prox) {
+      seguir.querySelector(".a-seguir-capa").replaceChildren(capaFaixa(prox, "mini-48"));
+      seguir.querySelector("b").textContent = prox.nome;
+      seguir.setAttribute("aria-label", `A seguir: ${prox.nome}`);
+    }
     habilitar();
   }
 
@@ -987,9 +998,40 @@
       $("#cfg-n").replaceChildren(...ns.map((n) => el("option", { text: String(n) })));
       $("#cfg-tipo").value = c.tipo; $("#cfg-n").value = String(c.n); $("#cfg-n").disabled = (c.tipo === "padrao" && !E.nLivre) || !!E.nFixo;
     }
-    $("#cfg-sortear").textContent = km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear;
+    $("#cfg-sortear").innerHTML = `<svg aria-hidden="true"><use href="#i-dado"/></svg>${esc(km ? "sortear centros" : ENTRADAS[tipoDe(faixa)].sortear)}`;
     $("#cfg-sortear").hidden = !km && !!ENTRADAS[tipoDe(faixa)].semSorteio;
     $(".so-tipo").hidden = !km && ENTRADAS[tipoDe(faixa)].opcoes.length === 1;   // um menu de uma opção só não escolhe nada
+    desenharEntrada(km);
+  }
+
+  // a entrada como botões de player: chips para o tipo (um por opção do menu) e steppers para o n e o k;
+  // cada botão só muda o <select> correspondente e dispara o "change", que já reinicia a faixa
+  function desenharEntrada(km) {
+    const muda = (sel, v) => { sel.value = v; sel.dispatchEvent(new Event("change")); };
+    const tipo = $("#cfg-tipo"), n = $("#cfg-n"), k = $("#cfg-k");
+    const grupos = [];
+    if (!km && !$(".so-tipo").hidden) {
+      grupos.push(el("div", { class: "chips-entrada", role: "group", "aria-label": $("#cfg-tipo-rotulo").textContent },
+        [...tipo.options].map((o) => {
+          const b = el("button", { type: "button", class: "chip-entrada", "aria-pressed": String(o.value === tipo.value), text: o.textContent });
+          b.addEventListener("click", () => { if (o.value !== tipo.value) muda(tipo, o.value); });
+          return b;
+        })));
+    }
+    const stepper = (sel, rotulo) => {
+      const ops = [...sel.options], i = ops.findIndex((o) => o.value === sel.value);
+      const passo = (d, txt, nome) => {
+        const b = el("button", { type: "button", class: "icone", text: txt, "aria-label": `${rotulo}: ${nome}` });
+        b.disabled = sel.disabled || i + d < 0 || i + d >= ops.length;
+        b.addEventListener("click", () => muda(sel, ops[i + d].value));
+        return b;
+      };
+      return el("div", { class: `stepper ${sel.disabled ? "parado" : ""}`, role: "group", "aria-label": rotulo }, [
+        el("span", { class: "stepper-rotulo", text: rotulo }), passo(-1, "−", "menos"), el("output", { text: sel.value }), passo(1, "+", "mais")]);
+    };
+    if (!km) grupos.push(stepper(n, $("#cfg-n-rotulo").textContent));
+    if (km || palco.classList.contains("e-com-k")) grupos.push(stepper(k, $("#cfg-k-rotulo").textContent));
+    $("#palco-entrada").replaceChildren(...grupos);
   }
 
   function mudarCfg(muda) {
@@ -1113,6 +1155,7 @@
   });
   $("#repetir").addEventListener("click", alternarRepetir);
   $("#agora-capa").addEventListener("click", () => { if (faixa) modo("grande"); });
+  $("#a-seguir").addEventListener("click", () => pular(1));
 
   // ---------- Media Session: os controles do sistema, do teclado de mídia e do fone ----------
 
