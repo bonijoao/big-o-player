@@ -145,3 +145,7 @@ O molde faz quase tudo: escreva `algoritmos/<nome>/<nome>.py` com `ordenar(v, co
 4. `ficha.json`: o texto (nome, família, resumo, notação e o porquê de cada complexidade). Números no texto só se vierem dos dados.
 5. `video.py`: lê `dados.json`; `python3 video.py folha 3,10,20 f.png` mostra quadros sem renderizar.
 6. Acrescentar o nome em `ALGORITMOS` no `gerar.py`.
+
+## Autoria
+
+Pedro Mambelli e João Paulo Assis Bonifácio.

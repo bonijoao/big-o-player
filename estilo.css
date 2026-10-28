@@ -846,8 +846,6 @@ svg text { font-family: var(--mono); }
 .autores li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 .autores b { font-family: var(--titulo); font-weight: 400; }
 .autores span { color: var(--cinza); font-size: 0.85rem; }
-.autores .a-preencher { padding: 8px 10px; border: 2px dashed var(--vermelho); border-radius: 6px; }
-.autores .a-preencher b, .autores .a-preencher span, .autores .a-preencher a { color: var(--vermelho); font-family: var(--mono); font-weight: 600; }
 
 @media (max-width: 860px) {
   :root { --topo: 56px; }

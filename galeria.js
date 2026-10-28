@@ -236,7 +236,7 @@
   // quem fez e como foi medido: no fim da home e das seções
   function rodape() {
     return el("footer", { class: "autoria", html:
-      'Pedro Mambelli · Estatística UFLA · conferido no R · <a href="https://github.com/uaipedro/big-o-player">código</a>' });
+      'Pedro Mambelli e João Paulo Assis Bonifácio · Estatística UFLA · conferido no R · <a href="https://github.com/uaipedro/big-o-player">código</a>' });
   }
 
   // a playlist: as faixas agrupadas pela subcategoria (o jeito de resolver); em Problemas gerais, uma por problema
