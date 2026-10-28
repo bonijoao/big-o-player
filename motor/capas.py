@@ -1,6 +1,7 @@
 """Recorta as capas de uma grade 2×2 (4 capas separadas por uma borda creme) e exporta em WebP.
 
   python3 motor/capas.py <grade.png> <alg ↖> <alg ↗> <alg ↙> <alg ↘>
+  python3 motor/capas.py <grade.png> mediana@0.5 …   (@: o lado da ilustração, em fração da capa; padrão 0.62)
 
 Para cada capa, em capas/:
   <alg>-240.webp, <alg>-480.webp   a capa inteira (cartões, cabeça da playlist, encarte; 1× e 2×)
@@ -50,27 +51,29 @@ def recortar(caminho):
         yield im.crop((x, y, x + lado, y + lado))
 
 
-def arte(im):
-    """Só a ilustração: o quadrado de cima, sem o título grande nem o código."""
+def arte(im, lado=0.62):
+    """Só a ilustração: o quadrado de cima, sem o título grande nem o código. Quando o título
+    começa mais alto (três linhas), um lado menor deixa o título de fora."""
     L = im.size[0]
-    s = round(0.62 * L)
+    s = round(lado * L)
     x, y = (L - s) // 2, round(0.06 * L)
     return im.crop((x, y, x + s, y + s))
 
 
-def exportar(im, alg):
+def exportar(im, alg, lado=0.62):
     os.makedirs(SAIDA, exist_ok=True)
     for t in TAMANHOS:
         im.resize((t, t), Image.LANCZOS).save(os.path.join(SAIDA, f"{alg}-{t}.webp"), quality=80, method=6)
-    arte(im).resize((ARTE, ARTE), Image.LANCZOS).save(os.path.join(SAIDA, f"{alg}-arte.webp"), quality=82, method=6)
+    arte(im, lado).resize((ARTE, ARTE), Image.LANCZOS).save(os.path.join(SAIDA, f"{alg}-arte.webp"), quality=82, method=6)
 
 
 if __name__ == "__main__":
     grade, algs = sys.argv[1], sys.argv[2:]
     if len(algs) != 4:
         raise SystemExit("uso: python3 motor/capas.py <grade.png> <alg ↖> <alg ↗> <alg ↙> <alg ↘>")
-    for alg, im in zip(algs, recortar(grade)):
+    for pedido, im in zip(algs, recortar(grade)):
+        alg, _, lado = pedido.partition("@")
         if not os.path.isdir(os.path.join(RAIZ, "algoritmos", alg)):
             raise SystemExit(f"{alg}: não há faixa com esse nome em algoritmos/")
-        exportar(im, alg)
+        exportar(im, alg, float(lado or 0.62))
         print(f"{alg}: {im.size[0]} px → {', '.join(f'{t}' for t in TAMANHOS)} e arte {ARTE}")

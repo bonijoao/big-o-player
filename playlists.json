@@ -60,7 +60,7 @@
  {
   "id": "percorrer-tudo",
   "titulo": "Percorrer tudo",
-  "cor": "preto",
+  "cor": "verde-escuro",
   "codigo": "PT",
   "frase": "Visitar cada ponto uma vez, numa árvore ou num grafo: fundo primeiro, ou em ondas.",
   "subcategorias": [
@@ -71,7 +71,7 @@
  {
   "id": "achar-o-caminho-mais-curto",
   "titulo": "Achar o caminho mais curto",
-  "cor": "preto",
+  "cor": "roxo",
   "codigo": "CC",
   "frase": "O caminho entre dois pontos: com menos passos, ou com o menor custo somado.",
   "subcategorias": [

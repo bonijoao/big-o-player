@@ -49,6 +49,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/maximo/maximo.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/maximo-240.webp",
+    "480": "capas/maximo-480.webp"
+   },
+   "arte": "capas/maximo-arte.webp",
+   "cor": "#e4b42c"
+  },
   "exemplo": {
    "dados": "24 valores sorteados de 10 a 99 com a semente 7",
    "n": 24,
@@ -1566,6 +1574,14 @@ window.GALERIA = [
    "ano": "1858"
   },
   "poster": "algoritmos/multiplicacao/multiplicacao.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/multiplicacao-240.webp",
+    "480": "capas/multiplicacao-480.webp"
+   },
+   "arte": "capas/multiplicacao-arte.webp",
+   "cor": "#6cac9c"
+  },
   "exemplo": {
    "dados": "duas matrizes 4 × 4 com valores de 0 a 9 sorteados com a semente 3",
    "n": 4,
@@ -2024,6 +2040,14 @@ window.GALERIA = [
    "ano": "1808"
   },
   "poster": "algoritmos/fatorial/fatorial.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/fatorial-240.webp",
+    "480": "capas/fatorial-480.webp"
+   },
+   "arte": "capas/fatorial-arte.webp",
+   "cor": "#b49cc4"
+  },
   "exemplo": {
    "dados": "n = 10",
    "n": 10,
@@ -2338,7 +2362,8 @@ window.GALERIA = [
     "240": "capas/fibrecursivo-240.webp",
     "480": "capas/fibrecursivo-480.webp"
    },
-   "arte": "capas/fibrecursivo-arte.webp"
+   "arte": "capas/fibrecursivo-arte.webp",
+   "cor": "#f4eccc"
   },
   "exemplo": {
    "dados": "n = 10",
@@ -2689,7 +2714,8 @@ window.GALERIA = [
     "240": "capas/fibmemoria-240.webp",
     "480": "capas/fibmemoria-480.webp"
    },
-   "arte": "capas/fibmemoria-arte.webp"
+   "arte": "capas/fibmemoria-arte.webp",
+   "cor": "#f4e4cc"
   },
   "exemplo": {
    "dados": "n = 10",
@@ -3133,7 +3159,8 @@ window.GALERIA = [
     "240": "capas/fibiterativo-240.webp",
     "480": "capas/fibiterativo-480.webp"
    },
-   "arte": "capas/fibiterativo-arte.webp"
+   "arte": "capas/fibiterativo-arte.webp",
+   "cor": "#f4e4cc"
   },
   "exemplo": {
    "dados": "n = 10",
@@ -3457,6 +3484,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/padrao/padrao.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/padrao-240.webp",
+    "480": "capas/padrao-480.webp"
+   },
+   "arte": "capas/padrao-arte.webp",
+   "cor": "#8cc4dc"
+  },
   "exemplo": {
    "dados": "a primeira estrofe da Canção do Exílio (Gonçalves Dias, 1843), procurando \"gorjeiam\"",
    "n": 96,
@@ -5792,7 +5827,8 @@ window.GALERIA = [
     "240": "capas/insercao-240.webp",
     "480": "capas/insercao-480.webp"
    },
-   "arte": "capas/insercao-arte.webp"
+   "arte": "capas/insercao-arte.webp",
+   "cor": "#ec2c14"
   },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
@@ -6417,7 +6453,8 @@ window.GALERIA = [
     "240": "capas/selecao-240.webp",
     "480": "capas/selecao-480.webp"
    },
-   "arte": "capas/selecao-arte.webp"
+   "arte": "capas/selecao-arte.webp",
+   "cor": "#ec2c14"
   },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
@@ -8037,7 +8074,8 @@ window.GALERIA = [
     "240": "capas/rapida-240.webp",
     "480": "capas/rapida-480.webp"
    },
-   "arte": "capas/rapida-arte.webp"
+   "arte": "capas/rapida-arte.webp",
+   "cor": "#ec2c14"
   },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
@@ -8777,7 +8815,8 @@ window.GALERIA = [
     "240": "capas/heapsort-240.webp",
     "480": "capas/heapsort-480.webp"
    },
-   "arte": "capas/heapsort-arte.webp"
+   "arte": "capas/heapsort-arte.webp",
+   "cor": "#ec2c14"
   },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
@@ -9632,6 +9671,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/parenteses/parenteses.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/parenteses-240.webp",
+    "480": "capas/parenteses-480.webp"
+   },
+   "arte": "capas/parenteses-arte.webp",
+   "cor": "#e49c84"
+  },
   "exemplo": {
    "dados": "um texto balanceado de 24 símbolos, sorteado com a semente 11",
    "n": 24,
@@ -10507,7 +10554,8 @@ window.GALERIA = [
     "240": "capas/atendimento-240.webp",
     "480": "capas/atendimento-480.webp"
    },
-   "arte": "capas/atendimento-arte.webp"
+   "arte": "capas/atendimento-arte.webp",
+   "cor": "#f4e42c"
   },
   "exemplo": {
    "dados": "24 clientes sorteados com a semente 11: um chega a cada 1 a 5 minutos e é atendido em 1 a 5 minutos",
@@ -11462,6 +11510,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/inverter/inverter.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/inverter-240.webp",
+    "480": "capas/inverter-480.webp"
+   },
+   "arte": "capas/inverter-arte.webp",
+   "cor": "#b4c484"
+  },
   "exemplo": {
    "dados": "uma lista de 8 valores sorteados de 10 a 99, com a semente 11",
    "n": 8,
@@ -11856,6 +11912,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/janela/janela.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/janela-240.webp",
+    "480": "capas/janela-480.webp"
+   },
+   "arte": "capas/janela-arte.webp",
+   "cor": "#9cc4a4"
+  },
   "exemplo": {
    "dados": "16 valores sorteados de 10 a 99 com a semente 11, janela de k = 4",
    "n": 16,
@@ -12712,6 +12776,14 @@ window.GALERIA = [
    "ano": "1968 (os nomes)"
   },
   "poster": "algoritmos/percursos/percursos.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/percursos-240.webp",
+    "480": "capas/percursos-480.webp"
+   },
+   "arte": "capas/percursos-arte.webp",
+   "cor": "#04543c"
+  },
   "exemplo": {
    "dados": "15 valores distintos de 10 a 99, embaralhados com a semente 7, postos numa árvore de busca comum",
    "n": 15,
@@ -13334,7 +13406,8 @@ window.GALERIA = [
     "240": "capas/abb-240.webp",
     "480": "capas/abb-480.webp"
    },
-   "arte": "capas/abb-arte.webp"
+   "arte": "capas/abb-arte.webp",
+   "cor": "#043cc4"
   },
   "exemplo": {
    "dados": "15 valores distintos de 10 a 99, embaralhados com a semente 7, postos numa árvore de busca comum e depois buscados um por um",
@@ -13908,7 +13981,8 @@ window.GALERIA = [
     "240": "capas/avl-240.webp",
     "480": "capas/avl-480.webp"
    },
-   "arte": "capas/avl-arte.webp"
+   "arte": "capas/avl-arte.webp",
+   "cor": "#043cc4"
   },
   "exemplo": {
    "dados": "15 valores distintos de 10 a 99, sorteados com a semente 7 e inseridos em ordem crescente numa AVL",
@@ -14665,7 +14739,8 @@ window.GALERIA = [
     "240": "capas/prioridade-240.webp",
     "480": "capas/prioridade-480.webp"
    },
-   "arte": "capas/prioridade-arte.webp"
+   "arte": "capas/prioridade-arte.webp",
+   "cor": "#f4e42c"
   },
   "exemplo": {
    "dados": "24 pacientes sorteados com a semente 11: um chega a cada 1 a 3 minutos, é atendido em 2 a 4 minutos e tem gravidade de 1 (a mais urgente) a 5",
@@ -15718,6 +15793,14 @@ window.GALERIA = [
    "ano": "1959"
   },
   "poster": "algoritmos/largura/largura.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/largura-240.webp",
+    "480": "capas/largura-480.webp"
+   },
+   "arte": "capas/largura-arte.webp",
+   "cor": "#643cac"
+  },
   "exemplo": {
    "dados": "um grafo em grade 5 × 5 sorteado com a semente 11: 25 vértices e 29 arestas",
    "n": 25,
@@ -16707,6 +16790,14 @@ window.GALERIA = [
    "ano": "século XIX"
   },
   "poster": "algoritmos/profundidade/profundidade.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/profundidade-240.webp",
+    "480": "capas/profundidade-480.webp"
+   },
+   "arte": "capas/profundidade-arte.webp",
+   "cor": "#04543c"
+  },
   "exemplo": {
    "dados": "um grafo em grade 5 × 5 sorteado com a semente 11: 25 vértices e 29 arestas",
    "n": 25,
@@ -17768,6 +17859,14 @@ window.GALERIA = [
    "ano": "1959"
   },
   "poster": "algoritmos/dijkstra/dijkstra.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/dijkstra-240.webp",
+    "480": "capas/dijkstra-480.webp"
+   },
+   "arte": "capas/dijkstra-arte.webp",
+   "cor": "#643cac"
+  },
   "exemplo": {
    "dados": "um grafo em grade 5 × 5 sorteado com a semente 27: 25 vértices e 30 arestas, cada uma com um peso de 1 a 9",
    "n": 25,
@@ -18884,7 +18983,8 @@ window.GALERIA = [
     "240": "capas/palavras-240.webp",
     "480": "capas/palavras-480.webp"
    },
-   "arte": "capas/palavras-arte.webp"
+   "arte": "capas/palavras-arte.webp",
+   "cor": "#e46c8c"
   },
   "exemplo": {
    "dados": "a Canção do Exílio, de Gonçalves Dias (114 palavras)",
@@ -19618,7 +19718,8 @@ window.GALERIA = [
     "240": "capas/repetidos-240.webp",
     "480": "capas/repetidos-480.webp"
    },
-   "arte": "capas/repetidos-arte.webp"
+   "arte": "capas/repetidos-arte.webp",
+   "cor": "#e46c8c"
   },
   "exemplo": {
    "dados": "16 valores sorteados de 10 a 99 com a semente 10",
@@ -20253,7 +20354,8 @@ window.GALERIA = [
     "240": "capas/encadeamento-240.webp",
     "480": "capas/encadeamento-480.webp"
    },
-   "arte": "capas/encadeamento-arte.webp"
+   "arte": "capas/encadeamento-arte.webp",
+   "cor": "#043cc4"
   },
   "exemplo": {
    "dados": "12 chaves sorteadas de 100 a 999 com a semente 3, numa tabela de 16 casas",
@@ -21063,7 +21165,8 @@ window.GALERIA = [
     "240": "capas/sondagem-240.webp",
     "480": "capas/sondagem-480.webp"
    },
-   "arte": "capas/sondagem-arte.webp"
+   "arte": "capas/sondagem-arte.webp",
+   "cor": "#043cc4"
   },
   "exemplo": {
    "dados": "12 chaves sorteadas de 100 a 999 com a semente 3, numa tabela de 16 casas",
@@ -22535,6 +22638,14 @@ window.GALERIA = [
    "ano": "1961"
   },
   "poster": "algoritmos/mediana/mediana.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/mediana-240.webp",
+    "480": "capas/mediana-480.webp"
+   },
+   "arte": "capas/mediana-arte.webp",
+   "cor": "#dc946c"
+  },
   "exemplo": {
    "dados": "trees (R), volume de 31 cerejeiras-pretas, pés³, na ordem do R",
    "n": 31,
@@ -23565,7 +23676,8 @@ window.GALERIA = [
     "240": "capas/histograma-240.webp",
     "480": "capas/histograma-480.webp"
    },
-   "arte": "capas/histograma-arte.webp"
+   "arte": "capas/histograma-arte.webp",
+   "cor": "#e46c8c"
   },
   "exemplo": {
    "dados": "faithful (R), duração de 272 erupções do Old Faithful, minutos",
@@ -26432,7 +26544,7 @@ window.PLAYLISTS = [
  {
   "id": "percorrer-tudo",
   "titulo": "Percorrer tudo",
-  "cor": "preto",
+  "cor": "verde-escuro",
   "codigo": "PT",
   "frase": "Visitar cada ponto uma vez, numa árvore ou num grafo: fundo primeiro, ou em ondas.",
   "subcategorias": [
@@ -26454,7 +26566,7 @@ window.PLAYLISTS = [
  {
   "id": "achar-o-caminho-mais-curto",
   "titulo": "Achar o caminho mais curto",
-  "cor": "preto",
+  "cor": "roxo",
   "codigo": "CC",
   "frase": "O caminho entre dois pontos: com menos passos, ou com o menor custo somado.",
   "subcategorias": [

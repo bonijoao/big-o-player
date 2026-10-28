@@ -12,6 +12,9 @@ import os
 import subprocess
 import sys
 
+import numpy as np
+from PIL import Image
+
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(RAIZ, "motor"))
 import pseudocodigo  # noqa: E402
@@ -56,7 +59,8 @@ def entrada(nome):
         **{c: x for c, x in ficha.items() if c != "pseudocodigo"},
         "poster": f"algoritmos/{nome}/{nome}.png",
         # a capa desenhada (motor/capas.py), quando existe: a inteira em 240 e 480 px e só a ilustração, para 48 px
-        **({"capa": {"inteira": {t: f"capas/{nome}-{t}.webp" for t in (240, 480)}, "arte": f"capas/{nome}-arte.webp"}}
+        **({"capa": {"inteira": {t: f"capas/{nome}-{t}.webp" for t in (240, 480)}, "arte": f"capas/{nome}-arte.webp",
+                     "cor": cor_da_capa(os.path.join(RAIZ, "capas", f"{nome}-240.webp"))}}
            if os.path.exists(os.path.join(RAIZ, "capas", f"{nome}-arte.webp")) else {}),
         "exemplo": {c: x for c, x in ex.items() if c not in PESADOS},
         "medido": {
@@ -67,6 +71,13 @@ def entrada(nome):
         "conferencia": ler(pasta, "conferencia.json"),
         "pseudocodigo": pseudo,
     }
+
+
+def cor_da_capa(caminho):
+    """A cor de fundo da capa: a mais frequente, em passos de 8 por canal."""
+    a = np.asarray(Image.open(caminho).convert("RGB")).reshape(-1, 3)
+    v, c = np.unique((a // 8) * 8 + 4, axis=0, return_counts=True)
+    return "#%02x%02x%02x" % tuple(int(x) for x in v[c.argmax()])
 
 
 def instrumento(nome):

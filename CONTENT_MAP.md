@@ -28,9 +28,9 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 | Contar ocorrências | rosa | CO |
 | Calcular Fibonacci | creme | FI |
 | Organizar uma fila | amarelo | OF |
-| Percorrer tudo | preto (provisório, até ter capa) | PT |
-| Achar o caminho mais curto | preto (provisório, até ter capa) | CC |
-| Problemas gerais | creme (provisório) | PG |
+| Percorrer tudo | verde-escuro (a cor da capa, não o verde do resultado) | PT |
+| Achar o caminho mais curto | roxo | CC |
+| Problemas gerais | creme, neutro; cada linha leva a cor da própria capa na marca da subcategoria e no equalizador | PG |
 
 ## As quatro seções, nesta ordem
 
@@ -87,19 +87,19 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Calcular Fibonacci | subindo (laço) | Fibonacci iterativo (`fibiterativo`) | mudou de lugar (Primeiros passos) | Sobe do começo com duas variáveis: n somas e memória constante. | nova |
 | Playlists | Organizar uma fila | por ordem de chegada | Fila de atendimento (`atendimento`) | mudou de lugar (Estruturas lineares) | Um caixa e uma fila: prevê quanto cada cliente espera. | nova |
 | Playlists | Organizar uma fila | por urgência | Fila de prioridade (`prioridade`) | mudou de lugar (Árvores e heaps) | O mais grave passa na frente, com um heap. | nova |
-| Playlists | Percorrer tudo | numa árvore | Percursos de árvore (`percursos`) | mudou de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. | antiga (falta a nova) |
-| Playlists | Percorrer tudo | num grafo | Busca em profundidade (`profundidade`) | mudou de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. | antiga (falta a nova) |
-| Playlists | Percorrer tudo | num grafo | Busca em largura (`largura`) | mudou de lugar (Grafos) | A mesma faixa de Achar o caminho mais curto: visita em ondas, com uma fila. | antiga (falta a nova) |
-| Playlists | Achar o caminho mais curto | sem custo nas ligações | Busca em largura (`largura`) | mudou de lugar (Grafos) | Anda em ondas a partir da origem: o caminho com menos passos. | antiga (falta a nova) |
-| Playlists | Achar o caminho mais curto | com custo nas ligações | Dijkstra (`dijkstra`) | mudou de lugar (Grafos) | Expande sempre o ponto mais perto, com um heap. | antiga (falta a nova) |
-| Playlists | Problemas gerais | achar o maior | Máximo de um vetor (`maximo`) | mudou de lugar (Primeiros passos) | Sempre n − 1 comparações, e nenhum algoritmo faz menos. | antiga (falta a nova) |
-| Playlists | Problemas gerais | achar o maior de cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (Estruturas lineares) | O maior de cada trecho de k casas: com um deque, n passos; ingênuo, n·k. | antiga (falta a nova) |
-| Playlists | Problemas gerais | achar o valor do meio | Mediana por quickselect (`mediana`) | mudou de lugar (Estatística) | Acha o valor do meio sem ordenar o vetor inteiro, em n passos na média. | antiga (falta a nova) |
-| Playlists | Problemas gerais | encontrar uma palavra num texto | Busca de padrão ingênua (`padrao`) | mudou de lugar (Primeiros passos) | Encosta a palavra em cada posição e compara letra a letra; pior caso n·m. | antiga (falta a nova) |
-| Playlists | Problemas gerais | calcular o fatorial | Fatorial recursivo (`fatorial`) | mudou de lugar (Primeiros passos) | n! com uma função que chama a si mesma; a pilha desce n níveis. | antiga (falta a nova) |
-| Playlists | Problemas gerais | multiplicar matrizes | Multiplicação de matrizes (`multiplicacao`) | mudou de lugar (Primeiros passos) | Três laços pela definição: n³. | antiga (falta a nova) |
-| Playlists | Problemas gerais | conferir se os símbolos fecham | Parênteses balanceados (`parenteses`) | mudou de lugar (Estruturas lineares) | Confere com uma pilha se cada símbolo que abre fecha no lugar certo. | antiga (falta a nova) |
-| Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | antiga (falta a nova) |
+| Playlists | Percorrer tudo | numa árvore | Percursos de árvore (`percursos`) | mudou de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. | nova |
+| Playlists | Percorrer tudo | num grafo | Busca em profundidade (`profundidade`) | mudou de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. | nova |
+| Playlists | Percorrer tudo | num grafo | Busca em largura (`largura`) | mudou de lugar (Grafos) | A mesma faixa de Achar o caminho mais curto: visita em ondas, com uma fila. | nova |
+| Playlists | Achar o caminho mais curto | sem custo nas ligações | Busca em largura (`largura`) | mudou de lugar (Grafos) | Anda em ondas a partir da origem: o caminho com menos passos. | nova |
+| Playlists | Achar o caminho mais curto | com custo nas ligações | Dijkstra (`dijkstra`) | mudou de lugar (Grafos) | Expande sempre o ponto mais perto, com um heap. | nova |
+| Playlists | Problemas gerais | achar o maior | Máximo de um vetor (`maximo`) | mudou de lugar (Primeiros passos) | Sempre n − 1 comparações, e nenhum algoritmo faz menos. | nova |
+| Playlists | Problemas gerais | achar o maior de cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (Estruturas lineares) | O maior de cada trecho de k casas: com um deque, n passos; ingênuo, n·k. | nova |
+| Playlists | Problemas gerais | achar o valor do meio | Mediana por quickselect (`mediana`) | mudou de lugar (Estatística) | Acha o valor do meio sem ordenar o vetor inteiro, em n passos na média. | nova |
+| Playlists | Problemas gerais | encontrar uma palavra num texto | Busca de padrão ingênua (`padrao`) | mudou de lugar (Primeiros passos) | Encosta a palavra em cada posição e compara letra a letra; pior caso n·m. | nova |
+| Playlists | Problemas gerais | calcular o fatorial | Fatorial recursivo (`fatorial`) | mudou de lugar (Primeiros passos) | n! com uma função que chama a si mesma; a pilha desce n níveis. | nova |
+| Playlists | Problemas gerais | multiplicar matrizes | Multiplicação de matrizes (`multiplicacao`) | mudou de lugar (Primeiros passos) | Três laços pela definição: n³. | nova |
+| Playlists | Problemas gerais | conferir se os símbolos fecham | Parênteses balanceados (`parenteses`) | mudou de lugar (Estruturas lineares) | Confere com uma pilha se cada símbolo que abre fecha no lugar certo. | nova |
+| Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | nova |
 | Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | antiga (falta a nova) |
 | Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | antiga (falta a nova) |
 | Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | — |
@@ -130,11 +130,11 @@ Conferência: 24 faixas nas 7 playlists (a Busca em largura aparece em duas) + 1
 
 ### Capas
 
-As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. O `gerar.py` liga a capa à faixa quando os arquivos existem; sem eles, a faixa fica com o pôster antigo.
+As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. Quando o título da capa começa mais alto, o recorte da ilustração é menor (`alg@0.5` no comando). O `gerar.py` liga a capa à faixa quando os arquivos existem e tira dela a cor de fundo; sem capa, a faixa fica com o pôster antigo.
 
-Já entraram 16: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01 e OF-02.
+Já entraram 28 das 34: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-08. A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03.
 
-Faltam 18, todas ainda com o pôster antigo (os códigos que ainda não existem são sugestão, no mesmo padrão):
+Faltam 6, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo padrão):
 
 | código | faixa | playlist |
 |---|---|---|
@@ -142,11 +142,10 @@ Faltam 18, todas ainda com o pôster antigo (os códigos que ainda não existem 
 | EI-02 | Busca binária | Encontrar um item |
 | OL-01 | Bubble sort | Ordenar uma lista |
 | OL-04 | Merge sort | Ordenar uma lista |
-| PT-01 | Percursos de árvore | Percorrer tudo |
-| PT-02 | Busca em profundidade | Percorrer tudo |
-| PT-03 | Busca em largura (a mesma capa serve em Achar o caminho mais curto) | Percorrer tudo |
-| CC-01 | Dijkstra | Achar o caminho mais curto |
-| PG-01 a PG-10 | Máximo, Janela deslizante, Mediana, Busca de padrão, Fatorial, Multiplicação de matrizes, Parênteses, Inverter lista, Welford, K-means | Problemas gerais |
+| PG-09 | Média e variância em uma passada (Welford) | Problemas gerais |
+| PG-10 | K-means | Problemas gerais |
+
+Nenhuma capa ficou sem faixa: Parênteses balanceados (PG-07) e Inverter lista encadeada (PG-08) existem como faixas.
 
 Grafia: as capas dizem "Quick sort", "Insertion sort", "Selection sort" e "Heapsort", como o site. A única diferença é "Árvore equilibrada AVL" na capa contra "Árvore equilibrada (AVL)" no site; o texto da capa não foi mexido.
 

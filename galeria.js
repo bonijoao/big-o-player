@@ -147,7 +147,9 @@
     // uma notação longa ("O(h), h de log n a n") quebra só entre as partes, nunca dentro de um O(·)
     const notacao = (t) => t.split(/(?<=,|·) | (?=por |·)/).flatMap((pedaco, i) => (i ? [" ", el("span", { text: pedaco })] : [el("span", { text: pedaco })]));
     let i = 0;
-    const corpos = a.subcategorias.map((s) => el("tbody", {}, [
+    // em Problemas gerais, cada subcategoria (uma faixa só) herda a cor da capa dela
+    const corDaLinha = (s) => (a.gerais && s.faixas[0] && s.faixas[0].capa && s.faixas[0].capa.cor ? { style: `--cor: ${s.faixas[0].capa.cor}` } : {});
+    const corpos = a.subcategorias.map((s) => el("tbody", corDaLinha(s), [
       el("tr", { class: "subcategoria" }, el("th", { colspan: "5", scope: "rowgroup", text: s.titulo })),
       ...s.faixas.map((f) => {
         const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
@@ -165,7 +167,7 @@
     const botao = el("button", { type: "button", class: "tocar-playlist", "aria-label": `Tocar a playlist ${a.titulo}`,
       html: '<svg aria-hidden="true"><use href="#i-tocar"/></svg>' });
     botao.addEventListener("click", () => tocar(a.faixas[0], a));
-    return el("div", { class: `playlist ${corDe(a)}` }, [
+    return el("div", { class: `playlist ${corDe(a)} ${a.gerais ? "gerais" : ""}` }, [
       el("header", { class: "cabeca colorida" }, [capaAlbum(a), el("div", {}, [
         el("span", { class: "rotulo", text: `${a.gerais ? "galeria" : "playlist"} · ${a.codigo}` }),
         el("h1", { text: a.titulo }),
