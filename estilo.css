@@ -428,6 +428,7 @@ svg text { font-family: var(--mono); }
 /* ---------- palco (vídeo grande / mini player) ---------- */
 
 .fundo { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 30; }   /* sem desfoque: pesava na animação */
+.palco:focus { outline: none; }   /* o diálogo recebe o foco ao abrir; os botões dentro dele mostram o contorno */
 .palco { position: fixed; z-index: 40; background: var(--papel); border: 1px solid var(--tinta); border-radius: 6px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(30, 30, 30, 0.5); }
 .palco-corpo { display: grid; grid-template-columns: minmax(0, 1fr); background: var(--papel); }
 .tela { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--papel); cursor: pointer; }

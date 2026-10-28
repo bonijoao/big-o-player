@@ -592,10 +592,23 @@
     return padroes[chave].total / padroes[chave].ritmo;   // segundos a 1×
   }
 
+  // o palco grande é um diálogo: o foco entra nele, a página atrás fica inerte, e ao sair o foco volta a quem abriu
+  let quemAbriu = null;
   function modo(m) {
+    const era = palco.dataset.modo;
     palco.dataset.modo = m;
     palco.hidden = m === "oculto";
     fundo.hidden = m !== "grande";
+    $(".app").inert = m === "grande";
+    if (m === "grande") palco.setAttribute("aria-modal", "true"); else palco.removeAttribute("aria-modal");
+    if (m === "grande" && era !== "grande") {
+      quemAbriu = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+      palco.focus({ preventScroll: true });
+    } else if (m !== "grande" && era === "grande") {
+      const volta = quemAbriu && quemAbriu.isConnected ? quemAbriu : $("#conteudo");
+      quemAbriu = null;
+      volta.focus({ preventScroll: true });
+    }
     const botao = $("#palco-modo");
     botao.textContent = m === "grande" ? "–" : "⤢";
     botao.setAttribute("aria-label", m === "grande" ? "Minimizar" : "Ampliar");
@@ -631,6 +644,7 @@
     tocando = sim_ && !!sim;
     botaoTocar.firstElementChild.firstElementChild.setAttribute("href", tocando ? "#i-pausar" : "#i-tocar");
     botaoTocar.setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
+    anunciar();
     ultimoQuadro = performance.now();
     marcarTocando();
   }
@@ -690,6 +704,16 @@
     ol.querySelectorAll("li.agora").forEach((li) => li.classList.remove("agora"));
     const li = ol.querySelector(`li[data-linha="${n}"]`);
     if (li) li.classList.add("agora");
+  }
+
+  // o anúncio do leitor de tela: tocando, só isso; parada, a linha do pseudocódigo da vez
+  function anunciar() {
+    const caixa = $("#palco-anuncio");
+    if (!faixa || !sim) { caixa.textContent = ""; return; }
+    const p = sim.varsEm(u);
+    const texto = tocando ? `Tocando ${faixa.nome}.`
+      : p && p.linha && faixa.pseudocodigo ? `Linha ${p.linha}: ${faixa.pseudocodigo.linhas[p.linha - 1].trim()}` : `${faixa.nome}, parada.`;
+    if (caixa.textContent !== texto) caixa.textContent = texto;
   }
 
   function pintarVariaveis() {
@@ -853,6 +877,7 @@
     if (dir > 0) u = ps.find((x) => x > u + eps) ?? sim.total;
     else u = [...ps].reverse().find((x) => x < u - eps) ?? 0;
     pintar();
+    anunciar();
   }
   $("#passo-antes").addEventListener("click", () => passo(-1));
   $("#passo-depois").addEventListener("click", () => passo(1));
@@ -890,11 +915,17 @@
     if (caixaFluxo.open) return;          // o Esc e as setas são da caixa do fluxograma
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
-    if (e.key === " " && faixa && !e.target.closest("button, a")) { e.preventDefault(); botaoTocar.click(); }
+    // o espaço toca e pausa; com o palco grande aberto, sempre, mesmo com o foco num botão (o Enter continua apertando o botão)
+    if (e.key === " " && faixa && (palco.dataset.modo === "grande" || !e.target.closest("button, a"))) { e.preventDefault(); botaoTocar.click(); }
     if (!faixa || palco.dataset.modo === "oculto" || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
     if (e.key === "-" || e.key === "_") mudarVel(-1);
     if (e.key === "+" || e.key === "=") mudarVel(1);
+  });
+
+  // o botão nativo aperta no keyup do espaço: com o palco grande, o espaço já tocou ou pausou no keydown
+  document.addEventListener("keyup", (e) => {
+    if (e.key === " " && faixa && palco.dataset.modo === "grande" && e.target.closest("button, a")) e.preventDefault();
   });
 
   // mini player: arrasta pela tela, sempre dentro dela; um toque sem arrastar amplia

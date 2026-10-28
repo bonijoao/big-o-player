@@ -33,7 +33,7 @@
 
 <!-- o palco mora fora das rotas: trocar de página não interrompe a faixa -->
 <div id="fundo" class="fundo" hidden></div>
-<section id="palco" class="palco" data-modo="oculto" aria-label="Simulação da faixa" hidden>
+<section id="palco" class="palco" data-modo="oculto" role="dialog" aria-labelledby="palco-titulo" tabindex="-1" hidden>
   <div class="palco-barra">
     <span id="palco-titulo" class="palco-titulo"></span>
     <button type="button" id="palco-fluxo" class="botao-passo palco-fluxo" hidden>fluxograma</button>
@@ -47,6 +47,8 @@
     </div>
     <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
   </div>
+  <!-- para o leitor de tela: a linha da vez, só com a faixa parada (tocando, seriam seis por segundo) -->
+  <p id="palco-anuncio" class="so-leitor" aria-live="polite"></p>
   <!-- embaixo do palco só a entrada do algoritmo; tocar, passos e velocidade são do rodapé -->
   <div class="palco-controles">
     <label class="so-ordenacao so-tipo"><span id="cfg-tipo-rotulo">entrada</span>
