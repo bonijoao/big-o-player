@@ -10,10 +10,10 @@ O inventário é o que está no ar no commit `4d27f95` (igual à `main`): 8 álb
 2. **Playlists por problema**: 7 playlists com 24 faixas, e as variações ficam como subcategorias.
    - Encontrar um item
    - Ordenar uma lista
-   - Contar o que aparece
+   - Contar ocorrências
    - Calcular Fibonacci
-   - Decidir quem é atendido primeiro
-   - Visitar todos os pontos
+   - Organizar uma fila
+   - Percorrer tudo
    - Achar o caminho mais curto
 
    Os problemas com uma faixa só vão para a galeria **Problemas gerais**, que tem 10 faixas, uma por problema. Quando um desses problemas ganha a segunda faixa, ele sai da galeria e vira playlist.
@@ -50,16 +50,16 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Merge sort (`intercalacao`) | muda de lugar (Ordenação) | Divide ao meio, ordena as metades e intercala. |
 | Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Quick sort (`rapida`) | muda de lugar (Ordenação) | Separa menores e maiores em volta de um pivô; n² no pior caso. |
 | Playlists | Ordenar uma lista | com um heap | Heapsort (`heapsort`) | muda de lugar (Ordenação) | Monta um heap no próprio vetor e tira sempre o maior. |
-| Playlists | Contar o que aparece | por palavra | Contar palavras (`palavras`) | muda de lugar (Dispersão) | Um dicionário com uma contagem por palavra, numa leitura só do texto. |
-| Playlists | Contar o que aparece | por faixa de valores | Histograma (`histograma`) | muda de lugar (Estatística) | Conta quantos valores caem em cada classe, para ver a forma dos dados. |
-| Playlists | Contar o que aparece | já apareceu? | Achar repetidos (`repetidos`) | muda de lugar (Dispersão) | Vetor × dicionário: n² comparações contra n consultas. |
+| Playlists | Contar ocorrências | por palavra | Contar palavras (`palavras`) | muda de lugar (Dispersão) | Um dicionário com uma contagem por palavra, numa leitura só do texto. |
+| Playlists | Contar ocorrências | por faixa de valores | Histograma (`histograma`) | muda de lugar (Estatística) | Conta quantos valores caem em cada classe, para ver a forma dos dados. |
+| Playlists | Contar ocorrências | já apareceu? | Achar repetidos (`repetidos`) | muda de lugar (Dispersão) | Vetor × dicionário: n² comparações contra n consultas. |
 | Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci recursivo (`fibrecursivo`) | muda de lugar (Primeiros passos) | Direto da definição: φⁿ somas, e fib(2) recalculado centenas de vezes. |
 | Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci com memória (`fibmemoria`) | muda de lugar (Primeiros passos) | A mesma recursão, guardando cada resposta: troca memória por tempo. |
 | Playlists | Calcular Fibonacci | subindo (laço) | Fibonacci iterativo (`fibiterativo`) | muda de lugar (Primeiros passos) | Sobe do começo com duas variáveis: n somas e memória constante. |
-| Playlists | Decidir quem é atendido primeiro | por ordem de chegada | Fila de atendimento (`atendimento`) | muda de lugar (Estruturas lineares) | Um caixa e uma fila: prevê quanto cada cliente espera. |
-| Playlists | Decidir quem é atendido primeiro | por urgência | Fila de prioridade (`prioridade`) | muda de lugar (Árvores e heaps) | O mais grave passa na frente, com um heap. |
-| Playlists | Visitar todos os pontos | numa árvore | Percursos de árvore (`percursos`) | muda de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. |
-| Playlists | Visitar todos os pontos | num grafo | Busca em profundidade (`profundidade`) | muda de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. |
+| Playlists | Organizar uma fila | por ordem de chegada | Fila de atendimento (`atendimento`) | muda de lugar (Estruturas lineares) | Um caixa e uma fila: prevê quanto cada cliente espera. |
+| Playlists | Organizar uma fila | por urgência | Fila de prioridade (`prioridade`) | muda de lugar (Árvores e heaps) | O mais grave passa na frente, com um heap. |
+| Playlists | Percorrer tudo | numa árvore | Percursos de árvore (`percursos`) | muda de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. |
+| Playlists | Percorrer tudo | num grafo | Busca em profundidade (`profundidade`) | muda de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. |
 | Playlists | Achar o caminho mais curto | sem custo nas ligações | Busca em largura (`largura`) | muda de lugar (Grafos) | Anda em ondas a partir da origem: o caminho com menos passos. |
 | Playlists | Achar o caminho mais curto | com custo nas ligações | Dijkstra (`dijkstra`) | muda de lugar (Grafos) | Expande sempre o ponto mais perto, com um heap. |
 | Playlists | Problemas gerais | achar o maior | Máximo de um vetor (`maximo`) | muda de lugar (Primeiros passos) | Sempre n − 1 comparações, e nenhum algoritmo faz menos. |
@@ -107,11 +107,11 @@ Problemas gerais que já têm um segundo jeito à vista, todos novos:
 | Primeiros passos | máximo, multiplicação, fatorial, Fibonacci ×3, padrão | Vira **Conceitos importantes**, que só tem vídeos novos. Os três Fibonacci formam a playlist Calcular Fibonacci. Máximo, padrão, fatorial e multiplicação vão para Problemas gerais, e o fatorial e a multiplicação também servem de palco a dois vídeos de Fundamentos. |
 | Busca | sequencial, binária | Encontrar um item / numa lista. |
 | Ordenação | as 6 | Ordenar uma lista, com 3 subcategorias. |
-| Estruturas lineares | parênteses, atendimento, inverter, janela | Atendimento → Decidir quem é atendido primeiro; janela, parênteses e inverter → Problemas gerais. |
-| Árvores e heaps | percursos, busca em árvore, AVL, prioridade | Busca em árvore e AVL → Encontrar um item; percursos → Visitar todos os pontos; prioridade → Decidir quem é atendido primeiro. |
-| Grafos | largura, profundidade, Dijkstra | Largura e Dijkstra → Achar o caminho mais curto; profundidade → Visitar todos os pontos. |
-| Dispersão | contar palavras, repetidos, encadeamento, sondagem | Encadeamento e sondagem → Encontrar um item / pela chave; contar palavras e repetidos → Contar o que aparece. |
-| Estatística | Welford, mediana, histograma, K-means | Histograma → Contar o que aparece; Welford, mediana e K-means → Problemas gerais (decisão 3). |
+| Estruturas lineares | parênteses, atendimento, inverter, janela | Atendimento → Organizar uma fila; janela, parênteses e inverter → Problemas gerais. |
+| Árvores e heaps | percursos, busca em árvore, AVL, prioridade | Busca em árvore e AVL → Encontrar um item; percursos → Percorrer tudo; prioridade → Organizar uma fila. |
+| Grafos | largura, profundidade, Dijkstra | Largura e Dijkstra → Achar o caminho mais curto; profundidade → Percorrer tudo. |
+| Dispersão | contar palavras, repetidos, encadeamento, sondagem | Encadeamento e sondagem → Encontrar um item / pela chave; contar palavras e repetidos → Contar ocorrências. |
+| Estatística | Welford, mediana, histograma, K-means | Histograma → Contar ocorrências; Welford, mediana e K-means → Problemas gerais (decisão 3). |
 | Instrumentos | as 11 estruturas | Algoritmos e estruturas. |
 
 ## Conceitos importantes: os 7 vídeos
@@ -205,17 +205,14 @@ Também do QA de conteúdo, sem mudar o mapa: enxugar o molde da faixa (seção 
 
 ## Decisões do Pedro
 
-Já decidido: os problemas com uma faixa só vão para a galeria Problemas gerais, e o vídeo 0 apresenta o site separado do vídeo 1.
+Todas tomadas em 28/10/2026 ("aceito as sugestões, mete marcha"):
 
-1. **Nomes de playlist em dúvida.**
-   - "Encontrar um item": o handoff dizia "numa lista", mas a playlist também cobre árvore e tabela hash.
-   - "Contar o que aparece": outra opção é "Contar ocorrências".
-   - "Decidir quem é atendido primeiro": outra opção é "Organizar uma fila".
-   - "Visitar todos os pontos": outra opção é "Percorrer tudo".
-   - "Achar o caminho mais curto": a Busca em largura também cabe em "Visitar todos os pontos". Vale decidir se uma faixa pode morar em duas playlists.
-2. **Nome do site.** "É complexo, baby?" está no título e na marca; "big-o-player" está na URL e no repositório remoto; o roteiro do vídeo 0 diz "Big O Player". O branch do redator troca para "Qual é a boa?". Os vídeos vão carregar o nome, então a escolha vem antes de gravar.
-3. **Álbum Estatística.** Pela regra dos Problemas gerais, o álbum se dissolve: o Histograma vai para Contar o que aparece, e Welford, Mediana e K-means vão para Problemas gerais. A alternativa é mantê-lo como a única playlist por área, que abre uma exceção à regra "por problema".
-4. **Ordem das seções.** A proposta é Conceitos importantes → Playlists (com Problemas gerais no fim) → Fundamentos → Algoritmos e estruturas. A outra leitura possível do handoff põe Fundamentos logo depois dos Conceitos, antes das playlists.
-5. **"Instrumento" e "feat."** Com a seção virando "Algoritmos e estruturas", resta saber se o crédito "feat. Vetor" e a palavra "instrumento" saem do site também ou se ficam como a metáfora do player.
-6. **Ordem das playlists.** A proposta é a da tabela: começa por Encontrar um item, que retoma o vídeo 2, e termina nos grafos.
-7. **Trilha "Do zero" do redator** (branch `claude/compassionate-dhawan-92e734`, que não está no ar). Ela tem 17 paradas e as quatro fichas de fundamentos. Há duas saídas: aproveitar as fichas como base de Fundamentos e arquivar a trilha, que este mapa substitui, ou manter a trilha como roteiro opcional.
+1. **Playlists:** os nomes ficam "Encontrar um item" (sem "numa lista"), "Contar ocorrências", "Organizar uma fila" e "Percorrer tudo". A Busca em largura mora em duas playlists, Percorrer tudo e Achar o caminho mais curto.
+2. **Nome do site:** Big O Player, no `<title>`, na marca, no README e no vídeo 0.
+3. **Estatística:** o álbum se dissolve. O Histograma vai para Contar ocorrências; Welford, Mediana e K-means vão para Problemas gerais.
+4. **Ordem das seções:** Conceitos importantes → Fundamentos → Playlists (com Problemas gerais no fim) → Algoritmos e estruturas.
+5. **Termos:** "feat." fica, como metáfora do player. "Instrumento" vira "estrutura" no texto e na navegação.
+6. **Ordem das playlists:** a deste mapa.
+7. **Trilha "Do zero":** as 4 fichas de fundamentos do branch `claude/compassionate-dhawan-92e734` viram base do glossário rápido, e a trilha fica arquivada.
+
+Antes disso, também ficou decidido que os problemas com uma faixa só vão para a galeria Problemas gerais e que o vídeo 0 apresenta o site, separado do vídeo 1.
