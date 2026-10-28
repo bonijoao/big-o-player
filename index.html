@@ -99,11 +99,28 @@
   <div id="caixa-fluxo-corpo" class="caixa-corpo"></div>
 </dialog>
 
+<!-- os atalhos de teclado: o "?" abre -->
+<dialog id="caixa-atalhos" class="caixa-fluxo caixa-atalhos" aria-labelledby="caixa-atalhos-titulo">
+  <div class="caixa-barra">
+    <h2 id="caixa-atalhos-titulo">Atalhos</h2>
+    <button type="button" id="caixa-atalhos-fechar" class="icone" aria-label="Fechar os atalhos">×</button>
+  </div>
+  <dl class="atalhos">
+    <dt><kbd>espaço</kbd></dt><dd>tocar e pausar</dd>
+    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>um passo para trás e para a frente</dd>
+    <dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>próxima faixa e faixa anterior</dd>
+    <dt><kbd>−</kbd> <kbd>+</kbd></dt><dd>mais devagar e mais rápido</dd>
+    <dt><kbd>R</kbd></dt><dd>repetir a faixa</dd>
+    <dt><kbd>Esc</kbd></dt><dd>cancelar o "a seguir" e minimizar o palco</dd>
+    <dt><kbd>?</kbd></dt><dd>esta lista</dd>
+  </dl>
+</dialog>
+
 <footer class="tocador" id="tocador" aria-label="Player">
-  <a class="agora" id="agora" href="#">
-    <span class="agora-capa" id="agora-capa"></span>
-    <span class="agora-texto"><b id="agora-nome">Nada tocando</b><small id="agora-album">escolha uma faixa</small></span>
-  </a>
+  <div class="agora">
+    <button type="button" class="agora-capa" id="agora-capa" aria-label="Abrir o palco" title="Abrir o palco" disabled></button>
+    <a class="agora-texto" id="agora" href="#"><b id="agora-nome">Nada tocando</b><small id="agora-album">escolha uma faixa</small></a>
+  </div>
   <div class="controles">
     <div class="botoes">
       <button type="button" id="anterior" class="icone faixa" aria-label="Faixa anterior"><svg aria-hidden="true"><use href="#i-faixa-antes"/></svg></button>

@@ -145,7 +145,7 @@
       el("tr", { class: "subcategoria" }, el("th", { colspan: "5", scope: "rowgroup", text: s.titulo })),
       ...s.faixas.map((f) => {
         const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
-          el("td", { class: "n", text: String(++i) }),
+          el("td", { class: "n" }, [el("span", { class: "num", text: String(++i) }), equalizador()]),
           el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
             el("div", {}, [el("a", { href: rotaFaixa(f, a), text: f.nome }), feat(f), el("small", { text: f.objetivo })])])),
           el("td", { class: "o" }, notacao(f.tempo.notacao)),
@@ -156,7 +156,8 @@
         return tr;
       }),
     ]));
-    const botao = el("button", { type: "button", class: "botao-tocar", text: "▶ Tocar a playlist" });
+    const botao = el("button", { type: "button", class: "tocar-playlist", "aria-label": `Tocar a playlist ${a.titulo}`,
+      html: '<svg aria-hidden="true"><use href="#i-tocar"/></svg>' });
     botao.addEventListener("click", () => tocar(a.faixas[0], a));
     return el("div", {}, [
       el("header", { class: "cabeca" }, [capaAlbum(a), el("div", {}, [
@@ -172,6 +173,9 @@
       ]),
     ]);
   }
+
+  // as três barras que sobem e descem na faixa que toca (paradas com movimento reduzido)
+  const equalizador = () => el("span", { class: "eq", "aria-hidden": "true" }, [el("i"), el("i"), el("i")]);
 
   // ---------- as playlists de vídeo (Conceitos importantes e Fundamentos): só com vídeo pronto ----------
 
@@ -607,6 +611,7 @@
 
   function play(sim_) {
     tocando = sim_ && !!sim;
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = !faixa ? "none" : tocando ? "playing" : "paused";
     botaoTocar.firstElementChild.firstElementChild.setAttribute("href", tocando ? "#i-pausar" : "#i-tocar");
     botaoTocar.setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
     anunciar();
@@ -790,6 +795,8 @@
   function atualizarBarra() {
     const a = tocandoEm;
     $("#agora-capa").replaceChildren(imgCapa(faixa, true));
+    $("#agora-capa").disabled = false;
+    sessaoDeMidia();
     $("#agora-nome").replaceChildren(faixa.nome, featTexto(faixa) ? el("span", { class: "feat", text: ` ${featTexto(faixa)}` }) : "");
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
     $("#agora").href = rotaFaixa(faixa, a);
@@ -808,10 +815,10 @@
   }
 
   function marcarTocando() {
-    document.querySelectorAll(".faixas tr[data-id]").forEach((tr, i) => {
+    document.querySelectorAll(".faixas tr[data-id]").forEach((tr) => {
       const sim_ = !!faixa && tr.dataset.id === faixa.id;
-      tr.classList.toggle("tocando", sim_);
-      tr.querySelector(".n").textContent = sim_ && tocando ? "▶" : String(i + 1);   // tocando: ▶; pausada: o número, em verde
+      tr.classList.toggle("tocando", sim_);               // tocando: o equalizador; pausada: o número, em verde
+      tr.classList.toggle("parada", sim_ && !tocando);
     });
     document.querySelectorAll(".cartao[data-id]").forEach((c) => c.classList.toggle("tocando", !!faixa && c.dataset.id === faixa.id));
   }
@@ -939,7 +946,11 @@
   fundo.addEventListener("click", () => modo("mini"));
   document.querySelectorAll(".palco-controles select").forEach((s) => s.addEventListener("change", () => s.blur()));   // as setas voltam a ser do player
   document.addEventListener("keydown", (e) => {
-    if (caixaFluxo.open) return;          // o Esc e as setas são da caixa do fluxograma
+    if (caixaFluxo.open || caixaAtalhos.open) return;   // o Esc e as setas são da caixa aberta
+    if (e.key === "MediaPlayPause" && faixa) { e.preventDefault(); botaoTocar.click(); return; }   // a tecla de mídia, com a página em foco
+    if (e.key === "MediaTrackNext") { pular(1); return; }
+    if (e.key === "MediaTrackPrevious") { pular(-1); return; }
+    if (e.key === "?" && !e.target.closest("input, select, textarea")) { caixaAtalhos.showModal(); return; }
     if (e.key === "Escape" && fim && fim.proxima) { fim.proxima = null; desenharFim(true); return; }   // Esc cancela a contagem
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
@@ -950,8 +961,31 @@
     if (e.key === "-" || e.key === "_") mudarVel(-1);
     if (e.key === "+" || e.key === "=") mudarVel(1);
     if (e.key === "r" || e.key === "R") alternarRepetir();
+    if (e.key === "n" || e.key === "N") pular(1);
+    if (e.key === "p" || e.key === "P") pular(-1);
   });
   $("#repetir").addEventListener("click", alternarRepetir);
+  $("#agora-capa").addEventListener("click", () => { if (faixa) modo("grande"); });
+
+  // ---------- Media Session: os controles do sistema, do teclado de mídia e do fone ----------
+
+  function sessaoDeMidia() {
+    if (!("mediaSession" in navigator) || !faixa) return;
+    const capa = faixa.capa ? faixa.capa.inteira[480] : faixa.poster;
+    navigator.mediaSession.metadata = new MediaMetadata({ title: faixa.nome, artist: tocandoEm.titulo, album: NOME,
+      artwork: [{ src: new URL(capa, location.href).href, sizes: faixa.capa ? "480x480" : "960x540", type: faixa.capa ? "image/webp" : "image/png" }] });
+  }
+  if ("mediaSession" in navigator) {
+    const acoes = { play: () => { if (!tocando) botaoTocar.click(); }, pause: () => { if (tocando) botaoTocar.click(); },
+      nexttrack: () => pular(1), previoustrack: () => pular(-1), seekforward: () => passo(1), seekbackward: () => passo(-1) };
+    for (const [acao, f] of Object.entries(acoes)) { try { navigator.mediaSession.setActionHandler(acao, f); } catch (e) { /* ação sem suporte */ } }
+  }
+
+  // ---------- os atalhos: "?" abre a lista ----------
+
+  const caixaAtalhos = $("#caixa-atalhos");
+  $("#caixa-atalhos-fechar").addEventListener("click", () => caixaAtalhos.close());
+  caixaAtalhos.addEventListener("click", (e) => { if (e.target === caixaAtalhos) caixaAtalhos.close(); });
 
   // o botão nativo aperta no keyup do espaço: com o palco aberto, o espaço já tocou ou pausou no keydown
   document.addEventListener("keyup", (e) => {
