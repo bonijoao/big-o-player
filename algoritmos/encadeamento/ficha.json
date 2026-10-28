@@ -13,7 +13,7 @@
  ],
  "tempo": {
   "notacao": "O(1 + α) médio",
-  "porque": "Pôr uma chave nova olha o início da corrente e cada nó dela: 1 + α sondagens em média, com a ocupação α da hora. Pondo n chaves desde a tabela vazia, a média por chave é 1 + α/2 (as primeiras encontram correntes mais curtas). Com m fixo, isso cresce em linha reta com α; com a tabela que dobra, como no instrumento, α fica abaixo de 3/4 e cada operação vira O(1).",
+  "porque": "Pôr uma chave nova olha o início da corrente e cada nó dela: 1 + α sondagens em média, com a ocupação α da hora. Pondo n chaves desde a tabela vazia, a média por chave é 1 + α/2 (as primeiras encontram correntes mais curtas). Com m fixo, isso cresce em linha reta com α; com a tabela que dobra, como no Dicionário, α fica abaixo de 3/4 e cada operação vira O(1).",
   "nota": "O pior caso é todas as chaves caírem na mesma casa: uma corrente só, e O(n) por chave. O menu do palco tem esse caso."
  },
  "memoria": {

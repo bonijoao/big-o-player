@@ -1,0 +1,57 @@
+{
+ "frase": "O mínimo para ler qualquer faixa: uma linha por termo, e onde ver cada um funcionando.",
+ "credito": "Algoritmo, variável, laço, decisão e custo partem das fichas da trilha \"Do zero\" (arquivada).",
+ "grupos": [
+  {
+   "titulo": "O que roda",
+   "termos": [
+    {"termo": "algoritmo", "linha": "Uma lista finita de passos sem dúvida, que qualquer um segue sem pensar e que chega à resposta certa, seja qual for a entrada.", "ver": {"faixa": "maximo"}},
+    {"termo": "entrada e saída", "linha": "O que o algoritmo recebe e o que ele devolve.", "ver": {"faixa": "maximo"}},
+    {"termo": "pseudocódigo", "linha": "O algoritmo escrito em português estruturado, sem depender de linguagem. Os índices começam em 1.", "ver": {"faixa": "sequencial"}},
+    {"termo": "variável", "linha": "Um nome com um valor, onde o algoritmo anota o que precisa lembrar. Anotar (←) apaga o valor velho; ler não apaga.", "ver": {"faixa": "fibiterativo"}},
+    {"termo": "laço", "linha": "Repete o mesmo passo para cada coisa, ou enquanto uma condição valer.", "ver": {"faixa": "maximo"}},
+    {"termo": "decisão (se)", "linha": "Escolhe, em cada volta, o que fazer, conforme uma condição.", "ver": {"faixa": "maximo"}},
+    {"termo": "função", "linha": "Um bloco de passos com nome, que recebe valores e devolve um resultado.", "ver": {"faixa": "fatorial"}},
+    {"termo": "recursão", "linha": "Uma função que resolve o problema chamando a si mesma num problema menor.", "ver": {"faixa": "fatorial"}},
+    {"termo": "pilha de chamadas", "linha": "Onde esperam as chamadas que ainda dependem da chamada de cima voltar.", "ver": {"faixa": "fatorial"}}
+   ]
+  },
+  {
+   "titulo": "Onde se guarda",
+   "termos": [
+    {"termo": "casa", "linha": "O lugar de um valor na memória. Aqui, ler ou escrever uma casa custa 1.", "ver": {"estrutura": "vetor"}},
+    {"termo": "ponteiro", "linha": "Uma casa que guarda onde está outra casa.", "ver": {"estrutura": "lista"}},
+    {"termo": "vetor", "linha": "Casas em sequência, cada uma achada pelo seu número.", "ver": {"estrutura": "vetor"}},
+    {"termo": "matriz", "linha": "Uma tabela de casas por linha e coluna, guardada linha a linha.", "ver": {"estrutura": "matriz"}},
+    {"termo": "texto", "linha": "Um vetor de letras.", "ver": {"estrutura": "texto"}},
+    {"termo": "lista encadeada", "linha": "Valores ligados por ponteiros: inserir no meio não empurra os outros.", "ver": {"estrutura": "lista"}},
+    {"termo": "pilha", "linha": "O último que entra é o primeiro que sai.", "ver": {"estrutura": "pilha"}},
+    {"termo": "fila", "linha": "O primeiro que entra é o primeiro que sai.", "ver": {"estrutura": "fila"}},
+    {"termo": "deque", "linha": "Uma fila com as duas pontas abertas.", "ver": {"estrutura": "deque"}},
+    {"termo": "árvore de busca", "linha": "Cada nó tem os menores à esquerda e os maiores à direita.", "ver": {"estrutura": "arvore"}},
+    {"termo": "heap", "linha": "Uma árvore em que o pai nunca é maior que os filhos: o menor fica no topo.", "ver": {"estrutura": "heap"}},
+    {"termo": "grafo", "linha": "Pontos ligados por arestas, como esquinas ligadas por ruas.", "ver": {"estrutura": "grafo"}},
+    {"termo": "dicionário (tabela hash)", "linha": "Acha o valor pela chave calculando a casa, em vez de procurar.", "ver": {"estrutura": "dicionario"}},
+    {"termo": "colisão", "linha": "Duas chaves que caem na mesma casa do dicionário.", "ver": {"faixa": "encadeamento"}}
+   ]
+  },
+  {
+   "titulo": "Como se mede",
+   "termos": [
+    {"termo": "n", "linha": "O tamanho da entrada: quantos números, letras ou pontos.", "ver": {"faixa": "sequencial"}},
+    {"termo": "passo", "linha": "Uma operação básica contada: comparar, somar, ler ou escrever uma casa. Cada faixa diz qual conta.", "ver": {"faixa": "maximo"}},
+    {"termo": "tempo", "linha": "Quantos passos o algoritmo dá, contados rodando o código, e não em segundos.", "ver": {"faixa": "maximo"}},
+    {"termo": "custo", "linha": "Contar os passos e ver como a conta cresce quando a entrada cresce, e não quanto ela dá num exemplo pequeno.", "ver": {"faixa": "binaria"}},
+    {"termo": "memória extra", "linha": "O que o algoritmo guarda além da entrada e da resposta.", "ver": {"faixa": "fatorial"}},
+    {"termo": "O(·)", "linha": "Como o custo cresce quando n cresce, sem as constantes. O rótulo é o pior caso, salvo quando diz \"médio\" ou \"amortizado\".", "ver": {"faixa": "binaria"}},
+    {"termo": "Ω e Θ", "linha": "Ω é o piso; Θ é piso e teto ao mesmo tempo. O máximo de um vetor é Θ(n): nunca menos, nunca mais.", "ver": {"faixa": "maximo"}},
+    {"termo": "log n", "linha": "Quantas vezes dá para cortar n pela metade até sobrar 1. Dobrar n soma 1.", "ver": {"faixa": "binaria"}},
+    {"termo": "melhor, pior e caso médio", "linha": "O custo na entrada mais fácil, na mais difícil e na média das entradas.", "ver": {"faixa": "sequencial"}},
+    {"termo": "amortizado", "linha": "Uma operação cara de vez em quando, dividida por todas, dá um custo baixo por operação.", "ver": {"estrutura": "vetor"}},
+    {"termo": "escala log-log", "linha": "Com os dois eixos em log, a inclinação da reta é o expoente: 1 para n, 2 para n².", "ver": {"faixa": "selecao"}},
+    {"termo": "caminhos", "linha": "A complexidade ciclomática: quantos caminhos independentes o código tem. É métrica de engenharia, não de tempo.", "ver": {"faixa": "maximo"}},
+    {"termo": "conferido no R", "linha": "Cada contagem é refeita em R e tem que bater com a do Python; o JavaScript do site também.", "ver": {"faixa": "maximo"}}
+   ]
+  }
+ ]
+}

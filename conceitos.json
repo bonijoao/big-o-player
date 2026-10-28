@@ -1,0 +1,14 @@
+{
+ "titulo": "Conceitos importantes",
+ "frase": "Antes do primeiro algoritmo: o que é, como se compara e quando a escolha importa.",
+ "nota": "A seção só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\".",
+ "videos": [
+  {"n": 0, "titulo": "Big O Player", "resumo": "Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema.", "video": null},
+  {"n": 1, "titulo": "O que é um algoritmo", "resumo": "Uma sequência finita de passos precisos, da entrada à resposta.", "video": null},
+  {"n": 2, "titulo": "Complexidade sem jargão", "resumo": "Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida.", "video": null},
+  {"n": 3, "titulo": "Quando dá para comparar", "resumo": "O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério.", "video": null},
+  {"n": 4, "titulo": "Melhor, pior e caso médio", "resumo": "O custo muda com a entrada, e o pior caso é a promessa.", "video": null},
+  {"n": 5, "titulo": "Como escolher", "resumo": "A escolha importa com n grande ou muitas repetições; senão, o simples ganha.", "video": null},
+  {"n": 6, "titulo": "Fechamento", "resumo": "Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo.", "video": null}
+ ]
+}

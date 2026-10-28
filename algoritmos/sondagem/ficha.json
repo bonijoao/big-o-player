@@ -13,7 +13,7 @@
  ],
  "tempo": {
   "notacao": "O(1/(1 − α)) médio",
-  "porque": "Pondo n chaves desde a tabela vazia, a média por chave é ½(1 + 1/(1 − α)) sondagens (Knuth), contando a casa vazia onde cada uma entra: 1,5 com a tabela pela metade, 5,5 com 90%. Pôr uma chave nova com α ocupado custa ½(1 + 1/(1 − α)²), que explode perto do fim. Com a tabela que dobra, como no instrumento, α fica abaixo de 3/4 e cada operação vira O(1).",
+  "porque": "Pondo n chaves desde a tabela vazia, a média por chave é ½(1 + 1/(1 − α)) sondagens (Knuth), contando a casa vazia onde cada uma entra: 1,5 com a tabela pela metade, 5,5 com 90%. Pôr uma chave nova com α ocupado custa ½(1 + 1/(1 − α)²), que explode perto do fim. Com a tabela que dobra, como no Dicionário, α fica abaixo de 3/4 e cada operação vira O(1).",
   "nota": "Com a tabela cheia (α = 1), não há casa vazia, e o laço do pseudocódigo nunca termina: a sondagem precisa de pelo menos uma casa vazia, e por isso o palco vai até n = m − 1. O pior caso é todas as chaves caírem na mesma casa: a k-ésima anda k casas, O(n) por chave. O menu do palco tem esse caso."
  },
  "memoria": {

@@ -1,10 +1,11 @@
 """Junta ficha.json (texto) + dados.json (medido) + conferencia.json de cada
-algoritmo, e ficha.json + dados.json de cada instrumento, em dados.js, que a página carrega (funciona abrindo o arquivo direto,
+algoritmo, ficha.json + dados.json de cada estrutura (instrumentos/), as playlists, o glossário dos
+fundamentos e os vídeos dos conceitos em dados.js, que a página carrega (funciona abrindo o arquivo direto,
 sem servidor).
 
   python3 gerar.py            mede os instrumentos e junta
   python3 gerar.py --tudo     antes mede os algoritmos, confere no R e gera os pôsteres
-Recusa ficha de faixa que credita um instrumento que não existe. Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
+Recusa ficha de faixa que credita uma estrutura que não existe, e playlist que esquece ou inventa faixa. Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
 """
 import json
 import os
@@ -17,7 +18,7 @@ import pseudocodigo  # noqa: E402
 ALGORITMOS = ["maximo", "multiplicacao", "fatorial", "fibrecursivo", "fibmemoria", "fibiterativo", "padrao",
               "sequencial", "binaria", "bolha", "insercao", "selecao", "intercalacao", "rapida", "heapsort",
               "parenteses", "atendimento", "inverter", "janela", "percursos", "abb", "avl", "prioridade", "largura", "profundidade", "dijkstra",
-              "palavras", "repetidos", "encadeamento", "sondagem", "welford", "mediana", "histograma", "kmeans"]   # ordem da galeria (dentro de cada álbum)
+              "palavras", "repetidos", "encadeamento", "sondagem", "welford", "mediana", "histograma", "kmeans"]   # a ordem das medições; a das faixas vem do playlists.json
 INSTRUMENTOS = ["vetor", "matriz", "texto", "pilha", "fila", "deque", "lista", "grafo", "arvore", "heap", "dicionario"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)
 CICLOMATICA = {
@@ -90,6 +91,24 @@ def conferir_creditos(galeria, instrumentos):
                                  f"(existem: {', '.join(sorted(ids))})")
 
 
+def conferir_playlists(playlists, fundamentos):
+    citadas = set()
+    for p in playlists:
+        for s in p["subcategorias"]:
+            for nome in s["faixas"]:
+                if nome not in ALGORITMOS:
+                    raise SystemExit(f"playlist {p['id']}: a faixa {nome!r} não existe")
+                citadas.add(nome)
+    soltas = [n for n in ALGORITMOS if n not in citadas]
+    if soltas:
+        raise SystemExit(f"faixas fora de qualquer playlist: {', '.join(soltas)}")
+    for g in fundamentos["grupos"]:
+        for t in g["termos"]:
+            ver = t.get("ver", {})
+            if ver.get("faixa") and ver["faixa"] not in ALGORITMOS or ver.get("estrutura") and ver["estrutura"] not in INSTRUMENTOS:
+                raise SystemExit(f"fundamentos: {t['termo']!r} aponta para {ver}, que não existe")
+
+
 def main():
     if "--tudo" in sys.argv:
         for nome in ALGORITMOS:
@@ -103,12 +122,16 @@ def main():
     galeria = [entrada(n) for n in ALGORITMOS]
     instrumentos = [instrumento(n) for n in INSTRUMENTOS]
     conferir_creditos(galeria, instrumentos)
+    playlists, fundamentos = ler(RAIZ, "playlists.json"), ler(RAIZ, "fundamentos.json")
+    conferir_playlists(playlists, fundamentos)
     with open(os.path.join(RAIZ, "dados.js"), "w") as f:
         f.write("// gerado por gerar.py; não editar à mão\n")
         f.write("window.GALERIA = " + json.dumps(galeria, ensure_ascii=False, indent=1) + ";\n")
-        f.write("window.ALBUNS = " + json.dumps(ler(RAIZ, "albuns.json"), ensure_ascii=False, indent=1) + ";\n")
+        f.write("window.PLAYLISTS = " + json.dumps(playlists, ensure_ascii=False, indent=1) + ";\n")
+        f.write("window.FUNDAMENTOS = " + json.dumps(fundamentos, ensure_ascii=False, indent=1) + ";\n")
+        f.write("window.CONCEITOS = " + json.dumps(ler(RAIZ, "conceitos.json"), ensure_ascii=False, indent=1) + ";\n")
         f.write("window.INSTRUMENTOS = " + json.dumps(instrumentos, ensure_ascii=False) + ";\n")
-    print("dados.js:", ", ".join(g["nome"] for g in galeria), "| instrumentos:", ", ".join(i["nome"] for i in instrumentos))
+    print("dados.js:", ", ".join(g["nome"] for g in galeria), "| estruturas:", ", ".join(i["nome"] for i in instrumentos))
     subprocess.run(["node", os.path.join(RAIZ, "testes", "conferir_js.mjs")], check=True)
 
 

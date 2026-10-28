@@ -2108,7 +2108,7 @@
       el("header", { class: "inst-cabeca" }, [
         glifo(inst.id, "mini-48"),
         el("div", {}, [
-          el("p", { class: "rotulo", html: '<a href="#instrumentos">instrumento</a>' }),
+          el("p", { class: "rotulo", html: '<a href="#algoritmos-e-estruturas">estrutura</a>' }),
           el("h1", { text: inst.nome }),
           el("p", { class: "frase", text: inst.objetivo }),
         ]),
@@ -2173,26 +2173,14 @@
     }[id];
   }
 
-  /** A lista dos instrumentos (#instrumentos). */
-  function indice(insts, ctx) {
-    return el("div", {}, [
-      el("header", { class: "cabeca" }, [el("div", {}, [
-        el("span", { class: "rotulo", text: "instrumentos" }),
-        el("h1", { text: "Instrumentos" }),
-        el("p", { text: "As estruturas de dados que as faixas tocam. Cada uma com a demo ao vivo e o custo medido de cada operação." }),
-      ])]),
-      el("div", { class: "estante" }, insts.map((i) => cartao(i, ctx))),
-    ]);
-  }
-
   function cartao(i, ctx) {
     const n = ctx.faixas.filter((f) => (f.instrumentos || []).some((c) => c.id === i.id)).length;
     return el("div", { class: "cartao" }, [
       el("span", { class: "cartao-capa" }, glifo(i.id)),
-      el("a", { class: "cartao-link", href: `#instrumentos/${i.id}`, text: i.nome }),
+      el("a", { class: "cartao-link", href: `#estruturas/${i.id}`, text: i.nome }),
       el("small", { text: `${i.frase} Toca em ${n} ${n === 1 ? "faixa" : "faixas"}.` }),
     ]);
   }
 
-  window.PaginaInstrumento = { pagina, indice, cartao, glifo };
+  window.PaginaInstrumento = { pagina, cartao, glifo };
 })();

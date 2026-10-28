@@ -1,20 +1,34 @@
-// O player: álbuns (famílias), faixas (algoritmos), vídeo grande que vira mini
-// player arrastável, e o encarte de cada faixa. Os números vêm de dados.js.
+// O player: as seções (conceitos, fundamentos, playlists por problema, algoritmos e
+// estruturas), as faixas (algoritmos), o palco que vira mini player arrastável e o
+// encarte de cada faixa. Os números vêm de dados.js.
 (function () {
   "use strict";
 
   const { el, mil, esc } = window.Graficos;
   const G = window.GALERIA || [];
   const INSTS = window.INSTRUMENTOS || [];
-  const ALBUNS = (window.ALBUNS || []).map((a) => ({ ...a, faixas: G.filter((f) => f.familia === a.familia) }));
+  const porAlg = Object.fromEntries(G.map((f) => [f.alg, f]));
+  // cada playlist é um problema; as subcategorias são os jeitos de resolver, e a playlist toca na ordem delas
+  const PLAYLISTS = (window.PLAYLISTS || []).map((p) => {
+    const subcategorias = p.subcategorias.map((s) => ({ ...s, faixas: s.faixas.map((n) => porAlg[n]).filter(Boolean) }));
+    return { ...p, subcategorias, faixas: subcategorias.flatMap((s) => s.faixas) };
+  });
+  const FUND = window.FUNDAMENTOS || { grupos: [] };
+  const CONC = window.CONCEITOS || { videos: [] };
+  const VIDEOS = (CONC.videos || []).filter((v) => v.video);   // a seção Conceitos só existe com vídeo pronto
+  const NOME = "Big O Player";
   const $ = (s, raiz = document) => raiz.querySelector(s);
   const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const albumDe = (f) => ALBUNS.find((a) => a.familia === f.familia);
-  const rotaFaixa = (f) => `#${albumDe(f).id}/${f.id}`;
+  const casaDe = (f) => PLAYLISTS.find((p) => p.faixas.includes(f));   // a primeira playlist em que a faixa mora
+  const rotaFaixa = (f, p) => `#${(p || casaDe(f)).id}/${f.id}`;
   const relogio = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const nFaixas = (n) => `${n} ${n === 1 ? "faixa" : "faixas"}`;
+  // links de antes da reorganização: o álbum velho cai na playlist que herdou a maior parte dele
+  const ANTIGOS = { "primeiros-passos": "problemas-gerais", busca: "encontrar-um-item", ordenacao: "ordenar-uma-lista",
+    "estruturas-lineares": "organizar-uma-fila", "arvores-e-heaps": "encontrar-um-item", grafos: "achar-o-caminho-mais-curto",
+    dispersao: "encontrar-um-item", estatistica: "problemas-gerais", instrumentos: "algoritmos-e-estruturas" };
 
-  // ---------- feat.: os instrumentos que a faixa toca ----------
+  // ---------- feat.: as estruturas que a faixa toca ----------
 
   const creditos = (f) => (f.instrumentos || []).map((c) => ({ ...c, inst: INSTS.find((i) => i.id === c.id) })).filter((c) => c.inst);
   const featTexto = (f) => { const cs = creditos(f); return cs.length ? `feat. ${cs.map((c) => c.inst.nome).join(", ")}` : ""; };
@@ -22,7 +36,7 @@
   function feat(f) {
     const cs = creditos(f);
     if (!cs.length) return null;
-    return el("span", { class: "feat" }, [" feat. ", ...cs.flatMap((c, k) => [k ? ", " : "", el("a", { href: `#instrumentos/${c.id}`, text: c.inst.nome })])]);
+    return el("span", { class: "feat" }, [" feat. ", ...cs.flatMap((c, k) => [k ? ", " : "", el("a", { href: `#estruturas/${c.id}`, text: c.inst.nome })])]);
   }
 
   // ---------- capas ----------
@@ -39,43 +53,41 @@
     return m;
   }
 
-  // ---------- barra lateral ----------
+  // a capa das seções sem faixa própria: uma marca de texto no lugar do mosaico
+  const capaTexto = (t, extra = "") => el("span", { class: `capa capa-texto ${extra}`, "aria-hidden": "true", text: t });
 
-  function desenharLateral(atual, instAtual) {
-    $("#instrumentos-nav").replaceChildren(...INSTS.map((i) => el("a", { class: "album-mini", href: `#instrumentos/${i.id}`, "aria-current": String(i.id === instAtual) }, [
-      window.PaginaInstrumento.glifo(i.id, "mini-48"),
-      el("span", {}, [el("b", { text: i.nome }), el("small", { text: i.frase })]),
-    ])));
-    $("#albuns").replaceChildren(...ALBUNS.map((a) => el("a", { class: "album-mini", href: `#${a.id}`, "aria-current": String(a.id === atual) }, [
-      capaAlbum(a, "mini-48"),
-      el("span", {}, [el("b", { text: a.titulo }),
-        el("small", { text: a.faixas.length ? nFaixas(a.faixas.length) : `${a.em_producao.length} em produção` })]),
-    ])));
-    if (instAtual) document.querySelector('#biblioteca [data-mostra="instrumentos-nav"]').click();   // na página de um instrumento, a lista dele
+  // ---------- barra lateral: as seções na ordem do mapa ----------
+
+  function desenharLateral(atual) {
+    const linha = (id, capa, titulo, sub) => el("a", { class: "album-mini", href: `#${id}`, "aria-current": String(id === atual) }, [
+      capa, el("span", {}, [el("b", { text: titulo }), el("small", { text: sub })])]);
+    $("#secoes").replaceChildren(
+      ...(VIDEOS.length ? [linha("conceitos", capaTexto("▶", "mini-48"), CONC.titulo, `${VIDEOS.length} ${VIDEOS.length === 1 ? "vídeo" : "vídeos"}`)] : []),
+      linha("fundamentos", capaTexto("n", "mini-48"), "Fundamentos", `glossário, ${FUND.grupos.reduce((t, g) => t + g.termos.length, 0)} termos`),
+      el("p", { class: "lateral-titulo", text: "Playlists" }),
+      ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length))),
+      el("p", { class: "lateral-titulo", text: "Algoritmos e estruturas" }),
+      linha("algoritmos-e-estruturas", window.PaginaInstrumento.glifo("vetor", "mini-48"), "Algoritmos e estruturas", `${G.length} algoritmos, ${INSTS.length} estruturas`),
+    );
   }
 
-  // ---------- páginas ----------
+  // ---------- cartões e prateleiras (a home e o "toca em" das estruturas) ----------
 
-  // ---------- cartões e prateleiras (a home e o "toca em" dos instrumentos) ----------
-
-  // a fileira curada do topo da home: um caminho curto para quem chega
-  const COMECE = ["busca-sequencial", "busca-binaria", "bubble-sort", "merge-sort", "k-means"];
-
-  function cartaoFaixa(f) {
+  function cartaoFaixa(f, p) {
     const play = el("button", { type: "button", class: "cartao-play", "aria-label": `Tocar ${f.nome}`, text: "▶" });
-    play.addEventListener("click", () => tocar(f));
+    play.addEventListener("click", () => tocar(f, p));
     return el("div", { class: "cartao", "data-id": f.id }, [
       el("span", { class: "cartao-capa" }, [capaFaixa(f), play]),
-      el("a", { class: "cartao-link", href: rotaFaixa(f), text: f.nome }),
+      el("a", { class: "cartao-link", href: rotaFaixa(f, p), text: f.nome }),
       el("small", {}, [el("span", { class: "o", text: f.tempo.notacao }), featTexto(f) ? ` · ${featTexto(f)}` : ""]),
     ]);
   }
 
-  function cartaoProducao(p) {
-    return el("div", { class: "cartao producao" }, [
-      el("span", { class: "cartao-capa" }, el("span", { class: "capa vazia" })),
-      el("b", { text: p.nome }),
-      el("small", {}, [el("span", { class: "o", text: p.tempo }), " · em produção"]),
+  function cartaoVideo(v) {
+    return el("div", { class: "cartao" }, [
+      el("span", { class: "cartao-capa" }, el("video", { class: "capa", src: v.video, controls: true, preload: "metadata" })),
+      el("b", { text: `${v.n}. ${v.titulo}` }),
+      el("small", { text: v.resumo }),
     ]);
   }
 
@@ -97,73 +109,130 @@
     ]);
   }
 
-  let filtroHome = "tudo";               // vale só nesta visita
-
-  function inicio() {
-    const comece = COMECE.map((id) => G.find((f) => f.id === id)).filter(Boolean);
-    const raiz = el("div", { class: "inicio", "data-filtro": filtroHome });
-    const chips = [["tudo", "Tudo"], ["faixas", "Faixas"], ["instrumentos", "Instrumentos"]].map(([v, rot]) => {
-      const b = el("button", { type: "button", class: "chip", "aria-pressed": String(v === filtroHome), text: rot });
-      b.addEventListener("click", () => {
-        filtroHome = raiz.dataset.filtro = v;
-        chips.forEach((c) => c.setAttribute("aria-pressed", String(c === b)));
-      });
-      return b;
-    });
-    raiz.append(
-      el("h1", { class: "so-leitor", text: "É complexo, baby?" }),
-      el("div", { class: "chips", role: "group", "aria-label": "Mostrar" }, chips),
-      ...[
-        comece.length && prateleira("Comece por aqui", null, "Duas buscas, duas ordenações e um agrupamento: um caminho curto para pegar o jeito.", comece.map(cartaoFaixa), "de-faixas destaque"),
-        ...ALBUNS.map((a) => prateleira(a.titulo, `#${a.id}`, a.frase, [...a.faixas.map(cartaoFaixa), ...a.em_producao.map(cartaoProducao)], "de-faixas")),
-        INSTS.length && prateleira("Instrumentos", "#instrumentos", "As estruturas de dados que as faixas tocam.", INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento)), "de-instrumentos"),
-      ].filter(Boolean),
-    );
-    return raiz;
+  // os fundamentos na home: os termos de um grupo, como fichas pequenas
+  function fichasTermos(g) {
+    return el("ul", { class: "termos-curtos" }, g.termos.map((t) => el("li", {}, [el("b", { text: t.termo }), " ", t.linha])));
   }
 
+  function inicio() {
+    return el("div", { class: "inicio" }, [
+      el("header", { class: "apresenta" }, [
+        el("h1", { text: NOME }),
+        el("p", { text: "Algoritmos tocando ao vivo, com cada passo contado e conferido no R. Cada playlist é um problema, e cada faixa um jeito de resolvê-lo." }),
+      ]),
+      VIDEOS.length ? prateleira(CONC.titulo, "#conceitos", CONC.frase, VIDEOS.map(cartaoVideo), "destaque") : null,
+      el("section", { class: "prateleira" }, [
+        el("header", {}, [el("div", {}, [el("h2", {}, el("a", { href: "#fundamentos", text: "Fundamentos" })), el("p", { text: FUND.frase })]),
+          el("div", { class: "prateleira-acoes" }, el("a", { class: "mostrar-tudo", href: "#fundamentos", text: "Mostrar tudo" }))]),
+        fichasTermos({ termos: FUND.grupos.flatMap((g) => g.termos).filter((t) => ["algoritmo", "n", "passo", "O(·)", "memória extra", "melhor, pior e caso médio"].includes(t.termo)) }),
+      ]),
+      ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), p.gerais ? "gerais" : "")),
+      prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
+        INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
+      rodape(),
+    ]);
+  }
+
+  // quem fez e como foi medido: no fim da home e das seções
+  function rodape() {
+    return el("footer", { class: "autoria", html:
+      'Pedro Mambelli · Estatística UFLA · conferido no R · <a href="https://github.com/uaipedro/big-o-player">código</a>' });
+  }
+
+  // a playlist: as faixas agrupadas pela subcategoria (o jeito de resolver); em Problemas gerais, uma por problema
   function album(a) {
     const total = a.faixas.reduce((t, f) => t + duracao(f), 0);
     // uma notação longa ("O(h), h de log n a n") quebra só entre as partes, nunca dentro de um O(·)
     const notacao = (t) => t.split(/(?<=,|·) | (?=por |·)/).flatMap((pedaco, i) => (i ? [" ", el("span", { text: pedaco })] : [el("span", { text: pedaco })]));
-    const linhas = a.faixas.map((f, i) => {
-      const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
-        el("td", { class: "n", text: String(i + 1) }),
-        el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
-          el("div", {}, [el("a", { href: rotaFaixa(f), text: f.nome }), feat(f), el("small", { text: f.objetivo })])])),
-        el("td", { class: "o" }, notacao(f.tempo.notacao)),
-        el("td", { class: "o esconde-estreito" }, notacao(f.memoria.notacao)),
-        el("td", { class: "o esconde-estreito", text: `M = ${f.medido.ciclomatica.M}` }),
-        el("td", { class: "dur", text: relogio(duracao(f)) }),
-      ]);
-      tr.addEventListener("click", (e) => { if (!e.target.closest("a")) tocar(f, a); });
-      return tr;
-    });
-    const prod = a.em_producao.map((p, i) => el("tr", { class: "producao" }, [
-      el("td", { class: "n", text: String(a.faixas.length + i + 1) }),
-      el("td", {}, el("div", { class: "faixa" }, [el("span", { class: "capa vazia mini-48" }), el("div", {}, [el("span", { text: p.nome }), el("small", { text: "em produção" })])])),
-      el("td", { class: "o" }, notacao(p.tempo)),
-      el("td", { class: "o esconde-estreito" }, notacao(p.memoria)),
-      el("td", { class: "o esconde-estreito", text: "—" }),
-      el("td", { class: "dur", text: "—" }),
+    let i = 0;
+    const corpos = a.subcategorias.map((s) => el("tbody", {}, [
+      el("tr", { class: "subcategoria" }, el("th", { colspan: "5", scope: "rowgroup", text: s.titulo })),
+      ...s.faixas.map((f) => {
+        const tr = el("tr", { class: "tocavel", "data-id": f.id }, [
+          el("td", { class: "n", text: String(++i) }),
+          el("td", {}, el("div", { class: "faixa" }, [capaFaixa(f, "mini-48"),
+            el("div", {}, [el("a", { href: rotaFaixa(f, a), text: f.nome }), feat(f), el("small", { text: f.objetivo })])])),
+          el("td", { class: "o" }, notacao(f.tempo.notacao)),
+          el("td", { class: "o esconde-estreito" }, notacao(f.memoria.notacao)),
+          el("td", { class: "dur", text: relogio(duracao(f)) }),
+        ]);
+        tr.addEventListener("click", (e) => { if (!e.target.closest("a")) tocar(f, a); });
+        return tr;
+      }),
     ]));
-    let botao = null;
-    if (a.faixas.length) {
-      botao = el("button", { type: "button", class: "botao-tocar", text: "▶ Tocar o álbum" });
-      botao.addEventListener("click", () => tocar(a.faixas[0], a));
-    }
+    const botao = el("button", { type: "button", class: "botao-tocar", text: "▶ Tocar a playlist" });
+    botao.addEventListener("click", () => tocar(a.faixas[0], a));
     return el("div", {}, [
       el("header", { class: "cabeca" }, [capaAlbum(a), el("div", {}, [
-        el("span", { class: "rotulo", text: "álbum" }),
+        el("span", { class: "rotulo", text: a.gerais ? "galeria" : "playlist" }),
         el("h1", { text: a.titulo }),
         el("p", { text: a.frase }),
-        el("div", { class: "acoes" }, [botao, el("span", { text: a.faixas.length ? `${nFaixas(a.faixas.length)}, ${relogio(total)}` : "nenhuma faixa pronta ainda" })]),
+        el("div", { class: "acoes" }, [botao, el("span", { text: `${nFaixas(a.faixas.length)}, ${relogio(total)}` })]),
       ])]),
       el("table", { class: "faixas" }, [
-        el("thead", {}, el("tr", {}, ["#", "faixa", "tempo", "memória", "caminhos", "duração"].map((t, i) =>
-          el("th", { class: i === 3 || i === 4 ? "esconde-estreito" : i === 5 ? "dur" : "", text: t })))),
-        el("tbody", {}, [...linhas, ...prod]),
+        el("thead", {}, el("tr", {}, ["#", "faixa", "tempo", "memória", "duração"].map((t, k) =>
+          el("th", { class: k === 3 ? "esconde-estreito" : k === 4 ? "dur" : "", text: t })))),
+        ...corpos,
       ]),
+    ]);
+  }
+
+  // ---------- fundamentos: o glossário rápido ----------
+
+  function fundamentos() {
+    const ver = (v) => {
+      if (v.faixa && porAlg[v.faixa]) return el("a", { href: rotaFaixa(porAlg[v.faixa]), text: porAlg[v.faixa].nome });
+      const inst = v.estrutura && INSTS.find((x) => x.id === v.estrutura);
+      return inst ? el("a", { href: `#estruturas/${inst.id}`, text: inst.nome }) : null;
+    };
+    return el("div", { class: "fundamentos" }, [
+      el("header", { class: "cabeca" }, [el("div", {}, [
+        el("span", { class: "rotulo", text: "glossário" }),
+        el("h1", { text: "Fundamentos" }),
+        el("p", { text: FUND.frase }),
+      ])]),
+      ...FUND.grupos.map((g) => el("section", { class: "glossario" }, [
+        el("h2", { text: g.titulo }),
+        el("dl", {}, g.termos.flatMap((t) => [
+          el("dt", { id: `termo-${t.termo.replace(/[^\p{L}\p{N}]+/gu, "-")}`, text: t.termo }),
+          el("dd", {}, [t.linha, t.ver ? el("span", { class: "ver" }, [" ", ver(t.ver)]) : null]),
+        ])),
+      ])),
+      FUND.credito ? el("p", { class: "nota-fim", text: FUND.credito }) : null,
+      rodape(),
+    ]);
+  }
+
+  // ---------- conceitos importantes: os vídeos (só com vídeo pronto) ----------
+
+  function conceitos() {
+    return el("div", {}, [
+      el("header", { class: "cabeca" }, [el("div", {}, [
+        el("span", { class: "rotulo", text: "vídeos" }),
+        el("h1", { text: CONC.titulo }),
+        el("p", { text: CONC.frase }),
+      ])]),
+      el("div", { class: "estante" }, VIDEOS.map(cartaoVideo)),
+    ]);
+  }
+
+  // ---------- algoritmos e estruturas: as páginas, sem a ordem das playlists ----------
+
+  function algoritmosEEstruturas() {
+    const porNome = [...G].sort((p, q) => p.nome.localeCompare(q.nome, "pt-BR"));
+    return el("div", {}, [
+      el("header", { class: "cabeca" }, [el("div", {}, [
+        el("span", { class: "rotulo", text: "referência" }),
+        el("h1", { text: "Algoritmos e estruturas" }),
+        el("p", { text: "Cada página com a simulação ao vivo e o custo medido. As estruturas são o que as faixas tocam." }),
+      ])]),
+      el("h2", { class: "estante-titulo", id: "estruturas", text: "Estruturas" }),
+      el("div", { class: "estante" }, INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
+      el("h2", { class: "estante-titulo", text: "Algoritmos" }),
+      el("ul", { class: "indice-algoritmos" }, porNome.map((f) => el("li", {}, [
+        el("a", { href: rotaFaixa(f), text: f.nome }), " ", el("span", { class: "o", text: f.tempo.notacao }),
+        el("small", { text: casaDe(f).titulo }),
+      ]))),
     ]);
   }
 
@@ -220,8 +289,8 @@
     return el("div", { class: "pseudo", role: "figure", "aria-label": "Pseudocódigo em português", "data-faixa": f.id }, ol);
   }
 
-  function encarte(f) {
-    const a = albumDe(f), ex = f.exemplo, m = f.medido, c = m.ciclomatica, cf = f.conferencia, p = f.pseudocodigo;
+  function encarte(f, a) {
+    const ex = f.exemplo, m = f.medido, c = m.ciclomatica, cf = f.conferencia, p = f.pseudocodigo;
     const ordena = m.tempo.tipo === "ordenacao", casos = !!m.tempo.series;
     const entrada = ENCARTE[m.tempo.tipo] ? ENCARTE[m.tempo.tipo].entrada : ordena ? "números" : "pontos";
     const gr = f.graficos || {};
@@ -254,7 +323,7 @@
 
     // abrir a faixa é ler a letra: o pseudocódigo vem logo abaixo do título; a ficha técnica desce
     const conteudo = el("div", {}, [
-      el("a", { class: "voltar", href: `#${a.id}`, text: `álbum ${a.titulo}` }),
+      el("a", { class: "voltar", href: `#${a.id}`, text: `${a.gerais ? "galeria" : "playlist"} ${a.titulo}` }),
       el("div", { class: "encarte-topo" }, [capa, el("div", { class: "encarte-titulo" }, [
         el("h1", { text: f.nome }),
         creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
@@ -351,7 +420,7 @@
           <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
           <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
           <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
-          ${creditos(f).length ? `<dt>instrumentos</dt><dd>${creditos(f).map((c) => `<a href="#instrumentos/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
+          ${creditos(f).length ? `<dt>estruturas</dt><dd>${creditos(f).map((c) => `<a href="#estruturas/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
           <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
           <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
           <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
@@ -407,32 +476,37 @@
   // ---------- rotas ----------
 
   let redesenhar = null, paginaInst = null;
-  const ctxInstrumento = { faixas: G, rotaFaixa, feat, tocar: (f) => tocar(f), cartao: cartaoFaixa, prateleira };
+  const ctxInstrumento = { faixas: G, rotaFaixa, feat, tocar: (f) => tocar(f), cartao: (f) => cartaoFaixa(f), prateleira };
 
   function rota() {
     let h = "";
     try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) { h = ""; }   // hash malformado: volta ao início
-    const velho = G.find((f) => f.id === h);          // links antigos: #k-means
-    if (velho) { location.replace(rotaFaixa(velho)); return; }
-    const [idAlbum, idFaixa] = h.split("/");
-    const a = ALBUNS.find((x) => x.id === idAlbum);
-    const f = a && idFaixa ? a.faixas.find((x) => x.id === idFaixa) : null;
+    const [id, sub] = h.split("/");
+    const velho = G.find((f) => f.id === id) || (sub && !PLAYLISTS.some((p) => p.id === id) && G.find((f) => f.id === sub));
+    if (velho && id !== "estruturas") { location.replace(rotaFaixa(velho)); return; }   // links antigos: #k-means, #estatistica/k-means
+    if (id === "instrumentos" && sub) { location.replace(`#estruturas/${sub}`); return; }
+    if (ANTIGOS[id]) { location.replace(`#${ANTIGOS[id]}`); return; }
+    const a = PLAYLISTS.find((x) => x.id === id);
+    const f = a && sub ? a.faixas.find((x) => x.id === sub) : null;
+    const inst = id === "estruturas" && sub ? INSTS.find((x) => x.id === sub) : null;
     const main = $("#conteudo");
     redesenhar = null;
     if (paginaInst) { paginaInst.parar(); paginaInst = null; }   // a demo para; a faixa tocando, não
-    const inst = idAlbum === "instrumentos" && idFaixa ? INSTS.find((x) => x.id === idFaixa) : null;
-    if (f) { main.replaceChildren(encarte(f)); document.title = `${f.nome} · É complexo, baby?`; }
-    else if (a) { main.replaceChildren(album(a)); document.title = `${a.titulo} · É complexo, baby?`; }
+    let titulo = null, atual = a ? a.id : id;
+    if (f) { main.replaceChildren(encarte(f, a)); titulo = f.nome; }
+    else if (a) { main.replaceChildren(album(a)); titulo = a.titulo; }
     else if (inst) {
       paginaInst = window.PaginaInstrumento.pagina(inst, ctxInstrumento);
       main.replaceChildren(paginaInst.el);
       redesenhar = paginaInst.redesenhar;
-      document.title = `${inst.nome} · instrumentos · É complexo, baby?`;
-    } else if (idAlbum === "instrumentos") {
-      main.replaceChildren(window.PaginaInstrumento.indice(INSTS, ctxInstrumento));
-      document.title = "Instrumentos · É complexo, baby?";
-    } else { main.replaceChildren(inicio()); document.title = "É complexo, baby?"; }
-    desenharLateral(a ? a.id : null, inst ? inst.id : null);
+      titulo = `${inst.nome} · estruturas`;
+      atual = "algoritmos-e-estruturas";
+    } else if (id === "algoritmos-e-estruturas" || id === "estruturas") { main.replaceChildren(algoritmosEEstruturas()); titulo = "Algoritmos e estruturas"; atual = "algoritmos-e-estruturas"; }
+    else if (id === "fundamentos") { main.replaceChildren(fundamentos()); titulo = "Fundamentos"; }
+    else if (id === "conceitos" && VIDEOS.length) { main.replaceChildren(conceitos()); titulo = CONC.titulo; }
+    else main.replaceChildren(inicio());
+    document.title = titulo ? `${titulo} · ${NOME}` : NOME;
+    desenharLateral(atual);
     if (redesenhar) redesenhar();
     marcarTocando();
     window.scrollTo(0, 0);
@@ -447,7 +521,7 @@
   const botaoTocar = $("#tocar"), trilho = $("#trilho");
   const objetivoPalco = $("#palco-objetivo");
   let objetivoDe = null, objetivoAte = 0;
-  let faixa = null, fila = [], sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
+  let faixa = null, fila = [], tocandoEm = null, sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
   let accelerando = false;              // o ritmo que acelera; vale para todas as faixas, só nesta visita
   let pos = null, arrasto = null, esperaProxima = null;
   const cfgs = {};                      // a entrada escolhida em cada faixa
@@ -539,7 +613,8 @@
   }
 
   function tocar(f, a) {
-    fila = (a || albumDe(f)).faixas;
+    tocandoEm = a || casaDe(f);
+    fila = tocandoEm.faixas;
     clearTimeout(esperaProxima);
     if (!faixa || faixa.id !== f.id) {
       faixa = f;
@@ -565,7 +640,7 @@
     const i = fila.indexOf(faixa) + passo;
     if (i >= 0 && i < fila.length) {
       const grande = palco.dataset.modo === "grande";
-      tocar(fila[i]);
+      tocar(fila[i], tocandoEm);
       if (!grande) modo("mini");                    // quem está lendo continua lendo
     }
   }
@@ -576,7 +651,7 @@
       u = Math.min(sim.total, u + (agora - ultimoQuadro) / 1000 * sim.ritmo * vel);
       if (u >= sim.total) {
         play(false);
-        esperaProxima = setTimeout(() => pular(1), 1500);   // o álbum segue tocando
+        esperaProxima = setTimeout(() => pular(1), 1500);   // a playlist segue tocando
       }
       pintar();
     }
@@ -662,11 +737,11 @@
   }
 
   function atualizarBarra() {
-    const a = albumDe(faixa);
+    const a = tocandoEm;
     $("#agora-capa").replaceChildren(el("img", { src: faixa.poster, alt: "" }));
     $("#agora-nome").replaceChildren(faixa.nome, featTexto(faixa) ? el("span", { class: "feat", text: ` ${featTexto(faixa)}` }) : "");
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
-    $("#agora").href = rotaFaixa(faixa);
+    $("#agora").href = rotaFaixa(faixa, a);
     $("#palco-titulo").replaceChildren(faixa.nome, feat(faixa) || "", ` · ${a.titulo}`);
     $("#palco-fluxo").hidden = !faixa.pseudocodigo;
     objetivoPalco.textContent = faixa.objetivo || "";
@@ -864,15 +939,6 @@
     espera = setTimeout(() => { if (redesenhar) redesenhar(); prenderMini(); pintar(); }, 120);
   });
   window.addEventListener("hashchange", rota);
-
-  // Biblioteca: alterna a lista de álbuns e a de instrumentos
-  const chipsBib = document.querySelectorAll("#biblioteca .chip");
-  chipsBib.forEach((b) => b.addEventListener("click", () => {
-    chipsBib.forEach((c) => {
-      c.setAttribute("aria-pressed", String(c === b));
-      $(`#${c.dataset.mostra}`).hidden = c !== b;
-    });
-  }));
 
   if (calmo) document.querySelector(".cursor").style.display = "none";
   habilitar();

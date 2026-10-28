@@ -50,7 +50,7 @@ code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); pa
 }
 .marca { display: block; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; text-decoration: none; margin: 0 0 30px; }
 .cursor { display: inline-block; width: 0.5em; height: 0.95em; margin-left: 2px; vertical-align: -0.12em; background: var(--verde); }
-.lateral-titulo { margin: 0 0 10px; font-size: 0.78rem; color: var(--cinza); }
+.lateral-titulo { margin: 22px 0 8px; font-size: 0.78rem; color: var(--cinza); }
 .album-mini { display: flex; gap: 12px; align-items: center; padding: 7px; margin: 0 -7px 4px; border-radius: 4px; text-decoration: none; }
 .album-mini:hover { background: #ebedf0; }
 .album-mini[aria-current="true"] { background: var(--papel); box-shadow: inset 0 0 0 1px var(--linha); }
@@ -70,15 +70,40 @@ main:focus { outline: none; }
 
 /* ---------- início ---------- */
 
-/* chips: filtro da home e abas da Biblioteca */
+/* chips */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { font: inherit; font-size: 0.82rem; color: var(--tinta); background: var(--papel); border: 1px solid var(--linha); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
 .chip:hover { border-color: var(--cinza-claro); }
 .chip[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--papel); }
-#biblioteca { margin: 0 0 14px; }
 
 /* prateleiras: título, "Mostrar tudo" e uma fileira que rola na horizontal */
-.inicio > .chips { margin: 0 0 8px; }
+/* a home abre dizendo o que é o site; a capa de texto marca as seções sem faixa própria */
+.apresenta h1 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.04em; line-height: 1; font-weight: 700; }
+.apresenta p { margin: 10px 0 0; color: var(--cinza); max-width: 62ch; }
+.capa-texto { display: grid; place-items: center; background: var(--fundo); box-shadow: inset 0 0 0 1px var(--linha); font-weight: 700; color: var(--tinta); }
+.cabeca .capa-texto { font-size: 4rem; }
+.termos-curtos { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 10px 28px; font-size: 0.86rem; color: var(--cinza); }
+.termos-curtos b { color: var(--tinta); }
+.autoria { margin: 72px 0 0; padding: 18px 0 0; border-top: 1px solid var(--linha); font-size: 0.8rem; color: var(--cinza); }
+.autoria a { color: inherit; }
+
+/* fundamentos: o glossário em três grupos */
+.glossario { margin: 48px 0 0; }
+.glossario h2 { margin: 0 0 12px; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+.glossario dl { margin: 0; display: grid; grid-template-columns: minmax(10ch, 24ch) 1fr; border-top: 1px solid var(--linha); }
+.glossario dt, .glossario dd { margin: 0; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--linha); font-size: 0.9rem; }
+.glossario dt { font-weight: 600; }
+.glossario .ver { color: var(--cinza); font-size: 0.8rem; white-space: nowrap; }
+.glossario .ver::before { content: "→"; margin-right: 4px; }
+.nota-fim { margin: 40px 0 0; color: var(--cinza); font-size: 0.78rem; }
+
+/* algoritmos e estruturas: a lista dos algoritmos em ordem alfabética */
+.indice-algoritmos { list-style: none; margin: 20px 0 0; padding: 0; columns: 2 320px; column-gap: 40px; font-size: 0.9rem; }
+.indice-algoritmos li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--linha); }
+.indice-algoritmos a { font-weight: 600; text-decoration: none; }
+.indice-algoritmos a:hover { text-decoration: underline; }
+.indice-algoritmos .o { color: var(--verde-texto); font-weight: 600; font-size: 0.82rem; }
+.indice-algoritmos small { display: block; color: var(--cinza); font-size: 0.76rem; }
 .prateleira { margin: 40px 0 0; }
 .prateleira > header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
 .prateleira h2 { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -94,8 +119,6 @@ main:focus { outline: none; }
   grid-auto-columns: 176px; gap: 18px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin;
 }
 .fileira > li { scroll-snap-align: start; min-width: 0; }
-.inicio[data-filtro="faixas"] .de-instrumentos,
-.inicio[data-filtro="instrumentos"] .de-faixas { display: none; }
 
 /* cartão: capa com play que aparece ao passar o mouse; o nome cobre o cartão inteiro */
 .cartao { position: relative; display: block; padding: 10px; margin: -10px; border-radius: 6px; text-decoration: none; }
@@ -155,6 +178,7 @@ main:focus { outline: none; }
 .faixas .faixa a:hover { text-decoration: underline; }
 .faixas .faixa small { display: block; color: var(--cinza); font-size: 0.78rem; }
 .faixas .o { color: var(--verde-texto); font-weight: 600; }
+.faixas tr.subcategoria th { padding: 22px 12px 8px; font-size: 0.82rem; font-weight: 600; color: var(--tinta); border-bottom: 1px solid var(--linha); }
 .faixas .o span { white-space: nowrap; }
 .faixas .dur { color: var(--cinza); font-variant-numeric: tabular-nums; text-align: right; }
 .faixas tr.producao td { color: var(--cinza-claro); }
@@ -505,8 +529,7 @@ svg text { font-family: var(--mono); }
   .lateral { position: static; height: auto; padding: 16px 16px 10px; border-right: 0; border-bottom: 1px solid var(--linha); }
   .marca { margin: 0 0 12px; }
   .lateral-titulo { display: none; }
-  #albuns, #instrumentos-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-  #instrumentos-nav { margin-top: 6px; }
+  #secoes { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .album-mini { margin: 0; flex: none; padding: 5px 10px 5px 5px; background: var(--papel); box-shadow: inset 0 0 0 1px var(--linha); }
   .album-mini .capa { width: 30px; height: 30px; }
   .album-mini small { display: none; }
@@ -520,7 +543,8 @@ svg text { font-family: var(--mono); }
   .prateleira { margin-top: 32px; }
   .prateleira h2 { font-size: 1.1rem; }
   .fileira, .destaque .fileira { grid-auto-columns: 142px; gap: 14px; }
-  .inicio > .chips { margin-top: 4px; }
+  .glossario dl { grid-template-columns: 1fr; }
+  .glossario dt { padding-bottom: 0; border-bottom: 0; }
   .demo { grid-template-columns: 1fr; min-height: 0; }
   .demo-tela { padding: 12px; }
   .demo-figura { min-height: 160px; }
