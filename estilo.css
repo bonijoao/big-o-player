@@ -111,7 +111,6 @@ main:focus { outline: none; }
 
 /* prateleiras: título, "Mostrar tudo" e uma fileira que rola na horizontal */
 /* a home abre com uma linha só, e logo as prateleiras; a capa de texto marca as seções sem faixa própria */
-.apresenta { margin: 0; color: var(--cinza); font-size: 0.86rem; max-width: 70ch; }
 .inicio .prateleira:first-of-type { margin-top: 20px; }
 .capa-texto { display: grid; place-items: center; background: var(--fundo); box-shadow: inset 0 0 0 1px var(--linha); font-weight: 700; color: var(--tinta); }
 .cabeca .capa-texto { font-size: 4rem; }
@@ -137,7 +136,7 @@ main:focus { outline: none; }
 .seta { font-size: 20px; border: 1px solid var(--linha); width: 30px; height: 30px; }
 .fileira {
   list-style: none; margin: 4px -10px 0; padding: 10px; display: grid; grid-auto-flow: column;
-  grid-auto-columns: 176px; gap: 18px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin;
+  grid-auto-columns: 176px; gap: 18px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
 }
 .fileira > li { scroll-snap-align: start; min-width: 0; }
 
@@ -625,7 +624,6 @@ svg text { font-family: var(--mono); }
   .prateleira { margin-top: 32px; }
   .prateleira h2 { font-size: 1.1rem; }
   .fileira, .destaque .fileira { grid-auto-columns: 142px; gap: 14px; }
-  .apresenta { display: none; }   /* no celular, direto às prateleiras */
   .demo { grid-template-columns: 1fr; min-height: 0; }
   .demo-tela { padding: 12px; }
   .demo-figura { min-height: 160px; }
@@ -729,3 +727,43 @@ svg text { font-family: var(--mono); }
 }
 /* o crédito "feat." é rótulo, não título: fica na mono, mesmo dentro de um título */
 .feat, .feat a, .agora-texto .feat, .faixas .faixa .feat a { font-family: var(--mono); font-weight: 400; letter-spacing: 0; }
+
+/* ---------- a home: a abertura, a comparação ao vivo e a grade das playlists ---------- */
+
+.fileira::-webkit-scrollbar { display: none; }   /* rola com o trackpad, as setas e o toque; sem a barra aparente */
+.abertura h1 { margin: 8px 0 0; font-family: var(--titulo); font-weight: 400; font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 0.95; letter-spacing: -0.03em; max-width: 14ch; }
+.abertura p { margin: 16px 0 0; color: var(--cinza); max-width: 60ch; }
+
+.comparacao { margin: 36px 0 0; }
+.comparacao-palcos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.comparacao-lado { margin: 0; border: 1px solid var(--linha); border-radius: 6px; overflow: hidden; background: var(--papel); }
+.comparacao-tela { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.comparacao-lado figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--linha); }
+.comparacao-lado strong { font-family: var(--titulo); font-weight: 400; }
+.comparacao-lado .o { color: var(--verde-texto); font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
+.comparacao-conta { font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+.comparacao-conta.fim { color: var(--verde-texto); }
+.tocar-comparacao { margin: 20px 0 0; font: inherit; font-weight: 600; font-size: 1rem; padding: 14px 26px; border: 0; border-radius: 999px; background: var(--tinta); color: var(--papel); cursor: pointer; }
+.tocar-comparacao:hover { background: #000; }
+
+.grade-playlists { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; margin: 64px 0 0; }
+.cartao-playlist { display: block; text-decoration: none; }
+.cartao-playlist .capa { width: 100%; aspect-ratio: 1; box-shadow: 0 1px 0 var(--linha); }
+.cartao-playlist .mosaico { gap: 0; }
+.cartao-playlist:hover .capa { outline: 2px solid var(--tinta); outline-offset: 3px; }
+.cartao-playlist b { display: block; margin: 12px 0 0; font-family: var(--titulo); font-weight: 400; font-size: 1.05rem; line-height: 1.2; }
+.cartao-playlist b::before { content: ""; display: inline-block; width: 0.7em; height: 0.7em; margin-right: 0.45em; background: var(--cor); box-shadow: inset 0 0 0 1px var(--tinta); vertical-align: 0.02em; }
+.cartao-playlist small { color: var(--cinza); font-size: 0.8rem; }
+
+/* os marcadores de cor ganham contorno de tinta: o creme de Calcular Fibonacci não some no papel */
+.faixas tr.subcategoria th::before, .prateleira[class*="cor-"] h2::before { box-shadow: inset 0 0 0 1px var(--tinta); }
+
+@media (max-width: 860px) {
+  .abertura h1 { font-size: 2.4rem; }
+  .comparacao { margin-top: 24px; }
+  .comparacao-palcos { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .comparacao-lado figcaption { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 12px; }
+  .comparacao-conta { font-size: 0.95rem; }
+  .grade-playlists { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 14px; margin-top: 40px; }
+  .cartao-playlist b { font-size: 0.95rem; }
+}

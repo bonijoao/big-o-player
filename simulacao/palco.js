@@ -2719,5 +2719,8 @@
     return papelLido;
   }
 
-  window.Palco = { criar, pintar, W, H };
+  // a comparação da home: as duas buscas num vetor e num alvo escolhidos de fora (o mesmo para as duas)
+  const busca = (faixa, vetor, alvo) => simBusca(faixa, vetor, alvo, false);
+
+  window.Palco = { criar, pintar, busca, W, H };
 })();

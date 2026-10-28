@@ -122,17 +122,89 @@
     ]);
   }
 
+  // a home: a abertura, a comparação tocando sozinha e a grade das playlists
   function inicio() {
     return el("div", { class: "inicio" }, [
-      // a home é só prateleiras, como a do Spotify
-      el("h1", { class: "so-leitor", text: NOME }),
-      el("p", { class: "apresenta", text: "Algoritmos tocando ao vivo, com cada passo contado. Cada playlist é um problema; cada faixa, um jeito de resolvê-lo." }),
+      el("header", { class: "abertura" }, [
+        el("h1", { text: "Algoritmos tocando ao vivo." }),
+        el("p", { text: "Cada playlist é um problema; cada faixa, um jeito de resolver. Toque duas e compare os passos." }),
+      ]),
+      comparacaoAoVivo(),
       ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), "destaque")),
-      ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), `${corDe(p)} ${p.gerais ? "gerais" : ""}`)),
+      el("section", { class: "grade-playlists", "aria-label": "Playlists" }, PLAYLISTS.map(cartaoPlaylist)),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
       rodape(),
     ]);
+  }
+
+  // o cartão de uma playlist na grade da home: a capa (o mosaico das capas novas, ou a primeira), o problema e quantas faixas
+  function cartaoPlaylist(p) {
+    const novas = p.faixas.filter((f) => f.capa);
+    const capa = novas.length >= 4 ? el("span", { class: "capa mosaico" }, novas.slice(0, 4).map((f) => imgCapa(f, false, 150)))
+      : el("span", { class: "capa" }, imgCapa(novas[0] || p.faixas[0], false, 300));
+    return el("a", { class: `cartao-playlist ${corDe(p)}`, href: `#${p.id}` }, [
+      capa,
+      el("b", { text: p.titulo }),
+      el("small", { text: nFaixas(p.faixas.length) }),
+    ]);
+  }
+
+  // ---------- a comparação da home: Busca sequencial × Busca binária, o mesmo vetor e o mesmo alvo ----------
+  // as duas tocam sozinhas, devagar e em loop, no motor dos palcos (Palco.busca + Palco.pintar), uma em cada canvas;
+  // param fora da tela e com a aba escondida; com movimento reduzido, mostram o quadro final, paradas
+  let comparacao = null;
+  function comparacaoAoVivo() {
+    const seq = porAlg.sequencial, bin = porAlg.binaria, casa = PLAYLISTS.find((p) => p.faixas.includes(seq));
+    if (!seq || !bin || !window.Palco.busca) return null;
+    const vetor = Array.from({ length: 24 }, (_, k) => 2 * k), alvo = vetor[18];   // ordenado (a binária precisa), o alvo perto do fim
+    const lados = [seq, bin].map((f) => {
+      const sim = window.Palco.busca(f, vetor, alvo);
+      const tela = el("canvas", { class: "comparacao-tela", role: "img", "aria-label": `${f.nome} procurando o ${alvo} em ${vetor.length} números` });
+      const conta = el("b", { class: "comparacao-conta" });
+      return { f, sim, tela, conta, el: el("figure", { class: "comparacao-lado" }, [tela, el("figcaption", {}, [
+        el("span", {}, [el("strong", { text: f.nome }), " ", el("span", { class: "o", text: f.tempo.notacao })]), conta])]) };
+    });
+    const botao = el("button", { type: "button", class: "tocar-comparacao", text: "▶ Tocar a comparação" });
+    // o palco tem um quadro só: o botão toca a playlist Encontrar um item a partir da sequencial (a binária vem em seguida)
+    botao.addEventListener("click", () => tocar(seq, casa));
+    const raiz = el("section", { class: "comparacao", "aria-label": "Busca sequencial e busca binária, lado a lado" }, [
+      el("div", { class: "comparacao-palcos" }, lados.map((l) => l.el)), botao]);
+
+    const VEL = 0.6, PAUSA = 2500;        // devagar; e a pausa no fim antes de recomeçar
+    let inicio = performance.now(), visivel = false, quadroId = null, fimEm = null, parouEm = null;
+    const pinta = (agora) => {
+      const t = (agora - inicio) / 1000;
+      let todas = true;
+      for (const l of lados) {
+        const u = calmo ? l.sim.total : Math.min(l.sim.total, t * l.sim.ritmo * VEL);
+        if (u < l.sim.total) todas = false;
+        window.Palco.pintar(l.tela, l.sim, u);
+        const n = l.sim.contagemEm(u), fim = u >= l.sim.total;
+        l.conta.textContent = `${n} ${n === 1 ? "comparação" : "comparações"}`;
+        l.conta.classList.toggle("fim", fim);
+      }
+      if (todas && fimEm === null) fimEm = agora;
+      if (fimEm !== null && agora - fimEm > PAUSA) { inicio = agora; fimEm = null; }
+    };
+    // parada, o relógio da comparação também para: ao voltar, ela segue de onde estava
+    const laco = (agora) => {
+      pinta(agora);
+      if (visivel && !document.hidden && !calmo) quadroId = requestAnimationFrame(laco);
+      else { quadroId = null; parouEm = agora; }
+    };
+    const liga = () => {
+      if (quadroId !== null || !visivel || document.hidden || calmo) return;
+      if (parouEm !== null) { const d = performance.now() - parouEm; inicio += d; if (fimEm !== null) fimEm += d; parouEm = null; }
+      quadroId = requestAnimationFrame(laco);
+    };
+    const io = new IntersectionObserver(([e]) => { visivel = e.isIntersecting; if (visivel) liga(); });
+    io.observe(raiz);
+    const aba = () => liga();
+    document.addEventListener("visibilitychange", aba);
+    requestAnimationFrame(() => pinta(performance.now()));   // o primeiro quadro (e o único, com movimento reduzido)
+    comparacao = { parar() { io.disconnect(); document.removeEventListener("visibilitychange", aba); if (quadroId) cancelAnimationFrame(quadroId); quadroId = null; visivel = false; } };
+    return raiz;
   }
 
   // quem fez e como foi medido: no fim da home e das seções
@@ -468,6 +540,7 @@
     const main = $("#conteudo");
     redesenhar = null;
     if (paginaInst) { paginaInst.parar(); paginaInst = null; }   // a demo para; a faixa tocando, não
+    if (comparacao) { comparacao.parar(); comparacao = null; }
     let titulo = null, atual = a ? a.id : id;
     if (f) { main.replaceChildren(encarte(f, a)); titulo = f.nome; }
     else if (a) { main.replaceChildren(album(a)); titulo = a.titulo; }
