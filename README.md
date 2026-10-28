@@ -1,9 +1,16 @@
-# É complexo, baby?
+# Big O Player
 
-Galeria de algoritmos com as contas à mostra, em forma de player de música: cada tema é um álbum, cada algoritmo uma faixa. Os 8 álbuns seguem os temas das ementas GES134 e GES135 da UFLA (`docs/plans/2026-10-21-catalogo.md`); as faixas ainda não produzidas aparecem como "em produção", com o `em_producao` do `albuns.json`. A faixa é uma simulação ao vivo, em JavaScript, no visual da skill `explainer-videos`: dá para embaralhar, mudar o tamanho e o tipo da entrada, a velocidade, andar passo a passo e ver, ao lado da animação, a linha do pseudocódigo que está rodando e as variáveis mudando a cada passo. O ritmo é constante (6 passos por segundo a 1×); o botão "accelerando" liga o ritmo que começa devagar e acelera. O pseudocódigo e o fluxograma ficam no encarte, como material de apoio. Cada faixa traz três medidas:
+Galeria de algoritmos com as contas à mostra, em forma de player de música: cada playlist é um problema (encontrar um item, ordenar uma lista…), e cada algoritmo é uma faixa, um jeito de resolvê-lo. O mapa do conteúdo está em `CONTENT_MAP.md`. O site tem quatro seções, nesta ordem:
+
+- **Conceitos importantes** (`conceitos.json`): os vídeos de entrada. A seção só aparece quando algum vídeo tem `"video"` (o caminho do arquivo); sem vídeo, nada é mostrado.
+- **Fundamentos** (`fundamentos.json`): o glossário rápido, uma linha por termo e onde ver cada um funcionando.
+- **Playlists** (`playlists.json`): as faixas agrupadas por problema, com as variações em subcategorias. Os problemas com uma faixa só ficam na galeria Problemas gerais (`"gerais": true`). Uma faixa pode morar em duas playlists; a rota dela usa a primeira. O `gerar.py` recusa faixa fora de qualquer playlist.
+- **Algoritmos e estruturas**: a página de cada faixa e de cada estrutura de dados (`#estruturas/<nome>`; no código, as estruturas ainda se chamam instrumentos).
+
+A faixa é uma simulação ao vivo, em JavaScript, no visual da skill `explainer-videos`: dá para embaralhar, mudar o tamanho e o tipo da entrada, a velocidade, andar passo a passo e ver, ao lado da animação, a linha do pseudocódigo que está rodando e as variáveis mudando a cada passo. O ritmo é constante (6 passos por segundo a 1×); o botão "accelerando" liga o ritmo que começa devagar e acelera. O pseudocódigo e o fluxograma ficam no encarte, como material de apoio. Cada faixa traz três medidas:
 
 - **tempo**: operações contadas rodando a implementação (não estimadas);
-- **memória**: pico de valores guardados além da entrada;
+- **memória**: pico de valores guardados além da entrada e da resposta;
 - **caminhos**: complexidade ciclomática da função, por duas contas que precisam bater (decisões + 1 e arestas − nós + 2 no grafo de fluxo).
 
 ## Ver
@@ -54,7 +61,13 @@ instrumentos.js        a página do instrumento: placa, demo ao vivo, tabela de 
 simulacao/algoritmos.js  os algoritmos em JS, contando como o Python, com a linha do pseudocódigo de cada evento
 simulacao/palco.js     a simulação: estado de cada instante, linha do tempo e desenho em canvas
 testes/conferir_js.mjs JS × Python nos mesmos vetores, textos, sorteios de clientes, grafos e amostras
-gerar.py               junta tudo em dados.js e roda o teste
+gerar.py               junta tudo em dados.js (faixas, estruturas, playlists, glossário e vídeos) e roda o teste
+playlists.json         as playlists por problema e a galeria Problemas gerais
+fundamentos.json       o glossário rápido dos Fundamentos
+conceitos.json         os vídeos de Conceitos importantes (desligados até existir o primeiro)
+motor/identidade.py    gera og.png (1200 × 630, para compartilhar) e icone.png
+_config.yml            o que o GitHub Pages não publica (bastidor: docs, testes, motor, .py, .R, .json)
+docs/redirecionamento/ o index.html que leva o endereço antigo (/eh-complexo-baby/) ao novo
 index.html, estilo.css, galeria.js
 docs/plans/            desenhos aprovados
 ```
@@ -91,17 +104,17 @@ As três faixas de árvore rodam sobre as árvores do instrumento. Os Percursos 
 
 As buscas em largura e em profundidade rodam sobre a `GrafoLista` (a lista de adjacência do Grafo), com a `FilaCircular` e a `Pilha`, num grafo em grade k × k (`motor/grade.py`) que sai do vértice 0. O `conferir.R` delas usa o igraph (`bfs()` e `dfs()`) para conferir a ordem de visita e as distâncias.
 
-## O álbum Primeiros passos
+## As faixas do antigo álbum Primeiros passos
 
 - **Máximo de um vetor** (`algoritmos/maximo/`): sempre n − 1 comparações; o encarte mostra também quantas vezes o maior troca (perto de ln n num vetor sorteado), conferido no R contra a soma harmônica.
-- **Multiplicação de matrizes** (`algoritmos/multiplicacao/`): os três laços sobre a Matriz do instrumento; n³ multiplicações e as n² casas de C. Confere com o `%*%`.
+- **Multiplicação de matrizes** (`algoritmos/multiplicacao/`): os três laços sobre a Matriz do instrumento; n³ multiplicações. A matriz C é a resposta e não conta como memória extra. Confere com o `%*%`.
 - **Fatorial recursivo** (`algoritmos/fatorial/`): a pilha de chamadas desce n níveis. Os fatoriais vão como texto no `dados.json`, e o JS usa BigInt (19! já passa de 2⁵³). Confere com o `factorial()`.
-- **Os três Fibonacci** (`algoritmos/fibrecursivo/`, `fibmemoria/`, `fibiterativo/`): a mesma unidade (somas) para os mesmos n, medida em `motor/fibonacci.py`; o gráfico de tempo de cada um traz os outros dois por trás (séries com `"fundo": true`). O com memória guarda as respostas no Dicionário com sondagem. O palco do recursivo desenha a árvore de chamadas inteira e vai até n = 15.
+- **Os três Fibonacci** (`algoritmos/fibrecursivo/`, `fibmemoria/`, `fibiterativo/`): a mesma unidade (somas) para os mesmos n, medida em `motor/fibonacci.py`; o gráfico de tempo de cada um traz os outros dois por trás (séries com `"fundo": true`). O com memória guarda as respostas num Vetor de n + 1 casas (a casa k é fib(k)), em Python, JS e R. O palco do recursivo desenha a árvore de chamadas inteira e vai até n = 15.
 - **Busca de padrão ingênua** (`algoritmos/padrao/`): a primeira estrofe da Canção do Exílio no palco, procurando "gorjeiam"; as curvas usam o Dom Casmurro, DNA sorteado e o pior caso ("aaa…ab"), com o segundo eixo m (`tempo.por_k`, o seletor do palco com o rótulo m). Confere com o `gregexpr()`.
 
 A Pilha repassa a pilha de chamadas do fatorial e dos dois Fibonacci recursivos, além do merge e do quick.
 
-## O álbum Dispersão
+## As faixas do antigo álbum Dispersão
 
 As quatro faixas rodam sobre o Dicionário (`instrumentos/dicionario/dicionario.py` e `Instrumentos.DicSondagem`/`DicEncadeamento` em JS):
 
@@ -109,7 +122,7 @@ As quatro faixas rodam sobre o Dicionário (`instrumentos/dicionario/dicionario.
 - **Achar repetidos** (`algoritmos/repetidos/`): o dicionário anima, e a versão com o vetor só conta, como o ingênuo da janela. O tempo conta as comparações entre valores nas duas. O `conferir.R` usa o `duplicated()`.
 - **Colisão por encadeamento e por sondagem linear** (`algoritmos/encadeamento/`, `algoritmos/sondagem/`): m fixo; o tempo conta as sondagens (casas olhadas). O encarte tem o gráfico × α (`tempo.alfa`, `graficoAlfa` em `graficos.js`) com as fórmulas de Knuth, e o total × m com α fixo. O `conferir.R` refaz as tabelas em R com casas sorteadas (`motor/colisao.R`) e confere as médias do R e do Python contra as fórmulas, com tolerância.
 
-## O álbum Estatística
+## As faixas do antigo álbum Estatística
 
 Cada faixa usa um conjunto embutido no R, exportado para CSV por um script na própria pasta (`trees.R`, `lakehuron.R`, `faithful.R`), e o `conferir.R` confere o resultado contra a função do R:
 

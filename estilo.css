@@ -94,7 +94,7 @@ main:focus { outline: none; }
 .glossario dt, .glossario dd { margin: 0; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--linha); font-size: 0.9rem; }
 .glossario dt { font-weight: 600; }
 .glossario .ver { color: var(--cinza); font-size: 0.8rem; white-space: nowrap; }
-.glossario .ver::before { content: "→"; margin-right: 4px; }
+.glossario .ver::before { content: "→"; margin: 0 2px 0 6px; }
 .nota-fim { margin: 40px 0 0; color: var(--cinza); font-size: 0.78rem; }
 
 /* algoritmos e estruturas: a lista dos algoritmos em ordem alfabética */
