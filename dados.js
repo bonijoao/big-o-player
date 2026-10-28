@@ -2333,6 +2333,13 @@ window.GALERIA = [
    "ano": "1202"
   },
   "poster": "algoritmos/fibrecursivo/fibrecursivo.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/fibrecursivo-240.webp",
+    "480": "capas/fibrecursivo-480.webp"
+   },
+   "arte": "capas/fibrecursivo-arte.webp"
+  },
   "exemplo": {
    "dados": "n = 10",
    "n": 10,
@@ -2677,6 +2684,13 @@ window.GALERIA = [
    "ano": "1968"
   },
   "poster": "algoritmos/fibmemoria/fibmemoria.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/fibmemoria-240.webp",
+    "480": "capas/fibmemoria-480.webp"
+   },
+   "arte": "capas/fibmemoria-arte.webp"
+  },
   "exemplo": {
    "dados": "n = 10",
    "n": 10,
@@ -3114,6 +3128,13 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/fibiterativo/fibiterativo.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/fibiterativo-240.webp",
+    "480": "capas/fibiterativo-480.webp"
+   },
+   "arte": "capas/fibiterativo-arte.webp"
+  },
   "exemplo": {
    "dados": "n = 10",
    "n": 10,
@@ -5766,6 +5787,13 @@ window.GALERIA = [
    "ano": "anterior aos computadores; John Mauchly discute uma variante em 1946, nas aulas da Moore School"
   },
   "poster": "algoritmos/insercao/insercao.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/insercao-240.webp",
+    "480": "capas/insercao-480.webp"
+   },
+   "arte": "capas/insercao-arte.webp"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
@@ -6384,6 +6412,13 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/selecao/selecao.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/selecao-240.webp",
+    "480": "capas/selecao-480.webp"
+   },
+   "arte": "capas/selecao-arte.webp"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
@@ -7997,6 +8032,13 @@ window.GALERIA = [
    "ano": "1959, publicado em 1961"
   },
   "poster": "algoritmos/rapida/rapida.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/rapida-240.webp",
+    "480": "capas/rapida-480.webp"
+   },
+   "arte": "capas/rapida-arte.webp"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
@@ -8730,6 +8772,13 @@ window.GALERIA = [
    "ano": "1964"
   },
   "poster": "algoritmos/heapsort/heapsort.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/heapsort-240.webp",
+    "480": "capas/heapsort-480.webp"
+   },
+   "arte": "capas/heapsort-arte.webp"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
@@ -10453,6 +10502,13 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/atendimento/atendimento.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/atendimento-240.webp",
+    "480": "capas/atendimento-480.webp"
+   },
+   "arte": "capas/atendimento-arte.webp"
+  },
   "exemplo": {
    "dados": "24 clientes sorteados com a semente 11: um chega a cada 1 a 5 minutos e é atendido em 1 a 5 minutos",
    "n": 24,
@@ -13273,6 +13329,13 @@ window.GALERIA = [
    "ano": "1960–1962"
   },
   "poster": "algoritmos/abb/abb.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/abb-240.webp",
+    "480": "capas/abb-480.webp"
+   },
+   "arte": "capas/abb-arte.webp"
+  },
   "exemplo": {
    "dados": "15 valores distintos de 10 a 99, embaralhados com a semente 7, postos numa árvore de busca comum e depois buscados um por um",
    "n": 15,
@@ -13840,6 +13903,13 @@ window.GALERIA = [
    "ano": "1962"
   },
   "poster": "algoritmos/avl/avl.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/avl-240.webp",
+    "480": "capas/avl-480.webp"
+   },
+   "arte": "capas/avl-arte.webp"
+  },
   "exemplo": {
    "dados": "15 valores distintos de 10 a 99, sorteados com a semente 7 e inseridos em ordem crescente numa AVL",
    "n": 15,
@@ -14590,6 +14660,13 @@ window.GALERIA = [
    "ano": "1964"
   },
   "poster": "algoritmos/prioridade/prioridade.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/prioridade-240.webp",
+    "480": "capas/prioridade-480.webp"
+   },
+   "arte": "capas/prioridade-arte.webp"
+  },
   "exemplo": {
    "dados": "24 pacientes sorteados com a semente 11: um chega a cada 1 a 3 minutos, é atendido em 2 a 4 minutos e tem gravidade de 1 (a mais urgente) a 5",
    "n": 24,
@@ -18802,6 +18879,13 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/palavras/palavras.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/palavras-240.webp",
+    "480": "capas/palavras-480.webp"
+   },
+   "arte": "capas/palavras-arte.webp"
+  },
   "exemplo": {
    "dados": "a Canção do Exílio, de Gonçalves Dias (114 palavras)",
    "n": 114,
@@ -19529,6 +19613,13 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/repetidos/repetidos.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/repetidos-240.webp",
+    "480": "capas/repetidos-480.webp"
+   },
+   "arte": "capas/repetidos-arte.webp"
+  },
   "exemplo": {
    "dados": "16 valores sorteados de 10 a 99 com a semente 10",
    "n": 16,
@@ -20157,6 +20248,13 @@ window.GALERIA = [
    "ano": "1953"
   },
   "poster": "algoritmos/encadeamento/encadeamento.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/encadeamento-240.webp",
+    "480": "capas/encadeamento-480.webp"
+   },
+   "arte": "capas/encadeamento-arte.webp"
+  },
   "exemplo": {
    "dados": "12 chaves sorteadas de 100 a 999 com a semente 3, numa tabela de 16 casas",
    "n": 12,
@@ -20960,6 +21058,13 @@ window.GALERIA = [
    "ano": "1954"
   },
   "poster": "algoritmos/sondagem/sondagem.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/sondagem-240.webp",
+    "480": "capas/sondagem-480.webp"
+   },
+   "arte": "capas/sondagem-arte.webp"
+  },
   "exemplo": {
    "dados": "12 chaves sorteadas de 100 a 999 com a semente 3, numa tabela de 16 casas",
    "n": 12,
@@ -23455,6 +23560,13 @@ window.GALERIA = [
    "ano": "1895; 1926"
   },
   "poster": "algoritmos/histograma/histograma.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/histograma-240.webp",
+    "480": "capas/histograma-480.webp"
+   },
+   "arte": "capas/histograma-arte.webp"
+  },
   "exemplo": {
    "dados": "faithful (R), duração de 272 erupções do Old Faithful, minutos",
    "n": 272,

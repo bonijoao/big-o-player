@@ -41,15 +41,23 @@
 
   // ---------- capas ----------
 
+  // a imagem da capa: a desenhada, quando existe (inteira, ou só a ilustração quando fica pequena); senão, o pôster
+  function imgCapa(f, pequena, largura = 240) {
+    if (!f.capa) return el("img", { src: f.poster, alt: "", loading: "lazy" });
+    if (pequena) return el("img", { src: f.capa.arte, alt: "", loading: "lazy" });
+    const i = f.capa.inteira;
+    return el("img", { src: i[240], srcset: `${i[240]} 240w, ${i[480]} 480w`, sizes: `${largura}px`, alt: "", loading: "lazy" });
+  }
+
   function capaFaixa(f, extra = "") {
-    return el("span", { class: `capa ${extra}` }, f ? el("img", { src: f.poster, alt: "", loading: "lazy" }) : null);
+    return el("span", { class: `capa ${extra}` }, f ? imgCapa(f, extra.includes("mini-48"), 220) : null);
   }
 
   function capaAlbum(a, extra = "") {
     const fs = a.faixas.slice(0, 4);
     if (!fs.length) return el("span", { class: `capa vazia ${extra}` });
     const m = el("span", { class: `capa mosaico ${fs.length < 4 ? "um" : ""} ${extra}` });
-    (fs.length < 4 ? fs.slice(0, 1) : fs).forEach((f) => m.append(el("img", { src: f.poster, alt: "", loading: "lazy" })));
+    (fs.length < 4 ? fs.slice(0, 1) : fs).forEach((f) => m.append(imgCapa(f, extra.includes("mini-48"), fs.length < 4 ? 232 : 116)));
     return m;
   }
 
@@ -713,7 +721,7 @@
 
   function atualizarBarra() {
     const a = tocandoEm;
-    $("#agora-capa").replaceChildren(el("img", { src: faixa.poster, alt: "" }));
+    $("#agora-capa").replaceChildren(imgCapa(faixa, true));
     $("#agora-nome").replaceChildren(faixa.nome, featTexto(faixa) ? el("span", { class: "feat", text: ` ${featTexto(faixa)}` }) : "");
     $("#agora-album").textContent = `${a.titulo}, faixa ${fila.indexOf(faixa) + 1}`;
     $("#agora").href = rotaFaixa(faixa, a);

@@ -55,6 +55,9 @@ def entrada(nome):
         "alg": nome,
         **{c: x for c, x in ficha.items() if c != "pseudocodigo"},
         "poster": f"algoritmos/{nome}/{nome}.png",
+        # a capa desenhada (motor/capas.py), quando existe: a inteira em 240 e 480 px e só a ilustração, para 48 px
+        **({"capa": {"inteira": {t: f"capas/{nome}-{t}.webp" for t in (240, 480)}, "arte": f"capas/{nome}-arte.webp"}}
+           if os.path.exists(os.path.join(RAIZ, "capas", f"{nome}-arte.webp")) else {}),
         "exemplo": {c: x for c, x in ex.items() if c not in PESADOS},
         "medido": {
             "tempo": dados["tempo"],

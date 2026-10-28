@@ -65,6 +65,8 @@ playlists.json         as playlists por problema e a galeria Problemas gerais
 fundamentos.json       os vídeos de Fundamentos (desligados até existir o primeiro)
 conceitos.json         os vídeos de Conceitos importantes (desligados até existir o primeiro)
 motor/identidade.py    gera og.png (1200 × 630, para compartilhar) e icone.png
+motor/capas.py         recorta uma grade 2×2 de capas desenhadas e exporta para capas/ (240 e 480 px, e só a ilustração para 48 px)
+capas/                 as capas desenhadas; a faixa sem capa usa o pôster de algoritmos/<nome>/<nome>.png
 _config.yml            o que o GitHub Pages não publica (bastidor: docs, testes, motor, .py, .R, .json)
 docs/redirecionamento/ o index.html que leva o endereço antigo (/eh-complexo-baby/) ao novo
 index.html, estilo.css, galeria.js

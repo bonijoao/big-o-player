@@ -39,75 +39,97 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 
 ## Tabela
 
-| seção | playlist (problema) | subcategoria | vídeo/faixa | status | resumo |
-|---|---|---|---|---|---|
-| Conceitos importantes | — | — | 0. Big O Player | novo · roteiro pronto | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. |
-| Conceitos importantes | — | — | 1. O que é um algoritmo | novo · roteiro pronto | Uma sequência finita de passos precisos, da entrada à resposta. |
-| Conceitos importantes | — | — | 2. Complexidade sem jargão | novo · roteiro pronto | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. |
-| Conceitos importantes | — | — | 3. Quando dá para comparar | novo · roteiro pronto | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. |
-| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. |
-| Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. |
-| Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. |
-| Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. |
-| Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. |
-| Playlists | Encontrar um item | numa árvore de busca | Busca em árvore (`abb`) | mudou de lugar (Árvores e heaps) | Desce um nível por comparação; a altura depende da ordem em que os valores chegaram. |
-| Playlists | Encontrar um item | numa árvore de busca | Árvore equilibrada AVL (`avl`) | mudou de lugar (Árvores e heaps) | Gira a árvore enquanto os valores chegam, para ela ficar com uns log n níveis. |
-| Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por encadeamento (`encadeamento`) | mudou de lugar (Dispersão) | Duas chaves na mesma casa ficam penduradas nela, numa corrente. |
-| Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por sondagem linear (`sondagem`) | mudou de lugar (Dispersão) | Casa ocupada, tenta a seguinte; custa cada vez mais à medida que a tabela enche. |
-| Playlists | Ordenar uma lista | um por um, O(n²) | Bubble sort (`bolha`) | mudou de lugar (Ordenação) | Troca vizinhos fora de lugar até nada mais mudar. |
-| Playlists | Ordenar uma lista | um por um, O(n²) | Insertion sort (`insercao`) | mudou de lugar (Ordenação) | Encaixa cada número no trecho já ordenado. |
-| Playlists | Ordenar uma lista | um por um, O(n²) | Selection sort (`selecao`) | mudou de lugar (Ordenação) | Escolhe o menor que falta a cada passada; n²/2 em qualquer ordem. |
-| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Merge sort (`intercalacao`) | mudou de lugar (Ordenação) | Divide ao meio, ordena as metades e intercala. |
-| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Quick sort (`rapida`) | mudou de lugar (Ordenação) | Separa menores e maiores em volta de um pivô; n² no pior caso. |
-| Playlists | Ordenar uma lista | com um heap | Heapsort (`heapsort`) | mudou de lugar (Ordenação) | Monta um heap no próprio vetor e tira sempre o maior. |
-| Playlists | Contar ocorrências | por palavra | Contar palavras (`palavras`) | mudou de lugar (Dispersão) | Um dicionário com uma contagem por palavra, numa leitura só do texto. |
-| Playlists | Contar ocorrências | por faixa de valores | Histograma (`histograma`) | mudou de lugar (Estatística) | Conta quantos valores caem em cada classe, para ver a forma dos dados. |
-| Playlists | Contar ocorrências | já apareceu? | Achar repetidos (`repetidos`) | mudou de lugar (Dispersão) | Vetor × dicionário: n² comparações contra n consultas. |
-| Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci recursivo (`fibrecursivo`) | mudou de lugar (Primeiros passos) | Direto da definição: φⁿ somas, e fib(2) recalculado centenas de vezes. |
-| Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci com memória (`fibmemoria`) | mudou de lugar (Primeiros passos) | A mesma recursão, guardando cada resposta: troca memória por tempo. |
-| Playlists | Calcular Fibonacci | subindo (laço) | Fibonacci iterativo (`fibiterativo`) | mudou de lugar (Primeiros passos) | Sobe do começo com duas variáveis: n somas e memória constante. |
-| Playlists | Organizar uma fila | por ordem de chegada | Fila de atendimento (`atendimento`) | mudou de lugar (Estruturas lineares) | Um caixa e uma fila: prevê quanto cada cliente espera. |
-| Playlists | Organizar uma fila | por urgência | Fila de prioridade (`prioridade`) | mudou de lugar (Árvores e heaps) | O mais grave passa na frente, com um heap. |
-| Playlists | Percorrer tudo | numa árvore | Percursos de árvore (`percursos`) | mudou de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. |
-| Playlists | Percorrer tudo | num grafo | Busca em profundidade (`profundidade`) | mudou de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. |
-| Playlists | Percorrer tudo | num grafo | Busca em largura (`largura`) | mudou de lugar (Grafos) | A mesma faixa de Achar o caminho mais curto: visita em ondas, com uma fila. |
-| Playlists | Achar o caminho mais curto | sem custo nas ligações | Busca em largura (`largura`) | mudou de lugar (Grafos) | Anda em ondas a partir da origem: o caminho com menos passos. |
-| Playlists | Achar o caminho mais curto | com custo nas ligações | Dijkstra (`dijkstra`) | mudou de lugar (Grafos) | Expande sempre o ponto mais perto, com um heap. |
-| Playlists | Problemas gerais | achar o maior | Máximo de um vetor (`maximo`) | mudou de lugar (Primeiros passos) | Sempre n − 1 comparações, e nenhum algoritmo faz menos. |
-| Playlists | Problemas gerais | achar o maior de cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (Estruturas lineares) | O maior de cada trecho de k casas: com um deque, n passos; ingênuo, n·k. |
-| Playlists | Problemas gerais | achar o valor do meio | Mediana por quickselect (`mediana`) | mudou de lugar (Estatística) | Acha o valor do meio sem ordenar o vetor inteiro, em n passos na média. |
-| Playlists | Problemas gerais | encontrar uma palavra num texto | Busca de padrão ingênua (`padrao`) | mudou de lugar (Primeiros passos) | Encosta a palavra em cada posição e compara letra a letra; pior caso n·m. |
-| Playlists | Problemas gerais | calcular o fatorial | Fatorial recursivo (`fatorial`) | mudou de lugar (Primeiros passos) | n! com uma função que chama a si mesma; a pilha desce n níveis. |
-| Playlists | Problemas gerais | multiplicar matrizes | Multiplicação de matrizes (`multiplicacao`) | mudou de lugar (Primeiros passos) | Três laços pela definição: n³. |
-| Playlists | Problemas gerais | conferir se os símbolos fecham | Parênteses balanceados (`parenteses`) | mudou de lugar (Estruturas lineares) | Confere com uma pilha se cada símbolo que abre fecha no lugar certo. |
-| Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. |
-| Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. |
-| Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. |
-| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. |
-| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. |
-| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. |
-| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. |
-| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. |
-| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. |
-| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. |
-| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. |
-| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. |
-| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. |
-| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. |
-| Algoritmos e estruturas | — | estruturas | Vetor (`vetor`) | mudou de lugar (Instrumentos) | Valores em sequência; chega a qualquer um pelo número da casa. |
-| Algoritmos e estruturas | — | estruturas | Matriz (`matriz`) | mudou de lugar (Instrumentos) | Uma tabela por linha e coluna, guardada linha a linha num bloco só. |
-| Algoritmos e estruturas | — | estruturas | Texto (`texto`) | mudou de lugar (Instrumentos) | Um vetor de letras: concatenar no laço × juntar no fim. |
-| Algoritmos e estruturas | — | estruturas | Pilha (`pilha`) | mudou de lugar (Instrumentos) | O último que entra é o primeiro que sai. |
-| Algoritmos e estruturas | — | estruturas | Fila (`fila`) | mudou de lugar (Instrumentos) | Atende na ordem de chegada: ingênua × circular. |
-| Algoritmos e estruturas | — | estruturas | Deque (`deque`) | mudou de lugar (Instrumentos) | Põe e tira pelas duas pontas. |
-| Algoritmos e estruturas | — | estruturas | Lista encadeada (`lista`) | mudou de lugar (Instrumentos) | Insere e remove no meio sem empurrar os outros: estática × dinâmica. |
-| Algoritmos e estruturas | — | estruturas | Grafo (`grafo`) | mudou de lugar (Instrumentos) | Ligações entre pontos, em três vistas: matriz, lista e incidência. |
-| Algoritmos e estruturas | — | estruturas | Árvore de busca (`arvore`) | mudou de lugar (Instrumentos) | Guarda em ordem e acha descendo poucos níveis: comum × AVL. |
-| Algoritmos e estruturas | — | estruturas | Heap (`heap`) | mudou de lugar (Instrumentos) | Tira sempre o menor sem ordenar tudo: árvore e vetor ao mesmo tempo. |
-| Algoritmos e estruturas | — | estruturas | Dicionário (`dicionario`) | mudou de lugar (Instrumentos) | Acha o valor pela chave quase sem procurar: encadeamento × sondagem. |
-| Algoritmos e estruturas | — | algoritmos | as 34 faixas | no ar | A página de cada faixa (encarte, palco, gráficos) é a mesma; a playlist só aponta para ela. |
+| seção | playlist (problema) | subcategoria | vídeo/faixa | status | resumo | capa |
+|---|---|---|---|---|---|---|
+| Conceitos importantes | — | — | 0. Big O Player | novo · roteiro pronto | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. | — |
+| Conceitos importantes | — | — | 1. O que é um algoritmo | novo · roteiro pronto | Uma sequência finita de passos precisos, da entrada à resposta. | — |
+| Conceitos importantes | — | — | 2. Complexidade sem jargão | novo · roteiro pronto | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. | — |
+| Conceitos importantes | — | — | 3. Quando dá para comparar | novo · roteiro pronto | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. | — |
+| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | — |
+| Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | — |
+| Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | — |
+| Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | antiga (falta a nova) |
+| Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. | antiga (falta a nova) |
+| Playlists | Encontrar um item | numa árvore de busca | Busca em árvore (`abb`) | mudou de lugar (Árvores e heaps) | Desce um nível por comparação; a altura depende da ordem em que os valores chegaram. | nova |
+| Playlists | Encontrar um item | numa árvore de busca | Árvore equilibrada AVL (`avl`) | mudou de lugar (Árvores e heaps) | Gira a árvore enquanto os valores chegam, para ela ficar com uns log n níveis. | nova |
+| Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por encadeamento (`encadeamento`) | mudou de lugar (Dispersão) | Duas chaves na mesma casa ficam penduradas nela, numa corrente. | nova |
+| Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por sondagem linear (`sondagem`) | mudou de lugar (Dispersão) | Casa ocupada, tenta a seguinte; custa cada vez mais à medida que a tabela enche. | nova |
+| Playlists | Ordenar uma lista | um por um, O(n²) | Bubble sort (`bolha`) | mudou de lugar (Ordenação) | Troca vizinhos fora de lugar até nada mais mudar. | antiga (falta a nova) |
+| Playlists | Ordenar uma lista | um por um, O(n²) | Insertion sort (`insercao`) | mudou de lugar (Ordenação) | Encaixa cada número no trecho já ordenado. | nova |
+| Playlists | Ordenar uma lista | um por um, O(n²) | Selection sort (`selecao`) | mudou de lugar (Ordenação) | Escolhe o menor que falta a cada passada; n²/2 em qualquer ordem. | nova |
+| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Merge sort (`intercalacao`) | mudou de lugar (Ordenação) | Divide ao meio, ordena as metades e intercala. | antiga (falta a nova) |
+| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Quick sort (`rapida`) | mudou de lugar (Ordenação) | Separa menores e maiores em volta de um pivô; n² no pior caso. | nova |
+| Playlists | Ordenar uma lista | com um heap | Heapsort (`heapsort`) | mudou de lugar (Ordenação) | Monta um heap no próprio vetor e tira sempre o maior. | nova |
+| Playlists | Contar ocorrências | por palavra | Contar palavras (`palavras`) | mudou de lugar (Dispersão) | Um dicionário com uma contagem por palavra, numa leitura só do texto. | nova |
+| Playlists | Contar ocorrências | por faixa de valores | Histograma (`histograma`) | mudou de lugar (Estatística) | Conta quantos valores caem em cada classe, para ver a forma dos dados. | nova |
+| Playlists | Contar ocorrências | já apareceu? | Achar repetidos (`repetidos`) | mudou de lugar (Dispersão) | Vetor × dicionário: n² comparações contra n consultas. | nova |
+| Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci recursivo (`fibrecursivo`) | mudou de lugar (Primeiros passos) | Direto da definição: φⁿ somas, e fib(2) recalculado centenas de vezes. | nova |
+| Playlists | Calcular Fibonacci | descendo (recursão) | Fibonacci com memória (`fibmemoria`) | mudou de lugar (Primeiros passos) | A mesma recursão, guardando cada resposta: troca memória por tempo. | nova |
+| Playlists | Calcular Fibonacci | subindo (laço) | Fibonacci iterativo (`fibiterativo`) | mudou de lugar (Primeiros passos) | Sobe do começo com duas variáveis: n somas e memória constante. | nova |
+| Playlists | Organizar uma fila | por ordem de chegada | Fila de atendimento (`atendimento`) | mudou de lugar (Estruturas lineares) | Um caixa e uma fila: prevê quanto cada cliente espera. | nova |
+| Playlists | Organizar uma fila | por urgência | Fila de prioridade (`prioridade`) | mudou de lugar (Árvores e heaps) | O mais grave passa na frente, com um heap. | nova |
+| Playlists | Percorrer tudo | numa árvore | Percursos de árvore (`percursos`) | mudou de lugar (Árvores e heaps) | Pré, em e pós-ordem com uma descida recursiva; em largura com uma fila. | antiga (falta a nova) |
+| Playlists | Percorrer tudo | num grafo | Busca em profundidade (`profundidade`) | mudou de lugar (Grafos) | Vai o mais fundo possível e volta, com uma pilha. | antiga (falta a nova) |
+| Playlists | Percorrer tudo | num grafo | Busca em largura (`largura`) | mudou de lugar (Grafos) | A mesma faixa de Achar o caminho mais curto: visita em ondas, com uma fila. | antiga (falta a nova) |
+| Playlists | Achar o caminho mais curto | sem custo nas ligações | Busca em largura (`largura`) | mudou de lugar (Grafos) | Anda em ondas a partir da origem: o caminho com menos passos. | antiga (falta a nova) |
+| Playlists | Achar o caminho mais curto | com custo nas ligações | Dijkstra (`dijkstra`) | mudou de lugar (Grafos) | Expande sempre o ponto mais perto, com um heap. | antiga (falta a nova) |
+| Playlists | Problemas gerais | achar o maior | Máximo de um vetor (`maximo`) | mudou de lugar (Primeiros passos) | Sempre n − 1 comparações, e nenhum algoritmo faz menos. | antiga (falta a nova) |
+| Playlists | Problemas gerais | achar o maior de cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (Estruturas lineares) | O maior de cada trecho de k casas: com um deque, n passos; ingênuo, n·k. | antiga (falta a nova) |
+| Playlists | Problemas gerais | achar o valor do meio | Mediana por quickselect (`mediana`) | mudou de lugar (Estatística) | Acha o valor do meio sem ordenar o vetor inteiro, em n passos na média. | antiga (falta a nova) |
+| Playlists | Problemas gerais | encontrar uma palavra num texto | Busca de padrão ingênua (`padrao`) | mudou de lugar (Primeiros passos) | Encosta a palavra em cada posição e compara letra a letra; pior caso n·m. | antiga (falta a nova) |
+| Playlists | Problemas gerais | calcular o fatorial | Fatorial recursivo (`fatorial`) | mudou de lugar (Primeiros passos) | n! com uma função que chama a si mesma; a pilha desce n níveis. | antiga (falta a nova) |
+| Playlists | Problemas gerais | multiplicar matrizes | Multiplicação de matrizes (`multiplicacao`) | mudou de lugar (Primeiros passos) | Três laços pela definição: n³. | antiga (falta a nova) |
+| Playlists | Problemas gerais | conferir se os símbolos fecham | Parênteses balanceados (`parenteses`) | mudou de lugar (Estruturas lineares) | Confere com uma pilha se cada símbolo que abre fecha no lugar certo. | antiga (falta a nova) |
+| Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | antiga (falta a nova) |
+| Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | antiga (falta a nova) |
+| Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | antiga (falta a nova) |
+| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | — |
+| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | — |
+| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | — |
+| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. | — |
+| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. | — |
+| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | — |
+| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | — |
+| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. | — |
+| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | — |
+| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | — |
+| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. | — |
+| Algoritmos e estruturas | — | estruturas | Vetor (`vetor`) | mudou de lugar (Instrumentos) | Valores em sequência; chega a qualquer um pelo número da casa. | — |
+| Algoritmos e estruturas | — | estruturas | Matriz (`matriz`) | mudou de lugar (Instrumentos) | Uma tabela por linha e coluna, guardada linha a linha num bloco só. | — |
+| Algoritmos e estruturas | — | estruturas | Texto (`texto`) | mudou de lugar (Instrumentos) | Um vetor de letras: concatenar no laço × juntar no fim. | — |
+| Algoritmos e estruturas | — | estruturas | Pilha (`pilha`) | mudou de lugar (Instrumentos) | O último que entra é o primeiro que sai. | — |
+| Algoritmos e estruturas | — | estruturas | Fila (`fila`) | mudou de lugar (Instrumentos) | Atende na ordem de chegada: ingênua × circular. | — |
+| Algoritmos e estruturas | — | estruturas | Deque (`deque`) | mudou de lugar (Instrumentos) | Põe e tira pelas duas pontas. | — |
+| Algoritmos e estruturas | — | estruturas | Lista encadeada (`lista`) | mudou de lugar (Instrumentos) | Insere e remove no meio sem empurrar os outros: estática × dinâmica. | — |
+| Algoritmos e estruturas | — | estruturas | Grafo (`grafo`) | mudou de lugar (Instrumentos) | Ligações entre pontos, em três vistas: matriz, lista e incidência. | — |
+| Algoritmos e estruturas | — | estruturas | Árvore de busca (`arvore`) | mudou de lugar (Instrumentos) | Guarda em ordem e acha descendo poucos níveis: comum × AVL. | — |
+| Algoritmos e estruturas | — | estruturas | Heap (`heap`) | mudou de lugar (Instrumentos) | Tira sempre o menor sem ordenar tudo: árvore e vetor ao mesmo tempo. | — |
+| Algoritmos e estruturas | — | estruturas | Dicionário (`dicionario`) | mudou de lugar (Instrumentos) | Acha o valor pela chave quase sem procurar: encadeamento × sondagem. | — |
+| Algoritmos e estruturas | — | algoritmos | as 34 faixas | no ar | A página de cada faixa (encarte, palco, gráficos) é a mesma; a playlist só aponta para ela. | a da faixa |
 
 Conferência: 24 faixas nas 7 playlists (a Busca em largura aparece em duas) + 10 em Problemas gerais = 34; 11 estruturas.
+
+### Capas
+
+As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. O `gerar.py` liga a capa à faixa quando os arquivos existem; sem eles, a faixa fica com o pôster antigo.
+
+Já entraram 16: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01 e OF-02.
+
+Faltam 18, todas ainda com o pôster antigo (os códigos que ainda não existem são sugestão, no mesmo padrão):
+
+| código | faixa | playlist |
+|---|---|---|
+| EI-01 | Busca sequencial | Encontrar um item |
+| EI-02 | Busca binária | Encontrar um item |
+| OL-01 | Bubble sort | Ordenar uma lista |
+| OL-04 | Merge sort | Ordenar uma lista |
+| PT-01 | Percursos de árvore | Percorrer tudo |
+| PT-02 | Busca em profundidade | Percorrer tudo |
+| PT-03 | Busca em largura (a mesma capa serve em Achar o caminho mais curto) | Percorrer tudo |
+| CC-01 | Dijkstra | Achar o caminho mais curto |
+| PG-01 a PG-10 | Máximo, Janela deslizante, Mediana, Busca de padrão, Fatorial, Multiplicação de matrizes, Parênteses, Inverter lista, Welford, K-means | Problemas gerais |
+
+Grafia: as capas dizem "Quick sort", "Insertion sort", "Selection sort" e "Heapsort", como o site. A única diferença é "Árvore equilibrada AVL" na capa contra "Árvore equilibrada (AVL)" no site; o texto da capa não foi mexido.
 
 Problemas gerais que já têm um segundo jeito à vista, todos novos:
 - encontrar uma palavra: o KMP, citado na própria faixa;
