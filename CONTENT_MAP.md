@@ -13,6 +13,25 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
 - Os 11 vídeos de Fundamentos têm a lista aprovada e ainda não têm roteiro.
 
+### 2ª rodada de UX e a linguagem das capas (28/10, no mesmo branch)
+
+- **Consertos:** a linha da vez do pseudocódigo mantém o recuo (a classe virou `.da-vez`), o cabeçalho da playlist é um grid (o título longo não derruba o bloco), a estante tem duas colunas no celular e o espaço só toca e pausa com o palco aberto, mini ou grande.
+- **Fim da faixa:** o painel do palco mostra o resultado em verde e o "a seguir" com 5 s de contagem (tocar agora, de novo, ficar aqui; Esc cancela). A barra ganhou o repetir (R).
+- **Estados de player:** ▶ no hover da linha, equalizador na faixa que toca, o botão redondo de tocar a playlist, o "pressionado" dos botões, a capa da barra abrindo o palco, a Media Session e os atalhos N, P, R e ? (a lista).
+- **Vídeo:** um vídeo pronto de Conceitos ou Fundamentos é uma faixa da série. O quadro é um `<video>` dentro do palco, controlado pela barra, pela fila, pelo teclado, pela velocidade e pela Media Session. O cartão não tem mais player solto.
+- **A linguagem das capas:** papel creme, a cor e o código de cada playlist (`cor` e `codigo` no `playlists.json`), títulos em Archivo Black e a IBM Plex Mono nos rótulos, no código e nos números. Todos os pares de texto e fundo passam no AA. As cores estão em tokens no topo do `estilo.css`.
+
+| playlist | cor | código |
+|---|---|---|
+| Encontrar um item | azul | EI |
+| Ordenar uma lista | vermelho (um tom abaixo do da capa, para o texto creme passar no AA) | OL |
+| Contar ocorrências | rosa | CO |
+| Calcular Fibonacci | creme | FI |
+| Organizar uma fila | amarelo | OF |
+| Percorrer tudo | preto (provisório, até ter capa) | PT |
+| Achar o caminho mais curto | preto (provisório, até ter capa) | CC |
+| Problemas gerais | creme (provisório) | PG |
+
 ## As quatro seções, nesta ordem
 
 1. **Conceitos importantes**: 7 vídeos novos, com o vídeo 0 apresentando o site. É a porta de entrada e termina onde começa o primeiro algoritmo. Os roteiros estão prontos: o Pedro grava o áudio primeiro, e a animação vem por cima.
@@ -203,6 +222,7 @@ Do QA de conteúdo, seção 2.0 (molde da faixa), feito: pseudocódigo sem pará
 
 ### Fase 2 e depois
 
+- **Da 2ª rodada de UX, ainda abertos:** a tela de "agora tocando" (mockup m1), o celular com abas embaixo e um mini player só (m4), o ritmo uniforme das faixas, comparar duas, a busca "/", as rotas inexistentes, os alvos de toque abaixo de 44 px, as setas da prateleira e o `requestAnimationFrame` sempre ligado.
 - **S1. Gravação.** Um modo de gravação sem moldura, um ritmo por faixa com duração-alvo e os quadros pequenos centralizados (achado 7). Sem isso, os vídeos dos Conceitos não saem limpos.
 - **S2, o resto.** A fonte mínima real do palco no celular (achado 3).
 - **S5.** As capas desenhadas (achado 9), as rotas inexistentes (achado 11) e os P2 que sobram (achados 14, 15, 16 e 18).
