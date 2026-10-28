@@ -41,6 +41,8 @@ A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; c
 
 **Barra de cima (28/10):** a marca (o disco e o nome), a busca no meio e, à direita, a bandeira (só português; "English (em breve)" desabilitado) e o "?", que abre a ajuda: o que é o projeto, os atalhos e quem fez. A busca procura em faixas, playlists e estruturas pelo nome, objetivo, versão, playlist e estruturas creditadas, sem acento; `/` foca, as setas andam, Enter abre e Esc fecha. No celular, a lupa abre a busca em tela cheia e o nome some. Na ajuda, os dados do João estão como marcadores (`[nome completo]`, `[uma linha]`, `[link]`), à espera do Pedro.
 
+**Palco (28/10):** à direita da animação, o pseudocódigo inteiro da faixa (o mesmo bloco do encarte), com a linha da vez acesa na cor da playlist e rolando dentro do painel; embaixo, as variáveis, com um destaque breve no valor que mudou. No celular, o código fica recolhível ("ver código") e as variáveis numa faixa compacta. Num vídeo, o painel some e só volta no fim, com o "a seguir".
+
 **Marca:** o disco de vinil da capa CI-00, recortado com fundo transparente, ao lado de "Big O Player" na grotesca (`marca/`); o favicon é o disco simplificado em SVG; a `og:image` usa o disco e o título da capa sobre o fundo preto de Conceitos importantes. Tudo sai do `motor/identidade.py`, a partir de `marca/ci-00.webp`.
 
 | playlist | cor | código |

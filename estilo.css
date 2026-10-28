@@ -496,7 +496,9 @@ svg text { font-family: var(--mono); }
 .vars { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 8px 0 0; }
 .vars dt { color: var(--cinza); }
 .vars dd { margin: 0 0 0 -12px; font-weight: 600; min-width: 2ch; }
-.vars .mudou { color: #c8462e; }
+.vars .mudou { color: #b5321c; animation: mudou 0.9s ease-out; }   /* 5,6:1 no papel */
+@keyframes mudou { from { background: #fbe3d9; } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .vars .mudou { animation: none; } }
 .vars-nivel, .vars-vazio { margin: 8px 0 0; color: var(--cinza); }
 .palco[data-modo="mini"] .palco-vars { display: none; }
 /* embaixo do palco, só a entrada do algoritmo: cada menu é uma pílula com o nome dentro */
@@ -519,12 +521,15 @@ svg text { font-family: var(--mono); }
 .palco[data-modo="grande"] { left: 50%; top: calc((100vh - var(--barra)) / 2); transform: translate(-50%, -50%); width: min(960px, 94vw, calc((100vh - var(--barra) - 240px) * 16 / 9)); }   /* 240: barra, controles e o painel embaixo */
 @media (min-width: 1100px) {
   /* tela larga: animação à esquerda, painel de variáveis à direita */
-  .palco[data-modo="grande"] { width: min(1320px, 96vw, calc((100vh - var(--barra) - 140px) * 16 / 9 + 340px)); }
-  .palco[data-modo="grande"] .palco-corpo { grid-template-columns: minmax(0, 1fr) 340px; }
-  .palco[data-modo="grande"] .palco-vars { border-top: 0; border-left: 1px solid var(--linha); padding: 18px 20px; font-size: 0.88rem; height: 0; min-height: 100%; overflow: auto; }
-  .palco[data-modo="grande"] .vars-linha { flex-direction: column; gap: 4px; }
-  .palco[data-modo="grande"] .vars-linha code { white-space: pre-wrap; }
-  .palco[data-modo="grande"] .vars { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin-top: 18px; }
+  .palco[data-modo="grande"] { width: min(1360px, 96vw, calc((100vh - var(--barra) - 140px) * 16 / 9 + 380px)); }
+  .palco[data-modo="grande"] .palco-corpo { grid-template-columns: minmax(0, 1fr) 380px; }
+  .palco[data-modo="grande"] .palco-vars { border-top: 0; border-left: 1px solid var(--linha); padding: 0; font-size: 0.88rem; height: 0; min-height: 100%;
+    display: flex; flex-direction: column; overflow: hidden; }
+  .palco[data-modo="grande"] .palco-letra { flex: 1; min-height: 0; overflow: auto; }
+  .palco[data-modo="grande"] .palco-letra summary { display: none; }
+  .palco[data-modo="grande"] .palco-valores { flex: none; max-height: 40%; overflow: auto; padding: 12px 20px 16px; border-top: 1px solid var(--linha); }
+  .palco[data-modo="grande"] .fim { padding: 18px 20px; overflow: auto; }
+  .palco[data-modo="grande"] .vars { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 0; }
   .palco[data-modo="grande"] .vars dd { margin: 0; }
 }
 .palco[data-modo="mini"] .palco-controles { display: none; }
@@ -860,4 +865,25 @@ svg text { font-family: var(--mono); }
   .topo.buscando .busca-fechar { display: grid; position: absolute; right: 18px; top: 13px; }
   .topo.buscando .busca-tecla { display: none; }
   .topo.buscando .busca-lista { position: static; margin-top: 10px; max-height: none; flex: 1; border: 0; box-shadow: none; border-radius: 0; }
+}
+
+/* ---------- o pseudocódigo no palco: a mesma letra do encarte, com a linha da vez na cor da playlist ---------- */
+
+.palco-letra { margin: 0; }   /* a .letra do encarte tem margem em cima; no palco, não */
+.palco-letra .pseudo li.da-vez::after { color: var(--sobre-cor, var(--papel)); }
+.palco-letra .pseudo { border: 0; border-radius: 0; margin: 0; padding: 12px 0; font-size: 13px; line-height: 22px; overflow-x: auto; }
+.palco-letra .pseudo li.da-vez { background: var(--cor, var(--tinta)); color: var(--sobre-cor, var(--papel)); }
+.palco-letra .pseudo li.da-vez .kw, .palco-letra .pseudo li.da-vez::before { color: var(--sobre-cor, var(--papel)); }
+.palco-letra summary { padding: 8px 14px; font-size: 0.78rem; color: var(--cinza); cursor: pointer; }
+.palco-valores { padding: 8px 14px 10px; }
+/* um vídeo ocupa o palco inteiro: o painel só aparece no fim, com o "a seguir" */
+.palco.e-video:not(.no-fim) .palco-vars { display: none; }
+.palco.e-video:not(.no-fim) .palco-corpo { grid-template-columns: minmax(0, 1fr) !important; }
+
+@media (max-width: 860px) {
+  /* no celular: o canvas em cima; embaixo, a letra recolhível ("ver código") e as variáveis numa faixa compacta */
+  .palco-vars { padding: 0; }
+  .palco-letra { border-bottom: 1px solid var(--linha); }
+  .palco-letra[open] { max-height: 34vh; overflow: auto; }
+  .palco-valores .vars { margin: 0; }
 }

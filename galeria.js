@@ -844,19 +844,28 @@
 
   // a letra sincronizada: no encarte da faixa que toca, acende a linha do pseudocódigo da vez
   function acenderLetra() {
-    const ol = faixa && sim && document.querySelector(`.letra .pseudo[data-faixa="${faixa.id}"]`);
+    const atuais = faixa && sim && !sim.video ? [...document.querySelectorAll(`.letra .pseudo[data-faixa="${faixa.id}"]`)] : [];
     document.querySelectorAll(".letra .pseudo[data-agora]").forEach((x) => {   // a faixa mudou: a letra anterior apaga
-      if (x === ol) return;
+      if (atuais.includes(x)) return;
       delete x.dataset.agora;
       x.querySelectorAll("li.da-vez").forEach((li) => li.classList.remove("da-vez"));
     });
-    if (!ol) return;
+    if (!atuais.length) return;
     const p = sim.varsEm(u), n = String(p && p.linha ? p.linha : 0);
-    if (ol.dataset.agora === n) return;
-    ol.dataset.agora = n;
-    ol.querySelectorAll("li.da-vez").forEach((li) => li.classList.remove("da-vez"));
-    const li = ol.querySelector(`li[data-linha="${n}"]`);
-    if (li) li.classList.add("da-vez");
+    for (const ol of atuais) {
+      if (ol.dataset.agora === n) continue;
+      ol.dataset.agora = n;
+      ol.querySelectorAll("li.da-vez").forEach((li) => li.classList.remove("da-vez"));
+      const li = ol.querySelector(`li[data-linha="${n}"]`);
+      if (!li) continue;
+      li.classList.add("da-vez");
+      // no palco, a letra rola dentro do próprio painel até a linha acesa (a página não se mexe)
+      const caixa = ol.closest(".palco-letra");
+      if (caixa) {
+        const c = caixa.getBoundingClientRect(), l = li.getBoundingClientRect();
+        if (l.top < c.top + l.height || l.bottom > c.bottom - l.height) caixa.scrollTop += l.top - c.top - caixa.clientHeight / 3;
+      }
+    }
   }
 
   // o anúncio do leitor de tela: tocando, só isso; parada, a linha do pseudocódigo da vez
@@ -869,22 +878,27 @@
     if (caixa.textContent !== texto) caixa.textContent = texto;
   }
 
+  // o painel monta uma vez por faixa: a letra (recolhível no celular) e a caixa das variáveis, que muda a cada passo
+  function montarPainel(caixa) {
+    const largo = window.matchMedia("(min-width: 861px)").matches;
+    const letra = faixa.pseudocodigo ? el("details", { class: "letra palco-letra", ...(largo ? { open: "" } : {}) }, [
+      el("summary", { text: "ver código" }), blocoPseudo(faixa)]) : null;
+    caixa.replaceChildren(...[letra, el("div", { class: "palco-valores", "aria-label": "Variáveis" })].filter(Boolean));
+    caixa.dataset.faixa = faixa.id;
+  }
+
   function pintarVariaveis() {
     const caixa = $("#palco-vars");
-    if (palco.dataset.modo !== "grande" || fim) return;
-    if (sim.video) {
-      if (painelEm !== "video") { painelEm = "video"; caixa.replaceChildren(el("p", { class: "fim-rotulo", text: tocandoEm.titulo }), el("p", { text: faixa.objetivo })); }
-      return;
-    }
+    if (palco.dataset.modo !== "grande" || fim || sim.video) return;
+    if (caixa.dataset.faixa !== faixa.id || !caixa.querySelector(".palco-valores")) { montarPainel(caixa); painelEm = null; }
     const p = sim.varsEm(u);
     const chave = p ? p.k : -1;
     if (chave === painelEm) return;
     painelEm = chave;
-    if (!p) { caixa.replaceChildren(el("p", { class: "vars-vazio", text: "As variáveis aparecem no primeiro passo." })); return; }
-    const texto = p.linha && faixa.pseudocodigo ? faixa.pseudocodigo.linhas[p.linha - 1].trim() : "";
+    const valores = caixa.querySelector(".palco-valores");
+    if (!p) { valores.replaceChildren(el("p", { class: "vars-vazio", text: "As variáveis aparecem no primeiro passo." })); return; }
     const recursiva = Object.prototype.hasOwnProperty.call(p.vars, "a") && Object.prototype.hasOwnProperty.call(p.vars, "b");
-    caixa.replaceChildren(
-      el("p", { class: "vars-linha" }, [el("span", { text: p.linha ? `linha ${p.linha}` : "" }), el("code", { text: texto })]),
+    valores.replaceChildren(
       el("dl", { class: "vars" }, Object.entries(p.vars).flatMap(([n, x]) => {
         const mudou = p.mudou.includes(n);
         return [el("dt", { text: n, class: mudou ? "mudou" : "" }), el("dd", { text: valor(x), class: mudou ? "mudou" : "" })];
