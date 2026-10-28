@@ -639,3 +639,9 @@ svg text { font-family: var(--mono); }
 .palco-tela { position: relative; min-width: 0; }
 .palco-objetivo { color: var(--cinza); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .palco[data-modo="mini"] .palco-objetivo { display: none; }
+/* o vídeo ocupa o lugar do canvas; sem entrada para escolher, a faixa de controles some */
+.tela-video { display: none; width: 100%; aspect-ratio: 16 / 9; background: var(--tinta); }
+.palco.e-video .tela { display: none; }
+.palco.e-video .tela-video { display: block; }
+.palco.e-video .palco-controles { display: none; }
+.capa-video { font-size: 3rem; }
