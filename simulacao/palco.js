@@ -11,7 +11,7 @@
 
   const W = 960, H = 540;
   const COR = {
-    tinta: "#1e1e1e", cinza: "#969696", palido: "#cdd0d6", claro: "#f4f5f7", borda: "#dee0e4",
+    tinta: "#1e1e1e", cinza: "#686c73", palido: "#cdd0d6", claro: "#f4f5f7", borda: "#dee0e4",
     verde: "#169646", album: "#2869c3", mexeu: "#eb5f46", pivo: "#de9614", menor: "#00919b",
     maior: "#8c50b9", apagado: "#d6d8dd", aux: "#969aa0",
   };
@@ -2341,8 +2341,8 @@
       texto(ctx, milhar(s.mults), x, 106, 40, fim ? COR.verde : COR.tinta, 700);
       texto(ctx, "casas de C prontas", x, 174, 13, COR.cinza);
       texto(ctx, `${s.escritas} de ${N * N}`, x, 190, 22, COR.tinta, 700);
-      texto(ctx, "memória extra", x, 236, 13, COR.cinza);
-      texto(ctx, `C: ${N}² = ${N * N} casas`, x, 252, 20, COR.tinta, 700);
+      texto(ctx, "a resposta C (não é memória extra)", x, 236, 13, COR.cinza);
+      texto(ctx, `${N}² = ${N * N} casas`, x, 252, 20, COR.tinta, 700);
       texto(ctx, `n = ${N}: n³ = ${N ** 3}`, x, 296, 13, COR.cinza);
       legendaCores(ctx, [[COR.mexeu, "o par multiplicado agora"], ["#fff", "a linha de A e a coluna de B", COR.album, 2], [COR.claro, "a casa de C da vez", COR.tinta, 2]], 488);
 

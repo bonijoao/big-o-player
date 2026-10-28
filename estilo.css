@@ -360,6 +360,7 @@ main:focus { outline: none; }
 
 @media (min-width: 860px) {
   .tres { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .tres.dupla { grid-template-columns: repeat(2, 1fr); }
 }
 
 .tres h2 { margin: 0; font-size: 0.95rem; font-weight: 600; }
@@ -417,6 +418,9 @@ svg text { font-family: var(--mono); }
 .codigo li.decisao { background: #eef7f1; }
 .codigo li.decisao::after { content: "+" attr(data-n); margin-left: 2ch; color: var(--verde-texto); font-weight: 600; }
 .codigo li.fim { color: var(--cinza); }
+.codigo li.instrumentacao { color: var(--cinza-claro); }
+.codigo li.instrumentacao .kw { font-weight: 400; }
+.codigo-medido { margin: 72px 0 0; border-top: 1px solid var(--linha); }
 .codigo li.fim::before { content: ""; }
 .codigo .kw { font-weight: 600; }
 .codigo .com { color: var(--cinza); }
@@ -458,7 +462,8 @@ svg text { font-family: var(--mono); }
 .palco.e-kmeans .so-kmeans, .palco.e-com-k .so-kmeans { display: inline-flex; }
 
 .palco-barra { display: flex; align-items: center; gap: 6px; padding: 6px 8px 6px 14px; border-bottom: 1px solid var(--linha); font-size: 0.82rem; }
-.palco-titulo { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.palco-cabeca { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.palco-titulo { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
 .palco[data-modo="grande"] { left: 50%; top: calc((100vh - var(--barra)) / 2); transform: translate(-50%, -50%); width: min(960px, 94vw, calc((100vh - var(--barra) - 240px) * 16 / 9)); }   /* 240: barra, controles e o painel embaixo */
 @media (min-width: 1100px) {
   /* tela larga: animação à esquerda, painel de variáveis à direita */
@@ -588,11 +593,7 @@ svg text { font-family: var(--mono); }
 .demo-vista .giro { color: #8c50b9; font-weight: 600; }
 .custo-vista { display: block; }
 
-/* o objetivo da faixa, por cima da animação, até o primeiro passo */
+/* o objetivo da faixa: a linha fina embaixo do título, na barra do palco (nunca por cima da animação) */
 .palco-tela { position: relative; min-width: 0; }
-.palco-objetivo {
-  position: absolute; left: 50%; top: 14px; transform: translateX(-50%); margin: 0; max-width: calc(100% - 28px);
-  padding: 6px 14px; background: var(--papel); border: 1px solid var(--tinta); border-radius: 16px;
-  font-size: 0.86rem; font-weight: 600; text-align: center; pointer-events: none;
-}
+.palco-objetivo { color: var(--cinza); font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .palco[data-modo="mini"] .palco-objetivo { display: none; }

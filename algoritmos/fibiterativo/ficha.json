@@ -15,7 +15,7 @@
   "porque": "Só a, b e o índice da volta, que não crescem com n. Sem recursão, não há pilha de chamadas.",
   "nomes": {},
   "cresce_com_n": [],
-  "vazio": "O(1): duas variáveis, a e b",
+  "vazio": "duas variáveis, a e b",
   "soltos": "só guarda a, b e o índice i"
  },
  "video": {

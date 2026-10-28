@@ -270,6 +270,7 @@
   };
   // número com vírgula decimal e um número fixo de casas
   const num = (x, casas) => x.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas });
+  const preenchido = (x) => !!x && !["—", "-", "sem autoria única"].includes(String(x).trim());
   const decisoes = (c) => (c.decisoes.length === 1 ? "decisão" : "decisões");
   const nomeEstrutura = (ex) => (ex.dist ? "fila" : "pilha");
 
@@ -310,6 +311,17 @@
     const temPilhaOuAux = ordena && m.tempo.crescimento.some((d) => d.invertido.pico > 0 || d.aleatorio.pico > 0);
     const dist = m.tempo.distribuicao || {}, temDist = !!m.tempo.distribuicao, erro = m.tempo.erro, altura = !!m.tempo.altura;
     const fig1 = el("div"), fig2 = el("div"), fig3 = el("div"), codigo = el("div");
+    // o código que roda e é medido, com o grafo de fluxo ao lado: recolhido no fim; desenha ao abrir (fechado, não tem largura)
+    const codigoMedido = el("details", { class: "detalhe codigo-medido" }, [
+      el("summary", {}, [el("b", { text: "O código medido" }), el("span", { text: `caminhos: M = ${c.M}` })]),
+      el("div", { class: "detalhe-corpo" }, [
+        el("p", { text: f.ciclomatica.porque }),
+        el("div", { class: "contas-m", html:
+          `<span>${c.decisoes.length} ${decisoes(c)} + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
+        codigo,
+      ]),
+    ]);
+    codigoMedido.addEventListener("toggle", () => { if (codigoMedido.open) codigo.replaceChildren(window.Graficos.blocoCodigo(f)); });
 
     const capa = el("button", { type: "button", class: "capa-tocar", "aria-label": `Tocar ${f.nome}` }, capaFaixa(f));
     capa.addEventListener("click", () => tocar(f, a));
@@ -335,14 +347,13 @@
 
       p && el("section", { class: "letra" }, [
         el("header", {}, [
-          el("div", {}, [el("h2", { text: "O algoritmo em português" }),
-            el("p", { text: "Como o algoritmo seria proposto, sem depender de linguagem. Os índices começam em 1; as linhas verdes são as decisões." })]),
+          el("div", {}, el("h2", { text: "Pseudocódigo" })),
           verFluxo(),
         ]),
         blocoPseudo(f),
       ]),
 
-      el("div", { class: "tres" }, [
+      el("div", { class: "tres dupla" }, [
         el("section", {}, [
           el("h2", { text: "Tempo" }),
           el("p", { class: "ordem", text: f.tempo.notacao }),
@@ -355,16 +366,9 @@
           el("p", { class: "ordem", text: f.memoria.notacao }),
           el("p", { class: "conta", html: m.memoria.pico
             ? `<b>${mil(m.memoria.pico)}</b> ${m.memoria.pico === 1 ? "valor" : "valores"} no pico<span>${(ENCARTE[m.tempo.tipo] || {}).alem ? ENCARTE[m.tempo.tipo].alem(ex) : `além ${(ENCARTE[m.tempo.tipo] || {}).artigo || "dos"} ${ex.n} ${entrada} de entrada`}</span>`
-            : `<b>nenhum</b> valor extra<span>${esc(f.memoria.vazio || "ordena dentro do próprio vetor")}</span>` }),
+            : `<b>nada</b> que cresça com n<span>${esc(f.memoria.vazio || "ordena dentro do próprio vetor")}</span>` }),
           el("p", { class: "porque", text: f.memoria.porque }),
           f.memoria.nota && el("p", { class: "nota", text: f.memoria.nota }),
-        ]),
-        el("section", {}, [
-          el("h2", { text: "Caminhos" }),
-          el("p", { class: "ordem", text: `M = ${c.M}` }),
-          el("p", { class: "conta", html: `<b>${c.decisoes.length}</b> ${decisoes(c)} + 1<span>complexidade ciclomática da função</span>` }),
-          el("p", { class: "porque", text: f.ciclomatica.porque }),
-          f.ciclomatica.regra && el("p", { class: "nota", text: f.ciclomatica.regra }),
         ]),
       ]),
 
@@ -379,7 +383,7 @@
         ]),
       ]) : ordena ? el("section", { class: "secao" }, [
         el("h2", { text: "Tempo: como cresce, e o que muda com a entrada" }),
-        el("p", { text: "As mesmas contas para vetores cada vez maiores e para três tipos de entrada. Em escala logarítmica, a inclinação da linha é o expoente: quem cresce como n² sobe duas vezes mais íngreme que quem cresce como n." }),
+        el("p", { text: "As mesmas contas para vetores cada vez maiores e para três tipos de entrada." }),
         el("div", { class: "dois" }, [
           el("figure", { class: "figura" }, [fig1, el("figcaption", { text:
             `Comparações para n de ${m.tempo.crescimento[0].n} a ${mil(m.tempo.crescimento.at(-1).n)}. ${m.tempo.crescimento_dados}; a faixa cinza vai do menor ao maior dos aleatórios. Tracejadas: n²/2 e n log₂ n, de referência.` })]),
@@ -397,34 +401,24 @@
         ]),
       ]),
 
-      el("section", { class: "secao" }, [
+      m.memoria.pico > 0 && el("section", { class: "secao" }, [
         el("h2", { text: "Memória: o que fica guardado" }),
-        el("p", { text: "Cada quadradinho é um valor guardado no momento de maior uso. A entrada não conta; variáveis soltas, como o índice do laço, também não." }),
         el("div", { class: "figura" }, window.Graficos.blocoMemoria(f)),
         temPicoCasos && el("figure", { class: "figura" }, [fig3, el("figcaption", { text: preencher(gr.memoria) })]),
         temPilhaOuAux && el("figure", { class: "figura" }, [fig3, el("figcaption", { text:
           "Memória extra no pico para cada n (lista auxiliar e níveis da pilha de recursão), nas três entradas. Aleatório: o maior pico entre os vetores embaralhados." })]),
       ]),
 
-      el("section", { class: "secao" }, [
-        el("h2", { text: "Caminhos: onde o código se divide" }),
-        el("p", { text: "O código abaixo é exatamente o que roda e é medido. Os pontos à esquerda são os comandos; as curvas, os saltos possíveis (tracejadas: de volta ao começo do laço). Os pontos verdes são as decisões." }),
-        el("div", { class: "contas-m", html:
-          `<span>${c.decisoes.length} ${decisoes(c)} + 1 = <b>${c.M}</b></span><span>${c.arestas} arestas − ${c.nos} nós + 2 = <b>${c.M}</b></span>` }),
-        codigo,
-      ]),
+      codigoMedido,
       el("section", { class: "secao ficha" }, [
         el("h2", { text: "Ficha técnica" }),
         el("div", { class: "placa" }, el("dl", { html: `
           <dt>versão</dt><dd>${esc(f.variante)}</dd>
-          <dt>autoria</dt><dd>${esc(f.placa ? f.placa.autor : "—")}</dd>
-          <dt>quando</dt><dd>${esc(f.placa ? f.placa.ano : "—")}</dd>
+          ${preenchido(f.placa && f.placa.autor) ? `<dt>autoria</dt><dd>${esc(f.placa.autor)}</dd>` : ""}
+          ${preenchido(f.placa && f.placa.ano) ? `<dt>quando</dt><dd>${esc(f.placa.ano)}</dd>` : ""}
           <dt>técnica</dt><dd>Python, sobre ${esc(ex.dados)}</dd>
           ${creditos(f).length ? `<dt>estruturas</dt><dd>${creditos(f).map((c) => `<a href="#estruturas/${c.id}">${esc(c.inst.nome)}</a> (${esc(c.papel)})`).join("<br>")}</dd>` : ""}
-          <dt>tempo</dt><dd><span class="o">${esc(f.tempo.notacao)}</span>, ${mil(ex.ops)} ${esc(m.tempo.unidade)} na entrada do encarte</dd>
-          <dt>memória</dt><dd><span class="o">${esc(f.memoria.notacao)}</span>, ${m.memoria.pico ? `${mil(m.memoria.pico)} valores extras no pico` : "nenhum valor extra"}</dd>
-          <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span></dd>
-          <dt>duração</dt><dd>${relogio(duracao(f))} a 1×, na entrada do encarte</dd>` })),
+          <dt>caminhos</dt><dd><span class="o">M = ${c.M}</span>, a complexidade ciclomática da função medida</dd>` })),
       ]),
       cf && el("p", { class: "conferido", html: `<b>Conferido no R.</b> ${esc(cf.resumo)}` }),
     ]);
@@ -450,7 +444,7 @@
         Gr.graficoCrescimento(fig1, f);
         Gr.graficoHistograma(fig2, m.tempo.voltas_por_semente.voltas, ex.i, "voltas até parar (i)");
       }
-      codigo.replaceChildren(Gr.blocoCodigo(f));
+      if (codigoMedido.open) codigo.replaceChildren(Gr.blocoCodigo(f));
     };
     return conteudo;
   }
@@ -519,8 +513,7 @@
 
   const palco = $("#palco"), fundo = $("#fundo"), tela = $("#tela");
   const botaoTocar = $("#tocar"), trilho = $("#trilho");
-  const objetivoPalco = $("#palco-objetivo");
-  let objetivoDe = null, objetivoAte = 0;
+  const objetivoPalco = $("#palco-objetivo");   // a linha fina da barra do palco, fora da animação
   let faixa = null, fila = [], tocandoEm = null, sim = null, u = 0, tocando = false, vel = 1, ultimoQuadro = 0, painelEm = null;
   let accelerando = false;              // o ritmo que acelera; vale para todas as faixas, só nesta visita
   let pos = null, arrasto = null, esperaProxima = null;
@@ -676,9 +669,6 @@
   function pintar() {
     if (!sim || palco.hidden) return atualizarTempo();
     window.Palco.pintar(tela, sim, u);
-    // o objetivo fica por cima nos primeiros segundos de cada faixa e sempre que ela está parada no começo
-    if (faixa && objetivoDe !== faixa.id) { objetivoDe = faixa.id; objetivoAte = performance.now() + 3500; }
-    objetivoPalco.hidden = !faixa || !faixa.objetivo || !(u === 0 || performance.now() < objetivoAte);
     atualizarTempo();
     pintarVariaveis();
     acenderLetra();

@@ -439,7 +439,9 @@
     const ol = el("ol");
     linhas.forEach((l, i) => {
       const n = porLinha[i + 1];
-      ol.append(el("li", n ? { class: "decisao", "data-n": n, html: realce(l) || " " } : { html: realce(l) || " " }));
+      // a instrumentação (conta.op, conta.evento…) fica esmaecida: conta, mas não é o algoritmo
+      const extra = /^\s*conta\.\w+\(/.test(l) ? "instrumentacao" : "";
+      ol.append(el("li", n ? { class: `decisao ${extra}`, "data-n": n, html: realce(l) || " " } : { class: extra, html: realce(l) || " " }));
     });
     ol.append(el("li", { class: "fim", text: "fim" }));
     return el("div", { class: "codigo", role: "figure", "aria-label": "Código da função com o grafo de fluxo de controle ao lado" }, [s, ol]);

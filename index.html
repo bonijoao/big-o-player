@@ -52,7 +52,10 @@
 <div id="fundo" class="fundo" hidden></div>
 <section id="palco" class="palco" data-modo="oculto" role="dialog" aria-labelledby="palco-titulo" tabindex="-1" hidden>
   <div class="palco-barra">
-    <span id="palco-titulo" class="palco-titulo"></span>
+    <div class="palco-cabeca">
+      <span id="palco-titulo" class="palco-titulo"></span>
+      <span id="palco-objetivo" class="palco-objetivo"></span>
+    </div>
     <button type="button" id="palco-fluxo" class="botao-passo palco-fluxo" hidden>fluxograma</button>
     <button type="button" id="palco-modo" class="icone" aria-label="Minimizar"></button>
     <button type="button" id="palco-fechar" class="icone" aria-label="Fechar">×</button>
@@ -60,7 +63,6 @@
   <div class="palco-corpo">
     <div class="palco-tela">
       <canvas id="tela" class="tela" role="img" aria-label="Animação do algoritmo"></canvas>
-      <p id="palco-objetivo" class="palco-objetivo" hidden></p>
     </div>
     <div id="palco-vars" class="palco-vars" aria-label="Variáveis: a linha do pseudocódigo que está rodando e os valores da vez"></div>
   </div>
