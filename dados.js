@@ -26674,71 +26674,161 @@ window.PLAYLISTS = [
 window.FUNDAMENTOS = {
  "id": "fundamentos",
  "titulo": "Fundamentos",
+ "cor": "petroleo",
+ "codigo": "FU",
  "frase": "A base para ver qualquer faixa: o que é uma variável, um vetor, uma pilha, o n e um passo.",
  "nota": "A playlist só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\". A lista foi aprovada pelo Pedro em 28/10; os roteiros ainda não existem.",
  "videos": [
   {
    "n": 1,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-1-240.webp",
+     "480": "capas/fundamentos-1-480.webp"
+    },
+    "arte": "capas/fundamentos-1-arte.webp",
+    "cor": "#0c445c"
+   },
    "titulo": "Variável",
    "resumo": "Um nome com um valor: anotar apaga o valor velho, ler não apaga.",
    "video": null
   },
   {
    "n": 2,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-2-240.webp",
+     "480": "capas/fundamentos-2-480.webp"
+    },
+    "arte": "capas/fundamentos-2-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Laço e decisão",
    "resumo": "O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer.",
    "video": null
   },
   {
    "n": 3,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-3-240.webp",
+     "480": "capas/fundamentos-3-480.webp"
+    },
+    "arte": "capas/fundamentos-3-arte.webp",
+    "cor": "#044c5c"
+   },
    "titulo": "Função e recursão",
    "resumo": "Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta.",
    "video": null
   },
   {
    "n": 4,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-4-240.webp",
+     "480": "capas/fundamentos-4-480.webp"
+    },
+    "arte": "capas/fundamentos-4-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Vetor",
    "resumo": "Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche.",
    "video": null
   },
   {
    "n": 5,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-5-240.webp",
+     "480": "capas/fundamentos-5-480.webp"
+    },
+    "arte": "capas/fundamentos-5-arte.webp",
+    "cor": "#044c5c"
+   },
    "titulo": "Pilha e fila",
    "resumo": "O último que entra sai primeiro; o primeiro que entra sai primeiro.",
    "video": null
   },
   {
    "n": 6,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-6-240.webp",
+     "480": "capas/fundamentos-6-480.webp"
+    },
+    "arte": "capas/fundamentos-6-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Lista encadeada",
    "resumo": "Valores ligados por ponteiros: inserir no meio sem empurrar os outros.",
    "video": null
   },
   {
    "n": 7,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-7-240.webp",
+     "480": "capas/fundamentos-7-480.webp"
+    },
+    "arte": "capas/fundamentos-7-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Árvore e heap",
    "resumo": "Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis.",
    "video": null
   },
   {
    "n": 8,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-8-240.webp",
+     "480": "capas/fundamentos-8-480.webp"
+    },
+    "arte": "capas/fundamentos-8-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Grafo",
    "resumo": "Pontos ligados por arestas, como esquinas ligadas por ruas.",
    "video": null
   },
   {
    "n": 9,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-9-240.webp",
+     "480": "capas/fundamentos-9-480.webp"
+    },
+    "arte": "capas/fundamentos-9-arte.webp",
+    "cor": "#04445c"
+   },
    "titulo": "Dicionário",
    "resumo": "Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem.",
    "video": null
   },
   {
    "n": 10,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-10-240.webp",
+     "480": "capas/fundamentos-10-480.webp"
+    },
+    "arte": "capas/fundamentos-10-arte.webp",
+    "cor": "#044c5c"
+   },
    "titulo": "n, passo e memória",
    "resumo": "O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta.",
    "video": null
   },
   {
    "n": 11,
+   "capa": {
+    "inteira": {
+     "240": "capas/fundamentos-11-240.webp",
+     "480": "capas/fundamentos-11-480.webp"
+    },
+    "arte": "capas/fundamentos-11-arte.webp",
+    "cor": "#044c5c"
+   },
    "titulo": "Ler o gráfico log-log",
    "resumo": "Com os dois eixos em log, a inclinação da reta é o expoente.",
    "video": null
@@ -26747,47 +26837,105 @@ window.FUNDAMENTOS = {
 };
 window.CONCEITOS = {
  "titulo": "Conceitos importantes",
+ "cor": "preto",
+ "codigo": "CI",
  "frase": "Antes do primeiro algoritmo: o que é, como se compara e quando a escolha importa.",
  "nota": "A seção só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\".",
  "videos": [
   {
    "n": 0,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-0-240.webp",
+     "480": "capas/conceitos-0-480.webp"
+    },
+    "arte": "capas/conceitos-0-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "Big O Player",
    "resumo": "Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema.",
    "video": null
   },
   {
    "n": 1,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-1-240.webp",
+     "480": "capas/conceitos-1-480.webp"
+    },
+    "arte": "capas/conceitos-1-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "O que é um algoritmo",
    "resumo": "Uma sequência finita de passos precisos, da entrada à resposta.",
    "video": null
   },
   {
    "n": 2,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-2-240.webp",
+     "480": "capas/conceitos-2-480.webp"
+    },
+    "arte": "capas/conceitos-2-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "Complexidade sem jargão",
    "resumo": "Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida.",
    "video": null
   },
   {
    "n": 3,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-3-240.webp",
+     "480": "capas/conceitos-3-480.webp"
+    },
+    "arte": "capas/conceitos-3-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "Quando dá para comparar",
    "resumo": "O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério.",
    "video": null
   },
   {
    "n": 4,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-4-240.webp",
+     "480": "capas/conceitos-4-480.webp"
+    },
+    "arte": "capas/conceitos-4-arte.webp",
+    "cor": "#1c1c1c"
+   },
    "titulo": "Melhor, pior e caso médio",
    "resumo": "O custo muda com a entrada, e o pior caso é a promessa.",
    "video": null
   },
   {
    "n": 5,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-5-240.webp",
+     "480": "capas/conceitos-5-480.webp"
+    },
+    "arte": "capas/conceitos-5-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "Como escolher",
    "resumo": "A escolha importa com n grande ou muitas repetições; senão, o simples ganha.",
    "video": null
   },
   {
    "n": 6,
+   "capa": {
+    "inteira": {
+     "240": "capas/conceitos-6-240.webp",
+     "480": "capas/conceitos-6-480.webp"
+    },
+    "arte": "capas/conceitos-6-arte.webp",
+    "cor": "#242424"
+   },
    "titulo": "Fechamento",
    "resumo": "Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo.",
    "video": null

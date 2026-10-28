@@ -17,7 +17,7 @@
   const SERIES = [{ id: "conceitos", ...(window.CONCEITOS || {}) }, { id: "fundamentos", ...(window.FUNDAMENTOS || {}) }]
     .map((s) => ({ ...s, prontos: (s.videos || []).filter((v) => v.video) })).filter((s) => s.prontos.length)
     .map((s) => ({ ...s, faixas: s.prontos.map((v) => ({ id: `${s.id}-${v.n}`, nome: v.titulo, objetivo: v.resumo, arquivo: v.video,
-      poster: v.capa || "icone.png", n: v.n })) }));
+      capa: v.capa || null, poster: "icone.png", n: v.n })) }));
   const NOME = "Big O Player";
   const $ = (s, raiz = document) => raiz.querySelector(s);
   const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -73,7 +73,7 @@
     const linha = (id, capa, titulo, sub, cor = "") => el("a", { class: `album-mini ${cor}`, href: `#${id}`, "aria-current": String(id === atual) }, [
       capa, el("span", {}, [el("b", { text: titulo }), el("small", { text: sub })])]);
     $("#secoes").replaceChildren(
-      ...SERIES.map((s) => linha(s.id, capaTexto("▶", "mini-48"), s.titulo, `${s.prontos.length} ${s.prontos.length === 1 ? "vídeo" : "vídeos"}`)),
+      ...SERIES.map((s) => linha(s.id, capaAlbum(s, "mini-48"), s.titulo, `${s.prontos.length} ${s.prontos.length === 1 ? "vídeo" : "vídeos"}`, corDe(s))),
       el("p", { class: "lateral-titulo", text: "Playlists" }),
       ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length), corDe(p))),
       el("p", { class: "lateral-titulo", text: "Algoritmos e estruturas" }),
@@ -98,7 +98,7 @@
     const play = el("button", { type: "button", class: "cartao-play", "aria-label": `Tocar ${f.nome}`, text: "▶" });
     play.addEventListener("click", () => tocar(f, s));
     return el("div", { class: "cartao", "data-id": f.id }, [
-      el("span", { class: "cartao-capa" }, [f.poster !== "icone.png" ? capaFaixa(f) : capaTexto(String(f.n), "capa-video"), play]),
+      el("span", { class: "cartao-capa" }, [f.capa ? capaFaixa(f) : capaTexto(String(f.n), "capa-video"), play]),
       el("b", { text: `${f.n}. ${f.nome}` }),
       el("small", { text: f.objetivo }),
     ]);
@@ -130,7 +130,7 @@
         el("p", { text: "Cada playlist é um problema; cada faixa, um jeito de resolver. Toque duas e compare os passos." }),
       ]),
       comparacaoAoVivo(),
-      ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), "destaque")),
+      ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), `destaque ${corDe(s)}`)),
       el("section", { class: "grade-playlists", "aria-label": "Playlists" }, PLAYLISTS.map(cartaoPlaylist)),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
@@ -260,9 +260,9 @@
   // ---------- as playlists de vídeo (Conceitos importantes e Fundamentos): só com vídeo pronto ----------
 
   function paginaVideos(s) {
-    return el("div", {}, [
-      el("header", { class: "cabeca" }, [el("div", {}, [
-        el("span", { class: "rotulo", text: "vídeos" }),
+    return el("div", { class: `playlist ${corDe(s)}` }, [
+      el("header", { class: "cabeca colorida" }, [capaAlbum(s), el("div", {}, [
+        el("span", { class: "rotulo", text: `vídeos · ${s.codigo}` }),
         el("h1", { text: s.titulo }),
         el("p", { text: s.frase }),
       ])]),

@@ -30,6 +30,7 @@
   --preto: #1e1e1e;    --sobre-preto: var(--papel);     /* 15,2:1 */
   --verde-escuro: #04543c; --sobre-verde-escuro: var(--papel);  /* 8,2:1; é a cor da capa, não o verde do resultado */
   --roxo: #643cac;     --sobre-roxo: var(--papel);      /* 6,9:1 */
+  --petroleo: #04445c; --sobre-petroleo: var(--papel);  /* 10,3:1; Fundamentos */
   --grupo-1: #2869c3;
   --grupo-2: #8c50b9;
   --grupo-3: #008c96;
@@ -688,6 +689,7 @@ svg text { font-family: var(--mono); }
 .cor-neutro { --cor: var(--neutro); --sobre-cor: var(--sobre-neutro); }
 .cor-verde-escuro { --cor: var(--verde-escuro); --sobre-cor: var(--sobre-verde-escuro); }
 .cor-roxo { --cor: var(--roxo); --sobre-cor: var(--sobre-roxo); }
+.cor-petroleo { --cor: var(--petroleo); --sobre-cor: var(--sobre-petroleo); }
 
 /* em Problemas gerais o cabeçalho fica neutro, e cada faixa leva a cor da própria capa no detalhe:
    a marca da subcategoria e o equalizador (com um contorno de tinta, para se ver em qualquer cor) */

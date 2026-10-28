@@ -62,13 +62,13 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 
 | seção | playlist (problema) | subcategoria | vídeo/faixa | status | resumo | capa |
 |---|---|---|---|---|---|---|
-| Conceitos importantes | — | — | 0. Big O Player | novo · roteiro pronto | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. | — |
-| Conceitos importantes | — | — | 1. O que é um algoritmo | novo · roteiro pronto | Uma sequência finita de passos precisos, da entrada à resposta. | — |
-| Conceitos importantes | — | — | 2. Complexidade sem jargão | novo · roteiro pronto | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. | — |
-| Conceitos importantes | — | — | 3. Quando dá para comparar | novo · roteiro pronto | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. | — |
-| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | — |
-| Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | — |
-| Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | — |
+| Conceitos importantes | — | — | 0. Big O Player | novo · roteiro pronto | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. | nova |
+| Conceitos importantes | — | — | 1. O que é um algoritmo | novo · roteiro pronto | Uma sequência finita de passos precisos, da entrada à resposta. | nova |
+| Conceitos importantes | — | — | 2. Complexidade sem jargão | novo · roteiro pronto | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. | nova |
+| Conceitos importantes | — | — | 3. Quando dá para comparar | novo · roteiro pronto | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. | nova |
+| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | nova |
+| Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | nova |
+| Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | nova |
 | Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | antiga (falta a nova) |
 | Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. | antiga (falta a nova) |
 | Playlists | Encontrar um item | numa árvore de busca | Busca em árvore (`abb`) | mudou de lugar (Árvores e heaps) | Desce um nível por comparação; a altura depende da ordem em que os valores chegaram. | nova |
@@ -104,17 +104,17 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | nova |
 | Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | nova |
 | Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | nova |
-| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | — |
-| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | — |
-| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | — |
-| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. | — |
-| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. | — |
-| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | — |
-| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | — |
-| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. | — |
-| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | — |
-| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | — |
-| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. | — |
+| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | nova |
+| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | nova |
+| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | nova |
+| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. | nova |
+| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. | nova |
+| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | nova |
+| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | nova |
+| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. | nova |
+| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | nova |
+| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | nova |
+| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. | nova |
 | Algoritmos e estruturas | — | estruturas | Vetor (`vetor`) | mudou de lugar (Instrumentos) | Valores em sequência; chega a qualquer um pelo número da casa. | — |
 | Algoritmos e estruturas | — | estruturas | Matriz (`matriz`) | mudou de lugar (Instrumentos) | Uma tabela por linha e coluna, guardada linha a linha num bloco só. | — |
 | Algoritmos e estruturas | — | estruturas | Texto (`texto`) | mudou de lugar (Instrumentos) | Um vetor de letras: concatenar no laço × juntar no fim. | — |
@@ -146,6 +146,8 @@ Faltam 4, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo
 | OL-04 | Merge sort | Ordenar uma lista |
 
 Nenhuma capa ficou sem faixa: Parênteses balanceados (PG-07) e Inverter lista encadeada (PG-08) existem como faixas.
+
+Os 18 vídeos também têm capa (CI-00 a CI-06 e FU-01 a FU-11), ligada pelo `capa` de cada item no `conceitos.json` e no `fundamentos.json`. Conceitos importantes fica preto, e Fundamentos, azul-petróleo, nos cabeçalhos. As duas séries continuam escondidas até o primeiro vídeo; ligadas de teste, as capas aparecem na home, na lateral, nas páginas das séries e na barra.
 
 Grafia: as capas dizem "Quick sort", "Insertion sort", "Selection sort" e "Heapsort", como o site. A única diferença é "Árvore equilibrada AVL" na capa contra "Árvore equilibrada (AVL)" no site; o texto da capa não foi mexido.
 

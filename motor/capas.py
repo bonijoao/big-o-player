@@ -10,11 +10,14 @@ Para cada capa, em capas/:
   <alg>-arte.webp                  só a ilustração, 96 px (a lateral, as linhas da playlist e a barra do
                                    player, onde a capa fica com 48 px e o título vira mancha)
 O gerar.py liga a capa à faixa quando os arquivos existem; sem eles, a faixa fica com o pôster.
+Os vídeos de Conceitos importantes e de Fundamentos usam o nome <série>-<n> (conceitos-0, fundamentos-1),
+o mesmo do "capa" do item no conceitos.json e no fundamentos.json.
 
 O corte acha, em cada quadrante, as linhas e colunas que são capa (quase nenhum pixel da cor da borda)
 e tira o quadrado de dentro, 2 px para dentro, sem sobra de borda nem corte da arte.
 Confira cada capa pelo título e pelo código impresso nela, não só pela posição.
 """
+import json
 import os
 import sys
 
@@ -46,6 +49,17 @@ def borda_de(a):
 def faixa(perfil, ini, lim=0.9):
     dentro = [ini + i for i, x in enumerate(perfil) if x >= lim]
     return dentro[0], dentro[-1]
+
+
+def existe(nome):
+    """Uma faixa (pasta em algoritmos/) ou um vídeo das séries (conceitos-0, fundamentos-1…)."""
+    if os.path.isdir(os.path.join(RAIZ, "algoritmos", nome)):
+        return True
+    serie, _, n = nome.rpartition("-")
+    caminho = os.path.join(RAIZ, f"{serie}.json")
+    if serie in ("conceitos", "fundamentos") and n.isdigit() and os.path.exists(caminho):
+        return any(v["n"] == int(n) for v in json.load(open(caminho, encoding="utf-8"))["videos"])
+    return False
 
 
 def recortar(caminho):
@@ -87,7 +101,7 @@ if __name__ == "__main__":
         raise SystemExit(f"a imagem tem {lin * col} capas ({lin}×{col}); passe um alg para cada, da esquerda para a direita e de cima para baixo")
     for pedido, im in zip(algs, recortar(grade)):
         alg, _, lado = pedido.partition("@")
-        if not os.path.isdir(os.path.join(RAIZ, "algoritmos", alg)):
-            raise SystemExit(f"{alg}: não há faixa com esse nome em algoritmos/")
+        if not existe(alg):
+            raise SystemExit(f"{alg}: não há faixa com esse nome em algoritmos/, nem vídeo com esse número nas séries")
         exportar(im, alg, float(lado or 0.62))
         print(f"{alg}: {im.size[0]} px → {', '.join(f'{t}' for t in TAMANHOS)} e arte {ARTE}")

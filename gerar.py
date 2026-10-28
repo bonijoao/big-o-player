@@ -59,9 +59,7 @@ def entrada(nome):
         **{c: x for c, x in ficha.items() if c != "pseudocodigo"},
         "poster": f"algoritmos/{nome}/{nome}.png",
         # a capa desenhada (motor/capas.py), quando existe: a inteira em 240 e 480 px e só a ilustração, para 48 px
-        **({"capa": {"inteira": {t: f"capas/{nome}-{t}.webp" for t in (240, 480)}, "arte": f"capas/{nome}-arte.webp",
-                     "cor": cor_da_capa(os.path.join(RAIZ, "capas", f"{nome}-240.webp"))}}
-           if os.path.exists(os.path.join(RAIZ, "capas", f"{nome}-arte.webp")) else {}),
+        **({"capa": capa(nome)} if capa(nome) else {}),
         "exemplo": {c: x for c, x in ex.items() if c not in PESADOS},
         "medido": {
             "tempo": dados["tempo"],
@@ -78,6 +76,15 @@ def cor_da_capa(caminho):
     a = np.asarray(Image.open(caminho).convert("RGB")).reshape(-1, 3)
     v, c = np.unique((a // 8) * 8 + 4, axis=0, return_counts=True)
     return "#%02x%02x%02x" % tuple(int(x) for x in v[c.argmax()])
+
+
+def capa(nome):
+    """A capa desenhada (motor/capas.py), quando existe: a inteira em 240 e 480 px, só a ilustração para
+    48 px e a cor de fundo."""
+    if not os.path.exists(os.path.join(RAIZ, "capas", f"{nome}-arte.webp")):
+        return None
+    return {"inteira": {t: f"capas/{nome}-{t}.webp" for t in (240, 480)}, "arte": f"capas/{nome}-arte.webp",
+            "cor": cor_da_capa(os.path.join(RAIZ, "capas", f"{nome}-240.webp"))}
 
 
 def instrumento(nome):
@@ -116,10 +123,14 @@ def conferir_playlists(playlists, series):
     soltas = [n for n in ALGORITMOS if n not in citadas]
     if soltas:
         raise SystemExit(f"faixas fora de qualquer playlist: {', '.join(soltas)}")
-    for s in series:   # um vídeo pronto aponta para um arquivo que existe
+    for s in series:   # um vídeo pronto aponta para um arquivo que existe; a capa, para uma capa exportada
         for v in s["videos"]:
             if v.get("video") and not os.path.exists(os.path.join(RAIZ, v["video"])):
                 raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} aponta para {v['video']}, que não existe")
+            if v.get("capa"):
+                if not capa(v["capa"]):
+                    raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} cita a capa {v['capa']}, que não está em capas/")
+                v["capa"] = capa(v["capa"])
 
 
 def main():
