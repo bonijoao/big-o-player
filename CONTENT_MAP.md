@@ -23,6 +23,21 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 - **A home nova (28/10, prévia):** a abertura ("Algoritmos tocando ao vivo." e uma linha), a comparação ao vivo (Busca sequencial × Busca binária no mesmo vetor de 24 números, procurando o 36, nos palcos de verdade, em loop, devagar; para fora da tela e com a aba escondida, e mostra o quadro final parado com movimento reduzido) e a grade das 8 playlists (4 colunas no desktop, 2 no celular), no lugar das 9 prateleiras. O botão "Tocar a comparação" toca a playlist Encontrar um item a partir da sequencial, porque o palco tem um quadro só. A home caiu de 3.922 para 2.060 px no desktop e de 3.942 para 2.676 px no celular.
 - **A linguagem das capas:** papel claro, a cor e o código de cada playlist (`cor` e `codigo` no `playlists.json`), títulos em Archivo Black e a IBM Plex Mono nos rótulos, no código e nos números. Todos os pares de texto e fundo passam no AA. As cores estão em tokens no topo do `estilo.css`.
 
+**Ordem das playlists** (a mesma na grade da home e na lateral; 28/10): cada uma usa só estruturas que já apareceram antes.
+
+1. Encontrar um item (vetor, árvore, tabela hash)
+2. Calcular Fibonacci (variáveis, pilha de chamadas, o vetor do memo)
+3. Ordenar uma lista (vetor, pilha, heap)
+4. Contar ocorrências (vetor, dicionário)
+5. Organizar uma fila (fila, heap)
+6. Percorrer tudo (árvore, grafo, pilha, fila)
+7. Achar o caminho mais curto (grafo, fila, heap)
+8. Problemas gerais
+
+A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; cada faixa, um jeito de resolver.", e a grade vem logo abaixo. A comparação ao vivo está pronta no código e desligada (`COMPARACAO = false` no `galeria.js`).
+
+**Marca:** o disco de vinil da capa CI-00, recortado com fundo transparente, ao lado de "Big O Player" na grotesca (`marca/`); o favicon é o disco simplificado em SVG; a `og:image` usa o disco e o título da capa sobre o fundo preto de Conceitos importantes. Tudo sai do `motor/identidade.py`, a partir de `marca/ci-00.webp`.
+
 | playlist | cor | código |
 |---|---|---|
 | Encontrar um item | azul | EI |

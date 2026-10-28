@@ -82,8 +82,9 @@ code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); pa
   position: sticky; top: 0; height: 100vh; overflow-y: auto;
   padding: 28px 18px calc(var(--barra) + 20px); background: var(--fundo); border-right: 1px solid var(--linha);
 }
-.marca { display: block; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em; text-decoration: none; margin: 0 0 30px; }
-.cursor { display: inline-block; width: 0.5em; height: 0.95em; margin-left: 2px; vertical-align: -0.12em; background: var(--verde); }
+/* a marca: o disco da capa CI-00 e o nome na grotesca das capas */
+.marca { display: flex; align-items: center; gap: 10px; font-family: var(--titulo); font-weight: 400; font-size: 1.2rem; letter-spacing: -0.02em; line-height: 1; text-decoration: none; margin: 0 0 30px; }
+.marca img { width: 32px; height: 32px; flex: none; }
 .lateral-titulo { margin: 22px 0 8px; font-size: 0.78rem; color: var(--cinza); }
 .album-mini { display: flex; gap: 12px; align-items: center; padding: 7px; margin: 0 -7px 4px; border-radius: 4px; text-decoration: none; }
 .album-mini:hover { background: var(--realce); }

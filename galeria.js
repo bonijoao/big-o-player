@@ -139,9 +139,9 @@
     return el("div", { class: "inicio" }, [
       el("header", { class: "abertura" }, [
         el("h1", { text: "Algoritmos tocando ao vivo." }),
-        el("p", { text: "Cada playlist é um problema; cada faixa, um jeito de resolver. Toque duas e compare os passos." }),
+        el("p", { text: "Cada playlist é um problema; cada faixa, um jeito de resolver." }),
       ]),
-      comparacaoAoVivo(),
+      COMPARACAO ? comparacaoAoVivo() : null,
       ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), `destaque ${corDe(s)}`)),
       el("section", { class: "grade-playlists", "aria-label": "Playlists" }, PLAYLISTS.map(cartaoPlaylist)),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
@@ -163,6 +163,8 @@
   // ---------- a comparação da home: Busca sequencial × Busca binária, o mesmo vetor e o mesmo alvo ----------
   // as duas tocam sozinhas, devagar e em loop, no motor dos palcos (Palco.busca + Palco.pintar), uma em cada canvas;
   // param fora da tela e com a aba escondida; com movimento reduzido, mostram o quadro final, paradas
+  // desligada a pedido do Pedro (28/10): a grade das playlists vem logo depois da abertura; o código fica pronto
+  const COMPARACAO = false;
   let comparacao = null;
   function comparacaoAoVivo() {
     const seq = porAlg.sequencial, bin = porAlg.binaria, casa = PLAYLISTS.find((p) => p.faixas.includes(seq));
@@ -1155,7 +1157,6 @@
   });
   window.addEventListener("hashchange", rota);
 
-  if (calmo) document.querySelector(".cursor").style.display = "none";
   habilitar();
   rota();
   requestAnimationFrame(quadro);

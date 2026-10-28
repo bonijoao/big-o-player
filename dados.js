@@ -26490,6 +26490,28 @@ window.PLAYLISTS = [
   ]
  },
  {
+  "id": "calcular-fibonacci",
+  "titulo": "Calcular Fibonacci",
+  "cor": "creme",
+  "codigo": "FI",
+  "frase": "A mesma resposta de três jeitos: de φⁿ somas a n somas e duas variáveis.",
+  "subcategorias": [
+   {
+    "titulo": "descendo (recursão)",
+    "faixas": [
+     "fibrecursivo",
+     "fibmemoria"
+    ]
+   },
+   {
+    "titulo": "subindo (laço)",
+    "faixas": [
+     "fibiterativo"
+    ]
+   }
+  ]
+ },
+ {
   "id": "ordenar-uma-lista",
   "titulo": "Ordenar uma lista",
   "cor": "vermelho",
@@ -26542,28 +26564,6 @@ window.PLAYLISTS = [
     "titulo": "já apareceu?",
     "faixas": [
      "repetidos"
-    ]
-   }
-  ]
- },
- {
-  "id": "calcular-fibonacci",
-  "titulo": "Calcular Fibonacci",
-  "cor": "creme",
-  "codigo": "FI",
-  "frase": "A mesma resposta de três jeitos: de φⁿ somas a n somas e duas variáveis.",
-  "subcategorias": [
-   {
-    "titulo": "descendo (recursão)",
-    "faixas": [
-     "fibrecursivo",
-     "fibmemoria"
-    ]
-   },
-   {
-    "titulo": "subindo (laço)",
-    "faixas": [
-     "fibiterativo"
     ]
    }
   ]
