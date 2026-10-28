@@ -11,7 +11,7 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 - As playlists, a galeria Problemas gerais e Algoritmos e estruturas estão no código: `playlists.json` e `galeria.js`. A home é só prateleiras, como a do Spotify.
 - **Conceitos importantes** (`conceitos.json`) e **Fundamentos** (`fundamentos.json`) são playlists de vídeo, prontas no código e **desligadas**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
-- Os 11 vídeos de Fundamentos são uma lista proposta, ainda sem roteiro.
+- Os 11 vídeos de Fundamentos têm a lista aprovada e ainda não têm roteiro.
 
 ## As quatro seções, nesta ordem
 
@@ -151,7 +151,7 @@ Fundamentos é a playlist inicial: vídeos curtos sobre a base, para a pessoa en
 
 A fronteira com Algoritmos e estruturas: o vídeo de Fundamentos apresenta a ideia (o que é uma pilha, por que o vetor dobra); a página da estrutura é onde se mexe nela e se vê o custo de cada operação.
 
-Os 11 vídeos estão em `fundamentos.json`, como lista proposta e sem roteiro. Algoritmo, variável, laço e decisão, e custo podem partir das fichas da trilha "Do zero" (branch `claude/compassionate-dhawan-92e734`, commit `74cc438`). O glossário rápido que esta seção chegou a ter saiu do site: Fundamentos não é glossário.
+Os 11 vídeos estão em `fundamentos.json`, com a lista aprovada pelo Pedro e ainda sem roteiro. Algoritmo, variável, laço e decisão, e custo podem partir das fichas da trilha "Do zero" (branch `claude/compassionate-dhawan-92e734`, commit `74cc438`). O glossário rápido que esta seção chegou a ter saiu do site: Fundamentos não é glossário.
 
 ## Pendências que não são de mapa
 

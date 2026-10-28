@@ -26419,7 +26419,7 @@ window.FUNDAMENTOS = {
  "id": "fundamentos",
  "titulo": "Fundamentos",
  "frase": "A base para ver qualquer faixa: o que é uma variável, um vetor, uma pilha, o n e um passo.",
- "nota": "A playlist só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\". A lista é proposta; os roteiros ainda não existem.",
+ "nota": "A playlist só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\". A lista foi aprovada pelo Pedro em 28/10; os roteiros ainda não existem.",
  "videos": [
   {
    "n": 1,
