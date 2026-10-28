@@ -26302,6 +26302,8 @@ window.PLAYLISTS = [
  {
   "id": "encontrar-um-item",
   "titulo": "Encontrar um item",
+  "cor": "azul",
+  "codigo": "EI",
   "frase": "Achar um valor entre muitos: olhando casa por casa, cortando pela metade, descendo uma árvore ou calculando a casa pela chave.",
   "subcategorias": [
    {
@@ -26330,6 +26332,8 @@ window.PLAYLISTS = [
  {
   "id": "ordenar-uma-lista",
   "titulo": "Ordenar uma lista",
+  "cor": "vermelho",
+  "codigo": "OL",
   "frase": "Pôr números em ordem. Na sequência, a playlist vai do O(n²) ao O(n log n).",
   "subcategorias": [
    {
@@ -26358,6 +26362,8 @@ window.PLAYLISTS = [
  {
   "id": "contar-ocorrencias",
   "titulo": "Contar ocorrências",
+  "cor": "rosa",
+  "codigo": "CO",
   "frase": "Quantas vezes cada coisa aparece: por palavra, por classe de valores, ou só se já apareceu.",
   "subcategorias": [
    {
@@ -26383,6 +26389,8 @@ window.PLAYLISTS = [
  {
   "id": "calcular-fibonacci",
   "titulo": "Calcular Fibonacci",
+  "cor": "creme",
+  "codigo": "FI",
   "frase": "A mesma resposta de três jeitos: de φⁿ somas a n somas e duas variáveis.",
   "subcategorias": [
    {
@@ -26403,6 +26411,8 @@ window.PLAYLISTS = [
  {
   "id": "organizar-uma-fila",
   "titulo": "Organizar uma fila",
+  "cor": "amarelo",
+  "codigo": "OF",
   "frase": "Decidir quem é atendido primeiro: quem chegou antes, ou quem é mais urgente.",
   "subcategorias": [
    {
@@ -26422,6 +26432,8 @@ window.PLAYLISTS = [
  {
   "id": "percorrer-tudo",
   "titulo": "Percorrer tudo",
+  "cor": "preto",
+  "codigo": "PT",
   "frase": "Visitar cada ponto uma vez, numa árvore ou num grafo: fundo primeiro, ou em ondas.",
   "subcategorias": [
    {
@@ -26442,6 +26454,8 @@ window.PLAYLISTS = [
  {
   "id": "achar-o-caminho-mais-curto",
   "titulo": "Achar o caminho mais curto",
+  "cor": "preto",
+  "codigo": "CC",
   "frase": "O caminho entre dois pontos: com menos passos, ou com o menor custo somado.",
   "subcategorias": [
    {
@@ -26461,6 +26475,8 @@ window.PLAYLISTS = [
  {
   "id": "problemas-gerais",
   "titulo": "Problemas gerais",
+  "cor": "creme",
+  "codigo": "PG",
   "frase": "Um problema, um jeito de resolver. Quando um deles ganhar o segundo jeito, vira playlist.",
   "gerais": true,
   "subcategorias": [

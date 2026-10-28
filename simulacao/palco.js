@@ -2706,7 +2706,7 @@
     }
     const ctx = canvas.getContext("2d");
     ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#faf4e4";   // o papel creme do site (--papel)
     ctx.fillRect(0, 0, W, H);
     sim.desenhar(ctx, u);
   }

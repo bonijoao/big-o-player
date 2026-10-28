@@ -1,15 +1,27 @@
-/* Mesma identidade dos vídeos (skill explainer-videos): papel branco,
-   IBM Plex Mono, tinta quase preta, verde só no resultado. */
+/* A linguagem das capas: papel creme, cores chapadas por playlist, títulos numa grotesca
+   pesada (Archivo Black), IBM Plex Mono nos rótulos, no código e nos números, e o verde só no
+   resultado. Todos os pares de texto e fundo abaixo passam no AA (4,5:1). */
 :root {
   color-scheme: light;
-  --papel: #ffffff;
+  --papel: #faf4e4;        /* o fundo da página e dos painéis: o creme das capas, mais claro */
   --tinta: #1e1e1e;
-  --cinza: #686c73;        /* texto secundário (contraste AA no branco) */
-  --cinza-claro: #b4b7bd;
-  --linha: #dee0e4;
-  --fundo: #f4f5f7;
+  --cinza: #5f5a50;        /* texto secundário: 6,2:1 no papel, 5,5:1 no fundo */
+  --cinza-claro: #6f6758;  /* texto esmaecido (a instrumentação do código): 4,9:1 no papel */
+  --linha: #e2d6bc;
+  --apagado: #b5aa94;      /* o que não é texto: sublinhados, bordas no hover e controles desabilitados (fora do AA, como manda a WCAG) */
+  --fundo: #f3e8cf;        /* a lateral e os realces */
+  --realce: #ede2c8;       /* o hover */
+  --tocando: #e9edd3;      /* a linha da faixa que toca e as decisões do pseudocódigo */
   --verde: #169646;        /* o mesmo do vídeo; texto grande ou negrito */
-  --verde-texto: #10803a;  /* verde para texto pequeno */
+  --verde-texto: #0e7434;  /* verde para texto pequeno: 5,4:1 no papel, 4,8:1 no fundo */
+  --titulo: "Archivo Black", "Arial Black", "Helvetica Neue", sans-serif;
+  /* as cores das playlists, como nas capas; cada uma com o texto que passa no AA sobre ela */
+  --azul: #043cc4;     --sobre-azul: var(--papel);      /* 7,8:1 */
+  --vermelho: #c8260f; --sobre-vermelho: var(--papel);  /* 5,1:1 (o vermelho da capa, um tom abaixo) */
+  --rosa: #dc6c8c;     --sobre-rosa: var(--tinta);      /* 5,2:1 */
+  --amarelo: #f4e42c;  --sobre-amarelo: var(--tinta);   /* 12,7:1 */
+  --creme: #efddba;    --sobre-creme: var(--tinta);     /* 12,5:1 */
+  --preto: #1e1e1e;    --sobre-preto: var(--papel);     /* 15,2:1 */
   --grupo-1: #2869c3;
   --grupo-2: #8c50b9;
   --grupo-3: #008c96;
@@ -31,7 +43,7 @@ body {
 }
 
 
-a { color: inherit; text-decoration-color: var(--cinza-claro); text-underline-offset: 3px; }
+a { color: inherit; text-decoration-color: var(--apagado); text-underline-offset: 3px; }
 a:hover { text-decoration-color: var(--tinta); }
 :focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; border-radius: 2px; }
 code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); padding: 0.05em 0.35em; border-radius: 3px; }
@@ -52,7 +64,7 @@ code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); pa
 .cursor { display: inline-block; width: 0.5em; height: 0.95em; margin-left: 2px; vertical-align: -0.12em; background: var(--verde); }
 .lateral-titulo { margin: 22px 0 8px; font-size: 0.78rem; color: var(--cinza); }
 .album-mini { display: flex; gap: 12px; align-items: center; padding: 7px; margin: 0 -7px 4px; border-radius: 4px; text-decoration: none; }
-.album-mini:hover { background: #ebedf0; }
+.album-mini:hover { background: var(--realce); }
 .album-mini[aria-current="true"] { background: var(--papel); box-shadow: inset 0 0 0 1px var(--linha); }
 .album-mini b { display: block; font-weight: 600; font-size: 0.92rem; }
 .album-mini small { color: var(--cinza); font-size: 0.78rem; }
@@ -73,7 +85,7 @@ main:focus { outline: none; }
 /* chips */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { font: inherit; font-size: 0.82rem; color: var(--tinta); background: var(--papel); border: 1px solid var(--linha); border-radius: 999px; padding: 4px 14px; cursor: pointer; }
-.chip:hover { border-color: var(--cinza-claro); }
+.chip:hover { border-color: var(--apagado); }
 .chip[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--papel); }
 
 /* prateleiras: título, "Mostrar tudo" e uma fileira que rola na horizontal */
@@ -134,7 +146,7 @@ main:focus { outline: none; }
 .estante { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 36px 28px; margin: 48px 0 0; }
 .disco { text-decoration: none; display: block; }
 .disco .capa { box-shadow: 0 1px 0 var(--linha); }
-.disco:hover .capa { outline: 1px solid var(--cinza-claro); outline-offset: 3px; }
+.disco:hover .capa { outline: 1px solid var(--apagado); outline-offset: 3px; }
 .disco b { display: block; margin: 14px 0 0; font-size: 1.05rem; font-weight: 600; }
 .disco small { color: var(--cinza); font-size: 0.82rem; }
 
@@ -160,7 +172,7 @@ main:focus { outline: none; }
 .faixas td { padding: 9px 12px; border-bottom: 1px solid var(--linha); vertical-align: middle; }
 .faixas tr.tocavel { cursor: pointer; }
 .faixas tr.tocavel:hover td { background: var(--fundo); }
-.faixas tr.tocando td { background: #f1f8f3; }
+.faixas tr.tocando td { background: var(--tocando); }
 .faixas td.n { width: 40px; color: var(--cinza); font-variant-numeric: tabular-nums; }
 .faixas tr.tocando td.n { color: var(--verde-texto); font-weight: 700; }
 /* o número vira ▶ no hover; a faixa que toca mostra o equalizador */
@@ -205,7 +217,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 /* feat.: os instrumentos que a faixa toca */
 .feat { color: var(--cinza); font-weight: 400; font-size: 0.86em; }
 .feat a { color: inherit; }
-.faixas .faixa .feat a { font-weight: 400; text-decoration: underline; text-decoration-color: var(--cinza-claro); }
+.faixas .faixa .feat a { font-weight: 400; text-decoration: underline; text-decoration-color: var(--apagado); }
 .feat-linha { margin: 6px 0 0; }
 .feat-linha .feat { margin: 0; font-size: 0.95rem; }
 
@@ -242,7 +254,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 .demo-figura svg { display: block; width: 100%; height: auto; max-height: calc(100vh - var(--barra) - 300px); }
 .demo-legenda { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; margin: 10px 0 0; font-size: 0.76rem; color: var(--cinza); }
 .demo-legenda i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; margin-right: -8px; vertical-align: -1px; }
-.demo-legenda i.livre { background: var(--fundo); box-shadow: inset 0 0 0 1px var(--cinza-claro); }
+.demo-legenda i.livre { background: var(--fundo); box-shadow: inset 0 0 0 1px var(--apagado); }
 .demo-dica { margin: 4px 0 0; font-size: 0.76rem; color: var(--cinza); max-width: 80ch; }
 
 .demo-painel { background: var(--fundo); border-left: 1px solid var(--linha); padding: 6px 18px 18px; display: flex; flex-direction: column; min-width: 0; font-size: 0.82rem; }
@@ -254,7 +266,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 .demo-botoes { display: grid; gap: 6px; }
 .demo-painel .botao-passo { text-align: left; padding: 6px 10px; }
 .demo-botoes + .botao-passo { margin: 10px 0 0; color: var(--cinza); background: none; border-style: dashed; }
-.demo .botao-passo:disabled { color: var(--cinza-claro); cursor: default; border-color: var(--linha); }
+.demo .botao-passo:disabled { color: var(--apagado); cursor: default; border-color: var(--linha); }
 .demo-repasse { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--cinza); }
 .demo-repasse span { flex-basis: 100%; }
 .demo-custou { margin: 0; font-size: 0.86rem; font-variant-numeric: tabular-nums; min-height: 1.6em; }
@@ -342,7 +354,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 
 /* lightbox do fluxograma */
 .caixa-fluxo { width: min(1100px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--tinta); border-radius: 6px; color: var(--tinta); background: var(--papel); box-shadow: 0 24px 60px -24px rgba(30, 30, 30, 0.55); }
-.caixa-fluxo::backdrop { background: rgba(255, 255, 255, 0.86); }
+.caixa-fluxo::backdrop { background: rgba(250, 244, 228, 0.88); }
 .caixa-fluxo[open] { display: flex; flex-direction: column; }
 .caixa-barra { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 20px; border-bottom: 1px solid var(--linha); }
 .caixa-barra h2 { flex: 1; margin: 0; font-size: 1rem; font-weight: 700; }
@@ -360,7 +372,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 .pseudo ol { list-style: none; margin: 0; padding: 0 18px 0 0; counter-reset: linha; }
 .pseudo li { white-space: pre; padding-left: 4.4ch; position: relative; min-height: 22px; }
 .pseudo li::before { counter-increment: linha; content: counter(linha); position: absolute; left: 0.6ch; width: 2.4ch; text-align: right; color: var(--cinza-claro); }
-.pseudo li.decisao { background: #eef7f1; }
+.pseudo li.decisao { background: var(--tocando); }
 .pseudo li.decisao::after { content: "+" attr(data-n); margin-left: 2ch; color: var(--verde-texto); font-weight: 600; }
 .pseudo .kw { font-weight: 600; }
 .fluxo { border: 1px solid var(--linha); border-radius: 4px; overflow: auto; max-height: 900px; background: var(--papel); }
@@ -432,7 +444,7 @@ svg text { font-family: var(--mono); }
 .codigo ol { list-style: none; margin: 0; padding: 0 20px 0 0; counter-reset: linha; }
 .codigo li { white-space: pre; padding-left: 3.6ch; position: relative; min-height: 22px; }
 .codigo li::before { counter-increment: linha; content: counter(linha); position: absolute; left: 0; width: 2.4ch; text-align: right; color: var(--cinza-claro); }
-.codigo li.decisao { background: #eef7f1; }
+.codigo li.decisao { background: var(--tocando); }
 .codigo li.decisao::after { content: "+" attr(data-n); margin-left: 2ch; color: var(--verde-texto); font-weight: 600; }
 .codigo li.fim { color: var(--cinza); }
 .codigo li.instrumentacao { color: var(--cinza-claro); }
@@ -448,7 +460,7 @@ svg text { font-family: var(--mono); }
 
 /* ---------- palco (vídeo grande / mini player) ---------- */
 
-.fundo { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 30; }   /* sem desfoque: pesava na animação */
+.fundo { position: fixed; inset: 0; background: rgba(250, 244, 228, 0.92); z-index: 30; }   /* sem desfoque: pesava na animação */
 .palco:focus { outline: none; }   /* o diálogo recebe o foco ao abrir; os botões dentro dele mostram o contorno */
 .palco { position: fixed; z-index: 40; background: var(--papel); border: 1px solid var(--tinta); border-radius: 6px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(30, 30, 30, 0.5); }
 .palco-corpo { display: grid; grid-template-columns: minmax(0, 1fr); background: var(--papel); }
@@ -469,12 +481,12 @@ svg text { font-family: var(--mono); }
 .ao-vivo { margin: 10px 0 0; color: var(--cinza); font-size: 0.82rem; max-width: var(--medida); }
 .ao-vivo:empty { display: none; }
 .palco-controles label { display: inline-flex; gap: 2px; align-items: center; min-height: 36px; padding-left: 10px; border: 1px solid var(--linha); border-radius: 4px; }
-.palco-controles label:hover { border-color: var(--cinza-claro); }
+.palco-controles label:hover { border-color: var(--apagado); }
 .palco-controles label select { border: 0; background: none; min-height: 34px; }
 .palco-controles .botao-passo { min-height: 36px; }
 .palco-controles select, .botao-passo { font: inherit; font-size: 0.8rem; color: var(--tinta); background: var(--papel); border: 1px solid var(--linha); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
-.botao-passo:hover { border-color: var(--cinza-claro); }
-.palco-controles select:disabled { color: var(--cinza-claro); cursor: default; }
+.botao-passo:hover { border-color: var(--apagado); }
+.palco-controles select:disabled { color: var(--apagado); cursor: default; }
 .palco .so-kmeans, .palco.e-kmeans .so-ordenacao { display: none; }
 .palco.e-kmeans .so-kmeans, .palco.e-com-k .so-kmeans { display: inline-flex; }
 
@@ -500,7 +512,7 @@ svg text { font-family: var(--mono); }
 
 .icone { font: inherit; background: none; border: 0; cursor: pointer; color: var(--tinta); width: 32px; height: 32px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 15px; }
 .icone:hover { background: var(--fundo); }
-.icone:disabled { color: var(--cinza-claro); cursor: default; background: none; }
+.icone:disabled { color: var(--apagado); cursor: default; background: none; }
 .icone svg { width: 18px; height: 18px; }
 
 /* ---------- barra do player ---------- */
@@ -525,7 +537,7 @@ svg text { font-family: var(--mono); }
 .botoes .faixa svg { width: 16px; height: 16px; }
 .tocar { font: inherit; width: 44px; height: 44px; margin: 0 4px; border-radius: 50%; border: 0; background: var(--tinta); color: var(--papel); cursor: pointer; display: grid; place-items: center; }
 .tocar svg { width: 16px; height: 16px; }
-.tocar:disabled { background: var(--cinza-claro); cursor: default; }
+.tocar:disabled { background: var(--linha); color: var(--cinza); cursor: default; }
 .linha-tempo { display: flex; gap: 10px; align-items: center; margin: 0; font-size: 0.75rem; color: var(--cinza); font-variant-numeric: tabular-nums; }
 .trilho-caixa { position: relative; flex: 1; display: flex; }
 .linha-tempo input { flex: 1; min-width: 0; margin: 0; accent-color: var(--tinta); height: 4px; }
@@ -645,3 +657,45 @@ svg text { font-family: var(--mono); }
 .palco.e-video .tela-video { display: block; }
 .palco.e-video .palco-controles { display: none; }
 .capa-video { font-size: 3rem; }
+
+/* ---------- a linguagem das capas: cor por playlist, títulos pesados, rótulos em caixa alta ---------- */
+
+.cor-azul { --cor: var(--azul); --sobre-cor: var(--sobre-azul); }
+.cor-vermelho { --cor: var(--vermelho); --sobre-cor: var(--sobre-vermelho); }
+.cor-rosa { --cor: var(--rosa); --sobre-cor: var(--sobre-rosa); }
+.cor-amarelo { --cor: var(--amarelo); --sobre-cor: var(--sobre-amarelo); }
+.cor-creme { --cor: var(--creme); --sobre-cor: var(--sobre-creme); }
+.cor-preto { --cor: var(--preto); --sobre-cor: var(--sobre-preto); }
+
+/* os títulos de playlist e de faixa, na grotesca das capas (só tem um peso: o pesado) */
+.cabeca h1, .encarte-titulo h1, .inst-cabeca h1, .prateleira h2, .estante-titulo, .letra h2, .secao > h2,
+.cartao-link, .cartao b, .faixas .faixa a, .album-mini b, .indice-algoritmos a, .fim-conta strong, .agora-texto b {
+  font-family: var(--titulo); font-weight: 400; letter-spacing: -0.01em;
+}
+.cabeca h1 { letter-spacing: -0.03em; line-height: 0.95; }
+.cabeca .rotulo, .inst-cabeca .rotulo { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; }
+
+/* o cabeçalho da playlist é uma faixa na cor dela, como a capa */
+.cabeca.colorida { background: var(--cor); color: var(--sobre-cor); margin: -40px -48px 0; padding: 40px 48px 36px; }
+.cabeca.colorida p, .cabeca.colorida .rotulo, .cabeca.colorida .acoes { color: var(--sobre-cor); }
+.cabeca.colorida .capa { box-shadow: 0 0 0 2px var(--sobre-cor); }
+.cabeca.colorida .tocar-playlist { background: var(--sobre-cor); color: var(--cor); }
+.cabeca.colorida .tocar-playlist:hover { background: var(--sobre-cor); }
+
+/* a cor da playlist nos detalhes: a marca da subcategoria, a da prateleira e a da lateral */
+.faixas tr.subcategoria th::before, .prateleira[class*="cor-"] h2::before {
+  content: ""; display: inline-block; width: 0.7em; height: 0.7em; margin-right: 0.5em; background: var(--cor); box-shadow: inset 0 0 0 1px rgba(30, 30, 30, 0.25); vertical-align: 0.02em;
+}
+.album-mini[class*="cor-"][aria-current="true"] { box-shadow: inset 4px 0 0 var(--cor), inset 0 0 0 1px var(--linha); }
+
+/* no encarte, o caminho de volta é a etiqueta da capa: o problema e o código, em caixa alta */
+.voltar.etiqueta { display: inline-block; padding: 3px 10px; background: var(--cor); color: var(--sobre-cor); text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.72rem; }
+.voltar.etiqueta:hover { text-decoration: underline; }
+
+/* o palco: papel creme, com a cor da playlist na borda de cima */
+.palco { background: var(--papel); }
+.palco[class*="cor-"] { border-top: 6px solid var(--cor); }
+
+@media (max-width: 860px) {
+  .cabeca.colorida { margin: -24px -16px 0; padding: 24px 16px 24px; }
+}

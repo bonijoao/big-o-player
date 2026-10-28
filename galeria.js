@@ -25,6 +25,7 @@
   const rotaFaixa = (f, p) => `#${(p || casaDe(f) || SERIES.find((s) => s.faixas.includes(f))).id}/${f.id}`;
   const relogio = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const nFaixas = (n) => `${n} ${n === 1 ? "faixa" : "faixas"}`;
+  const corDe = (p) => `cor-${(p && p.cor) || "creme"}`;   // a classe com a cor da playlist (estilo.css)
   // links de antes da reorganização: o álbum velho cai na playlist que herdou a maior parte dele
   const ANTIGOS = { "primeiros-passos": "problemas-gerais", busca: "encontrar-um-item", ordenacao: "ordenar-uma-lista",
     "estruturas-lineares": "organizar-uma-fila", "arvores-e-heaps": "encontrar-um-item", grafos: "achar-o-caminho-mais-curto",
@@ -69,12 +70,12 @@
   // ---------- barra lateral: as seções na ordem do mapa ----------
 
   function desenharLateral(atual) {
-    const linha = (id, capa, titulo, sub) => el("a", { class: "album-mini", href: `#${id}`, "aria-current": String(id === atual) }, [
+    const linha = (id, capa, titulo, sub, cor = "") => el("a", { class: `album-mini ${cor}`, href: `#${id}`, "aria-current": String(id === atual) }, [
       capa, el("span", {}, [el("b", { text: titulo }), el("small", { text: sub })])]);
     $("#secoes").replaceChildren(
       ...SERIES.map((s) => linha(s.id, capaTexto("▶", "mini-48"), s.titulo, `${s.prontos.length} ${s.prontos.length === 1 ? "vídeo" : "vídeos"}`)),
       el("p", { class: "lateral-titulo", text: "Playlists" }),
-      ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length))),
+      ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length), corDe(p))),
       el("p", { class: "lateral-titulo", text: "Algoritmos e estruturas" }),
       linha("algoritmos-e-estruturas", window.PaginaInstrumento.glifo("vetor", "mini-48"), "Algoritmos e estruturas", `${G.length} algoritmos, ${INSTS.length} estruturas`),
     );
@@ -127,7 +128,7 @@
       el("h1", { class: "so-leitor", text: NOME }),
       el("p", { class: "apresenta", text: "Algoritmos tocando ao vivo, com cada passo contado. Cada playlist é um problema; cada faixa, um jeito de resolvê-lo." }),
       ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), "destaque")),
-      ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), p.gerais ? "gerais" : "")),
+      ...PLAYLISTS.map((p) => prateleira(p.titulo, `#${p.id}`, p.frase, p.faixas.map((f) => cartaoFaixa(f, p)), `${corDe(p)} ${p.gerais ? "gerais" : ""}`)),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
       rodape(),
@@ -164,9 +165,9 @@
     const botao = el("button", { type: "button", class: "tocar-playlist", "aria-label": `Tocar a playlist ${a.titulo}`,
       html: '<svg aria-hidden="true"><use href="#i-tocar"/></svg>' });
     botao.addEventListener("click", () => tocar(a.faixas[0], a));
-    return el("div", {}, [
-      el("header", { class: "cabeca" }, [capaAlbum(a), el("div", {}, [
-        el("span", { class: "rotulo", text: a.gerais ? "galeria" : "playlist" }),
+    return el("div", { class: `playlist ${corDe(a)}` }, [
+      el("header", { class: "cabeca colorida" }, [capaAlbum(a), el("div", {}, [
+        el("span", { class: "rotulo", text: `${a.gerais ? "galeria" : "playlist"} · ${a.codigo}` }),
         el("h1", { text: a.titulo }),
         el("p", { text: a.frase }),
         el("div", { class: "acoes" }, [botao, el("span", { text: `${nFaixas(a.faixas.length)}, ${relogio(total)}` })]),
@@ -313,8 +314,8 @@
     };
 
     // abrir a faixa é ler a letra: o pseudocódigo vem logo abaixo do título; a ficha técnica desce
-    const conteudo = el("div", {}, [
-      el("a", { class: "voltar", href: `#${a.id}`, text: `${a.gerais ? "galeria" : "playlist"} ${a.titulo}` }),
+    const conteudo = el("div", { class: corDe(a) }, [
+      el("a", { class: "voltar etiqueta", href: `#${a.id}`, text: `${a.titulo} · ${a.codigo}` }),
       el("div", { class: "encarte-topo" }, [capa, el("div", { class: "encarte-titulo" }, [
         el("h1", { text: f.nome }),
         creditos(f).length ? el("p", { class: "feat-linha" }, feat(f)) : null,
@@ -823,6 +824,8 @@
 
   function atualizarBarra() {
     const a = tocandoEm;
+    palco.classList.remove(...[...palco.classList].filter((c) => c.startsWith("cor-")));
+    if (a.cor) palco.classList.add(corDe(a));
     $("#agora-capa").replaceChildren(imgCapa(faixa, true));
     $("#agora-capa").disabled = false;
     sessaoDeMidia();
