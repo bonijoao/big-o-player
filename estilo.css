@@ -395,8 +395,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 .pseudo ol { list-style: none; margin: 0; padding: 0 18px 0 0; counter-reset: linha; }
 .pseudo li { white-space: pre; padding-left: 4.4ch; position: relative; min-height: 22px; }
 .pseudo li::before { counter-increment: linha; content: counter(linha); position: absolute; left: 0.6ch; width: 2.4ch; text-align: right; color: var(--cinza-claro); }
-.pseudo li.decisao { background: var(--tocando); }
-.pseudo li.decisao::after { content: "+" attr(data-n); margin-left: 2ch; color: var(--verde-texto); font-weight: 600; }
+/* no pseudocódigo, as decisões não ganham marca: o "+1" (a conta dos caminhos) mora só no código medido, onde é explicado */
 .pseudo .kw { font-weight: 600; }
 .fluxo { border: 1px solid var(--linha); border-radius: 4px; overflow: auto; max-height: 900px; background: var(--papel); }
 .fluxo svg { display: block; margin: 0 auto; }
@@ -760,8 +759,8 @@ svg text { font-family: var(--mono); }
 .cartao-playlist .capa { width: 100%; aspect-ratio: 1; box-shadow: 0 1px 0 var(--linha); }
 .cartao-playlist .mosaico { gap: 0; }
 .cartao-playlist:hover .capa { outline: 2px solid var(--tinta); outline-offset: 3px; }
-.cartao-playlist b { display: block; margin: 12px 0 0; font-family: var(--titulo); font-weight: 400; font-size: 1.05rem; line-height: 1.2; }
-.cartao-playlist b::before { content: ""; display: inline-block; width: 0.7em; height: 0.7em; margin-right: 0.45em; background: var(--cor); box-shadow: inset 0 0 0 1px var(--tinta); vertical-align: 0.02em; }
+.cartao-playlist > b { display: block; margin: 12px 0 0; font-family: var(--titulo); font-weight: 400; font-size: 1.05rem; line-height: 1.2; }
+.cartao-playlist > b::before { content: ""; display: inline-block; width: 0.7em; height: 0.7em; margin-right: 0.45em; background: var(--cor); box-shadow: inset 0 0 0 1px var(--tinta); vertical-align: 0.02em; }
 .cartao-playlist small { color: var(--cinza); font-size: 0.8rem; }
 
 /* os marcadores de cor ganham contorno de tinta: o creme de Calcular Fibonacci não some no papel */
@@ -872,8 +871,9 @@ svg text { font-family: var(--mono); }
 .palco-letra { margin: 0; }   /* a .letra do encarte tem margem em cima; no palco, não */
 .palco-letra .pseudo li.da-vez::after { color: var(--sobre-cor, var(--papel)); }
 .palco-letra .pseudo { border: 0; border-radius: 0; margin: 0; padding: 12px 0; font-size: 13px; line-height: 22px; overflow-x: auto; }
-.palco-letra .pseudo li.da-vez { background: var(--cor, var(--tinta)); color: var(--sobre-cor, var(--papel)); }
-.palco-letra .pseudo li.da-vez .kw, .palco-letra .pseudo li.da-vez::before { color: var(--sobre-cor, var(--papel)); }
+/* a linha da vez: tinta, com a cor da playlist só numa faixa à esquerda (o vermelho inteiro parecia erro) */
+.palco-letra .pseudo li.da-vez { background: var(--tinta); color: var(--papel); box-shadow: inset 5px 0 0 var(--cor, var(--tinta)); }
+.palco-letra .pseudo li.da-vez .kw, .palco-letra .pseudo li.da-vez::before { color: var(--papel); }
 .palco-letra summary { padding: 8px 14px; font-size: 0.78rem; color: var(--cinza); cursor: pointer; }
 .palco-valores { padding: 8px 14px 10px; }
 /* um vídeo ocupa o palco inteiro: o painel só aparece no fim, com o "a seguir" */
@@ -994,3 +994,13 @@ svg text { font-family: var(--mono); }
 .legendas[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
 .legendas[hidden] { display: none; }
 #palco-video::cue { font-family: var(--mono); background: rgba(20, 20, 20, 0.78); color: #fff; }
+.fim-conta.parada { border-style: dashed; }
+
+/* a entrada: os <select> nunca aparecem, nem o do k (a regra do k ganhava desta) */
+.palco .palco-controles label, .palco.e-com-k .palco-controles .so-kmeans, .palco.e-kmeans .palco-controles .so-kmeans { display: none; }
+
+/* o mini palco reserva o seu lugar: folga embaixo da página e, na tela larga, uma coluna à direita */
+body.com-mini main { padding-bottom: calc(var(--barra) + 260px); }
+@media (min-width: 1280px) { body.com-mini main { padding-right: 390px; } }
+/* no celular não há mini palco flutuando: a barra de baixo já mostra o que toca, e a capa dela abre o palco */
+@media (max-width: 860px) { .palco[data-modo="mini"] { display: none; } body.com-mini main { padding-bottom: calc(var(--barra) + 48px); } }

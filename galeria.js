@@ -67,13 +67,18 @@
   // chapada, o rótulo mono "PROBLEMA · CÓDIGO" no topo e o nome na grotesca embaixo; pequena, só o código
   function capaProvisoria(f, pequena) {
     const p = casaDe(f), codigo = p && p.codigo ? `${p.codigo}-${String(p.faixas.indexOf(f) + 1).padStart(2, "0")}` : "";
+    return montarProvisoria(p, p ? p.titulo : "", codigo, f.nome, pequena);
+  }
+  function montarProvisoria(p, rotulo, codigo, nome, pequena) {
     return el("span", { class: `capa-provisoria ${corDe(p)} ${pequena ? "pequena" : ""}`, "aria-hidden": "true" }, pequena
       ? [el("small", { text: codigo })]
-      : [el("small", {}, [el("span", { text: p ? p.titulo : "" }), el("span", { text: codigo })]), el("b", { text: f.nome })]);
+      : [el("small", {}, [el("span", { text: rotulo }), el("span", { text: codigo })]), el("b", { text: nome })]);
   }
 
   // a capa de uma playlist: só as capas desenhadas (o mosaico de quatro, ou a primeira); nunca o print antigo
   function capaAlbum(a, extra = "") {
+    // a playlist que só empresta capas de outra (Achar o maior usa as de Problemas gerais) mostra a provisória até ter a sua
+    if (a.capa === "provisoria") return el("span", { class: `capa ${extra}` }, montarProvisoria(a, a.titulo, a.codigo, a.titulo, extra.includes("mini-48")));
     const novas = a.faixas.filter((f) => f.capa);
     const fs = (novas.length ? novas : a.faixas).slice(0, 4);
     if (!fs.length) return el("span", { class: `capa vazia ${extra}` });
@@ -681,6 +686,7 @@
       quemAbriu = null;
       volta.focus({ preventScroll: true });
     }
+    document.body.classList.toggle("com-mini", m === "mini");
     const tocador = $("#tocador");
     if (m === "grande" && tocador.parentNode !== palco) palco.append(tocador);
     else if (m !== "grande" && tocador.parentNode === palco) document.body.append(tocador);
@@ -743,6 +749,7 @@
     fila = tocandoEm.faixas;
     cancelarFim();
     if (!faixa || faixa.id !== f.id) {
+      if (faixa && vel !== 1) { vel = 1; mudarVel(0); }   // cada faixa começa em 1×
       faixa = f;
       if (!f.arquivo && !cfgs[f.id]) cfgs[f.id] = cfgPadrao(f);
       if (!f.arquivo) sincronizarControles();
@@ -791,7 +798,7 @@
       pintar();
     }
     // a contagem do "a seguir" anda só com a aba visível; com a aba em segundo plano, espera
-    if (fim && fim.proxima) {
+    if (fim && fim.proxima && !fim.parado) {
       if (document.hidden) fim.ate += agora - ultimoQuadro;
       else if (agora >= fim.ate) { cancelarFim(); pular(1); }
       else desenharFim();
@@ -824,7 +831,7 @@
   function desenharFim(montar) {
     const caixa = $("#palco-vars");
     const resta = Math.max(0, fim.ate - performance.now()), falta = Math.ceil(resta / 1000);
-    const conta = caixa.querySelector(".fim-conta");
+    const conta = caixa.querySelector(".fim-conta .fim-anel");
     if (!montar && conta) {
       conta.querySelector(".fim-anel b").textContent = String(falta);
       conta.querySelector("circle.anda").style.strokeDashoffset = String(113.1 * (1 - resta / ESPERA));
@@ -843,21 +850,31 @@
       el("p", { class: "fim-rotulo", text: faixa.arquivo ? "fim do vídeo" : "terminou" }),
       total !== null ? el("p", { class: "fim-resultado" }, [el("b", { text: mil(total) }), ` ${faixa.medido.tempo.unidade}`]) : null,
       faixa.tempo ? el("p", { class: "fim-ordem" }, ["tempo ", el("span", { class: "o", text: faixa.tempo.notacao })]) : null,
-      p ? el("div", { class: "fim-conta", role: "status" }, [
-        el("span", { class: "fim-anel" }, [
+      // a próxima fica à vista mesmo com a contagem parada (ficar aqui, Esc ou mexer no player): só some o anel
+      p ? el("div", { class: `fim-conta ${fim.parado ? "parada" : ""}`, role: "status" }, [
+        fim.parado ? null : el("span", { class: "fim-anel" }, [
           el("span", { html: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><circle class="anda" cx="20" cy="20" r="18"/></svg>' }),
           el("b", { text: String(falta) })]),
-        el("span", {}, [el("small", { text: "a seguir" }), el("strong", { text: p.nome }), p.tempo ? el("span", { class: "o", text: p.tempo.notacao }) : null]),
-      ]) : el("p", { class: "fim-rotulo", text: fila.indexOf(faixa) === fila.length - 1 ? `fim de ${tocandoEm.titulo}` : "a playlist parou aqui" }),
+        el("span", {}, [el("small", { text: fim.parado ? "a seguir, quando você quiser" : "a seguir" }), el("strong", { text: p.nome }), p.tempo ? el("span", { class: "o", text: p.tempo.notacao }) : null]),
+      ]) : el("p", { class: "fim-rotulo", text: `fim de ${tocandoEm.titulo}` }),
       el("div", { class: "fim-acoes" }, [
         p ? botao("▶ tocar agora", () => { cancelarFim(); pular(1); }, "principal") : null,
         botao("↻ de novo", () => { cancelarFim(); u = 0; play(true); }, p ? "" : "principal"),
-        p ? botao("ficar aqui", () => { fim.proxima = null; desenharFim(true); }) : null,
+        p && !fim.parado ? botao("ficar aqui", pararContagem) : null,
       ]),
     ]));
   }
 
+  // parar a contagem do "a seguir" sem esconder a próxima faixa
+  function pararContagem() {
+    if (!fim || !fim.proxima || fim.parado) return false;
+    fim.parado = true;
+    desenharFim(true);
+    return true;
+  }
+
   function alternarRepetir() {
+    pararContagem();
     repetir = !repetir;
     $("#repetir").setAttribute("aria-pressed", String(repetir));
   }
@@ -1093,6 +1110,7 @@
   // velocidade: − e + andam pela escada; o valor fica no próprio controle (no rodapé e, no celular, no palco)
   const VELS = [0.25, 0.5, 1, 2, 4, 8, 16];
   function mudarVel(d) {
+    pararContagem();
     vel = VELS[Math.min(VELS.length - 1, Math.max(0, VELS.indexOf(vel) + d))];
     document.querySelectorAll(".vel-valor").forEach((o) => { o.textContent = `${vel.toLocaleString("pt-BR")}×`; });
     document.querySelectorAll('.vel [data-vel="-1"]').forEach((b) => { b.disabled = vel === VELS[0]; });
@@ -1170,7 +1188,7 @@
     if (e.key === "MediaTrackNext") { pular(1); return; }
     if (e.key === "MediaTrackPrevious") { pular(-1); return; }
     if (e.key === "?" && !e.target.closest("input, select, textarea")) { abrirAjuda(); return; }
-    if (e.key === "Escape" && fim && fim.proxima) { fim.proxima = null; desenharFim(true); return; }   // Esc cancela a contagem
+    if (e.key === "Escape" && pararContagem()) return;   // o primeiro Esc para a contagem; o seguinte minimiza
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
     // o espaço toca e pausa; com o palco aberto (mini ou grande), sempre, mesmo com o foco num botão (o Enter continua apertando o botão)

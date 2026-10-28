@@ -3,6 +3,7 @@
   "id": "achar-o-maior",
   "bloco": "Para começar",
   "titulo": "Achar o maior",
+  "capa": "provisoria",
   "cor": "mostarda",
   "codigo": "AM",
   "frase": "O primeiro algoritmo: olhar cada número uma vez e guardar o maior. Depois, o maior de cada trecho.",
