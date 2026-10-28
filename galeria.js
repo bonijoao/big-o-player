@@ -703,7 +703,14 @@
     return s;
   }
 
+  // o estado que o ícone do meio da tela mostra: "inicio" (▶, antes do primeiro play), "tocando", "pausado" (❚❚) ou "fim"
+  let jaTocou = false;
+  function marcarEstado() {
+    palco.dataset.estado = tocando ? "tocando" : fim || (sim && u >= sim.total) ? "fim" : jaTocou ? "pausado" : "inicio";
+  }
+
   function montarSim() {
+    jaTocou = false;
     if (sim && sim.video && !(faixa.arquivo)) { telaVideo.pause(); telaVideo.removeAttribute("src"); telaVideo.load(); }
     palco.classList.toggle("e-video", !!faixa.arquivo);
     sim = faixa.arquivo ? simVideo(faixa) : window.Palco.criar(faixa, cfgs[faixa.id], accelerando);
@@ -730,6 +737,7 @@
 
   function play(sim_) {
     tocando = sim_ && !!sim;
+    if (tocando) jaTocou = true;
     if (sim && sim.video) {
       if (tocando) { if (u >= sim.total - 0.05) telaVideo.currentTime = u = 0; telaVideo.playbackRate = vel; telaVideo.play().catch(() => play(false)); }
       else telaVideo.pause();
@@ -738,6 +746,7 @@
     botaoTocar.firstElementChild.firstElementChild.setAttribute("href", tocando ? "#i-pausar" : "#i-tocar");
     botaoTocar.setAttribute("aria-label", tocando ? "Pausar" : "Tocar");
     anunciar();
+    marcarEstado();
     ultimoQuadro = performance.now();
     marcarTocando();
   }
@@ -786,6 +795,7 @@
   function cancelarFim() {
     if (!fim) return;
     fim = null;
+    marcarEstado();
     painelEm = null;
     palco.classList.remove("no-fim");
     if (sim) pintar();
@@ -802,6 +812,7 @@
       return;
     }
     palco.classList.add("no-fim");
+    marcarEstado();
     const total = faixa.arquivo ? null : sim.contagemEm ? sim.contagemEm(sim.total) : null;
     const botao = (texto, acao, extra = "") => {
       const b = el("button", { type: "button", class: `botao-fim ${extra}`, text: texto });

@@ -968,3 +968,23 @@ svg text { font-family: var(--mono); }
   .palco .tocador .ritmo { justify-content: center; }
   .palco .a-seguir:not([hidden]) { display: none; }
 }
+
+/* ---------- a tela da simulação: um monitor dentro do player ---------- */
+
+.palco[data-modo="grande"] .palco-tela { position: relative; background: var(--fundo); }
+.palco[data-modo="grande"] .tela, .palco[data-modo="grande"] .tela-video { border: 1px solid var(--linha); border-radius: 8px; }
+/* o estado no meio da tela: um círculo semitransparente com ▶ ou ❚❚; o clique passa para a tela, que alterna */
+.tela-estado { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.tela-estado span { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; background: rgba(30, 30, 30, 0.72); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85); color: #fff;
+  opacity: 0; transform: scale(0.92); transition: opacity 0.18s ease, transform 0.18s ease; }
+.tela-estado svg { width: 34px; height: 34px; display: none; }
+.palco[data-modo="grande"][data-estado="inicio"] .tela-estado span, .palco[data-modo="grande"][data-estado="pausado"] .tela-estado span { opacity: 1; transform: none; }
+.palco[data-estado="inicio"] .tela-estado .so-tocar { display: block; margin-left: 5px; }
+.palco[data-estado="pausado"] .tela-estado .so-pausar { display: block; }
+.palco:not([data-modo="grande"]) .tela-estado { display: none; }
+@media (prefers-reduced-motion: reduce) { .tela-estado span { transition: none; } }
+@media (max-width: 860px) {
+  .palco[data-modo="grande"] .palco-tela { padding: 8px; }
+  .tela-estado span { width: 64px; height: 64px; }
+  .tela-estado svg { width: 26px; height: 26px; }
+}
