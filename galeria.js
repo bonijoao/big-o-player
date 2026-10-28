@@ -654,15 +654,15 @@
     document.querySelectorAll(".letra .pseudo[data-agora]").forEach((x) => {   // a faixa mudou: a letra anterior apaga
       if (x === ol) return;
       delete x.dataset.agora;
-      x.querySelectorAll("li.agora").forEach((li) => li.classList.remove("agora"));
+      x.querySelectorAll("li.da-vez").forEach((li) => li.classList.remove("da-vez"));
     });
     if (!ol) return;
     const p = sim.varsEm(u), n = String(p && p.linha ? p.linha : 0);
     if (ol.dataset.agora === n) return;
     ol.dataset.agora = n;
-    ol.querySelectorAll("li.agora").forEach((li) => li.classList.remove("agora"));
+    ol.querySelectorAll("li.da-vez").forEach((li) => li.classList.remove("da-vez"));
     const li = ol.querySelector(`li[data-linha="${n}"]`);
-    if (li) li.classList.add("agora");
+    if (li) li.classList.add("da-vez");
   }
 
   // o anúncio do leitor de tela: tocando, só isso; parada, a linha do pseudocódigo da vez
@@ -874,17 +874,17 @@
     if (caixaFluxo.open) return;          // o Esc e as setas são da caixa do fluxograma
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
-    // o espaço toca e pausa; com o palco grande aberto, sempre, mesmo com o foco num botão (o Enter continua apertando o botão)
-    if (e.key === " " && faixa && (palco.dataset.modo === "grande" || !e.target.closest("button, a"))) { e.preventDefault(); botaoTocar.click(); }
+    // o espaço toca e pausa; com o palco aberto (mini ou grande), sempre, mesmo com o foco num botão (o Enter continua apertando o botão)
+    if (e.key === " " && faixa && (palco.dataset.modo !== "oculto" || !e.target.closest("button, a"))) { e.preventDefault(); botaoTocar.click(); }
     if (!faixa || palco.dataset.modo === "oculto" || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); passo(e.key === "ArrowRight" ? 1 : -1); }
     if (e.key === "-" || e.key === "_") mudarVel(-1);
     if (e.key === "+" || e.key === "=") mudarVel(1);
   });
 
-  // o botão nativo aperta no keyup do espaço: com o palco grande, o espaço já tocou ou pausou no keydown
+  // o botão nativo aperta no keyup do espaço: com o palco aberto, o espaço já tocou ou pausou no keydown
   document.addEventListener("keyup", (e) => {
-    if (e.key === " " && faixa && palco.dataset.modo === "grande" && e.target.closest("button, a")) e.preventDefault();
+    if (e.key === " " && faixa && palco.dataset.modo !== "oculto" && e.target.closest("button, a")) e.preventDefault();
   });
 
   // mini player: arrasta pela tela, sempre dentro dela; um toque sem arrastar amplia

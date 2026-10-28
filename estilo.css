@@ -140,7 +140,9 @@ main:focus { outline: none; }
 
 /* ---------- álbum ---------- */
 
-.cabeca { display: flex; gap: 36px; align-items: flex-end; flex-wrap: wrap; }
+.cabeca { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 36px; align-items: end; }
+.cabeca > :only-child { grid-column: 1 / -1; }
+.cabeca h1 { overflow-wrap: break-word; }
 .cabeca .capa { width: 232px; }
 .cabeca .rotulo { color: var(--cinza); font-size: 0.82rem; }
 .cabeca h1 { margin: 4px 0 10px; font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: -0.04em; line-height: 1; font-weight: 700; }
@@ -307,9 +309,9 @@ main:focus { outline: none; }
 .letra .pseudo { margin: 16px 0 0; font-size: 14.5px; line-height: 25px; padding: 16px 0; }
 .letra .pseudo li { min-height: 25px; }
 .ficha .placa { margin: 18px 0 0; }
-.letra .pseudo li.agora { background: var(--tinta); color: var(--papel); }
-.letra .pseudo li.agora .kw { color: var(--papel); }
-.letra .pseudo li.agora::before { color: var(--papel); }
+.letra .pseudo li.da-vez { background: var(--tinta); color: var(--papel); }
+.letra .pseudo li.da-vez .kw { color: var(--papel); }
+.letra .pseudo li.da-vez::before { color: var(--papel); }
 
 /* lightbox do fluxograma */
 .caixa-fluxo { width: min(1100px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--tinta); border-radius: 6px; color: var(--tinta); background: var(--papel); box-shadow: 0 24px 60px -24px rgba(30, 30, 30, 0.55); }
@@ -528,7 +530,8 @@ svg text { font-family: var(--mono); }
   .album-mini .capa { width: 30px; height: 30px; }
   .album-mini small { display: none; }
   main { padding: 24px 16px calc(var(--barra) + 48px); }
-  .cabeca { gap: 20px; }
+  .cabeca { gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  .estante { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 16px; }
   .cabeca .capa { width: 140px; }
   .encarte-topo { grid-template-columns: 1fr; gap: 24px; }
   .encarte-topo .capa-tocar { max-width: 260px; }
