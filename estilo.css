@@ -699,3 +699,5 @@ svg text { font-family: var(--mono); }
 @media (max-width: 860px) {
   .cabeca.colorida { margin: -24px -16px 0; padding: 24px 16px 24px; }
 }
+/* o crédito "feat." é rótulo, não título: fica na mono, mesmo dentro de um título */
+.feat, .feat a, .agora-texto .feat { font-family: var(--mono); font-weight: 400; letter-spacing: 0; }
