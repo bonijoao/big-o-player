@@ -34,6 +34,8 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 7. Achar o caminho mais curto (grafo, fila, heap)
 8. Problemas gerais
 
+Na grade da home e na lateral, as playlists ficam em blocos, cada um com um rótulo mono pequeno, em caixa alta (o `bloco` de cada playlist no `playlists.json`): PARA COMEÇAR (Encontrar um item, Calcular Fibonacci, Ordenar uma lista), CONTAR E ORGANIZAR (Contar ocorrências, Organizar uma fila), ÁRVORES E GRAFOS (Percorrer tudo, Achar o caminho mais curto) e PROBLEMAS GERAIS (o cartão sozinho, no fim).
+
 A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; cada faixa, um jeito de resolver.", e a grade vem logo abaixo. A comparação ao vivo está pronta no código e desligada (`COMPARACAO = false` no `galeria.js`).
 
 **Marca:** o disco de vinil da capa CI-00, recortado com fundo transparente, ao lado de "Big O Player" na grotesca (`marca/`); o favicon é o disco simplificado em SVG; a `og:image` usa o disco e o título da capa sobre o fundo preto de Conceitos importantes. Tudo sai do `motor/identidade.py`, a partir de `marca/ci-00.webp`.

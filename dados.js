@@ -26461,6 +26461,7 @@ window.GALERIA = [
 window.PLAYLISTS = [
  {
   "id": "encontrar-um-item",
+  "bloco": "Para começar",
   "titulo": "Encontrar um item",
   "cor": "azul",
   "codigo": "EI",
@@ -26491,6 +26492,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "calcular-fibonacci",
+  "bloco": "Para começar",
   "titulo": "Calcular Fibonacci",
   "cor": "creme",
   "codigo": "FI",
@@ -26513,6 +26515,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "ordenar-uma-lista",
+  "bloco": "Para começar",
   "titulo": "Ordenar uma lista",
   "cor": "vermelho",
   "codigo": "OL",
@@ -26543,6 +26546,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "contar-ocorrencias",
+  "bloco": "Contar e organizar",
   "titulo": "Contar ocorrências",
   "cor": "rosa",
   "codigo": "CO",
@@ -26570,6 +26574,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "organizar-uma-fila",
+  "bloco": "Contar e organizar",
   "titulo": "Organizar uma fila",
   "cor": "amarelo",
   "codigo": "OF",
@@ -26591,6 +26596,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "percorrer-tudo",
+  "bloco": "Árvores e grafos",
   "titulo": "Percorrer tudo",
   "cor": "verde-escuro",
   "codigo": "PT",
@@ -26613,6 +26619,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "achar-o-caminho-mais-curto",
+  "bloco": "Árvores e grafos",
   "titulo": "Achar o caminho mais curto",
   "cor": "roxo",
   "codigo": "CC",
@@ -26634,6 +26641,7 @@ window.PLAYLISTS = [
  },
  {
   "id": "problemas-gerais",
+  "bloco": "Problemas gerais",
   "titulo": "Problemas gerais",
   "cor": "neutro",
   "codigo": "PG",

@@ -784,3 +784,12 @@ svg text { font-family: var(--mono); }
 /* dentro da tabela e dos cartões, o rótulo da capa provisória não herda o cinza do "small" da linha */
 .faixas .faixa .capa-provisoria small, .cartao .capa-provisoria small { color: inherit; display: flex; font-size: 5cqi; margin: 0; }
 .faixas .faixa .capa-provisoria.pequena small, .cartao .capa-provisoria.pequena small { font-size: 20cqi; }
+
+/* os blocos da home e da lateral: o rótulo mono, pequeno e em caixa alta, como o das capas */
+.rotulo-bloco { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cinza); }
+.bloco-playlists { margin: 56px 0 0; }
+.bloco-playlists .rotulo-bloco { margin: 0 0 14px; }
+.bloco-playlists .grade-playlists { margin: 0; }
+@media (max-width: 860px) {
+  .bloco-playlists { margin-top: 36px; }
+}

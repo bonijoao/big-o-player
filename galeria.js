@@ -25,6 +25,12 @@
   const rotaFaixa = (f, p) => `#${(p || casaDe(f) || SERIES.find((s) => s.faixas.includes(f))).id}/${f.id}`;
   const relogio = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const nFaixas = (n) => `${n} ${n === 1 ? "faixa" : "faixas"}`;
+  // os blocos da home e da lateral: as playlists seguidas com o mesmo "bloco", na ordem do playlists.json
+  const blocos = () => PLAYLISTS.reduce((bs, p) => {
+    const ultimo = bs[bs.length - 1];
+    if (ultimo && ultimo.titulo === p.bloco) ultimo.playlists.push(p); else bs.push({ titulo: p.bloco, playlists: [p] });
+    return bs;
+  }, []);
   const corDe = (p) => `cor-${(p && p.cor) || "creme"}`;   // a classe com a cor da playlist (estilo.css)
   // links de antes da reorganização: o álbum velho cai na playlist que herdou a maior parte dele
   const ANTIGOS = { "primeiros-passos": "problemas-gerais", busca: "encontrar-um-item", ordenacao: "ordenar-uma-lista",
@@ -86,9 +92,9 @@
       capa, el("span", {}, [el("b", { text: titulo }), el("small", { text: sub })])]);
     $("#secoes").replaceChildren(
       ...SERIES.map((s) => linha(s.id, capaAlbum(s, "mini-48"), s.titulo, `${s.prontos.length} ${s.prontos.length === 1 ? "vídeo" : "vídeos"}`, corDe(s))),
-      el("p", { class: "lateral-titulo", text: "Playlists" }),
-      ...PLAYLISTS.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length), corDe(p))),
-      el("p", { class: "lateral-titulo", text: "Algoritmos e estruturas" }),
+      ...blocos().flatMap((b) => [el("p", { class: "lateral-titulo rotulo-bloco", text: b.titulo }),
+        ...b.playlists.map((p) => linha(p.id, capaAlbum(p, "mini-48"), p.titulo, p.gerais ? `${p.subcategorias.length} problemas` : nFaixas(p.faixas.length), corDe(p)))]),
+      el("p", { class: "lateral-titulo rotulo-bloco", text: "Algoritmos e estruturas" }),
       linha("algoritmos-e-estruturas", window.PaginaInstrumento.glifo("vetor", "mini-48"), "Algoritmos e estruturas", `${G.length} algoritmos, ${INSTS.length} estruturas`),
     );
   }
@@ -143,7 +149,10 @@
       ]),
       COMPARACAO ? comparacaoAoVivo() : null,
       ...SERIES.map((s) => prateleira(s.titulo, `#${s.id}`, s.frase, s.faixas.map((f) => cartaoVideo(f, s)), `destaque ${corDe(s)}`)),
-      el("section", { class: "grade-playlists", "aria-label": "Playlists" }, PLAYLISTS.map(cartaoPlaylist)),
+      ...blocos().map((b) => el("section", { class: "bloco-playlists", "aria-label": b.titulo }, [
+        el("h2", { class: "rotulo-bloco", text: b.titulo }),
+        el("div", { class: "grade-playlists" }, b.playlists.map(cartaoPlaylist)),
+      ])),
       prateleira("Algoritmos e estruturas", "#algoritmos-e-estruturas", "As estruturas de dados que as faixas tocam, cada uma com a demo ao vivo e o custo de cada operação.",
         INSTS.map((i) => window.PaginaInstrumento.cartao(i, ctxInstrumento))),
       rodape(),
