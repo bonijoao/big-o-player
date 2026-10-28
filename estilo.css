@@ -75,19 +75,17 @@ code { font-family: var(--mono); font-size: 0.93em; background: var(--fundo); pa
 
 /* ---------- esqueleto do player ---------- */
 
-:root { --barra: 84px; --lateral: 248px; }
+:root { --barra: 84px; --lateral: 248px; --topo: 60px; }
 
-.app { display: grid; grid-template-columns: var(--lateral) 1fr; min-height: 100vh; }
+.app { display: grid; grid-template-columns: var(--lateral) 1fr; min-height: 100vh; padding-top: var(--topo); }
 
 .lateral {
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  position: sticky; top: var(--topo); height: calc(100vh - var(--topo)); overflow-y: auto;
   padding: 28px 18px calc(var(--barra) + 20px); background: var(--fundo); border-right: 1px solid var(--linha);
 }
 /* a marca: o disco da capa CI-00 e o nome na grotesca das capas */
 .marca { display: flex; align-items: center; gap: 10px; font-family: var(--titulo); font-weight: 400; font-size: 1.2rem; letter-spacing: -0.02em; line-height: 1; text-decoration: none; margin: 0 0 30px; }
 .marca img { width: 32px; height: 32px; flex: none; }
-/* na lateral, a marca fica presa no topo e a lista rola por baixo dela */
-.lateral .marca { position: sticky; top: -28px; z-index: 2; margin: -28px -18px 16px; padding: 24px 18px 14px; background: var(--fundo); box-shadow: 0 1px 0 var(--linha); }
 .lateral-titulo { margin: 22px 0 8px; font-size: 0.78rem; color: var(--cinza); }
 .album-mini { display: flex; gap: 12px; align-items: center; padding: 7px; margin: 0 -7px 4px; border-radius: 4px; text-decoration: none; }
 .album-mini:hover { background: var(--realce); }
@@ -612,7 +610,6 @@ svg text { font-family: var(--mono); }
   :root { --barra: 70px; }
   .app { grid-template-columns: 1fr; }
   .lateral { position: static; height: auto; padding: 16px 16px 10px; border-right: 0; border-bottom: 1px solid var(--linha); }
-  .lateral .marca { position: static; margin: 0 0 12px; padding: 0; box-shadow: none; }   /* no celular a lateral não rola sozinha */
   .lateral-titulo { display: none; }
   #secoes { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .album-mini { margin: 0; flex: none; padding: 5px 10px 5px 5px; background: var(--papel); box-shadow: inset 0 0 0 1px var(--linha); }
@@ -796,4 +793,71 @@ svg text { font-family: var(--mono); }
 .bloco-playlists .grade-playlists { margin: 0; }
 @media (max-width: 860px) {
   .bloco-playlists { margin-top: 36px; }
+}
+
+/* ---------- a barra de cima: a marca, a busca e os botões ---------- */
+
+.topo { position: fixed; top: 0; left: 0; right: 0; height: var(--topo); z-index: 25; display: grid; grid-template-columns: var(--lateral) minmax(0, 1fr) auto;
+  align-items: center; gap: 16px; padding: 0 18px; background: var(--papel); border-bottom: 1px solid var(--linha); }
+.topo .marca { margin: 0; }
+.busca { position: relative; justify-self: center; width: min(560px, 100%); display: flex; align-items: center; }
+.busca-lupa { position: absolute; left: 12px; width: 18px; height: 18px; color: var(--cinza); pointer-events: none; }
+#busca-campo { width: 100%; height: 40px; padding: 0 40px 0 40px; font: inherit; font-size: 0.9rem; color: var(--tinta); background: var(--fundo); border: 1px solid var(--linha); border-radius: 999px; }
+#busca-campo::placeholder { color: var(--cinza); }
+#busca-campo:focus { outline: 2px solid var(--tinta); outline-offset: 1px; background: var(--papel); }
+#busca-campo::-webkit-search-cancel-button { display: none; }
+.busca-tecla { position: absolute; right: 12px; color: var(--cinza); border-color: var(--apagado); pointer-events: none; }
+#busca-campo:focus ~ .busca-tecla { display: none; }
+.busca-fechar { display: none; }
+.busca-lista { position: absolute; top: calc(100% + 6px); left: 0; right: 0; max-height: min(70vh, 560px); overflow-y: auto; padding: 6px 0; background: var(--papel);
+  border: 1px solid var(--linha); border-radius: 10px; box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.35); }
+.busca-grupo { margin: 6px 0 2px; padding: 0 14px; }
+.busca-opcao { display: flex; gap: 12px; align-items: center; padding: 6px 14px; cursor: pointer; text-decoration: none; }
+.busca-opcao .capa, .busca-opcao .capa-instrumento { width: 36px; height: 36px; flex: none; }
+.busca-opcao b { display: block; font-family: var(--titulo); font-weight: 400; font-size: 0.92rem; }
+.busca-opcao small { display: block; color: var(--cinza); font-size: 0.76rem; }
+.busca-opcao small .o { color: var(--verde-texto); font-weight: 600; }
+.busca-opcao[aria-selected="true"], .busca-opcao:hover { background: var(--realce); }
+.busca-vazio { margin: 8px 14px; color: var(--cinza); font-size: 0.85rem; }
+.topo-botoes { display: flex; gap: 6px; align-items: center; }
+.topo-botao { width: 40px; height: 40px; border: 1px solid var(--linha); border-radius: 50%; font-weight: 700; font-size: 1rem; }
+.topo-botao svg { width: 18px; height: 18px; }
+.topo-botao .bandeira { width: 22px; height: 15px; }
+.so-estreito-topo { display: none; }
+.idioma { position: relative; }
+.idioma-menu { position: absolute; right: 0; top: calc(100% + 6px); min-width: 210px; padding: 6px; background: var(--papel); border: 1px solid var(--linha); border-radius: 10px;
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.35); z-index: 2; }
+.idioma-menu button { display: flex; justify-content: space-between; width: 100%; padding: 8px 10px; font: inherit; font-size: 0.85rem; text-align: left; background: none; border: 0; border-radius: 6px; color: var(--tinta); cursor: pointer; }
+.idioma-menu button:hover:not(:disabled) { background: var(--realce); }
+.idioma-menu button:disabled { color: var(--cinza); cursor: default; }
+
+/* a ajuda */
+.caixa-ajuda { width: min(640px, 94vw); }
+.ajuda-corpo { padding: 4px 24px 24px; overflow-y: auto; }
+.ajuda-corpo section { margin: 18px 0 0; }
+.ajuda-corpo h3 { margin: 0 0 10px; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cinza); }
+.ajuda-corpo p { margin: 0; font-size: 0.92rem; }
+.ajuda-corpo .atalhos { padding: 0; }
+.autores { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.autores li { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.autores b { font-family: var(--titulo); font-weight: 400; }
+.autores span { color: var(--cinza); font-size: 0.85rem; }
+.autores .a-preencher { padding: 8px 10px; border: 2px dashed var(--vermelho); border-radius: 6px; }
+.autores .a-preencher b, .autores .a-preencher span, .autores .a-preencher a { color: var(--vermelho); font-family: var(--mono); font-weight: 600; }
+
+@media (max-width: 860px) {
+  :root { --topo: 56px; }
+  .topo { grid-template-columns: auto minmax(0, 1fr) auto; padding: 0 12px; gap: 8px; }
+  .topo .marca span { display: none; }   /* no celular fica o disco */
+  .busca { display: none; }
+  .so-estreito-topo { display: grid; }
+  .topo-botoes { grid-column: 3; }   /* a busca escondida sai da grade: os botões ficam à direita */
+  /* a lupa abre a busca em tela cheia */
+  .topo.buscando { z-index: 70; }   /* por cima da barra do player */
+  .topo.buscando .busca { display: flex; position: fixed; inset: 0; z-index: 60; width: auto; flex-direction: column; align-items: stretch; padding: 10px 12px; background: var(--papel); }
+  .topo.buscando .busca-lupa { left: 24px; top: 21px; }
+  .topo.buscando #busca-campo { padding-right: 52px; }
+  .topo.buscando .busca-fechar { display: grid; position: absolute; right: 18px; top: 13px; }
+  .topo.buscando .busca-tecla { display: none; }
+  .topo.buscando .busca-lista { position: static; margin-top: 10px; max-height: none; flex: 1; border: 0; box-shadow: none; border-radius: 0; }
 }

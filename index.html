@@ -42,9 +42,34 @@
   <symbol id="i-repetir" viewBox="0 0 24 24"><path d="M5 10V8a2 2 0 0 1 2-2h11M15 3l3 3-3 3M19 14v2a2 2 0 0 1-2 2H6M9 21l-3-3 3-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
+<!-- a barra de cima: a marca, a busca e os botões -->
+<header class="topo" role="banner">
+  <a class="marca" href="#"><img src="marca/disco-64.webp" srcset="marca/disco-64.webp 1x, marca/disco-128.webp 2x" width="32" height="32" alt=""><span>Big O Player</span></a>
+  <div class="busca" id="busca">
+    <svg class="busca-lupa" aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="busca-campo" type="search" role="combobox" aria-expanded="false" aria-controls="busca-lista" aria-autocomplete="list"
+      aria-label="Buscar faixas, playlists e estruturas" placeholder="Buscar faixas, playlists e estruturas" autocomplete="off" spellcheck="false">
+    <kbd class="busca-tecla" aria-hidden="true">/</kbd>
+    <button type="button" id="busca-fechar" class="icone busca-fechar" aria-label="Fechar a busca">×</button>
+    <div id="busca-lista" class="busca-lista" role="listbox" aria-label="Resultados" hidden></div>
+  </div>
+  <div class="topo-botoes">
+    <button type="button" id="abrir-busca" class="icone topo-botao so-estreito-topo" aria-label="Buscar"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <div class="idioma">
+      <button type="button" id="idioma-botao" class="icone topo-botao" aria-haspopup="menu" aria-expanded="false" aria-controls="idioma-menu" aria-label="Idioma: Português (Brasil)" title="Português (Brasil)">
+        <svg class="bandeira" viewBox="0 0 20 14" aria-hidden="true"><rect width="20" height="14" rx="2" fill="#009c3b"/><path d="M10 2 18 7 10 12 2 7z" fill="#ffdf00"/><circle cx="10" cy="7" r="3" fill="#002776"/></svg>
+      </button>
+      <div id="idioma-menu" class="idioma-menu" role="menu" aria-label="Idioma" hidden>
+        <button type="button" role="menuitemradio" aria-checked="true">Português (Brasil) <span aria-hidden="true">✓</span></button>
+        <button type="button" role="menuitemradio" aria-checked="false" aria-disabled="true" disabled>English (em breve)</button>
+      </div>
+    </div>
+    <button type="button" id="ajuda-botao" class="icone topo-botao" aria-haspopup="dialog" aria-label="Sobre o projeto e atalhos" title="Sobre o projeto e atalhos (?)">?</button>
+  </div>
+</header>
+
 <div class="app">
   <aside class="lateral">
-    <a class="marca" href="#"><img src="marca/disco-64.webp" srcset="marca/disco-64.webp 1x, marca/disco-128.webp 2x" width="32" height="32" alt="">Big O Player</a>
     <nav id="secoes" aria-label="Seções"></nav>
   </aside>
   <main id="conteudo" tabindex="-1"></main>
@@ -101,12 +126,18 @@
   <div id="caixa-fluxo-corpo" class="caixa-corpo"></div>
 </dialog>
 
-<!-- os atalhos de teclado: o "?" abre -->
-<dialog id="caixa-atalhos" class="caixa-fluxo caixa-atalhos" aria-labelledby="caixa-atalhos-titulo">
+<!-- a ajuda: o projeto, os atalhos e quem fez; o "?" e o botão da barra abrem -->
+<dialog id="caixa-ajuda" class="caixa-fluxo caixa-ajuda" aria-labelledby="caixa-ajuda-titulo" aria-modal="true">
   <div class="caixa-barra">
-    <h2 id="caixa-atalhos-titulo">Atalhos</h2>
-    <button type="button" id="caixa-atalhos-fechar" class="icone" aria-label="Fechar os atalhos">×</button>
+    <h2 id="caixa-ajuda-titulo">Sobre o Big O Player</h2>
+    <button type="button" id="caixa-ajuda-fechar" class="icone" aria-label="Fechar">×</button>
   </div>
+  <div class="ajuda-corpo">
+  <section>
+    <p>Algoritmos tocando ao vivo, como faixas de um player. Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. Os passos não são estimados: são contados rodando o código, e cada contagem é conferida no R. <a href="https://github.com/uaipedro/big-o-player">O código está no GitHub.</a></p>
+  </section>
+  <section>
+  <h3>Atalhos</h3>
   <dl class="atalhos">
     <dt><kbd>espaço</kbd></dt><dd>tocar e pausar</dd>
     <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>um passo para trás e para a frente</dd>
@@ -114,8 +145,19 @@
     <dt><kbd>−</kbd> <kbd>+</kbd></dt><dd>mais devagar e mais rápido</dd>
     <dt><kbd>R</kbd></dt><dd>repetir a faixa</dd>
     <dt><kbd>Esc</kbd></dt><dd>cancelar o "a seguir" e minimizar o palco</dd>
-    <dt><kbd>?</kbd></dt><dd>esta lista</dd>
+    <dt><kbd>/</kbd></dt><dd>buscar</dd>
+    <dt><kbd>?</kbd></dt><dd>esta ajuda</dd>
   </dl>
+  </section>
+  <section>
+  <h3>Quem fez</h3>
+  <ul class="autores">
+    <li><b>Pedro Mambelli</b><span>Estatística UFLA</span></li>
+    <!-- o João: o Pedro manda os dados; troque os marcadores -->
+    <li class="a-preencher"><b>[nome completo]</b><span>[uma linha]</span><a href="#">[link]</a></li>
+  </ul>
+  </section>
+  </div>
 </dialog>
 
 <footer class="tocador" id="tocador" aria-label="Player">

@@ -671,7 +671,7 @@
     palco.dataset.modo = m;
     palco.hidden = m === "oculto";
     fundo.hidden = m !== "grande";
-    $(".app").inert = m === "grande";
+    $(".app").inert = $(".topo").inert = m === "grande";
     if (m === "grande") palco.setAttribute("aria-modal", "true"); else palco.removeAttribute("aria-modal");
     if (m === "grande" && era !== "grande") {
       quemAbriu = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
@@ -1077,11 +1077,13 @@
   fundo.addEventListener("click", () => modo("mini"));
   document.querySelectorAll(".palco-controles select").forEach((s) => s.addEventListener("change", () => s.blur()));   // as setas voltam a ser do player
   document.addEventListener("keydown", (e) => {
-    if (caixaFluxo.open || caixaAtalhos.open) return;   // o Esc e as setas são da caixa aberta
+    if (caixaFluxo.open || caixaAjuda.open) return;   // o Esc e as setas são da caixa aberta
+    // "/" leva à busca de qualquer lugar (menos de dentro de um campo); o player não usa essa tecla
+    if (e.key === "/" && !e.target.closest("input, select, textarea") && !e.ctrlKey && !e.metaKey) { e.preventDefault(); abrirBusca(); return; }
     if (e.key === "MediaPlayPause" && faixa) { e.preventDefault(); botaoTocar.click(); return; }   // a tecla de mídia, com a página em foco
     if (e.key === "MediaTrackNext") { pular(1); return; }
     if (e.key === "MediaTrackPrevious") { pular(-1); return; }
-    if (e.key === "?" && !e.target.closest("input, select, textarea")) { caixaAtalhos.showModal(); return; }
+    if (e.key === "?" && !e.target.closest("input, select, textarea")) { abrirAjuda(); return; }
     if (e.key === "Escape" && fim && fim.proxima) { fim.proxima = null; desenharFim(true); return; }   // Esc cancela a contagem
     if (e.key === "Escape" && palco.dataset.modo === "grande") { modo("mini"); return; }
     if (e.target.closest("input, select, textarea")) return;
@@ -1114,9 +1116,107 @@
 
   // ---------- os atalhos: "?" abre a lista ----------
 
-  const caixaAtalhos = $("#caixa-atalhos");
-  $("#caixa-atalhos-fechar").addEventListener("click", () => caixaAtalhos.close());
-  caixaAtalhos.addEventListener("click", (e) => { if (e.target === caixaAtalhos) caixaAtalhos.close(); });
+  // ---------- a ajuda: o projeto, os atalhos e quem fez (um <dialog> modal: foco preso, Esc fecha, o foco volta) ----------
+
+  const caixaAjuda = $("#caixa-ajuda");
+  function abrirAjuda() { if (!caixaAjuda.open) caixaAjuda.showModal(); }
+  $("#ajuda-botao").addEventListener("click", abrirAjuda);
+  $("#caixa-ajuda-fechar").addEventListener("click", () => caixaAjuda.close());
+  caixaAjuda.addEventListener("click", (e) => { if (e.target === caixaAjuda) caixaAjuda.close(); });
+
+  // ---------- o idioma: por enquanto, só português; o menu mostra o inglês como "em breve" ----------
+
+  const idiomaBotao = $("#idioma-botao"), idiomaMenu = $("#idioma-menu");
+  const fecharIdioma = (devolver) => { idiomaMenu.hidden = true; idiomaBotao.setAttribute("aria-expanded", "false"); if (devolver) idiomaBotao.focus(); };
+  idiomaBotao.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const abrir = idiomaMenu.hidden;
+    idiomaMenu.hidden = !abrir;
+    idiomaBotao.setAttribute("aria-expanded", String(abrir));
+    if (abrir) idiomaMenu.querySelector("button").focus();
+  });
+  idiomaMenu.addEventListener("click", (e) => { e.stopPropagation(); if (e.target.closest("button:not(:disabled)")) fecharIdioma(true); });
+  idiomaMenu.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.stopPropagation(); fecharIdioma(true); } });
+  document.addEventListener("click", () => { if (!idiomaMenu.hidden) fecharIdioma(false); });
+
+  // ---------- a busca: faixas, playlists e estruturas, no próprio navegador ----------
+  // o texto de cada item (nome, objetivo, versão, playlist, estruturas) sem acento e em minúsculas;
+  // o nome que começa com o termo vem antes do que só contém, e o que só bate fora do nome vem depois
+
+  const semAcento = (s) => (s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const INDICE = [
+    ...G.map((f) => ({ tipo: "Faixas", nome: f.nome, href: rotaFaixa(f), sub: casaDe(f).titulo, o: f.tempo.notacao, capa: () => capaFaixa(f, "mini-48"),
+      extra: [f.objetivo, f.variante, ...PLAYLISTS.filter((p) => p.faixas.includes(f)).map((p) => p.titulo), ...creditos(f).map((c) => c.inst.nome)].join(" ") })),
+    ...PLAYLISTS.map((p) => ({ tipo: "Playlists", nome: p.titulo, href: `#${p.id}`, sub: nFaixas(p.faixas.length), capa: () => capaAlbum(p, "mini-48"),
+      extra: [p.frase, ...p.subcategorias.map((s) => s.titulo)].join(" ") })),
+    ...INSTS.map((i) => ({ tipo: "Estruturas", nome: i.nome, href: `#estruturas/${i.id}`, sub: i.frase, o: i.memoria && i.memoria.notacao,
+      capa: () => window.PaginaInstrumento.glifo(i.id, "mini-48"), extra: [i.objetivo, i.variante].join(" ") })),
+  ].map((x) => ({ ...x, _nome: semAcento(x.nome), _extra: semAcento(x.extra) }));
+
+  function buscar(termo) {
+    const t = semAcento(termo).trim();
+    if (!t) return [];
+    const palavras = t.split(/\s+/);
+    return INDICE.map((x) => {
+      const tudo = `${x._nome} ${x._extra}`;
+      if (!palavras.every((w) => tudo.includes(w))) return null;
+      const nota = x._nome.startsWith(t) ? 0 : x._nome.includes(t) ? 1 : palavras.every((w) => x._nome.includes(w)) ? 2 : 3;
+      return { ...x, nota };
+    }).filter(Boolean).sort((a, b) => a.nota - b.nota || a.nome.localeCompare(b.nome, "pt-BR"));
+  }
+
+  const topo = $(".topo"), campo = $("#busca-campo"), lista = $("#busca-lista");
+  let achados = [], ativo = -1;
+  const LIMITE = { Faixas: 8, Playlists: 5, Estruturas: 5 };
+  function mostrarResultados() {
+    const r = buscar(campo.value);
+    const porTipo = ["Faixas", "Playlists", "Estruturas"].map((tipo) => [tipo, r.filter((x) => x.tipo === tipo).slice(0, LIMITE[tipo])]).filter(([, xs]) => xs.length);
+    achados = porTipo.flatMap(([, xs]) => xs);
+    ativo = achados.length ? 0 : -1;
+    if (!campo.value.trim()) { fecharLista(); return; }
+    let k = 0;
+    lista.replaceChildren(...(achados.length ? porTipo.map(([tipo, xs]) => el("div", { role: "group", "aria-label": tipo }, [
+      el("p", { class: "busca-grupo rotulo-bloco", text: tipo, "aria-hidden": "true" }),
+      ...xs.map((x) => {
+        const i = k++;
+        const op = el("a", { class: "busca-opcao", href: x.href, role: "option", id: `busca-op-${i}`, tabindex: "-1" }, [
+          x.capa(), el("span", {}, [el("b", { text: x.nome }), el("small", {}, [x.o ? el("span", { class: "o", text: x.o }) : null, x.o ? " · " : null, x.sub])])]);
+        op.addEventListener("mousedown", (e) => e.preventDefault());   // o clique não tira o foco do campo antes de navegar
+        op.addEventListener("click", () => fecharBusca());
+        return op;
+      }),
+    ])) : [el("p", { class: "busca-vazio", text: `Nada com “${campo.value.trim()}”.` })]));
+    lista.hidden = false;
+    campo.setAttribute("aria-expanded", "true");
+    marcarAtivo();
+  }
+  function marcarAtivo() {
+    lista.querySelectorAll(".busca-opcao").forEach((o, i) => o.setAttribute("aria-selected", String(i === ativo)));
+    const op = ativo >= 0 ? $(`#busca-op-${ativo}`) : null;
+    if (op) { campo.setAttribute("aria-activedescendant", op.id); op.scrollIntoView({ block: "nearest" }); } else campo.removeAttribute("aria-activedescendant");
+  }
+  function fecharLista() { lista.hidden = true; campo.setAttribute("aria-expanded", "false"); campo.removeAttribute("aria-activedescendant"); }
+  function abrirBusca() { topo.classList.add("buscando"); campo.focus(); campo.select(); if (campo.value.trim()) mostrarResultados(); }
+  function fecharBusca() { fecharLista(); topo.classList.remove("buscando"); campo.blur(); }
+  campo.addEventListener("input", mostrarResultados);
+  campo.addEventListener("focus", () => { if (campo.value.trim()) mostrarResultados(); });
+  campo.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== campo) { fecharLista(); topo.classList.remove("buscando"); } }, 120));
+  campo.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (lista.hidden) mostrarResultados();
+      if (achados.length) { ativo = (ativo + (e.key === "ArrowDown" ? 1 : -1) + achados.length) % achados.length; marcarAtivo(); }
+    } else if (e.key === "Enter") {
+      const x = achados[ativo];
+      if (x) { e.preventDefault(); location.hash = x.href; campo.value = ""; fecharBusca(); }
+    } else if (e.key === "Escape") {
+      e.stopPropagation();
+      if (campo.value) { campo.value = ""; fecharLista(); } else fecharBusca();
+    }
+    e.stopPropagation();   // as setas, o espaço e as letras são da busca, não do player
+  });
+  $("#abrir-busca").addEventListener("click", abrirBusca);
+  $("#busca-fechar").addEventListener("click", () => { campo.value = ""; fecharBusca(); });
 
   // o botão nativo aperta no keyup do espaço: com o palco aberto, o espaço já tocou ou pausou no keydown
   document.addEventListener("keyup", (e) => {
