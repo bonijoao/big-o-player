@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="t d">
+  <title id="t">Redator-professor</title>
+  <desc id="d">A carta m, de boné de aba reta, aponta para cima com uma luva branca e segura um giz com a outra, em estilo de desenho animado dos anos 1930. Fundo verde.</desc>
+  <!-- fundo de uma cor só: o verde que, na galeria, só aparece no resultado. A boa é chegar na resposta certa. -->
+  <rect width="512" height="512" fill="#169646"/>
+  <ellipse cx="258" cy="446" rx="118" ry="14" fill="#0f7a37"/>
+
+  <g stroke="#1e1e1e" stroke-linecap="round" stroke-linejoin="round">
+    <!-- pernas de mangueira -->
+    <path d="M232 350 C226 380 214 400 214 428" fill="none" stroke-width="15"/>
+    <path d="M284 350 C292 382 306 400 304 428" fill="none" stroke-width="15"/>
+    <!-- sapatões -->
+    <ellipse cx="200" cy="434" rx="36" ry="17" fill="#1e1e1e"/>
+    <ellipse cx="320" cy="434" rx="36" ry="17" fill="#1e1e1e"/>
+    <ellipse cx="190" cy="428" rx="10" ry="4.5" fill="#ffffff" stroke="none"/>
+    <ellipse cx="330" cy="428" rx="10" ry="4.5" fill="#ffffff" stroke="none"/>
+
+    <!-- braço esquerdo: aponta para cima ("se liga") -->
+    <path d="M182 268 C140 262 120 228 134 186" fill="none" stroke-width="15"/>
+    <!-- braço direito: segura o giz -->
+    <path d="M330 278 C376 288 398 322 386 360" fill="none" stroke-width="15"/>
+
+    <!-- o corpo: a carta m, um pouco inclinada -->
+    <g transform="rotate(-4 256 250)">
+      <rect x="174" y="140" width="164" height="216" rx="20" fill="#fffaf0" stroke-width="7"/>
+      <text x="192" y="340" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#1e1e1e" stroke="none">m</text>
+      <text x="320" y="176" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#1e1e1e" stroke="none" text-anchor="end">m</text>
+
+      <!-- olhos de torta -->
+      <ellipse cx="230" cy="214" rx="18" ry="25" fill="#ffffff" stroke-width="5"/>
+      <ellipse cx="282" cy="214" rx="18" ry="25" fill="#ffffff" stroke-width="5"/>
+      <ellipse cx="234" cy="220" rx="10" ry="16" fill="#1e1e1e" stroke="none"/>
+      <ellipse cx="286" cy="220" rx="10" ry="16" fill="#1e1e1e" stroke="none"/>
+      <path d="M234 220 L242 203 L246 212 Z" fill="#ffffff" stroke="none"/>
+      <path d="M286 220 L294 203 L298 212 Z" fill="#ffffff" stroke="none"/>
+      <!-- sobrancelha levantada, de quem sabe a resposta -->
+      <path d="M212 182 Q228 172 244 180" fill="none" stroke-width="5"/>
+      <path d="M268 184 Q284 178 298 184" fill="none" stroke-width="5"/>
+
+      <!-- sorriso aberto -->
+      <path d="M222 258 Q256 304 292 256 Q256 274 222 258 Z" fill="#1e1e1e" stroke-width="5"/>
+      <path d="M244 280 Q258 292 272 279 Q258 272 244 280 Z" fill="#d9534f" stroke="none"/>
+      <path d="M218 252 Q214 258 220 264" fill="none" stroke-width="4"/>
+      <path d="M296 250 Q300 256 294 262" fill="none" stroke-width="4"/>
+    </g>
+
+    <!-- boné de aba reta -->
+    <g transform="rotate(-4 256 250)">
+      <path d="M188 152 C190 98 322 98 326 152 Z" fill="#1e1e1e" stroke-width="5"/>
+      <path d="M318 146 L392 140 Q402 150 390 160 L318 162 Z" fill="#1e1e1e" stroke-width="5"/>
+      <circle cx="257" cy="104" r="6" fill="#1e1e1e" stroke-width="4"/>
+      <path d="M208 140 Q256 128 306 140" fill="none" stroke="#3a3a3a" stroke-width="3"/>
+    </g>
+
+    <!-- luva esquerda, indicador para cima -->
+    <g fill="#ffffff" stroke-width="5">
+      <rect x="116" y="176" width="38" height="16" rx="8" transform="rotate(-12 135 184)"/>
+      <ellipse cx="134" cy="160" rx="22" ry="20"/>
+      <ellipse cx="138" cy="126" rx="9" ry="22"/>
+      <ellipse cx="114" cy="160" rx="9" ry="12" transform="rotate(-30 114 160)"/>
+      <path d="M126 168 Q136 172 146 168" fill="none" stroke-width="3.5"/>
+    </g>
+
+    <!-- luva direita fechada, com o giz -->
+    <rect x="378" y="334" width="40" height="11" rx="3" fill="#ffffff" stroke-width="4" transform="rotate(-38 398 340)"/>
+    <g fill="#ffffff" stroke-width="5">
+      <rect x="370" y="350" width="34" height="15" rx="7" transform="rotate(20 387 357)"/>
+      <circle cx="392" cy="378" r="21"/>
+      <path d="M380 372 Q392 368 404 374" fill="none" stroke-width="3.5"/>
+      <path d="M380 382 Q392 378 404 384" fill="none" stroke-width="3.5"/>
+    </g>
+  </g>
+</svg>
