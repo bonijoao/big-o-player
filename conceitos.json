@@ -5,12 +5,12 @@
  "frase": "Antes do primeiro algoritmo: o que é, como se compara e quando a escolha importa.",
  "nota": "A seção só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\".",
  "videos": [
-  {"n": 0, "capa": "conceitos-0", "titulo": "Big O Player", "resumo": "Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema.", "video": "videos/conceitos-0.mp4", "legenda": "videos/conceitos-0.vtt", "duracao": 29.2},
-  {"n": 1, "capa": "conceitos-1", "titulo": "O que é um algoritmo", "resumo": "Uma sequência finita de passos precisos, da entrada à resposta.", "video": "videos/conceitos-1.mp4", "legenda": "videos/conceitos-1.vtt", "duracao": 53.4},
-  {"n": 2, "capa": "conceitos-2", "titulo": "Complexidade sem jargão", "resumo": "Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida.", "video": "videos/conceitos-2.mp4", "legenda": "videos/conceitos-2.vtt", "duracao": 71.3},
-  {"n": 3, "capa": "conceitos-3", "titulo": "Quando dá para comparar", "resumo": "O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério.", "video": "videos/conceitos-3.mp4", "legenda": "videos/conceitos-3.vtt", "duracao": 85},
-  {"n": 4, "capa": "conceitos-4", "titulo": "Melhor, pior e caso médio", "resumo": "O custo muda com a entrada, e o pior caso é a promessa.", "video": "videos/conceitos-4.mp4", "legenda": "videos/conceitos-4.vtt", "duracao": 60.4},
-  {"n": 5, "capa": "conceitos-5", "titulo": "Como escolher", "resumo": "A escolha importa com n grande ou muitas repetições; senão, o simples ganha.", "video": "videos/conceitos-5.mp4", "legenda": "videos/conceitos-5.vtt", "duracao": 70.2},
-  {"n": 6, "capa": "conceitos-6", "titulo": "Fechamento", "resumo": "Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo.", "video": "videos/conceitos-6.mp4", "legenda": "videos/conceitos-6.vtt", "duracao": 26.1}
+  {"n": 0, "capa": "conceitos-0", "titulo": "Big O Player", "resumo": "Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema.", "video": "videos/conceitos-0.mp4", "duracao": 29.2},
+  {"n": 1, "capa": "conceitos-1", "titulo": "O que é um algoritmo", "resumo": "Uma sequência finita de passos precisos, da entrada à resposta.", "video": "videos/conceitos-1.mp4", "duracao": 53.4},
+  {"n": 2, "capa": "conceitos-2", "titulo": "Complexidade sem jargão", "resumo": "Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida.", "video": "videos/conceitos-2.mp4", "duracao": 71.3},
+  {"n": 3, "capa": "conceitos-3", "titulo": "Quando dá para comparar", "resumo": "O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério.", "video": "videos/conceitos-3.mp4", "duracao": 85},
+  {"n": 4, "capa": "conceitos-4", "titulo": "Melhor, pior e caso médio", "resumo": "O custo muda com a entrada, e o pior caso é a promessa.", "video": "videos/conceitos-4.mp4", "duracao": 60.4},
+  {"n": 5, "capa": "conceitos-5", "titulo": "Como escolher", "resumo": "A escolha importa com n grande ou muitas repetições; senão, o simples ganha.", "video": "videos/conceitos-5.mp4", "duracao": 70.2},
+  {"n": 6, "capa": "conceitos-6", "titulo": "Fechamento", "resumo": "Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo.", "video": "videos/conceitos-6.mp4", "duracao": 26.1}
  ]
 }
