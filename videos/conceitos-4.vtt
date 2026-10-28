@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00:00.686 --> 00:00:02.697
+Melhor, pior e caso médio.
+
+00:00:03.047 --> 00:00:05.215
+O mesmo algoritmo nem sempre custa o mesmo.
+
+00:00:05.615 --> 00:00:09.951
+A mesma busca, um por um, na mesma lista de doze nomes, três vezes.
+
+00:00:10.301 --> 00:00:14.245
+Muda só o nome procurado: um no começo, um sorteado e um que não está.
+
+00:00:14.595 --> 00:00:15.960
+No começo: um passo.
+
+00:00:15.960 --> 00:00:17.051
+É o melhor caso.
+
+00:00:17.401 --> 00:00:18.916
+O sorteado: seis.
+
+00:00:19.266 --> 00:00:22.644
+O ausente obriga a olhar a lista inteira: doze, que é n.
+
+00:00:22.644 --> 00:00:23.367
+O pior caso.
+
+00:00:23.767 --> 00:00:24.525
+E em média?
+
+00:00:24.875 --> 00:00:28.907
+Se o alvo está na lista e pode estar em qualquer casa com a mesma chance,
+
+00:00:28.907 --> 00:00:30.674
+são n mais um sobre dois passos.
+
+00:00:31.024 --> 00:00:32.800
+Com doze nomes, seis e meio.
+
+00:00:33.200 --> 00:00:36.256
+Para conferir, mil e duzentas buscas com o alvo sorteado.
+
+00:00:36.606 --> 00:00:40.080
+Cada barra conta quantas buscas custaram aquele número de passos.
+
+00:00:40.430 --> 00:00:42.519
+Elas se espalham por igual, de um a doze,
+
+00:00:42.519 --> 00:00:46.595
+e a média fica em seis vírgula cinquenta e dois, colada no seis e meio da conta.
+
+00:00:46.995 --> 00:00:50.783
+O pior caso é a promessa: aconteça o que acontecer, nunca passa disso.
+
+00:00:51.133 --> 00:00:52.820
+O caso médio descreve o dia a dia,
+
+00:00:52.820 --> 00:00:55.548
+mas só vale se você sabe como as entradas costumam vir.
+
+00:00:55.898 --> 00:00:58.249
+E o melhor caso quase nunca decide nada.

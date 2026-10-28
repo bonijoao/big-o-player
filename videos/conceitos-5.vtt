@@ -1,0 +1,79 @@
+WEBVTT
+
+00:00:00.686 --> 00:00:02.619
+Como escolher entre dois algoritmos?
+
+00:00:02.969 --> 00:00:04.589
+Depende de onde ele vai rodar.
+
+00:00:04.989 --> 00:00:09.900
+Com vinte nomes, olhar um por um custa até vinte passos, e abrir no meio, até cinco.
+
+00:00:10.250 --> 00:00:12.290
+Os dois respondem num piscar de olhos.
+
+00:00:12.290 --> 00:00:14.221
+Tanto faz: fique com o mais simples.
+
+00:00:14.621 --> 00:00:18.513
+Agora, um milhão de buscas por dia, numa lista de um milhão de nomes.
+
+00:00:18.863 --> 00:00:21.841
+Um por um: até um trilhão de comparações por dia.
+
+00:00:22.191 --> 00:00:24.299
+Ordenando uma vez e abrindo no meio:
+
+00:00:24.299 --> 00:00:27.285
+uns trinta e nove milhões, já contando a ordenação.
+
+00:00:27.635 --> 00:00:29.620
+Aqui a escolha vira tempo e dinheiro.
+
+00:00:30.020 --> 00:00:31.063
+Mas ordenar custa.
+
+00:00:31.063 --> 00:00:34.017
+Numa lista fora de ordem de mil nomes, vale a pena?
+
+00:00:34.367 --> 00:00:37.804
+Ordenar custa oito mil setecentas e dezoito comparações.
+
+00:00:37.804 --> 00:00:41.916
+Depois, cada busca custa até dez, contra até mil olhando um por um.
+
+00:00:42.266 --> 00:00:44.023
+Uma busca só: um por um ganha.
+
+00:00:44.023 --> 00:00:47.360
+Mas cada busca a mais soma mil de um lado e dez do outro.
+
+00:00:47.710 --> 00:00:50.427
+A partir da nona busca, ordenar uma vez compensa.
+
+00:00:51.146 --> 00:00:53.001
+Então, as perguntas que decidem:
+
+00:00:53.351 --> 00:00:54.448
+Quão grande é n?
+
+00:00:54.798 --> 00:00:56.000
+Quantas vezes vai rodar?
+
+00:00:56.350 --> 00:00:57.708
+A entrada já está em ordem?
+
+00:00:58.058 --> 00:00:59.051
+Sobra memória?
+
+00:00:59.401 --> 00:01:00.629
+E quanto custa preparar?
+
+00:01:01.029 --> 00:01:02.074
+Escolher é trocar:
+
+00:01:02.424 --> 00:01:05.974
+preparo por velocidade, memória por tempo, simplicidade por escala.
+
+00:01:05.974 --> 00:01:07.988
+Não existe uma regra que sirva sempre.

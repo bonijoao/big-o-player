@@ -9,7 +9,8 @@ O inventário de partida é o que estava no ar no commit `4d27f95`: 8 álbuns, 3
 A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa-de-conteudo`, **sem push e sem merge**: o Pedro vê a prévia local primeiro (`python3 -m http.server 8765` na raiz).
 
 - As playlists, a galeria Problemas gerais e Algoritmos e estruturas estão no código: `playlists.json` e `galeria.js`. A home é só prateleiras, como a do Spotify.
-- **Conceitos importantes** (`conceitos.json`) e **Fundamentos** (`fundamentos.json`) são playlists de vídeo, prontas no código e **desligadas**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
+- **Conceitos importantes está ligada (28/10):** os 7 vídeos narrados (CI-00 a CI-06, 29 a 85 s, 20,8 MB em `videos/`) tocam no palco, com legenda em `.vtt` (ligada por padrão; o botão CC guarda a escolha no navegador), "a seguir" entre um e outro, velocidade e pause. A seção abre a home, antes dos blocos de playlists. Cada vídeo só é baixado quando toca.
+- **Fundamentos** (`fundamentos.json`) é playlist de vídeo, pronta no código e **desligada**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
 - Os 11 vídeos de Fundamentos têm a lista aprovada e ainda não têm roteiro.
 
@@ -87,13 +88,13 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 
 | seção | playlist (problema) | subcategoria | vídeo/faixa | status | resumo | capa |
 |---|---|---|---|---|---|---|
-| Conceitos importantes | — | — | 0. Big O Player | novo · roteiro pronto | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. | nova |
-| Conceitos importantes | — | — | 1. O que é um algoritmo | novo · roteiro pronto | Uma sequência finita de passos precisos, da entrada à resposta. | nova |
-| Conceitos importantes | — | — | 2. Complexidade sem jargão | novo · roteiro pronto | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. | nova |
-| Conceitos importantes | — | — | 3. Quando dá para comparar | novo · roteiro pronto | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. | nova |
-| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | nova |
-| Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | nova |
-| Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | nova |
+| Conceitos importantes | — | — | 0. Big O Player | feito (narrado, com legenda) | Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema. | nova |
+| Conceitos importantes | — | — | 1. O que é um algoritmo | feito (narrado, com legenda) | Uma sequência finita de passos precisos, da entrada à resposta. | nova |
+| Conceitos importantes | — | — | 2. Complexidade sem jargão | feito (narrado, com legenda) | Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida. | nova |
+| Conceitos importantes | — | — | 3. Quando dá para comparar | feito (narrado, com legenda) | O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério. | nova |
+| Conceitos importantes | — | — | 4. Melhor, pior e caso médio | feito (narrado, com legenda) | O custo muda com a entrada, e o pior caso é a promessa. | nova |
+| Conceitos importantes | — | — | 5. Como escolher | feito (narrado, com legenda) | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | nova |
+| Conceitos importantes | — | — | 6. Fechamento | feito (narrado, com legenda) | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | nova |
 | Playlists | Achar o maior | no vetor inteiro | Máximo de um vetor (`maximo`) | mudou de lugar (também em Problemas gerais) | O primeiro algoritmo: um laço e uma decisão, sempre n − 1 comparações. | nova |
 | Playlists | Achar o maior | em cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (também em Problemas gerais) | O maior de cada trecho de k casas: ingênuo × deque. | nova |
 | Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | nova |

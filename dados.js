@@ -26916,7 +26916,9 @@ window.CONCEITOS = {
    },
    "titulo": "Big O Player",
    "resumo": "Algoritmos tocam como música; aqui se comparam jeitos diferentes de resolver o mesmo problema.",
-   "video": null
+   "video": "videos/conceitos-0.mp4",
+   "legenda": "videos/conceitos-0.vtt",
+   "duracao": 29.2
   },
   {
    "n": 1,
@@ -26930,7 +26932,9 @@ window.CONCEITOS = {
    },
    "titulo": "O que é um algoritmo",
    "resumo": "Uma sequência finita de passos precisos, da entrada à resposta.",
-   "video": null
+   "video": "videos/conceitos-1.mp4",
+   "legenda": "videos/conceitos-1.vtt",
+   "duracao": 53.4
   },
   {
    "n": 2,
@@ -26944,7 +26948,9 @@ window.CONCEITOS = {
    },
    "titulo": "Complexidade sem jargão",
    "resumo": "Comparar é analisar como a tarefa é feita (passos em função de n), não só se é rápida.",
-   "video": null
+   "video": "videos/conceitos-2.mp4",
+   "legenda": "videos/conceitos-2.vtt",
+   "duracao": 71.3
   },
   {
    "n": 3,
@@ -26958,7 +26964,9 @@ window.CONCEITOS = {
    },
    "titulo": "Quando dá para comparar",
    "resumo": "O mesmo problema, a mesma entrada, a mesma régua e o mesmo critério.",
-   "video": null
+   "video": "videos/conceitos-3.mp4",
+   "legenda": "videos/conceitos-3.vtt",
+   "duracao": 85
   },
   {
    "n": 4,
@@ -26972,7 +26980,9 @@ window.CONCEITOS = {
    },
    "titulo": "Melhor, pior e caso médio",
    "resumo": "O custo muda com a entrada, e o pior caso é a promessa.",
-   "video": null
+   "video": "videos/conceitos-4.mp4",
+   "legenda": "videos/conceitos-4.vtt",
+   "duracao": 60.4
   },
   {
    "n": 5,
@@ -26986,7 +26996,9 @@ window.CONCEITOS = {
    },
    "titulo": "Como escolher",
    "resumo": "A escolha importa com n grande ou muitas repetições; senão, o simples ganha.",
-   "video": null
+   "video": "videos/conceitos-5.mp4",
+   "legenda": "videos/conceitos-5.vtt",
+   "duracao": 70.2
   },
   {
    "n": 6,
@@ -27000,7 +27012,9 @@ window.CONCEITOS = {
    },
    "titulo": "Fechamento",
    "resumo": "Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo.",
-   "video": null
+   "video": "videos/conceitos-6.mp4",
+   "legenda": "videos/conceitos-6.vtt",
+   "duracao": 26.1
   }
  ]
 };

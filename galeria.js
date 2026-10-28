@@ -17,7 +17,7 @@
   const SERIES = [{ id: "conceitos", ...(window.CONCEITOS || {}) }, { id: "fundamentos", ...(window.FUNDAMENTOS || {}) }]
     .map((s) => ({ ...s, prontos: (s.videos || []).filter((v) => v.video) })).filter((s) => s.prontos.length)
     .map((s) => ({ ...s, faixas: s.prontos.map((v) => ({ id: `${s.id}-${v.n}`, nome: v.titulo, objetivo: v.resumo, arquivo: v.video,
-      capa: v.capa || null, poster: "icone.png", n: v.n })) }));
+      legenda: v.legenda || null, duracao: v.duracao || 0, capa: v.capa || null, poster: "icone.png", n: v.n })) }));
   const NOME = "Big O Player";
   const $ = (s, raiz = document) => raiz.querySelector(s);
   const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -694,11 +694,28 @@
 
   // o vídeo é uma faixa cujo quadro é o <video> do palco: o relógio (u) é o currentTime dele
   const telaVideo = $("#palco-video");
+  // a legenda: um <track> por vídeo, ligada por padrão; o botão CC guarda a escolha neste navegador
+  let legendas = true;
+  try { legendas = localStorage.getItem("big-o-legendas") !== "off"; } catch (e) { /* sem armazenamento: fica ligada */ }
+  function aplicarLegendas() {
+    for (const t of telaVideo.textTracks) t.mode = legendas ? "showing" : "hidden";
+    const cc = $("#legendas");
+    cc.setAttribute("aria-pressed", String(legendas));
+    cc.hidden = !(faixa && faixa.arquivo && faixa.legenda);
+  }
+  $("#legendas").addEventListener("click", () => {
+    legendas = !legendas;
+    try { localStorage.setItem("big-o-legendas", legendas ? "on" : "off"); } catch (e) { /* segue só nesta visita */ }
+    aplicarLegendas();
+  });
+
   function simVideo(f) {
+    // o arquivo só é pedido quando o vídeo toca (o <video> do palco é um só, com preload="metadata")
+    telaVideo.replaceChildren(...(f.legenda ? [el("track", { kind: "subtitles", srclang: "pt-BR", label: "Português", src: f.legenda, default: "" })] : []));
     telaVideo.src = f.arquivo;
     telaVideo.playbackRate = vel;
     const s = { video: telaVideo, total: f.duracao || 0, ritmo: 1, passos: [], resumo: {}, varsEm: () => null, eventoEm: () => -1, uDoEvento: () => 0 };
-    telaVideo.onloadedmetadata = () => { s.total = telaVideo.duration; atualizarTempo(); };
+    telaVideo.onloadedmetadata = () => { s.total = telaVideo.duration; atualizarTempo(); aplicarLegendas(); };
     telaVideo.onended = () => { if (sim === s) { u = s.total; play(false); terminou(); pintar(); } };
     return s;
   }
@@ -713,6 +730,7 @@
     jaTocou = false;
     if (sim && sim.video && !(faixa.arquivo)) { telaVideo.pause(); telaVideo.removeAttribute("src"); telaVideo.load(); }
     palco.classList.toggle("e-video", !!faixa.arquivo);
+    aplicarLegendas();
     sim = faixa.arquivo ? simVideo(faixa) : window.Palco.criar(faixa, cfgs[faixa.id], accelerando);
     u = 0;
     painelEm = null;
@@ -795,6 +813,7 @@
   function cancelarFim() {
     if (!fim) return;
     fim = null;
+    if (sim && sim.video) $("#palco-vars").replaceChildren();   // no vídeo o painel só existe para o fim
     marcarEstado();
     painelEm = null;
     palco.classList.remove("no-fim");

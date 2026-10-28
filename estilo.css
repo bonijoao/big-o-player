@@ -988,3 +988,9 @@ svg text { font-family: var(--mono); }
   .tela-estado span { width: 64px; height: 64px; }
   .tela-estado svg { width: 26px; height: 26px; }
 }
+
+/* o botão de legenda (só nos vídeos) */
+.legendas { border: 1px solid var(--linha); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; }
+.legendas[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.legendas[hidden] { display: none; }
+#palco-video::cue { font-family: var(--mono); background: rgba(20, 20, 20, 0.78); color: #fff; }

@@ -1,0 +1,97 @@
+WEBVTT
+
+00:00:00.686 --> 00:00:02.750
+Quando dá para comparar dois algoritmos?
+
+00:00:03.100 --> 00:00:05.399
+Comparar só é justo com quatro regras.
+
+00:00:05.799 --> 00:00:07.392
+Primeira: o mesmo problema.
+
+00:00:07.742 --> 00:00:10.831
+A busca que abre no meio só funciona numa lista em ordem.
+
+00:00:10.831 --> 00:00:12.836
+Nesta, fora de ordem, procurando Téo:
+
+00:00:13.186 --> 00:00:14.492
+ela responde que não está.
+
+00:00:14.842 --> 00:00:15.458
+Mas está.
+
+00:00:15.458 --> 00:00:16.827
+A resposta é errada.
+
+00:00:17.177 --> 00:00:19.999
+Para comparar de forma justa, ordenar entra na conta:
+
+00:00:19.999 --> 00:00:22.767
+vinte comparações para ordenar, e só depois a busca.
+
+00:00:23.167 --> 00:00:24.787
+Segunda: a mesma entrada.
+
+00:00:25.137 --> 00:00:28.124
+Um por um numa lista de dez nomes: até dez passos.
+
+00:00:28.124 --> 00:00:31.171
+Abrindo no meio numa lista de um milhão: até vinte.
+
+00:00:31.521 --> 00:00:32.461
+Um por um ganhou?
+
+00:00:32.811 --> 00:00:33.039
+Não.
+
+00:00:33.039 --> 00:00:35.711
+As listas eram diferentes, e isso não diz nada.
+
+00:00:36.111 --> 00:00:37.678
+Terceira: a mesma régua.
+
+00:00:38.028 --> 00:00:40.586
+A mesma busca, no mesmo vetor, em duas máquinas.
+
+00:00:40.586 --> 00:00:44.794
+Os milissegundos mudam de máquina para máquina, e até de uma rodada para outra.
+
+00:00:45.144 --> 00:00:47.657
+As comparações, não: dez milhões, sempre.
+
+00:00:47.657 --> 00:00:49.924
+Conte a mesma operação, não segundos.
+
+00:00:50.324 --> 00:00:51.839
+Quarta: o mesmo critério.
+
+00:00:52.189 --> 00:00:55.905
+Ordenando dezesseis números, o Merge sort faz menos comparações;
+
+00:00:55.905 --> 00:00:57.936
+o Insertion sort usa menos memória.
+
+00:00:58.286 --> 00:01:01.093
+Quem ganha depende do que você mede: tempo ou memória.
+
+00:01:01.093 --> 00:01:03.484
+Escolha um e compare pelos dois lados com ele.
+
+00:01:03.884 --> 00:01:07.489
+Mesmo problema, mesma entrada, mesma régua, mesmo critério.
+
+00:01:07.889 --> 00:01:11.572
+E mesmo com as regras certas: com n pequeno, quase tudo empata.
+
+00:01:11.922 --> 00:01:15.057
+Com oito números, vinte e uma comparações contra dezesseis.
+
+00:01:15.407 --> 00:01:17.262
+Com cem, a diferença aparece.
+
+00:01:17.612 --> 00:01:20.994
+Com dez mil: uns vinte e cinco milhões contra uns cento e vinte mil.
+
+00:01:20.994 --> 00:01:22.784
+A diferença aparece quando n cresce.

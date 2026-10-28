@@ -125,8 +125,9 @@ def conferir_playlists(playlists, series):
         raise SystemExit(f"faixas fora de qualquer playlist: {', '.join(soltas)}")
     for s in series:   # um vídeo pronto aponta para um arquivo que existe; a capa, para uma capa exportada
         for v in s["videos"]:
-            if v.get("video") and not os.path.exists(os.path.join(RAIZ, v["video"])):
-                raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} aponta para {v['video']}, que não existe")
+            for campo in ("video", "legenda"):
+                if v.get(campo) and not os.path.exists(os.path.join(RAIZ, v[campo])):
+                    raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} aponta para {v[campo]} ({campo}), que não existe")
             if v.get("capa"):
                 if not capa(v["capa"]):
                     raise SystemExit(f"{s['titulo']}: o vídeo {v['n']} cita a capa {v['capa']}, que não está em capas/")

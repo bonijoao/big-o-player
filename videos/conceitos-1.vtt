@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:00.686 --> 00:00:01.914
+O que é um algoritmo?
+
+00:00:02.322 --> 00:00:06.266
+Uma receita é quase um algoritmo: uma lista de passos, um depois do outro.
+
+00:00:06.616 --> 00:00:08.209
+Mas "sal a gosto" não serve.
+
+00:00:08.209 --> 00:00:09.176
+Quanto é a gosto?
+
+00:00:09.526 --> 00:00:14.280
+Num algoritmo, cada passo precisa ser exato: qualquer um que siga faz a mesma coisa.
+
+00:00:14.680 --> 00:00:17.684
+Todo algoritmo tem uma entrada, passos e uma saída.
+
+00:00:18.034 --> 00:00:21.639
+A entrada aqui é uma lista de dez nomes e o nome procurado: Téo.
+
+00:00:21.989 --> 00:00:25.213
+Os passos: olhe o próximo nome; se for o procurado,
+
+00:00:25.213 --> 00:00:29.068
+responda a posição; se a lista acabou, responda que não está.
+
+00:00:29.418 --> 00:00:30.933
+Achou: posição sete.
+
+00:00:31.283 --> 00:00:32.874
+E se o nome não estiver lá?
+
+00:00:32.874 --> 00:00:33.817
+Procurando Zeca:
+
+00:00:34.167 --> 00:00:36.649
+a lista acabou, e a resposta é: não está.
+
+00:00:37.049 --> 00:00:41.270
+Um algoritmo precisa terminar, e dar a resposta certa para qualquer entrada válida:
+
+00:00:41.270 --> 00:00:42.796
+qualquer lista, qualquer nome.
+
+00:00:43.196 --> 00:00:45.652
+E o mesmo problema admite vários algoritmos.
+
+00:00:46.002 --> 00:00:48.397
+Olhar um por um é só um jeito de achar um nome.
+
+00:00:48.397 --> 00:00:51.200
+No próximo vídeo, outro jeito, e como comparar os dois.
