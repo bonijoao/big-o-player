@@ -769,3 +769,17 @@ svg text { font-family: var(--mono); }
   .grade-playlists { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 14px; margin-top: 40px; }
   .cartao-playlist b { font-size: 0.95rem; }
 }
+
+/* a capa provisória (faixa sem capa desenhada): a cor da playlist, o rótulo mono e o nome na grotesca,
+   medidos pela largura da própria capa (de 30 a 260 px) */
+:has(> .capa-provisoria) { container-type: inline-size; }   /* as medidas cqi abaixo são da caixa da capa */
+.capa-provisoria { display: flex; flex-direction: column; justify-content: space-between; width: 100%; height: 100%;
+  aspect-ratio: 1; padding: 7cqi; background: var(--cor); color: var(--sobre-cor); overflow: hidden; }
+.capa-provisoria small { display: flex; justify-content: space-between; gap: 6cqi; font-family: var(--mono); font-size: 5cqi; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.2; }
+.capa-provisoria b { font-family: var(--titulo); font-weight: 400; font-size: 15cqi; line-height: 0.92; letter-spacing: -0.02em; }
+.capa-provisoria.pequena { justify-content: center; align-items: center; padding: 4cqi; }
+.capa-provisoria.pequena small { font-size: 20cqi; font-weight: 600; letter-spacing: 0; }
+.mosaico .capa-provisoria small { font-size: 6cqi; }
+/* dentro da tabela e dos cartões, o rótulo da capa provisória não herda o cinza do "small" da linha */
+.faixas .faixa .capa-provisoria small, .cartao .capa-provisoria small { color: inherit; display: flex; font-size: 5cqi; margin: 0; }
+.faixas .faixa .capa-provisoria.pequena small, .cartao .capa-provisoria.pequena small { font-size: 20cqi; }

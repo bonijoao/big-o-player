@@ -46,6 +46,7 @@
 
   // a imagem da capa: a desenhada, quando existe (inteira, ou só a ilustração quando fica pequena); senão, o pôster
   function imgCapa(f, pequena, largura = 240) {
+    if (!f.capa && f.medido) return capaProvisoria(f, pequena);   // faixa sem capa desenhada: nunca o print antigo
     if (!f.capa) return el("img", { src: f.poster, alt: "", loading: "lazy" });
     if (pequena) return el("img", { src: f.capa.arte, alt: "", loading: "lazy" });
     const i = f.capa.inteira;
@@ -56,8 +57,19 @@
     return el("span", { class: `capa ${extra}` }, f ? imgCapa(f, extra.includes("mini-48"), 220) : null);
   }
 
+  // a capa provisória de uma faixa que ainda não tem a desenhada, na linguagem das capas: a cor da playlist
+  // chapada, o rótulo mono "PROBLEMA · CÓDIGO" no topo e o nome na grotesca embaixo; pequena, só o código
+  function capaProvisoria(f, pequena) {
+    const p = casaDe(f), codigo = p && p.codigo ? `${p.codigo}-${String(p.faixas.indexOf(f) + 1).padStart(2, "0")}` : "";
+    return el("span", { class: `capa-provisoria ${corDe(p)} ${pequena ? "pequena" : ""}`, "aria-hidden": "true" }, pequena
+      ? [el("small", { text: codigo })]
+      : [el("small", {}, [el("span", { text: p ? p.titulo : "" }), el("span", { text: codigo })]), el("b", { text: f.nome })]);
+  }
+
+  // a capa de uma playlist: só as capas desenhadas (o mosaico de quatro, ou a primeira); nunca o print antigo
   function capaAlbum(a, extra = "") {
-    const fs = a.faixas.slice(0, 4);
+    const novas = a.faixas.filter((f) => f.capa);
+    const fs = (novas.length ? novas : a.faixas).slice(0, 4);
     if (!fs.length) return el("span", { class: `capa vazia ${extra}` });
     const m = el("span", { class: `capa mosaico ${fs.length < 4 ? "um" : ""} ${extra}` });
     (fs.length < 4 ? fs.slice(0, 1) : fs).forEach((f) => m.append(imgCapa(f, extra.includes("mini-48"), fs.length < 4 ? 232 : 116)));
@@ -140,9 +152,7 @@
 
   // o cartão de uma playlist na grade da home: a capa (o mosaico das capas novas, ou a primeira), o problema e quantas faixas
   function cartaoPlaylist(p) {
-    const novas = p.faixas.filter((f) => f.capa);
-    const capa = novas.length >= 4 ? el("span", { class: "capa mosaico" }, novas.slice(0, 4).map((f) => imgCapa(f, false, 150)))
-      : el("span", { class: "capa" }, imgCapa(novas[0] || p.faixas[0], false, 300));
+    const capa = capaAlbum(p);
     return el("a", { class: `cartao-playlist ${corDe(p)}`, href: `#${p.id}` }, [
       capa,
       el("b", { text: p.titulo }),

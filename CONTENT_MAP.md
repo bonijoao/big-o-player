@@ -136,7 +136,7 @@ As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa imp
 
 Já entraram 30 das 34: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-10. Problemas gerais está completa. A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03.
 
-Faltam 4, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo padrão):
+Faltam 4. Enquanto não chegam, essas faixas mostram uma capa provisória na linguagem das capas: a cor da playlist chapada, o rótulo mono "PROBLEMA · CÓDIGO" no topo e o nome na grotesca embaixo (pequena, só o código). O print antigo não aparece mais em lugar nenhum, e a capa de cada playlist usa só as capas desenhadas.
 
 | código | faixa | playlist |
 |---|---|---|
