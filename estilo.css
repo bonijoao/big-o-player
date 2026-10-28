@@ -1,19 +1,25 @@
-/* A linguagem das capas: papel creme, cores chapadas por playlist, títulos numa grotesca
-   pesada (Archivo Black), IBM Plex Mono nos rótulos, no código e nos números, e o verde só no
-   resultado. Todos os pares de texto e fundo abaixo passam no AA (4,5:1). */
+/* A linguagem das capas na interface: a página clara, a cor chapada só nas capas, nos marcadores e
+   nos detalhes de cada playlist, títulos numa grotesca pesada (Archivo Black), IBM Plex Mono nos
+   rótulos, no código e nos números, e o verde só no resultado. Todos os pares de texto e fundo
+   passam no AA (4,5:1), nas duas variantes do papel.
+
+   O papel tem duas variantes; troque no <html data-papel="…"> do index.html:
+     a  branco quente (#fdfcf9, lateral #f4f3ef), a padrão
+     b  branco neutro (#ffffff, lateral #f5f5f4) */
 :root {
   color-scheme: light;
-  --papel: #faf4e4;        /* o fundo da página e dos painéis: o creme das capas, mais claro */
+  /* variante a: branco quente */
+  --papel: #fdfcf9;        /* o fundo da página, dos painéis e do canvas */
+  --fundo: #f4f3ef;        /* a lateral e os realces */
+  --realce: #ecebe6;       /* o hover */
+  --tocando: #ecf0e4;      /* a linha da faixa que toca e as decisões do pseudocódigo */
+  --linha: #e4e2db;
+  --apagado: #b3afa5;      /* o que não é texto: sublinhados, bordas no hover e controles desabilitados (fora do AA, como manda a WCAG) */
+  --cinza: #5f5a50;        /* texto secundário: 6,7:1 no papel, 6,2:1 no fundo */
+  --cinza-claro: #6f6758;  /* texto esmaecido (a instrumentação do código): 5,5:1 no papel, 4,8:1 na linha que toca */
   --tinta: #1e1e1e;
-  --cinza: #5f5a50;        /* texto secundário: 6,2:1 no papel, 5,5:1 no fundo */
-  --cinza-claro: #6f6758;  /* texto esmaecido (a instrumentação do código): 4,9:1 no papel */
-  --linha: #e2d6bc;
-  --apagado: #b5aa94;      /* o que não é texto: sublinhados, bordas no hover e controles desabilitados (fora do AA, como manda a WCAG) */
-  --fundo: #f3e8cf;        /* a lateral e os realces */
-  --realce: #ede2c8;       /* o hover */
-  --tocando: #e9edd3;      /* a linha da faixa que toca e as decisões do pseudocódigo */
   --verde: #169646;        /* o mesmo do vídeo; texto grande ou negrito */
-  --verde-texto: #0e7434;  /* verde para texto pequeno: 5,4:1 no papel, 4,8:1 no fundo */
+  --verde-texto: #0e7434;  /* verde para texto pequeno: 5,7:1 no papel, 5,1:1 na linha que toca */
   --titulo: "Archivo Black", "Arial Black", "Helvetica Neue", sans-serif;
   /* as cores das playlists, como nas capas; cada uma com o texto que passa no AA sobre ela */
   --azul: #043cc4;     --sobre-azul: var(--papel);      /* 7,8:1 */
@@ -27,8 +33,21 @@
   --grupo-1: #2869c3;
   --grupo-2: #8c50b9;
   --grupo-3: #008c96;
+  --neutro: var(--fundo); --sobre-neutro: var(--tinta);  /* o cabeçalho de Problemas gerais: sem cor própria */
+  --veu: rgba(0, 0, 0, 0.28);   /* o que escurece a página com o palco ou uma caixa aberta: preto, sem tingir */
   --mono: "IBM Plex Mono", ui-monospace, "DejaVu Sans Mono", monospace;
   --medida: 68ch;
+}
+/* variante b: branco neutro (o resto igual à a; os cinzas perdem o tom quente) */
+:root[data-papel="b"] {
+  --papel: #ffffff;
+  --fundo: #f5f5f4;
+  --realce: #ededeb;
+  --tocando: #edf3ea;
+  --linha: #e5e5e3;
+  --apagado: #b4b4b0;
+  --cinza: #5c5c58;        /* 6,7:1 no papel, 6,2:1 no fundo */
+  --cinza-claro: #6b6b66;  /* 5,4:1 no papel, 4,8:1 na linha que toca */
 }
 
 * { box-sizing: border-box; }
@@ -356,7 +375,7 @@ kbd { font: inherit; font-size: 0.8rem; padding: 1px 6px; border: 1px solid var(
 
 /* lightbox do fluxograma */
 .caixa-fluxo { width: min(1100px, 94vw); max-height: 92vh; padding: 0; border: 1px solid var(--tinta); border-radius: 6px; color: var(--tinta); background: var(--papel); box-shadow: 0 24px 60px -24px rgba(30, 30, 30, 0.55); }
-.caixa-fluxo::backdrop { background: rgba(250, 244, 228, 0.88); }
+.caixa-fluxo::backdrop { background: var(--veu); }
 .caixa-fluxo[open] { display: flex; flex-direction: column; }
 .caixa-barra { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 20px; border-bottom: 1px solid var(--linha); }
 .caixa-barra h2 { flex: 1; margin: 0; font-size: 1rem; font-weight: 700; }
@@ -462,7 +481,7 @@ svg text { font-family: var(--mono); }
 
 /* ---------- palco (vídeo grande / mini player) ---------- */
 
-.fundo { position: fixed; inset: 0; background: rgba(250, 244, 228, 0.92); z-index: 30; }   /* sem desfoque: pesava na animação */
+.fundo { position: fixed; inset: 0; background: var(--veu); z-index: 30; }   /* sem desfoque: pesava na animação */
 .palco:focus { outline: none; }   /* o diálogo recebe o foco ao abrir; os botões dentro dele mostram o contorno */
 .palco { position: fixed; z-index: 40; background: var(--papel); border: 1px solid var(--tinta); border-radius: 6px; overflow: hidden; box-shadow: 0 18px 50px -24px rgba(30, 30, 30, 0.5); }
 .palco-corpo { display: grid; grid-template-columns: minmax(0, 1fr); background: var(--papel); }
@@ -668,6 +687,7 @@ svg text { font-family: var(--mono); }
 .cor-amarelo { --cor: var(--amarelo); --sobre-cor: var(--sobre-amarelo); }
 .cor-creme { --cor: var(--creme); --sobre-cor: var(--sobre-creme); }
 .cor-preto { --cor: var(--preto); --sobre-cor: var(--sobre-preto); }
+.cor-neutro { --cor: var(--neutro); --sobre-cor: var(--sobre-neutro); }
 .cor-verde-escuro { --cor: var(--verde-escuro); --sobre-cor: var(--sobre-verde-escuro); }
 .cor-roxo { --cor: var(--roxo); --sobre-cor: var(--sobre-roxo); }
 

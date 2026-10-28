@@ -19,7 +19,8 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 - **Fim da faixa:** o painel do palco mostra o resultado em verde e o "a seguir" com 5 s de contagem (tocar agora, de novo, ficar aqui; Esc cancela). A barra ganhou o repetir (R).
 - **Estados de player:** ▶ no hover da linha, equalizador na faixa que toca, o botão redondo de tocar a playlist, o "pressionado" dos botões, a capa da barra abrindo o palco, a Media Session e os atalhos N, P, R e ? (a lista).
 - **Vídeo:** um vídeo pronto de Conceitos ou Fundamentos é uma faixa da série. O quadro é um `<video>` dentro do palco, controlado pela barra, pela fila, pelo teclado, pela velocidade e pela Media Session. O cartão não tem mais player solto.
-- **A linguagem das capas:** papel creme, a cor e o código de cada playlist (`cor` e `codigo` no `playlists.json`), títulos em Archivo Black e a IBM Plex Mono nos rótulos, no código e nos números. Todos os pares de texto e fundo passam no AA. As cores estão em tokens no topo do `estilo.css`.
+- **O papel (28/10, depois do primeiro ar):** o creme da página saiu. A página é branco quente (variante a, `#fdfcf9`, lateral `#f4f3ef`), com o branco neutro (variante b, `#ffffff`, lateral `#f5f5f4`) pronto para trocar no `<html data-papel>` do `index.html`. O véu do palco é preto com alfa baixo, e o canvas pinta o `--papel`.
+- **A linguagem das capas:** papel claro, a cor e o código de cada playlist (`cor` e `codigo` no `playlists.json`), títulos em Archivo Black e a IBM Plex Mono nos rótulos, no código e nos números. Todos os pares de texto e fundo passam no AA. As cores estão em tokens no topo do `estilo.css`.
 
 | playlist | cor | código |
 |---|---|---|
@@ -30,7 +31,7 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 | Organizar uma fila | amarelo | OF |
 | Percorrer tudo | verde-escuro (a cor da capa, não o verde do resultado) | PT |
 | Achar o caminho mais curto | roxo | CC |
-| Problemas gerais | creme, neutro; cada linha leva a cor da própria capa na marca da subcategoria e no equalizador | PG |
+| Problemas gerais | neutro (a cor da lateral); cada linha leva a cor da própria capa na marca da subcategoria e no equalizador | PG |
 
 ## As quatro seções, nesta ordem
 

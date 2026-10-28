@@ -2706,9 +2706,17 @@
     }
     const ctx = canvas.getContext("2d");
     ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
-    ctx.fillStyle = "#faf4e4";   // o papel creme do site (--papel)
+    ctx.fillStyle = papel();   // o mesmo papel da página (--papel)
     ctx.fillRect(0, 0, W, H);
     sim.desenhar(ctx, u);
+  }
+
+  // a cor do papel vem do CSS, para o canvas seguir a variante escolhida (data-papel no <html>)
+  let papelLido = null, papelEm = null;
+  function papel() {
+    const v = document.documentElement.dataset.papel || "";
+    if (papelEm !== v || !papelLido) { papelEm = v; papelLido = getComputedStyle(document.documentElement).getPropertyValue("--papel").trim() || "#fff"; }
+    return papelLido;
   }
 
   window.Palco = { criar, pintar, W, H };

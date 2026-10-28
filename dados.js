@@ -26603,7 +26603,7 @@ window.PLAYLISTS = [
  {
   "id": "problemas-gerais",
   "titulo": "Problemas gerais",
-  "cor": "creme",
+  "cor": "neutro",
   "codigo": "PG",
   "frase": "Um problema, um jeito de resolver. Quando um deles ganhar o segundo jeito, vira playlist.",
   "gerais": true,
