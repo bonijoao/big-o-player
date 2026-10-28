@@ -4128,6 +4128,14 @@ window.GALERIA = [
    "ano": "—"
   },
   "poster": "algoritmos/sequencial/sequencial.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/sequencial-240.webp",
+    "480": "capas/sequencial-480.webp"
+   },
+   "arte": "capas/sequencial-arte.webp",
+   "cor": "#0444d4"
+  },
   "exemplo": {
    "dados": "24 números pares (de 0 a 46) embaralhados com a semente 11, procurando o 20",
    "n": 24,
@@ -4589,6 +4597,14 @@ window.GALERIA = [
    "ano": "1946, nas aulas da Moore School; a primeira versão que vale para qualquer n é de Derrick Lehmer, em 1960 (Knuth, The Art of Computer Programming, vol. 3)"
   },
   "poster": "algoritmos/binaria/binaria.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/binaria-240.webp",
+    "480": "capas/binaria-480.webp"
+   },
+   "arte": "capas/binaria-arte.webp",
+   "cor": "#0444d4"
+  },
   "exemplo": {
    "dados": "24 números pares (de 0 a 46) em ordem, procurando o 28",
    "n": 24,
@@ -5142,6 +5158,14 @@ window.GALERIA = [
    "ano": "1956, na primeira descrição conhecida (Edward H. Friend, \"sorting by exchange\"); o nome bubble sort aparece em 1962, com Kenneth Iverson"
   },
   "poster": "algoritmos/bolha/bolha.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/bolha-240.webp",
+    "480": "capas/bolha-480.webp"
+   },
+   "arte": "capas/bolha-arte.webp",
+   "cor": "#ec2c0c"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,
@@ -7107,6 +7131,14 @@ window.GALERIA = [
    "ano": "1945"
   },
   "poster": "algoritmos/intercalacao/intercalacao.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/intercalacao-240.webp",
+    "480": "capas/intercalacao-480.webp"
+   },
+   "arte": "capas/intercalacao-arte.webp",
+   "cor": "#ec2c0c"
+  },
   "exemplo": {
    "dados": "24 números (de 0 a 23) embaralhados com a semente 11",
    "n": 24,

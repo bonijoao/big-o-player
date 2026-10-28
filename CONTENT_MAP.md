@@ -69,16 +69,16 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | nova |
 | Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | nova |
 | Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | nova |
-| Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | antiga (falta a nova) |
-| Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. | antiga (falta a nova) |
+| Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | nova |
+| Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. | nova |
 | Playlists | Encontrar um item | numa árvore de busca | Busca em árvore (`abb`) | mudou de lugar (Árvores e heaps) | Desce um nível por comparação; a altura depende da ordem em que os valores chegaram. | nova |
 | Playlists | Encontrar um item | numa árvore de busca | Árvore equilibrada AVL (`avl`) | mudou de lugar (Árvores e heaps) | Gira a árvore enquanto os valores chegam, para ela ficar com uns log n níveis. | nova |
 | Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por encadeamento (`encadeamento`) | mudou de lugar (Dispersão) | Duas chaves na mesma casa ficam penduradas nela, numa corrente. | nova |
 | Playlists | Encontrar um item | pela chave (tabela hash) | Colisão por sondagem linear (`sondagem`) | mudou de lugar (Dispersão) | Casa ocupada, tenta a seguinte; custa cada vez mais à medida que a tabela enche. | nova |
-| Playlists | Ordenar uma lista | um por um, O(n²) | Bubble sort (`bolha`) | mudou de lugar (Ordenação) | Troca vizinhos fora de lugar até nada mais mudar. | antiga (falta a nova) |
+| Playlists | Ordenar uma lista | um por um, O(n²) | Bubble sort (`bolha`) | mudou de lugar (Ordenação) | Troca vizinhos fora de lugar até nada mais mudar. | nova |
 | Playlists | Ordenar uma lista | um por um, O(n²) | Insertion sort (`insercao`) | mudou de lugar (Ordenação) | Encaixa cada número no trecho já ordenado. | nova |
 | Playlists | Ordenar uma lista | um por um, O(n²) | Selection sort (`selecao`) | mudou de lugar (Ordenação) | Escolhe o menor que falta a cada passada; n²/2 em qualquer ordem. | nova |
-| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Merge sort (`intercalacao`) | mudou de lugar (Ordenação) | Divide ao meio, ordena as metades e intercala. | antiga (falta a nova) |
+| Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Merge sort (`intercalacao`) | mudou de lugar (Ordenação) | Divide ao meio, ordena as metades e intercala. | nova |
 | Playlists | Ordenar uma lista | dividir e juntar, O(n log n) | Quick sort (`rapida`) | mudou de lugar (Ordenação) | Separa menores e maiores em volta de um pivô; n² no pior caso. | nova |
 | Playlists | Ordenar uma lista | com um heap | Heapsort (`heapsort`) | mudou de lugar (Ordenação) | Monta um heap no próprio vetor e tira sempre o maior. | nova |
 | Playlists | Contar ocorrências | por palavra | Contar palavras (`palavras`) | mudou de lugar (Dispersão) | Um dicionário com uma contagem por palavra, numa leitura só do texto. | nova |
@@ -134,16 +134,7 @@ Conferência: 24 faixas nas 7 playlists (a Busca em largura aparece em duas) + 1
 
 As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade (2×2, ou 1×2 com duas capas lado a lado) e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. Quando o título da capa começa mais alto, o recorte da ilustração é menor (`alg@0.5` no comando). O `gerar.py` liga a capa à faixa quando os arquivos existem e tira dela a cor de fundo; sem capa, a faixa fica com o pôster antigo.
 
-Já entraram 30 das 34: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-10. Problemas gerais está completa. A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03.
-
-Faltam 4. Enquanto não chegam, essas faixas mostram uma capa provisória na linguagem das capas: a cor da playlist chapada, o rótulo mono "PROBLEMA · CÓDIGO" no topo e o nome na grotesca embaixo (pequena, só o código). O print antigo não aparece mais em lugar nenhum, e a capa de cada playlist usa só as capas desenhadas.
-
-| código | faixa | playlist |
-|---|---|---|
-| EI-01 | Busca sequencial | Encontrar um item |
-| EI-02 | Busca binária | Encontrar um item |
-| OL-01 | Bubble sort | Ordenar uma lista |
-| OL-04 | Merge sort | Ordenar uma lista |
+**As 34 capas dos algoritmos estão completas** (EI-01 a EI-06, OL-01 a OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-10). A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03. Nenhuma rota do site mostra mais o pôster antigo; a capa provisória (a cor da playlist, o rótulo mono e o nome na grotesca) fica no código só para uma faixa futura que chegue sem capa.
 
 Nenhuma capa ficou sem faixa: Parênteses balanceados (PG-07) e Inverter lista encadeada (PG-08) existem como faixas.
 
