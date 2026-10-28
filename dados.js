@@ -26460,6 +26460,28 @@ window.GALERIA = [
 ];
 window.PLAYLISTS = [
  {
+  "id": "achar-o-maior",
+  "bloco": "Para começar",
+  "titulo": "Achar o maior",
+  "cor": "mostarda",
+  "codigo": "AM",
+  "frase": "O primeiro algoritmo: olhar cada número uma vez e guardar o maior. Depois, o maior de cada trecho.",
+  "subcategorias": [
+   {
+    "titulo": "no vetor inteiro",
+    "faixas": [
+     "maximo"
+    ]
+   },
+   {
+    "titulo": "em cada trecho",
+    "faixas": [
+     "janela"
+    ]
+   }
+  ]
+ },
+ {
   "id": "encontrar-um-item",
   "bloco": "Para começar",
   "titulo": "Encontrar um item",

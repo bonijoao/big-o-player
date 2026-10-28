@@ -25,16 +25,17 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 
 **Ordem das playlists** (a mesma na grade da home e na lateral; 28/10): cada uma usa só estruturas que já apareceram antes.
 
-1. Encontrar um item (vetor, árvore, tabela hash)
-2. Calcular Fibonacci (variáveis, pilha de chamadas, o vetor do memo)
-3. Ordenar uma lista (vetor, pilha, heap)
-4. Contar ocorrências (vetor, dicionário)
-5. Organizar uma fila (fila, heap)
-6. Percorrer tudo (árvore, grafo, pilha, fila)
-7. Achar o caminho mais curto (grafo, fila, heap)
-8. Problemas gerais
+1. Achar o maior (vetor; a janela traz o deque)
+2. Encontrar um item (vetor, árvore, tabela hash)
+3. Calcular Fibonacci (variáveis, pilha de chamadas, o vetor do memo)
+4. Ordenar uma lista (vetor, pilha, heap)
+5. Contar ocorrências (vetor, dicionário)
+6. Organizar uma fila (fila, heap)
+7. Percorrer tudo (árvore, grafo, pilha, fila)
+8. Achar o caminho mais curto (grafo, fila, heap)
+9. Problemas gerais
 
-Na grade da home e na lateral, as playlists ficam em blocos, cada um com um rótulo mono pequeno, em caixa alta (o `bloco` de cada playlist no `playlists.json`): PARA COMEÇAR (Encontrar um item, Calcular Fibonacci, Ordenar uma lista), CONTAR E ORGANIZAR (Contar ocorrências, Organizar uma fila), ÁRVORES E GRAFOS (Percorrer tudo, Achar o caminho mais curto) e PROBLEMAS GERAIS (o cartão sozinho, no fim).
+Na grade da home e na lateral, as playlists ficam em blocos, cada um com um rótulo mono pequeno, em caixa alta (o `bloco` de cada playlist no `playlists.json`): PARA COMEÇAR (Achar o maior, Encontrar um item, Calcular Fibonacci, Ordenar uma lista), CONTAR E ORGANIZAR (Contar ocorrências, Organizar uma fila), ÁRVORES E GRAFOS (Percorrer tudo, Achar o caminho mais curto) e PROBLEMAS GERAIS (o cartão sozinho, no fim).
 
 A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; cada faixa, um jeito de resolver.", e a grade vem logo abaixo. A comparação ao vivo está pronta no código e desligada (`COMPARACAO = false` no `galeria.js`).
 
@@ -42,6 +43,7 @@ A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; c
 
 | playlist | cor | código |
 |---|---|---|
+| Achar o maior | mostarda, a cor da capa do Máximo (28/10: o Máximo também abre o site, além de ficar em Problemas gerais) | AM |
 | Encontrar um item | azul | EI |
 | Ordenar uma lista | vermelho (um tom abaixo do da capa, para o texto creme passar no AA) | OL |
 | Contar ocorrências | rosa | CO |
@@ -86,6 +88,8 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Conceitos importantes | — | — | 4. Melhor, pior e caso médio | novo · roteiro pronto | O custo muda com a entrada, e o pior caso é a promessa. | nova |
 | Conceitos importantes | — | — | 5. Como escolher | novo · roteiro pronto | A escolha importa com n grande ou muitas repetições; senão, o simples ganha. | nova |
 | Conceitos importantes | — | — | 6. Fechamento | novo · roteiro pronto | Cada playlist é um problema, e cada faixa é um jeito de resolvê-lo. | nova |
+| Playlists | Achar o maior | no vetor inteiro | Máximo de um vetor (`maximo`) | mudou de lugar (também em Problemas gerais) | O primeiro algoritmo: um laço e uma decisão, sempre n − 1 comparações. | nova |
+| Playlists | Achar o maior | em cada trecho | Máximo em janela deslizante (`janela`) | mudou de lugar (também em Problemas gerais) | O maior de cada trecho de k casas: ingênuo × deque. | nova |
 | Playlists | Encontrar um item | numa lista | Busca sequencial (`sequencial`) | mudou de lugar (Busca) | Olha casa por casa: serve para qualquer vetor, custa até n. | nova |
 | Playlists | Encontrar um item | numa lista | Busca binária (`binaria`) | mudou de lugar (Busca) | Corta pela metade num vetor já ordenado: log n comparações. | nova |
 | Playlists | Encontrar um item | numa árvore de busca | Busca em árvore (`abb`) | mudou de lugar (Árvores e heaps) | Desce um nível por comparação; a altura depende da ordem em que os valores chegaram. | nova |
