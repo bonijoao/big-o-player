@@ -21913,6 +21913,14 @@ window.GALERIA = [
    "ano": "1962"
   },
   "poster": "algoritmos/welford/welford.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/welford-240.webp",
+    "480": "capas/welford-480.webp"
+   },
+   "arte": "capas/welford-arte.webp",
+   "cor": "#dcac6c"
+  },
   "exemplo": {
    "dados": "LakeHuron (R), nível do lago Huron, pés, 1875–1972",
    "n": 98,
@@ -24900,6 +24908,14 @@ window.GALERIA = [
    "ano": "1957, publicado em 1982"
   },
   "poster": "algoritmos/kmeans/kmeans.png",
+  "capa": {
+   "inteira": {
+    "240": "capas/kmeans-240.webp",
+    "480": "capas/kmeans-480.webp"
+   },
+   "arte": "capas/kmeans-arte.webp",
+   "cor": "#9caccc"
+  },
   "exemplo": {
    "dados": "iris (R), pétalas: comprimento × largura, cm",
    "n": 150,

@@ -100,8 +100,8 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Problemas gerais | multiplicar matrizes | Multiplicação de matrizes (`multiplicacao`) | mudou de lugar (Primeiros passos) | Três laços pela definição: n³. | nova |
 | Playlists | Problemas gerais | conferir se os símbolos fecham | Parênteses balanceados (`parenteses`) | mudou de lugar (Estruturas lineares) | Confere com uma pilha se cada símbolo que abre fecha no lugar certo. | nova |
 | Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | nova |
-| Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | antiga (falta a nova) |
-| Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | antiga (falta a nova) |
+| Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | nova |
+| Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | nova |
 | Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | — |
 | Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | — |
 | Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | — |
@@ -130,11 +130,11 @@ Conferência: 24 faixas nas 7 playlists (a Busca em largura aparece em duas) + 1
 
 ### Capas
 
-As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. Quando o título da capa começa mais alto, o recorte da ilustração é menor (`alg@0.5` no comando). O `gerar.py` liga a capa à faixa quando os arquivos existem e tira dela a cor de fundo; sem capa, a faixa fica com o pôster antigo.
+As capas novas vêm em grades 2×2 desenhadas pelo Pedro (o código da faixa impresso no canto). O `motor/capas.py` recorta cada grade (2×2, ou 1×2 com duas capas lado a lado) e exporta para `capas/`: a capa inteira em WebP de 240 e 480 px (cartões, cabeça da playlist, encarte) e só a ilustração em 96 px, que entra onde a capa fica com 48 px (a lateral, as linhas da playlist, a barra do player), porque ali o título grande vira mancha. Quando o título da capa começa mais alto, o recorte da ilustração é menor (`alg@0.5` no comando). O `gerar.py` liga a capa à faixa quando os arquivos existem e tira dela a cor de fundo; sem capa, a faixa fica com o pôster antigo.
 
-Já entraram 28 das 34: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-08. A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03.
+Já entraram 30 das 34: EI-03 a EI-06, OL-02, OL-03, OL-05, OL-06, CO-01 a CO-03, FI-01 a FI-03, OF-01, OF-02, PT-01, PT-02, CC-01, CC-02 e PG-01 a PG-10. Problemas gerais está completa. A numeração PG das capas bate com a ordem de Problemas gerais. A Busca em largura usa a CC-01 também em Percorrer tudo, que por isso não tem PT-03.
 
-Faltam 6, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo padrão):
+Faltam 4, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo padrão):
 
 | código | faixa | playlist |
 |---|---|---|
@@ -142,8 +142,6 @@ Faltam 6, todas ainda com o pôster antigo (os códigos são sugestão, no mesmo
 | EI-02 | Busca binária | Encontrar um item |
 | OL-01 | Bubble sort | Ordenar uma lista |
 | OL-04 | Merge sort | Ordenar uma lista |
-| PG-09 | Média e variância em uma passada (Welford) | Problemas gerais |
-| PG-10 | K-means | Problemas gerais |
 
 Nenhuma capa ficou sem faixa: Parênteses balanceados (PG-07) e Inverter lista encadeada (PG-08) existem como faixas.
 
