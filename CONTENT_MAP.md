@@ -10,7 +10,7 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 
 - As playlists, a galeria Problemas gerais e Algoritmos e estruturas estão no código: `playlists.json` e `galeria.js`. A home é só prateleiras, como a do Spotify.
 - **Conceitos importantes está ligada (28/10):** os 7 vídeos narrados (CI-00 a CI-06, 29 a 85 s, 20,8 MB em `videos/`) tocam no palco, com "a seguir" entre um e outro, velocidade e pause. Sem legenda: o Pedro preferiu os vídeos sem ela (28/10), e o `<track>`, o botão CC e os `.vtt` saíram. A seção abre a home, antes dos blocos de playlists. Cada vídeo só é baixado quando toca.
-- **Fundamentos está ligada (29/10) com os 7 primeiros vídeos** (FU-01 a FU-07, de 1:09 a 2:03, 31 MB em `videos/`), narrados com a mesma voz de Conceitos, sem legenda. Do FU-08 ao FU-11 (Grafo, Dicionário, n, passo e memória, log-log) ainda não têm vídeo e não aparecem; entram quando o `video` for preenchido. Os briefings estão em `docs/fundamentos-briefings.md`.
+- **Fundamentos está completa (29/10):** os 11 vídeos (FU-01 a FU-11, de 1:09 a 2:03, uns 47 MB em `videos/`), narrados com a mesma voz de Conceitos, sem legenda, tocando em sequência até "fim de Fundamentos". Os briefings estão em `docs/fundamentos-briefings.md`.
 - **Fundamentos**, antes (`fundamentos.json`), era playlist de vídeo pronta no código e **desligada**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
 - Os 11 vídeos de Fundamentos têm a lista aprovada e ainda não têm roteiro.
@@ -144,10 +144,10 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Fundamentos | — | — | 5. Pilha e fila | feito (narrado) | O último que entra sai primeiro; o primeiro que entra sai primeiro. | nova |
 | Fundamentos | — | — | 6. Lista encadeada | feito (narrado) | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | nova |
 | Fundamentos | — | — | 7. Árvore e heap | feito (narrado) | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | nova |
-| Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. | nova |
-| Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | nova |
-| Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | nova |
-| Fundamentos | — | — | 11. Ler o gráfico log-log | novo | Com os dois eixos em log, a inclinação da reta é o expoente. | nova |
+| Fundamentos | — | — | 8. Grafo | feito (narrado) | Pontos ligados por arestas, como esquinas ligadas por ruas. | nova |
+| Fundamentos | — | — | 9. Dicionário | feito (narrado) | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | nova |
+| Fundamentos | — | — | 10. n, passo e memória | feito (narrado) | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | nova |
+| Fundamentos | — | — | 11. Ler o gráfico log-log | feito (narrado) | Com os dois eixos em log, a inclinação da reta é o expoente. | nova |
 | Algoritmos e estruturas | — | estruturas | Vetor (`vetor`) | mudou de lugar (Instrumentos) | Valores em sequência; chega a qualquer um pelo número da casa. | — |
 | Algoritmos e estruturas | — | estruturas | Matriz (`matriz`) | mudou de lugar (Instrumentos) | Uma tabela por linha e coluna, guardada linha a linha num bloco só. | — |
 | Algoritmos e estruturas | — | estruturas | Texto (`texto`) | mudou de lugar (Instrumentos) | Um vetor de letras: concatenar no laço × juntar no fim. | — |

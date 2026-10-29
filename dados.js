@@ -26859,7 +26859,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Grafo",
    "resumo": "Pontos ligados por arestas, como esquinas ligadas por ruas.",
-   "video": null
+   "video": "videos/fundamentos-8.mp4",
+   "duracao": 77
   },
   {
    "n": 9,
@@ -26873,7 +26874,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Dicionário",
    "resumo": "Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem.",
-   "video": null
+   "video": "videos/fundamentos-9.mp4",
+   "duracao": 85.3
   },
   {
    "n": 10,
@@ -26887,7 +26889,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "n, passo e memória",
    "resumo": "O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta.",
-   "video": null
+   "video": "videos/fundamentos-10.mp4",
+   "duracao": 88.9
   },
   {
    "n": 11,
@@ -26901,7 +26904,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Ler o gráfico log-log",
    "resumo": "Com os dois eixos em log, a inclinação da reta é o expoente.",
-   "video": null
+   "video": "videos/fundamentos-11.mp4",
+   "duracao": 85.4
   }
  ]
 };

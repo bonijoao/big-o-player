@@ -13,9 +13,9 @@
   {"n": 5, "capa": "fundamentos-5", "titulo": "Pilha e fila", "resumo": "O último que entra sai primeiro; o primeiro que entra sai primeiro.", "video": "videos/fundamentos-5.mp4", "duracao": 101.3},
   {"n": 6, "capa": "fundamentos-6", "titulo": "Lista encadeada", "resumo": "Valores ligados por ponteiros: inserir no meio sem empurrar os outros.", "video": "videos/fundamentos-6.mp4", "duracao": 89.3},
   {"n": 7, "capa": "fundamentos-7", "titulo": "Árvore e heap", "resumo": "Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis.", "video": "videos/fundamentos-7.mp4", "duracao": 122.9},
-  {"n": 8, "capa": "fundamentos-8", "titulo": "Grafo", "resumo": "Pontos ligados por arestas, como esquinas ligadas por ruas.", "video": null},
-  {"n": 9, "capa": "fundamentos-9", "titulo": "Dicionário", "resumo": "Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem.", "video": null},
-  {"n": 10, "capa": "fundamentos-10", "titulo": "n, passo e memória", "resumo": "O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta.", "video": null},
-  {"n": 11, "capa": "fundamentos-11", "titulo": "Ler o gráfico log-log", "resumo": "Com os dois eixos em log, a inclinação da reta é o expoente.", "video": null}
+  {"n": 8, "capa": "fundamentos-8", "titulo": "Grafo", "resumo": "Pontos ligados por arestas, como esquinas ligadas por ruas.", "video": "videos/fundamentos-8.mp4", "duracao": 77},
+  {"n": 9, "capa": "fundamentos-9", "titulo": "Dicionário", "resumo": "Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem.", "video": "videos/fundamentos-9.mp4", "duracao": 85.3},
+  {"n": 10, "capa": "fundamentos-10", "titulo": "n, passo e memória", "resumo": "O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta.", "video": "videos/fundamentos-10.mp4", "duracao": 88.9},
+  {"n": 11, "capa": "fundamentos-11", "titulo": "Ler o gráfico log-log", "resumo": "Com os dois eixos em log, a inclinação da reta é o expoente.", "video": "videos/fundamentos-11.mp4", "duracao": 85.4}
  ]
 }
