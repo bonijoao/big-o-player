@@ -23,14 +23,14 @@ import pseudocodigo  # noqa: E402
 ALGORITMOS = ["maximo", "multiplicacao", "fatorial", "fibrecursivo", "fibmemoria", "fibiterativo", "padrao",
               "sequencial", "binaria", "bolha", "insercao", "selecao", "intercalacao", "rapida", "heapsort",
               "parenteses", "atendimento", "inverter", "janela", "percursos", "abb", "avl", "prioridade", "largura", "profundidade", "dijkstra",
-              "palavras", "repetidos", "encadeamento", "sondagem", "welford", "mediana", "histograma", "kmeans"]   # a ordem das medições; a das faixas vem do playlists.json
+              "palavras", "repetidos", "encadeamento", "sondagem", "welford", "mediana", "histograma", "kmeans", "figs"]   # a ordem das medições; a das faixas vem do playlists.json
 INSTRUMENTOS = ["vetor", "matriz", "texto", "pilha", "fila", "deque", "lista", "grafo", "arvore", "heap", "dicionario"]
 # texto da ciclomática, o mesmo para todos (uma ficha pode sobrescrever)
 CICLOMATICA = {
  "porque": "Cada for, while e if, e cada and/or numa condição, abre um caminho a mais pelo código. A complexidade ciclomática conta os caminhos independentes: qualquer percurso pela função é uma combinação deles. É um teto para quantos testes cobrem todos os ramos, não o mínimo.",
  "regra": "Regra de contagem: +1 por for, while, if, if-expressão, except e cada and/or. Compreensões de lista são proibidas na função medida, porque escondem um laço que o grafo não veria."
 }
-PESADOS = {"especies", "fotos", "final", "eventos"}   # só o vídeo usa; vetor e pontos alimentam a simulação
+PESADOS = {"especies", "fotos", "final", "eventos", "passos", "passos_uma"}   # só o vídeo usa; vetor e pontos alimentam a simulação
 
 
 def ler(pasta, nome):
@@ -157,7 +157,8 @@ def main():
             pasta = os.path.join("algoritmos", nome)
             subprocess.run([sys.executable, os.path.join(pasta, "medir.py")], cwd=RAIZ, check=True)
             subprocess.run(["Rscript", os.path.join(pasta, "conferir.R")], cwd=RAIZ, check=True)
-            subprocess.run([sys.executable, "video.py", "poster"], cwd=os.path.join(RAIZ, pasta), check=True)
+            if os.path.exists(os.path.join(RAIZ, pasta, "video.py")):   # faixa nova sem pôster: a capa provisória basta
+                subprocess.run([sys.executable, "video.py", "poster"], cwd=os.path.join(RAIZ, pasta), check=True)
     for nome in INSTRUMENTOS:   # sempre: é rápido, e o teste JS × Python não compara com medida velha
         subprocess.run([sys.executable, os.path.join("instrumentos", nome, "medir.py")], cwd=RAIZ, check=True,
                        stdout=subprocess.DEVNULL)
