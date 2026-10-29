@@ -26740,7 +26740,7 @@ window.FUNDAMENTOS = {
  "cor": "petroleo",
  "codigo": "FU",
  "frase": "A base para ver qualquer faixa: o que é uma variável, um vetor, uma pilha, o n e um passo.",
- "nota": "A playlist só aparece no site quando algum vídeo tem \"video\" (o caminho do arquivo). Sem vídeo, nada é mostrado: nem cartão vazio, nem \"em breve\". A lista foi aprovada pelo Pedro em 28/10; os roteiros ainda não existem.",
+ "nota": "A playlist só mostra os vídeos que têm \"video\" (o caminho do arquivo); os que ainda não têm não aparecem: nem cartão vazio, nem \"em breve\". Os roteiros estão em docs/fundamentos-briefings.md.",
  "videos": [
   {
    "n": 1,
@@ -26754,7 +26754,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Variável",
    "resumo": "Um nome com um valor: anotar apaga o valor velho, ler não apaga.",
-   "video": null
+   "video": "videos/fundamentos-1.mp4",
+   "duracao": 68.9
   },
   {
    "n": 2,
@@ -26768,7 +26769,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Laço e decisão",
    "resumo": "O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer.",
-   "video": null
+   "video": "videos/fundamentos-2.mp4",
+   "duracao": 102.3
   },
   {
    "n": 3,
@@ -26782,7 +26784,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Função e recursão",
    "resumo": "Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta.",
-   "video": null
+   "video": "videos/fundamentos-3.mp4",
+   "duracao": 84.7
   },
   {
    "n": 4,
@@ -26796,7 +26799,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Vetor",
    "resumo": "Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche.",
-   "video": null
+   "video": "videos/fundamentos-4.mp4",
+   "duracao": 93.7
   },
   {
    "n": 5,
@@ -26810,7 +26814,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Pilha e fila",
    "resumo": "O último que entra sai primeiro; o primeiro que entra sai primeiro.",
-   "video": null
+   "video": "videos/fundamentos-5.mp4",
+   "duracao": 101.3
   },
   {
    "n": 6,
@@ -26824,7 +26829,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Lista encadeada",
    "resumo": "Valores ligados por ponteiros: inserir no meio sem empurrar os outros.",
-   "video": null
+   "video": "videos/fundamentos-6.mp4",
+   "duracao": 89.3
   },
   {
    "n": 7,
@@ -26838,7 +26844,8 @@ window.FUNDAMENTOS = {
    },
    "titulo": "Árvore e heap",
    "resumo": "Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis.",
-   "video": null
+   "video": "videos/fundamentos-7.mp4",
+   "duracao": 122.9
   },
   {
    "n": 8,

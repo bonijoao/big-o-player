@@ -146,6 +146,10 @@ O molde faz quase tudo: escreva `algoritmos/<nome>/<nome>.py` com `ordenar(v, co
 5. `video.py`: lê `dados.json`; `python3 video.py folha 3,10,20 f.png` mostra quadros sem renderizar.
 6. Acrescentar o nome em `ALGORITMOS` no `gerar.py`.
 
+## Cache
+
+O `gerar.py` põe `?v=<hash do conteúdo>` no endereço de cada script e do CSS do `index.html`. Depois de mexer em qualquer `.js` ou no `estilo.css`, rode o `gerar.py` antes de publicar: assim o navegador não mistura o HTML novo com um arquivo antigo guardado no cache.
+
 ## Autoria
 
 Pedro Mambelli e João Paulo Assis Bonifácio.

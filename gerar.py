@@ -7,8 +7,10 @@ sem servidor).
   python3 gerar.py --tudo     antes mede os algoritmos, confere no R e gera os pôsteres
 Recusa ficha de faixa que credita uma estrutura que não existe, e playlist que esquece ou inventa faixa. Sempre, no fim: confere que o JavaScript do site conta igual ao Python.
 """
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -133,6 +135,22 @@ def conferir_playlists(playlists, series):
                 v["capa"] = capa(v["capa"])
 
 
+def carimbar_versoes():
+    """Põe ?v=<hash do conteúdo> no endereço de cada script e do CSS do index.html. Depois de uma
+    publicação, o navegador não mistura o HTML novo com um JS ou CSS antigo guardado no cache: cada
+    arquivo que mudou ganha um endereço novo, e os que não mudaram continuam no cache."""
+    caminho = os.path.join(RAIZ, "index.html")
+    html = open(caminho, encoding="utf-8").read()
+
+    def troca(m):
+        arquivo = m.group(2)
+        conteudo = open(os.path.join(RAIZ, arquivo), "rb").read()
+        return f'{m.group(1)}="{arquivo}?v={hashlib.sha1(conteudo).hexdigest()[:8]}"'
+    novo = re.sub(r'(src|href)="((?:simulacao/)?[\w-]+\.(?:js|css))(?:\?v=[0-9a-f]+)?"', troca, html)
+    if novo != html:
+        open(caminho, "w", encoding="utf-8").write(novo)
+
+
 def main():
     if "--tudo" in sys.argv:
         for nome in ALGORITMOS:
@@ -155,6 +173,7 @@ def main():
         f.write("window.FUNDAMENTOS = " + json.dumps(fundamentos, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.CONCEITOS = " + json.dumps(conceitos, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.INSTRUMENTOS = " + json.dumps(instrumentos, ensure_ascii=False) + ";\n")
+    carimbar_versoes()   # depois do dados.js, que também é um dos arquivos carimbados
     print("dados.js:", ", ".join(g["nome"] for g in galeria), "| estruturas:", ", ".join(i["nome"] for i in instrumentos))
     subprocess.run(["node", os.path.join(RAIZ, "testes", "conferir_js.mjs")], check=True)
 

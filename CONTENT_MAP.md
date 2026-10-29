@@ -10,7 +10,8 @@ A reorganização e a Fase 1 dos QAs estão implementadas no branch `claude/mapa
 
 - As playlists, a galeria Problemas gerais e Algoritmos e estruturas estão no código: `playlists.json` e `galeria.js`. A home é só prateleiras, como a do Spotify.
 - **Conceitos importantes está ligada (28/10):** os 7 vídeos narrados (CI-00 a CI-06, 29 a 85 s, 20,8 MB em `videos/`) tocam no palco, com "a seguir" entre um e outro, velocidade e pause. Sem legenda: o Pedro preferiu os vídeos sem ela (28/10), e o `<track>`, o botão CC e os `.vtt` saíram. A seção abre a home, antes dos blocos de playlists. Cada vídeo só é baixado quando toca.
-- **Fundamentos** (`fundamentos.json`) é playlist de vídeo, pronta no código e **desligada**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
+- **Fundamentos está ligada (29/10) com os 7 primeiros vídeos** (FU-01 a FU-07, de 1:09 a 2:03, 31 MB em `videos/`), narrados com a mesma voz de Conceitos, sem legenda. Do FU-08 ao FU-11 (Grafo, Dicionário, n, passo e memória, log-log) ainda não têm vídeo e não aparecem; entram quando o `video` for preenchido. Os briefings estão em `docs/fundamentos-briefings.md`.
+- **Fundamentos**, antes (`fundamentos.json`), era playlist de vídeo pronta no código e **desligada**: cada uma só aparece quando algum vídeo ganha `"video"` (o caminho do arquivo). Sem vídeo, a vitrine não mostra cartão vazio nem "em breve".
 - O "Comece por aqui" saiu. Instrumento virou estrutura (`#estruturas/<nome>`), e os links antigos (`#busca/…`, `#instrumentos/…`, `#k-means`) redirecionam.
 - Os 11 vídeos de Fundamentos têm a lista aprovada e ainda não têm roteiro.
 
@@ -47,6 +48,8 @@ A home abre com "Algoritmos tocando ao vivo." e "Cada playlist é um problema; c
 **Palco grande como "agora tocando" (28/10):** ocupa a tela, com uma margem fina, e leva o transporte para dentro (a barra global some e volta ao minimizar ou fechar). Em cima, a entrada: chips para o tipo, um stepper para o n (e o k) e o botão "Sortear" com dado, na cor da playlist. No meio, a animação, que cabe na altura sem distorcer, e o painel com o código e as variáveis colados. Embaixo, o trilho na largura toda, o tocar grande com os passos e as faixas, a velocidade e o repetir à direita e "A seguir" à esquerda. No celular fica tudo em coluna, com o transporte fixo embaixo; nos vídeos, sem entrada e sem painel. A tela da simulação tem moldura própria (linha fina e cantos de 8 px sobre um fundo levemente diferente), e no meio dela aparece ▶ antes do primeiro play e ❚❚ com a faixa pausada; clicar na tela alterna.
 
 **Achados do agente estudante (28/10), corrigidos:** o `<select>` de k não aparece mais ao lado do stepper; o mini palco reserva o seu lugar (folga embaixo e, na tela larga, uma coluna à direita) e some no celular, onde a barra de baixo basta; no fim da faixa, "ficar aqui", o Esc e mexer na velocidade ou no repetir param a contagem sem esconder a próxima faixa; cada faixa começa em 1×; o "+1" das decisões saiu do pseudocódigo (fica no código medido); a linha da vez é tinta com a cor da playlist numa faixa à esquerda; e Achar o maior usa uma capa provisória (mostarda, "ACHAR O MAIOR · AM") até a AM-01. Fica para depois: o ritmo das faixas curtas (a Busca binária dura 2 s em 1×).
+
+**Cache (29/10):** o `gerar.py` carimba `?v=<hash do conteúdo>` em cada script e no CSS do `index.html`, para o navegador não misturar o HTML novo com arquivos antigos depois de uma publicação.
 
 **Marca:** o disco de vinil da capa CI-00, recortado com fundo transparente, ao lado de "Big O Player" na grotesca (`marca/`); o favicon é o disco simplificado em SVG; a `og:image` usa o disco e o título da capa sobre o fundo preto de Conceitos importantes. Tudo sai do `motor/identidade.py`, a partir de `marca/ci-00.webp`.
 
@@ -134,13 +137,13 @@ O id entre crases é o nome da pasta em `algoritmos/` ou `instrumentos/`.
 | Playlists | Problemas gerais | inverter uma lista | Inverter lista encadeada (`inverter`) | mudou de lugar (Estruturas lineares) | Vira a ordem com três ponteiros, sem copiar valores. | nova |
 | Playlists | Problemas gerais | calcular média e variância | Média e variância em uma passada (`welford`) | mudou de lugar (Estatística) | Welford: lê os dados uma vez, sem guardá-los. | nova |
 | Playlists | Problemas gerais | separar em grupos | K-means (`kmeans`) | mudou de lugar (Estatística) | Separa pontos em k grupos sem conhecê-los antes. | nova |
-| Fundamentos | — | — | 1. Variável | novo | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | nova |
-| Fundamentos | — | — | 2. Laço e decisão | novo | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | nova |
-| Fundamentos | — | — | 3. Função e recursão | novo | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | nova |
-| Fundamentos | — | — | 4. Vetor | novo | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. | nova |
-| Fundamentos | — | — | 5. Pilha e fila | novo | O último que entra sai primeiro; o primeiro que entra sai primeiro. | nova |
-| Fundamentos | — | — | 6. Lista encadeada | novo | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | nova |
-| Fundamentos | — | — | 7. Árvore e heap | novo | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | nova |
+| Fundamentos | — | — | 1. Variável | feito (narrado) | Um nome com um valor: anotar apaga o valor velho, ler não apaga. | nova |
+| Fundamentos | — | — | 2. Laço e decisão | feito (narrado) | O laço repete o mesmo passo; a decisão escolhe, em cada volta, o que fazer. | nova |
+| Fundamentos | — | — | 3. Função e recursão | feito (narrado) | Uma função que chama a si mesma num problema menor, e a pilha de chamadas que espera a volta. | nova |
+| Fundamentos | — | — | 4. Vetor | feito (narrado) | Casas em sequência, cada uma achada pelo número dela, e o vetor que dobra quando enche. | nova |
+| Fundamentos | — | — | 5. Pilha e fila | feito (narrado) | O último que entra sai primeiro; o primeiro que entra sai primeiro. | nova |
+| Fundamentos | — | — | 6. Lista encadeada | feito (narrado) | Valores ligados por ponteiros: inserir no meio sem empurrar os outros. | nova |
+| Fundamentos | — | — | 7. Árvore e heap | feito (narrado) | Guardar em níveis para achar, ou tirar o menor, descendo poucos níveis. | nova |
 | Fundamentos | — | — | 8. Grafo | novo | Pontos ligados por arestas, como esquinas ligadas por ruas. | nova |
 | Fundamentos | — | — | 9. Dicionário | novo | Achar pela chave calculando a casa, em vez de procurar; e quando duas chaves colidem. | nova |
 | Fundamentos | — | — | 10. n, passo e memória | novo | O que se conta neste site: o tamanho da entrada, as operações básicas e o que se guarda além da entrada e da resposta. | nova |
