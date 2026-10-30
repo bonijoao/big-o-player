@@ -1,6 +1,6 @@
 """Junta ficha.json (texto) + dados.json (medido) + conferencia.json de cada
-algoritmo, ficha.json + dados.json de cada estrutura (instrumentos/), as playlists e as duas playlists
-de vídeo (conceitos e fundamentos) em dados.js, que a página carrega (funciona abrindo o arquivo direto,
+algoritmo, ficha.json + dados.json de cada estrutura (instrumentos/), as playlists e as três playlists
+de vídeo (conceitos, fundamentos e classificar) em dados.js, que a página carrega (funciona abrindo o arquivo direto,
 sem servidor).
 
   python3 gerar.py            mede os instrumentos e junta
@@ -165,14 +165,16 @@ def main():
     galeria = [entrada(n) for n in ALGORITMOS]
     instrumentos = [instrumento(n) for n in INSTRUMENTOS]
     conferir_creditos(galeria, instrumentos)
-    playlists, conceitos, fundamentos = ler(RAIZ, "playlists.json"), ler(RAIZ, "conceitos.json"), ler(RAIZ, "fundamentos.json")
-    conferir_playlists(playlists, [conceitos, fundamentos])
+    playlists = ler(RAIZ, "playlists.json")
+    conceitos, fundamentos, classificar = ler(RAIZ, "conceitos.json"), ler(RAIZ, "fundamentos.json"), ler(RAIZ, "classificar.json")
+    conferir_playlists(playlists, [conceitos, fundamentos, classificar])
     with open(os.path.join(RAIZ, "dados.js"), "w") as f:
         f.write("// gerado por gerar.py; não editar à mão\n")
         f.write("window.GALERIA = " + json.dumps(galeria, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.PLAYLISTS = " + json.dumps(playlists, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.FUNDAMENTOS = " + json.dumps(fundamentos, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.CONCEITOS = " + json.dumps(conceitos, ensure_ascii=False, indent=1) + ";\n")
+        f.write("window.CLASSIFICAR = " + json.dumps(classificar, ensure_ascii=False, indent=1) + ";\n")
         f.write("window.INSTRUMENTOS = " + json.dumps(instrumentos, ensure_ascii=False) + ";\n")
     carimbar_versoes()   # depois do dados.js, que também é um dos arquivos carimbados
     print("dados.js:", ", ".join(g["nome"] for g in galeria), "| estruturas:", ", ".join(i["nome"] for i in instrumentos))

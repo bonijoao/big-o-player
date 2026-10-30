@@ -1,4 +1,4 @@
-// O player: as seções (conceitos, fundamentos, playlists por problema, algoritmos e
+// O player: as seções (conceitos, fundamentos, classificar, playlists por problema, algoritmos e
 // estruturas), as faixas (algoritmos), o palco que vira mini player arrastável e o
 // encarte de cada faixa. Os números vêm de dados.js.
 (function () {
@@ -13,8 +13,8 @@
     const subcategorias = p.subcategorias.map((s) => ({ ...s, faixas: s.faixas.map((n) => porAlg[n]).filter(Boolean) }));
     return { ...p, subcategorias, faixas: subcategorias.flatMap((s) => s.faixas) };
   });
-  // as duas playlists de vídeo, na ordem da home; cada uma só existe com algum vídeo pronto
-  const SERIES = [{ id: "conceitos", ...(window.CONCEITOS || {}) }, { id: "fundamentos", ...(window.FUNDAMENTOS || {}) }]
+  // as playlists de vídeo, na ordem da home; cada uma só existe com algum vídeo pronto
+  const SERIES = [{ id: "conceitos", ...(window.CONCEITOS || {}) }, { id: "fundamentos", ...(window.FUNDAMENTOS || {}) }, { id: "classificar", ...(window.CLASSIFICAR || {}) }]
     .map((s) => ({ ...s, prontos: (s.videos || []).filter((v) => v.video) })).filter((s) => s.prontos.length)
     .map((s) => ({ ...s, faixas: s.prontos.map((v) => ({ id: `${s.id}-${v.n}`, nome: v.titulo, objetivo: v.resumo, arquivo: v.video,
       duracao: v.duracao || 0, capa: v.capa || null, poster: "icone.png", n: v.n })) }));
@@ -283,7 +283,7 @@
   // as três barras que sobem e descem na faixa que toca (paradas com movimento reduzido)
   const equalizador = () => el("span", { class: "eq", "aria-hidden": "true" }, [el("i"), el("i"), el("i")]);
 
-  // ---------- as playlists de vídeo (Conceitos importantes e Fundamentos): só com vídeo pronto ----------
+  // ---------- as playlists de vídeo (Conceitos importantes, Fundamentos e Classificar um exemplo): só com vídeo pronto ----------
 
   function paginaVideos(s) {
     return el("div", { class: `playlist ${corDe(s)}` }, [
