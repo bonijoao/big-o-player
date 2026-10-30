@@ -28496,12 +28496,12 @@ window.CONCEITOS = {
 };
 window.CLASSIFICAR = {
  "id": "classificar",
- "titulo": "Classificar um exemplo",
+ "titulo": "Aprender com exemplos",
  "cor": "laranja",
  "codigo": "CE",
  "capa": "provisoria",
  "frase": "Olhar um exemplo e dizer de que classe ele é, com uma regra aprendida de exemplos que já vêm com a resposta.",
- "nota": "Os vídeos da playlist Classificar um exemplo, um por faixa, no molde de Conceitos importantes e Fundamentos. A playlist de vídeo só aparece quando algum vídeo tem \"video\" (o caminho do arquivo). O projeto dos vídeos é o bonijoao/big-o-player-videos. A capa fica provisória até a CE-01 desenhada (docs/capas-classificacao.md).",
+ "nota": "Os vídeos das faixas de Classificar um exemplo, um por faixa, no molde de Conceitos importantes e Fundamentos. A playlist de vídeo só aparece quando algum vídeo tem \"video\" (o caminho do arquivo). O projeto dos vídeos é o bonijoao/big-o-player-videos. A capa fica provisória até a CE-01 desenhada (docs/capas-classificacao.md).",
  "videos": [
   {
    "n": 1,
